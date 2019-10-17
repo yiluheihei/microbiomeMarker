@@ -1,0 +1,22 @@
+Package: microbiomeMarker
+Title: microbiome biomarker analysis
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Yang",
+           family = "Cao",
+           role = c("aut", "cre"),
+           email = "yiluheihei@gmail.com")
+Description: microbiome biomarker analysis.
+License: Artistic-2.0
+URL: https://github.com/yiluheihei/microbiomeMarker
+BugReports: https://github.com/yiluheihei/microbiomeMarker/issues
+Imports: 
+    dplyr,
+    phyloseq,
+    magrittr,
+    purrr,
+    MASS,
+    utils
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
