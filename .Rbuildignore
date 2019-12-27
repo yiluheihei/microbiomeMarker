@@ -5,3 +5,4 @@
 ^README\.Rmd$
 ^data-raw$
 ^lefse$
+^dev_test$

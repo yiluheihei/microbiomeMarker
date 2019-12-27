@@ -1,0 +1,28 @@
+#' lefse bar plot
+#'
+#' @param lefse_out data frame, out of \code{\link{lefse}}
+#' @param lda_threshold threshold of lda score, features whose lda score is less
+#' then it will not be plotted
+#' @import ggplot2
+#' @importFrom dplyr arrange mutate desc
+#' @return a ggplot project
+#' @export
+lefse_barplot <- function(lefse_out, lda_threshold) {
+  lefse_out_arranged <- arrange(lefse_out,enrich_group, desc(lda_score)) %>%
+    mutate(otu = factor(otu, levels = otu))
+
+  p <- ggplot(lefse_out_arranged, aes(otu, lda_score, fill = enrich_group)) +
+    geom_col() +
+    labs(x = "Features", y = "LDA score", fill = NULL) +
+    scale_x_discrete(limits = rev(lefse_out_arranged$otu)) +
+    scale_y_continuous(expand = c(0,0)) +
+    labs(y = "LDA SCORE (log10)") +
+    coord_flip() +
+    theme_bw()
+
+  p
+}
+
+# suppress the checking notes “no visible binding for global variable", which is
+# caused by NSE
+utils::globalVariables("otu")
