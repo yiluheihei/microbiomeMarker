@@ -12,10 +12,13 @@ file.rename("data-raw/treebiom/", "data-raw/caporaso/")
 ps <- import_biom(
   "data-raw/caporaso/otu_table_mc2_w_tax_no_pynast_failures.biom",
   treefilename = "data-raw/caporaso/rep_set.tre",
-  parseFunction = parse_taxonomy_greengenes
 )
+
+colnames(tax_table(ps)) <- c("Kingdom", "Phylum", "Class", "Order",
+  "Family", "Genus", "Species")
+
 sampledata <- read.delim("data-raw/caporaso/map.txt", row.names = 1) %>%
   sample_data()
 caporaso_phyloseq <- merge_phyloseq(ps, sampledata)
 
-usethis::use_data(caporaso_phyloseq)
+usethis::use_data(caporaso_phyloseq, overwrite = TRUE)
