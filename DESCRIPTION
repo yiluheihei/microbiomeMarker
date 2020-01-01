@@ -17,7 +17,10 @@ Imports:
     purrr,
     MASS,
     utils,
-    ggplot2
+    ggplot2,
+    tibble,
+    microbiome
+Remotes: microbiome/microbiome
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2

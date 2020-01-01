@@ -2,6 +2,7 @@
 
 export(lefse)
 export(lefse_barplot)
+export(summarize_taxa)
 import(ggplot2)
 import(phyloseq)
 importFrom(dplyr,"%>%")
