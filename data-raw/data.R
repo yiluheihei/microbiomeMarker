@@ -1,4 +1,4 @@
-## Human Moving Picture from MicrobiomeAnalyst server
+# Human Moving Picture from MicrobiomeAnalyst server ----------------------
 
 library(MicrobiomeAnalystR)
 library(phyloseq)
@@ -22,3 +22,12 @@ sampledata <- read.delim("data-raw/caporaso/map.txt", row.names = 1) %>%
 caporaso_phyloseq <- merge_phyloseq(ps, sampledata)
 
 usethis::use_data(caporaso_phyloseq, overwrite = TRUE)
+
+
+# cid data from github.com/ying14/yingtools2 ------------------------------
+download.file(
+  "https://github.com/ying14/yingtools2/raw/master/data/cid.phy.rda",
+  "data-raw/cid.phy.rda"
+)
+load("data-raw/cid.phy.rda")
+usethis::use_data(cid.phy, overwrite = TRUE)
