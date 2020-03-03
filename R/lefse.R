@@ -7,7 +7,7 @@
 #' @param class character, the column name to specify the class
 #' @param p_cutoff numeric, p value cutoff, default 0.05
 #' @param lda_cutoff numeric, lda score cutoff, default 2
-#' @importFrom  dplyr mutate filter arrange as_tibble rowwise select
+#' @importFrom  dplyr mutate filter arrange rowwise select
 #' @importFrom  purrr map_dbl pmap_dbl pmap_chr
 #' @importFrom stats p.adjust
 #' @export
@@ -26,7 +26,7 @@ lefse <- function(ps, tax_rank, class, p_cutoff = 0.05, lda_cutoff = 2) {
   if (taxa_are_rows(otus)) {
     otus <- t(otus)
   }
-  otus <- as_tibble(otus@.Data, rownames = NA)
+  otus <- tibble::as_tibble(otus@.Data, rownames = NA)
 
   # kw rank sum test among classes
   kw_p <- map_dbl(otus, ~ kruskal.test(.x, class)$p.value)

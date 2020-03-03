@@ -1,13 +1,14 @@
 #' lefse bar plot
 #'
 #' @param lefse_out data frame, out of \code{\link{lefse}}
-#' @param lda_threshold threshold of lda score, features whose lda score is less
+#' @param lda_threshold numberic, threshold of lda score, features whose lda score is less
+#'   than, default is 2
 #' then it will not be plotted
 #' @import ggplot2
 #' @importFrom dplyr arrange mutate desc
 #' @return a ggplot project
 #' @export
-lefse_barplot <- function(lefse_out, lda_threshold) {
+lefse_barplot <- function(lefse_out, lda_threshold = 2) {
   lefse_out_arranged <- arrange(lefse_out,enrich_group, desc(lda_score)) %>%
     mutate(otu = factor(otu, levels = otu))
 

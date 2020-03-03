@@ -4,12 +4,13 @@
 \alias{lefse_barplot}
 \title{lefse bar plot}
 \usage{
-lefse_barplot(lefse_out, lda_threshold)
+lefse_barplot(lefse_out, lda_threshold = 2)
 }
 \arguments{
 \item{lefse_out}{data frame, out of \code{\link{lefse}}}
 
-\item{lda_threshold}{threshold of lda score, features whose lda score is less
+\item{lda_threshold}{numberic, threshold of lda score, features whose lda score is less
+  than, default is 2
 then it will not be plotted}
 }
 \value{
