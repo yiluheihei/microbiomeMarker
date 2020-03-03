@@ -16,13 +16,13 @@ knitr::opts_chunk$set(
 # microbiomeMarker
 
 <!-- badges: start -->
+[![R build status](https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check/badge.svg)](https://github.com/yiluheihei/microbiomeMarker/actions)
 <!-- badges: end -->
 
 The goal of microbiomeMarker is to dicovery microbiome biomarker.
 
 ## TODO
 
-- geom_lefse_res
-- geom_lefse_cladogram
+- plot_lefse_cladogram
 
 

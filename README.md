@@ -5,11 +5,12 @@
 
 <!-- badges: start -->
 
+[![R build
+status](https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check/badge.svg)](https://github.com/yiluheihei/microbiomeMarker/actions)
 <!-- badges: end -->
 
 The goal of microbiomeMarker is to dicovery microbiome biomarker.
 
 ## TODO
 
-  - geom\_lefse\_res
-  - geom\_lefse\_cladogram
+  - plot\_lefse\_cladogram
