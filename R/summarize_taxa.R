@@ -13,7 +13,8 @@
 #' the taxa abunance of each sample
 #' @export
 
-summarize_taxa <- function(ps, level = 7, absolute = FALSE, sep = "|") {
+summarize_taxa <- function(ps,
+                           level = 7, absolute = FALSE, sep = "|") {
   res <- purrr::map(
     1:level,
     ~.summarize_taxa_level(
@@ -30,9 +31,18 @@ summarize_taxa <- function(ps, level = 7, absolute = FALSE, sep = "|") {
 
 #' Summarize the taxa for the specific rank
 #' @noRd
-.summarize_taxa_level <- function(ps, rank = 6, absolute = FALSE, sep = "|") {
+.summarize_taxa_level <- function(ps,
+                                  rank = 6,
+                                  norm = 1000000,
+                                  absolute = FALSE,
+                                  sep = "|") {
   if (!absolute) {
     ps <- microbiome::transform(ps, "compositional")
+  }
+
+  # norm the abundance data
+  if (norm > 0) {
+    ps@otu_table <- ps@otu_table*norm
   }
 
   otus <- otu_table(ps)
@@ -72,4 +82,4 @@ summarize_taxa <- function(ps, level = 7, absolute = FALSE, sep = "|") {
 
 # suppress the checking notes “no visible binding for global variable", which is
 # caused by NSE
-utils::globalVariables(c(".", "taxa"))
+utils::globalVariables(c(".", "taxa", "as_tibble"))
