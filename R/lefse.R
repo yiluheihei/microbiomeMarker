@@ -3,9 +3,10 @@
 #' Perform Metagenomic LEFSe analysis based on phyloseq object.
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object
-#' @param tax_rank character, rank level
 #' @param class character, the column name to specify the class
 #' @param p_cutoff numeric, p value cutoff, default 0.05
+#' @param norm norm set the normalization value
+#' @param method otu or summarized taxa
 #' @param lda_cutoff numeric, lda score cutoff, default 2
 #' @importFrom  dplyr mutate filter arrange rowwise select
 #' @importFrom  purrr map_dbl pmap_dbl pmap_chr
@@ -14,19 +15,35 @@
 #' @author Yang Cao \email{yiluheihei@gmail.com}
 #' @references Segata, Nicola, et al. Metagenomic biomarker discovery and
 #' explanation. Genome biology 12.6 (2011): R60.
-lefse <- function(ps, tax_rank, class, p_cutoff = 0.05, lda_cutoff = 2) {
+lefse <- function(ps,
+                  class,
+                  norm = 1000000,
+                  method = c("otu", "summarized_taxa"),
+                  p_cutoff = 0.05,
+                  lda_cutoff = 2) {
   if (!inherits(ps, "phyloseq")) {
     stop("`ps` must be phyloseq object")
   }
 
+  method <- match.arg(method)
+
   sample_meta <- sample_data(ps)
   class <- sample_meta[[class]]
 
-  otus <- otu_table(ps)
-  if (taxa_are_rows(otus)) {
-    otus <- t(otus)
+  if (method == "otu") {
+    otus <- otu_table(ps)
+    if (taxa_are_rows(otus)) {
+      otus <- t(otus)
+    }
+    otus <- tibble::as_tibble(otus@.Data, rownames = NA)
+  } else {
+    otus <- summarize_taxa(ps, norm = norm) %>%
+      t()
+    taxa <- otus[1, ]
+    otus <- tibble::as_tibble(otus, .name_repair = "unique")
+    names(otus) <- taxa
+    otus <- dplyr::slice(otus, -1)
   }
-  otus <- tibble::as_tibble(otus@.Data, rownames = NA)
 
   # kw rank sum test among classes
   kw_p <- map_dbl(otus, ~ kruskal.test(.x, class)$p.value)
@@ -35,13 +52,13 @@ lefse <- function(ps, tax_rank, class, p_cutoff = 0.05, lda_cutoff = 2) {
   # wilcoxon rank sum test is not preformed if there is no subclass
 
   # lda analysis
-  lda_res <- MASS::lda(class~., data = otus)
+  lda_res <- MASS::lda(class ~ ., data = otus)
 
   # dplyr verbs drop the row names automatically, otu_id is saved and added after
   # dplyr manipulation complete
   otu_id <- colnames(lda_res$means)
   lda_mean <- t(lda_res$means) %>%
-    as_tibble()
+    tibble::as_tibble()
 
   lda_max <- pmap_dbl(lda_mean, max)
   lda_min <- pmap_dbl(lda_mean, min)

@@ -4,14 +4,23 @@
 \alias{lefse}
 \title{Liner discriminant analysis (LDA) effect size (LEFSe) analysis}
 \usage{
-lefse(ps, tax_rank, class, p_cutoff = 0.05, lda_cutoff = 2)
+lefse(
+  ps,
+  class,
+  norm = 1e+06,
+  method = c("otu", "summarized_taxa"),
+  p_cutoff = 0.05,
+  lda_cutoff = 2
+)
 }
 \arguments{
 \item{ps}{a \code{\link[phyloseq]{phyloseq-class}} object}
 
-\item{tax_rank}{character, rank level}
-
 \item{class}{character, the column name to specify the class}
+
+\item{norm}{norm set the normalization value}
+
+\item{method}{otu or summarized taxa}
 
 \item{p_cutoff}{numeric, p value cutoff, default 0.05}
 

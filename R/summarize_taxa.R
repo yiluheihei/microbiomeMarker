@@ -5,6 +5,7 @@
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object.
 #' @param level integer, taxonomic level to summarize by, default 7.
+#' @param norm set the normalization value
 #' @param absolute logical, whether return the absolute abundance or not, default
 #' FALSE.
 #' @param sep a character string to separate the taxonomic levels.
@@ -14,17 +15,20 @@
 #' @export
 
 summarize_taxa <- function(ps,
-                           level = 7, absolute = FALSE, sep = "|") {
-  res <- purrr::map(
+                           level = 7,
+                           norm = 1000000,
+                           absolute = FALSE,
+                           sep = "|") {
+  res <- purrr::map_dfr(
     1:level,
     ~.summarize_taxa_level(
       ps,
       rank = .x,
+      norm = norm,
       absolute = absolute,
       sep = sep
     )
-  ) %>%
-    dplyr::bind_rows()
+  )
 
   res
 }
