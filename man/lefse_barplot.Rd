@@ -10,7 +10,7 @@ lefse_barplot(lefse_out, lda_threshold = 2)
 \item{lefse_out}{data frame, out of \code{\link{lefse}}}
 
 \item{lda_threshold}{numberic, threshold of lda score, features whose lda score is less
-  than, default is 2
+than, default is 2
 then it will not be plotted}
 }
 \value{

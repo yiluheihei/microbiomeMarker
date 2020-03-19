@@ -1,7 +1,7 @@
-# Human Moving Picture from MicrobiomeAnalyst server ----------------------
-
 library(MicrobiomeAnalystR)
 library(phyloseq)
+library(magrittr)
+# Human Moving Picture from MicrobiomeAnalyst server ----------------------
 
 download.file("https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/treebiom.zip",
   "data-raw/caporaso.zip"
@@ -22,6 +22,7 @@ sampledata <- read.delim("data-raw/caporaso/map.txt", row.names = 1) %>%
 caporaso_phyloseq <- merge_phyloseq(ps, sampledata)
 
 usethis::use_data(caporaso_phyloseq, overwrite = TRUE)
+unlink("data-raw/cap*", recursive = TRUE)
 
 
 # cid data from github.com/ying14/yingtools2 ------------------------------
@@ -31,3 +32,28 @@ download.file(
 )
 load("data-raw/cid.phy.rda")
 usethis::use_data(cid.phy, overwrite = TRUE)
+unlink("data-raw/cid*")
+
+# pediatric ibd -----------------------------------------------------------
+
+# https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/ibd_data.zip
+download.file(
+  "https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/ibd_data.zip",
+  "data-raw/pediatric_idb.zip"
+)
+unzip("data-raw/pediatric_idb.zip", exdir = "data-raw/")
+asv_abundance <- readr::read_tsv("data-raw/ibd_data/IBD_data/ibd_asv_table.txt") %>%
+  tibble::column_to_rownames("#NAME")
+asv_table <- readr::read_tsv("data-raw/ibd_data/IBD_data/ibd_taxa.txt") %>%
+  tibble::column_to_rownames("#TAXONOMY")
+sample_table <- readr::read_csv("data-raw/ibd_data/IBD_data/ibd_meta.csv")
+merge_phyloseq(otu_asv_abundance, asv_table, sample_table)
+pediatric_ibd <- phyloseq(
+  otu_table(asv_abundance, taxa_are_rows = TRUE),
+  tax_table(as.matrix(asv_table))
+)
+tree <- read_tree(treefile = "data-raw/ibd_data/IBD_data/ibd_tree.tre")
+phy_tree(pediatric_ibd) <- tree
+usethis::use_data(pediatric_ibd, overwrite = TRUE)
+unlink("data-raw/ibd_data", recursive = TRUE)
+unlink("data-raw/pediatric_idb.zip")
