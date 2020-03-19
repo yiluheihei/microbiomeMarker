@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "yiluheihei@gmail.com")
 Description: microbiome biomarker analysis.
-License: Artistic-2.0
+License: GPL-3
 URL: https://github.com/yiluheihei/microbiomeMarker
 BugReports: https://github.com/yiluheihei/microbiomeMarker/issues
 Imports: 
