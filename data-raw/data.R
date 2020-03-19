@@ -46,11 +46,12 @@ asv_abundance <- readr::read_tsv("data-raw/ibd_data/IBD_data/ibd_asv_table.txt")
   tibble::column_to_rownames("#NAME")
 asv_table <- readr::read_tsv("data-raw/ibd_data/IBD_data/ibd_taxa.txt") %>%
   tibble::column_to_rownames("#TAXONOMY")
-sample_table <- readr::read_csv("data-raw/ibd_data/IBD_data/ibd_meta.csv")
-merge_phyloseq(otu_asv_abundance, asv_table, sample_table)
+sample_table <- readr::read_csv("data-raw/ibd_data/IBD_data/ibd_meta.csv") %>%
+  tibble::column_to_rownames("#NAME")
 pediatric_ibd <- phyloseq(
   otu_table(asv_abundance, taxa_are_rows = TRUE),
-  tax_table(as.matrix(asv_table))
+  tax_table(as.matrix(asv_table)),
+  sample_data(sample_table)
 )
 tree <- read_tree(treefile = "data-raw/ibd_data/IBD_data/ibd_tree.tre")
 phy_tree(pediatric_ibd) <- tree
