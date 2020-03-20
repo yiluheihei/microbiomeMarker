@@ -21,7 +21,8 @@ Imports:
     tibble,
     microbiome,
     rlang
-Remotes: microbiome/microbiome
+Remotes: 
+    microbiome/microbiome,
     tidyverse/dplyr
 Encoding: UTF-8
 LazyData: true
