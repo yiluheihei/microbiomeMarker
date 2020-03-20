@@ -8,9 +8,10 @@ lefse(
   ps,
   class,
   norm = 1e+06,
-  method = c("otu", "summarized_taxa"),
+  by_otu = FALSE,
   p_cutoff = 0.05,
-  lda_cutoff = 2
+  lda_cutoff = 2,
+  correct_p = FALSE
 )
 }
 \arguments{
@@ -20,11 +21,13 @@ lefse(
 
 \item{norm}{norm set the normalization value}
 
-\item{method}{otu or summarized taxa}
+\item{by_otu}{by otu or summarized taxa, default false}
 
 \item{p_cutoff}{numeric, p value cutoff, default 0.05}
 
 \item{lda_cutoff}{numeric, lda score cutoff, default 2}
+
+\item{correct_p}{use corrected p value (fdr) or not, default false}
 }
 \description{
 Perform Metagenomic LEFSe analysis based on phyloseq object.

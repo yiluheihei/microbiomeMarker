@@ -9,10 +9,18 @@
 #' @return a ggplot project
 #' @export
 lefse_barplot <- function(lefse_out, lda_threshold = 2) {
-  lefse_out_arranged <- arrange(lefse_out,enrich_group, desc(lda_score)) %>%
-    mutate(otu = factor(otu, levels = otu))
+  lefse_out_arranged <- arrange(
+    lefse_out,
+    .data$enrich_group,
+    desc(.data$lda_score)
+  ) %>%
+    mutate(otu = factor(.data$otu, levels = .data$otu))
 
-  p <- ggplot(lefse_out_arranged, aes(otu, lda_score, fill = enrich_group)) +
+  p <-
+    ggplot(
+      lefse_out_arranged,
+      aes(.data$otu, .data$lda_score, fill = .data$enrich_group)
+    ) +
     geom_col() +
     labs(x = "Features", y = "LDA score", fill = NULL) +
     scale_x_discrete(limits = rev(lefse_out_arranged$otu)) +
@@ -26,4 +34,4 @@ lefse_barplot <- function(lefse_out, lda_threshold = 2) {
 
 # suppress the checking notes “no visible binding for global variable", which is
 # caused by NSE
-utils::globalVariables("otu")
+# utils::globalVariables(c("otu", "lda_score"))

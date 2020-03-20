@@ -8,7 +8,7 @@
 #' @param norm norm set the normalization value
 #' @param by_otu by otu or summarized taxa, default false
 #' @param lda_cutoff numeric, lda score cutoff, default 2
-#' @param correct use corrected p value (fdr) or not, default false
+#' @param correct_p use corrected p value (fdr) or not, default false
 #'
 #' @importFrom  dplyr mutate filter arrange rowwise select
 #' @importFrom  purrr map_dbl pmap_dbl pmap_chr
@@ -23,7 +23,7 @@ lefse <- function(ps,
                   by_otu = FALSE,
                   p_cutoff = 0.05,
                   lda_cutoff = 2,
-                  corrected = FALSE) {
+                  correct_p = FALSE) {
   if (!inherits(ps, "phyloseq")) {
     stop("`ps` must be phyloseq object")
   }
@@ -46,7 +46,7 @@ lefse <- function(ps,
     taxa <- otus[1, ]
     otus <- tibble::as_tibble(otus, .name_repair = "unique")
     names(otus) <- taxa
-    otus <- dplyr::slice(otus, -1) %>%
+    otus <- slice(otus, -1) %>%
       purrr::map_df(as.numeric)
   }
 
@@ -54,54 +54,76 @@ lefse <- function(ps,
   kw_p <- map_dbl(otus, ~ kruskal.test(.x, class)$p.value)
   kw_fdr <- p.adjust(kw_p, method = "fdr")
 
-  if (corrected) {
+  # wilcoxon rank sum test is not preformed if there is no subclass
+
+  if (correct_p) {
     sig_ind <- kw_fdr <= p_cutoff
   } else {
     sig_ind <- kw_p <= p_cutoff
   }
   otus <- otus[, sig_ind]
 
+  otus_enriched_group <- get_feature_enrich_group(class, otus)
+  ldas <- bootstap_lda(
+    otus,
+    boot_n = 30,
+    class = class,
+    sample_fract = 0.67
+  )
 
-  # wilcoxon rank sum test is not preformed if there is no subclass
+  res <- data.frame(
+    feature = names(otus),
+    group = otus_enriched_group$group,
+    log_max_mean = otus_enriched_group$log_max_mean,
+    lda = ldas,
+    p_value = kw_p[sig_ind],
+    fdr = kw_fdr[sig_ind],
+    stringsAsFactors = FALSE
+  )
+  res <- filter(res, .data$lda >= lda_cutoff)
+
+  res
+
 
   # lda analysis
-  lda_res <- MASS::lda(
-    class ~ .,
-    data = otus,
-    tol = 1.0e-10
-  )
+  # lda_res <- MASS::lda(
+  #   class ~ .,
+  #   data = otus,
+  #   tol = 1.0e-10
+  # )
 
   # dplyr verbs drop the row names automatically, otu_id is saved and added after
   # dplyr manipulation complete
-  otu_id <- colnames(lda_res$means)
-  lda_mean <- t(lda_res$means) %>%
-    tibble::as_tibble()
+  # otu_id <- colnames(lda_res$means)
+  # lda_mean <- t(lda_res$means) %>%
+  #   tibble::as_tibble()
+  #
+  # lda_max <- pmap_dbl(lda_mean, max)
+  # lda_min <- pmap_dbl(lda_mean, min)
+  # enriched <- pmap_chr(lda_mean, enrich_group)
+  #
+  # lda_mean <- mutate(lda_mean, max = lda_max, min = lda_min) %>%
+  #   mutate(lda_score = signif(log10(1 + abs(max - min)/2), digits = 5)) %>%
+  #   mutate(p_value = kw_p[sig_ind], fdr = kw_fdr[sig_ind], enrich_group = enriched) %>%
+  #   mutate(otu = gsub("`", "", otu_id))# by default, as_tibble add ` around invalid names
+  #
+  # # significant feature,  order result by lda_score
+  # sig_feature <- filter(lda_mean, lda_score >= lda_cutoff) %>%
+  #   arrange(desc(lda_score))
 
-  lda_max <- pmap_dbl(lda_mean, max)
-  lda_min <- pmap_dbl(lda_mean, min)
-  enriched <- pmap_chr(lda_mean, enrich_group)
-
-  lda_mean <- mutate(lda_mean, max = lda_max, min = lda_min) %>%
-    mutate(lda_score = signif(log10(1 + abs(max - min)/2), digits = 5)) %>%
-    mutate(p_value = kw_p[sig_ind], fdr = kw_fdr[sig_ind], enrich_group = enriched) %>%
-    mutate(otu = gsub("`", "", otu_id))# by default, as_tibble add ` around invalid names
-
-  # significant feature,  order result by lda_score
-  sig_feature <- filter(lda_mean, lda_score >= lda_cutoff) %>%
-    arrange(desc(lda_score))
-
-  sig_feature
+  # sig_feature
 }
-
-# suppress the checking notes “no visible binding for global variable", which is
-# caused by NSE
-utils::globalVariables(c("fdr", "lda_score", "desc"))
 
 #' helper function to extract enrich group
 #' @noRd
-enrich_group <- function(...) {
-  lda_mean <- c(...)
-  group_name <- names(lda_mean)
+# enrich_group <- function(...) {
+#   lda_mean <- c(...)
+#   group_name <- names(lda_mean)
+#
+#   group_name[which.max(lda_mean)]
+# }
 
-  group_name[which.max(lda_mean)]
-}
+# suppress the checking notes “no visible binding for global variable", which is
+# caused by NSE
+# use rlang:.data
+# utils::globalVariables(c("lda"))

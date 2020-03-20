@@ -12,8 +12,8 @@ readr::write_tsv(lefse_in, "dev_test/lefse/lefse_in.tsv")
 
 # filter enrich taxa
 lefse_out <- readr::read_tsv("dev_test/lefse/lefse_out.tsv") %>%
-  dplyr::filter(!is.na(X3)) %>%
-  dplyr::mutate(X3 = sub(" ", "_", X3))
+  filter(!is.na(X3)) %>%
+  mutate(X3 = sub(" ", "_", X3))
 readr::write_tsv(
   lefse_out,
   "dev_test/lefse/lefse_out_filterd.tsv",

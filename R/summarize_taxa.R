@@ -60,14 +60,14 @@ summarize_taxa <- function(ps,
     purrr::pmap_chr(paste, sep = sep)
   otus_extend$consensus <- consensus
 
-  taxa_summarized <- dplyr::group_split(otus_extend, consensus) %>%
+  taxa_summarized <- group_split(otus_extend, consensus) %>%
     purrr::map(.sum_consensus) %>%
     do.call(rbind, .)
   # filter taxa of which abundance is zero
   ind <- rowSums(taxa_summarized) != 0
   taxa_summarized <- taxa_summarized[ind, ] %>%
     tibble::rownames_to_column(var = "taxa") %>%
-    dplyr::arrange(taxa)
+    arrange(taxa)
 
   taxa_summarized
 }
