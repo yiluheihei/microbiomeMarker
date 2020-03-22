@@ -76,7 +76,9 @@ check_bootstrap_sample <- function(feature_abudance,
 bootstap_lda <- function(feature_abundance,
                          boot_n,
                          class,
-                         sample_fract) {
+                         sample_fract,
+                         seed = 2020) {
+  set.seed(seed)
   ldas <- purrr::rerun(
     boot_n,
     bootstap_lda_one(
