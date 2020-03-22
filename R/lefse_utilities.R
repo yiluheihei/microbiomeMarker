@@ -237,11 +237,6 @@ preprocess_feature <- function(x) {
 #'   Curtis's approach, defalt `FALSE`
 #'
 #' @noRd
-feats_abd <- readr::read_csv("~/Desktop/feats.csv", col_names = FALSE) %>%
-  unlist()
-feats_name <- "k__Bacteria.p__Firmicutes.c__Clostridia.o__Clostridiales.f__Clostridiaceae.g__Clostridium.NA"
-subcls <- c(rep("CD_subcl", 23), rep("Control_subcl", 20))
-cls_hie <- list(Control = "Control_subcl", CD = "CD_subcl")
 test_rep_wilcoxon <- function(subcls,
                               cls_hie,
                               feats_abd,
