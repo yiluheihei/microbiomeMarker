@@ -20,7 +20,9 @@ Imports:
     ggplot2,
     tibble,
     microbiome,
-    rlang
+    rlang,
+    stats,
+    coin
 Remotes: 
     microbiome/microbiome,
     tidyverse/dplyr

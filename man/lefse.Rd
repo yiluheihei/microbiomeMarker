@@ -8,10 +8,17 @@ lefse(
   ps,
   class,
   norm = 1e+06,
-  by_otu = FALSE,
-  p_cutoff = 0.05,
+  summarized = TRUE,
+  kw_cutoff = 0.05,
   lda_cutoff = 2,
-  correct_p = FALSE
+  bootstrap_n = 30,
+  bootstrap_fraction = 2/3,
+  wilcoxon_cutoff = 0.05,
+  multicls_strat = FALSE,
+  correct = c("0", "1", "2"),
+  sample_min = 10,
+  only_same_subcls = FALSE,
+  curv = FALSE
 )
 }
 \arguments{
@@ -21,13 +28,46 @@ lefse(
 
 \item{norm}{norm set the normalization value}
 
-\item{by_otu}{by otu or summarized taxa, default false}
+\item{summarized}{whether by summarized taxa or feature, default TRUE}
 
-\item{p_cutoff}{numeric, p value cutoff, default 0.05}
+\item{kw_cutoff}{numeric, p value cutoff of kw test, default 0.05}
 
 \item{lda_cutoff}{numeric, lda score cutoff, default 2}
 
-\item{correct_p}{use corrected p value (fdr) or not, default false}
+\item{bootstrap_n}{integer, the number of bootstrap iteration for LDA,
+default 30}
+
+\item{bootstrap_fraction}{numberic, the subsampling fraction value for each
+bootstrap iteration, default \code{2/3}}
+
+\item{wilcoxon_cutoff}{numeric, p value cutoff of wilcoxon test, default 0.05}
+
+\item{multicls_strat}{logical, for multiple class tasks, whether the test is
+performed in a one-against one (more strict) or in a one-against all
+setting, default \code{FALSE}.}
+
+\item{correct}{multiple testing options, 0 for no correction (default), 1 for
+independent comparisons, 2 for independent comparison}
+
+\item{sample_min}{integer, minimum number of samples per subclass for
+performing wilcoxon test, default 10}
+
+\item{only_same_subcls}{logical, whether perform the wilcoxon test only
+among the subclasses with the same name, default \code{FALSE}}
+
+\item{curv}{logical, whether perform the wilcoxon test using the
+Curtis's approach, defalt \code{FALSE}}
+}
+\value{
+a data frame contains five variables:
+\itemize{
+\item \code{feature}, significantly different features.
+\item \code{enrich_group}, the class of the differential features enriched
+\item \code{log_max_mean}, the logarithm value of the highest mean among all the
+classes
+\item \code{lda}, logarithmic LDA score
+\item \code{p_value}, p value of kw test
+}
 }
 \description{
 Perform Metagenomic LEFSe analysis based on phyloseq object.
