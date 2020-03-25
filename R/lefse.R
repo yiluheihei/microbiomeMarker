@@ -64,7 +64,7 @@ lefse <- function(ps,
   ps <- phyloseq_qc(ps)
 
   sample_meta <- sample_data(ps)
-  cls_info <- lefse_format_input(sample_meta, class)
+  cls_info <- lefse_format_class(sample_meta, class)
   cls <- cls_info$cls
   subcls <- cls_info$subcls
   cls_hie <- cls_info$cls_hie
@@ -125,7 +125,7 @@ lefse <- function(ps,
     enrich_group = otus_enriched_group$group,
     log_max_mean = otus_enriched_group$log_max_mean,
     lda = ldas,
-    p_value = kw_p[sig_ind],
+    p_value = kw_p[sig_ind][wilcoxon_p],
     stringsAsFactors = FALSE
   )
   res <- filter(res, .data$lda >= lda_cutoff)
