@@ -6,8 +6,10 @@
 #' @param class character, the column name to specify the class
 #' @param kw_cutoff numeric, p value cutoff of kw test, default 0.05
 #' @param wilcoxon_cutoff numeric, p value cutoff of wilcoxon test, default 0.05
-#' @param norm norm set the normalization value
-#' @param summarized whether by summarized taxa or feature, default TRUE
+#' @param normalization norm set the normalization value
+#' @param summarize one of `TRUE`, `FALSE`, `lefse`, whether summarize the
+#'   taxa (`TRUE` or `FALSE`), or the taxa has been summarized just like the
+#'   input of https://bitbucket.org/nsegata/lefse (`lefse`), default `TRUE`
 #' @param lda_cutoff numeric, lda score cutoff, default 2
 #' @param bootstrap_n integer, the number of bootstrap iteration for LDA,
 #'   default 30
@@ -41,8 +43,8 @@
 #' explanation. Genome biology 12.6 (2011): R60.
 lefse <- function(ps,
                   class,
-                  norm = 1000000,
-                  summarized = TRUE,
+                  normalization = 1000000,
+                  summarize = TRUE,
                   kw_cutoff = 0.05,
                   lda_cutoff = 2,
                   bootstrap_n = 30,
@@ -54,9 +56,11 @@ lefse <- function(ps,
                   only_same_subcls = FALSE,
                   curv = FALSE) {
   if (!inherits(ps, "phyloseq")) {
-    stop("`ps` must be phyloseq object")
+    stop("`ps` must be phyloseq object", call. = FALSE)
   }
-
+  if (!summarize %in% c(TRUE, FALSE, "lefse")) {
+    stop("`summarize must be one of `TRUE`, `FALSE` or `lefse`")
+  }
   correct <- match.arg(correct)
   correct <- as.numeric(correct)
 
@@ -71,21 +75,16 @@ lefse <- function(ps,
 
   # not supported subclass now
 
-  if (!summarized) {
+  if (summarize == "lefse") {
+    otus <- otu_table(ps) %>%
+      add_missing_levels()
+  } else if (!summarize) {
     otus <- otu_table(ps)
-    if (taxa_are_rows(otus)) {
-      otus <- t(otus)
-    }
-    otus <- tibble::as_tibble(otus@.Data, rownames = NA)
   } else {
-    otus <- summarize_taxa(ps, norm = norm) %>%
-      t()
-    taxa <- otus[1, ]
-    otus <- tibble::as_tibble(otus, .name_repair = "unique")
-    names(otus) <- taxa
-    otus <- slice(otus, -1) %>%
-      purrr::map_df(as.numeric)
+    otus <- summarize_taxa(ps)
   }
+  otus <- normalize_feature(otus, normalization = normalization)
+  otus <- as.data.frame(t(otus), stringsAsFactors = FALSE)
 
   # kw rank sum test among classes
   kw_p <- purrr::map_dbl(otus, ~ kruskal.test(.x, cls)$p.value)

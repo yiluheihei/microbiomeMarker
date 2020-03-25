@@ -409,7 +409,7 @@ test_rep_wilcoxon <- function(subcls,
 #' @noRd
 #'
 #' @return  a list, contains class, subclass, and class hierarchy
-lefse_format_input <- function(sample_meta, cls, subcls = NULL) {
+lefse_format_class <- function(sample_meta, cls, subcls = NULL) {
   cls <- sample_meta[[cls]]
   cls_nms <- unique(cls)
 
@@ -417,11 +417,97 @@ lefse_format_input <- function(sample_meta, cls, subcls = NULL) {
     subcls <- paste0(cls, "_subcls")
     subcls_nms <- paste0(cls_nms, "_subcls")
   } else {
-    stop("Not support subcls right now")
+    subcls <- sample_meta[[subcls]]
   }
 
   cls_hie <- as.list(subcls_nms)
   names(cls_hie) <- cls_nms
 
   return(list(cls = cls, subcls = subcls, cls_hie = cls_hie))
+}
+
+#' add missing levels, used for summarized taxa
+#' @param feature feature data, a [phyloseq::otu_table-class]
+#' @noRd
+#' @return a data frame, where taxa in rows
+add_missing_levels <- function(feature) {
+  if (!taxa_are_rows(feature)) {
+    feature <- t(feature)
+  }
+  # feature <- data.frame(feature@.Data, rownames = NA)
+  feature_nms <- row.names(feature)
+  feature <- feature@.Data %>% data.frame()
+
+  # the missing feature names
+  feature_nms2 <-
+    strsplit(feature_nms, "|", fixed = TRUE) %>%
+    purrr::map(
+      ~ Reduce(
+        function(x, y)paste(x, y, sep = "|"),
+        .x,
+        accumulate = TRUE
+      )
+    )
+  unq_nms <- unlist(feature_nms2) %>% unique()
+  missing_nms <- setdiff(unq_nms, feature_nms)
+
+  missing_indx <- purrr::map(
+    missing_nms,
+    function(i) purrr::map_lgl(feature_nms2, ~ i %in% .x) %>%
+      which()
+  )
+  missing_abd <- purrr::map_df(
+    feature,
+    function(i) purrr::map_dbl(missing_indx, ~ sum(i[.x]))
+  )
+
+  res <- rbind(feature, missing_abd)
+  row.names(res) <- c(feature_nms, missing_nms)
+
+  otu_table(res, taxa_are_rows = TRUE)
+}
+
+#' normalize the summarized feature
+#' @param feature otu table or data.frame
+#' @param normalization  set the normalization value
+#' @param hie by otu or summarized
+#' @noRd
+normalize_feature <- function(feature, normalization) {
+  if (inherits(feature, "otu_table")) {
+    if (!taxa_are_rows(feature)) {
+      feature <- t(feature)
+    }
+    feature <- feature@.Data %>% data.frame()
+  }
+  if (is.null(normalization)) {
+    return(feature)
+  }
+
+  feature_split <- strsplit(row.names(feature), "\\|")
+  hie <- ifelse(any(lengths(feature_split) > 1), TRUE, FALSE)
+  if (hie) {
+    single_indx <- which(lengths(feature_split) < 2)
+    abd <- purrr::map_dbl(feature, ~ sum(.x[single_indx]))
+
+    # `sum(abd)` must be greaer than 0 since the missing level is added
+    # if (sum(abd) == 0) {
+    #   abd <- purrr::map_dbl(feature, sum)
+    # }
+  } else {
+    abd <- purrr::map_dbl(feature, sum)
+  }
+  normed_coef <- normalization/abd
+  normed_feature <- purrr::map2_df(
+    feature, normed_coef,
+    function(x, y) {
+      res <- x * y
+      if (mean(res) && sd(res)/mean(res) < 1e-10) {
+        res <- round(res * 1e6)/1e6
+      }
+      res
+    }
+  )
+  row.names(normed_feature) <- row.names(feature)
+
+  normed_feature
 }
