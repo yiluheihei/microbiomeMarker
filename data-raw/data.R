@@ -58,3 +58,41 @@ phy_tree(pediatric_ibd) <- tree
 usethis::use_data(pediatric_ibd, overwrite = TRUE)
 unlink("data-raw/ibd_data", recursive = TRUE)
 unlink("data-raw/pediatric_idb.zip")
+
+
+# oxygen availability -----------------------------------------------------
+# a small subset of the HMP 16S dataset for finding biomarkers characterizing
+# different level of oxygen availability in different bodysites
+
+oxygen_dat <- readr::read_tsv(
+  "http://huttenhower.sph.harvard.edu/webfm_send/129",
+  col_names = FALSE
+)
+
+sample_meta <- dplyr::bind_rows(
+  oxygen_availability	= oxygen_dat[1, ][-1],
+  body_site = oxygen_dat[2, ][-1],
+  subject_id = oxygen_dat[3, ][-1]
+) %>%
+  tibble::rownames_to_column() %>%
+  tidyr::pivot_longer(-rowname) %>%
+  tidyr::pivot_wider(names_from = "rowname", values_from = "value") %>%
+  tibble::column_to_rownames("name")
+tax_dat <- oxygen_dat$X1[-(1:3)]
+
+sample_abd <- dplyr::slice(oxygen_dat, -(1:3)) %>%
+  select(-1) %>%
+  purrr::map_df(as.numeric)
+row.names(sample_abd) <- tax_dat
+
+tax_mat <- as.matrix(tax_dat)
+row.names(tax_mat) <- tax_dat
+colnames(tax_mat) <- "summarized_taxa"
+
+oxygen <- phyloseq(
+  otu_table(sample_abd, taxa_are_rows = TRUE),
+  tax_table(tax_mat),
+  sample_data(sample_meta)
+)
+
+usethis::use_data(oxygen, overwrite = TRUE)
