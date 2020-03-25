@@ -3,7 +3,8 @@
 #' Perform Metagenomic LEFSe analysis based on phyloseq object.
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object
-#' @param class character, the column name to specify the class
+#' @param class character, the column name to set the class
+#' @param subclass character, the varibale name to set the subclass
 #' @param kw_cutoff numeric, p value cutoff of kw test, default 0.05
 #' @param wilcoxon_cutoff numeric, p value cutoff of wilcoxon test, default 0.05
 #' @param normalization norm set the normalization value
@@ -43,6 +44,7 @@
 #' explanation. Genome biology 12.6 (2011): R60.
 lefse <- function(ps,
                   class,
+                  subclass = NULL,
                   normalization = 1000000,
                   summarize = TRUE,
                   kw_cutoff = 0.05,
@@ -68,7 +70,7 @@ lefse <- function(ps,
   ps <- phyloseq_qc(ps)
 
   sample_meta <- sample_data(ps)
-  cls_info <- lefse_format_class(sample_meta, class)
+  cls_info <- lefse_format_class(sample_meta, class, subcls = subclass)
   cls <- cls_info$cls
   subcls <- cls_info$subcls
   cls_hie <- cls_info$cls_hie

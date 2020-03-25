@@ -38,11 +38,14 @@ get_feature_enrich_group <- function(class, feature) {
 #' @param class character vector, class of all samples
 #'
 #' @noRd
-check_bootstrap_sample <- function(feature_abudance,
+check_bootstrap_sample <- function(feature_abundance,
                                    sample_indx,
                                    sample_min,
                                    class) {
-  feature_abudance <- feature_abudance[, sample_indx]
+  if ("class" %in% names(feature_abundance)) {
+    feature_abundance$class <- NULL
+  }
+  feature_abundance <- feature_abundance[sample_indx, ]
   class_n <- length(unique(class))
   class <- class[sample_indx]
 
@@ -56,10 +59,10 @@ check_bootstrap_sample <- function(feature_abudance,
     }
 
     # sig feature smaller than min sample count
-    cls_abundance <- feature_abudance[, class == cls]
+    cls_abundance <- feature_abundance[class == cls, ]
 
-    for (i in seq_along(nrow(cls_abundance))) {
-      unique_abd <- length(unique(cls_abundance[i, ]))
+    for (i in seq_along(ncol(cls_abundance))) {
+      unique_abd <- length(unique(cls_abundance[[i]]))
 
       if ((unique_abd <= sample_min && sample_min > 1) || (unique_abd <= 1 && sample_min == 1)) {
         return(FALSE)
@@ -103,7 +106,6 @@ bootstap_lda_one <- function(feature_abundance,
   sample_groups <- unique(class)
   class_count <- table(class)
   feature_abundance$class <- class
-
   feature_abundance <- preprocess_feature_all(feature_abundance, class)
 
   sample_n <- nrow(feature_abundance)
@@ -415,13 +417,12 @@ lefse_format_class <- function(sample_meta, cls, subcls = NULL) {
 
   if (is.null(subcls)) {
     subcls <- paste0(cls, "_subcls")
-    subcls_nms <- paste0(cls_nms, "_subcls")
   } else {
     subcls <- sample_meta[[subcls]]
   }
 
-  cls_hie <- as.list(subcls_nms)
-  names(cls_hie) <- cls_nms
+  cls_hie <- split(subcls, cls) %>%
+    purrr::map(unique)
 
   return(list(cls = cls, subcls = subcls, cls_hie = cls_hie))
 }
