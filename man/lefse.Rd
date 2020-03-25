@@ -7,8 +7,8 @@
 lefse(
   ps,
   class,
-  norm = 1e+06,
-  summarized = TRUE,
+  normalization = 1e+06,
+  summarize = TRUE,
   kw_cutoff = 0.05,
   lda_cutoff = 2,
   bootstrap_n = 30,
@@ -26,9 +26,11 @@ lefse(
 
 \item{class}{character, the column name to specify the class}
 
-\item{norm}{norm set the normalization value}
+\item{normalization}{norm set the normalization value}
 
-\item{summarized}{whether by summarized taxa or feature, default TRUE}
+\item{summarize}{one of \code{TRUE}, \code{FALSE}, \code{lefse}, whether summarize the
+taxa (\code{TRUE} or \code{FALSE}), or the taxa has been summarized just like the
+input of https://bitbucket.org/nsegata/lefse (\code{lefse}), default \code{TRUE}}
 
 \item{kw_cutoff}{numeric, p value cutoff of kw test, default 0.05}
 

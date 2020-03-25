@@ -5,7 +5,6 @@
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object.
 #' @param level integer, taxonomic level to summarize by, default 7.
-#' @param norm set the normalization value
 #' @param absolute logical, whether return the absolute abundance or
 #'   relative abundance, default `FALSE`
 #' FALSE.
@@ -59,8 +58,8 @@ summarize_taxa <- function(ps,
   otus_extend$consensus <- consensus
 
   taxa_summarized <- group_split(otus_extend, consensus) %>%
-    purrr::map(.sum_consensus) %>%
-    do.call(rbind, .)
+    purrr::map(.sum_consensus)
+  taxa_summarized <- do.call(rbind, taxa_summarized)
   # filter taxa of which abundance is zero
   ind <- rowSums(taxa_summarized) != 0
   taxa_summarized <- taxa_summarized[ind, ]

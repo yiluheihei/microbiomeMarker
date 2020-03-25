@@ -501,7 +501,7 @@ normalize_feature <- function(feature, normalization) {
     feature, normed_coef,
     function(x, y) {
       res <- x * y
-      if (mean(res) && sd(res)/mean(res) < 1e-10) {
+      if (mean(res) && stats::sd(res)/mean(res) < 1e-10) {
         res <- round(res * 1e6)/1e6
       }
       res

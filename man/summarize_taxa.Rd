@@ -4,16 +4,15 @@
 \alias{summarize_taxa}
 \title{Summarize taxa into a taxonomic level within each sample}
 \usage{
-summarize_taxa(ps, level = 7, norm = 1e+06, absolute = FALSE, sep = "|")
+summarize_taxa(ps, level = 7, absolute = FALSE, sep = "|")
 }
 \arguments{
 \item{ps}{a \code{\link[phyloseq]{phyloseq-class}} object.}
 
 \item{level}{integer, taxonomic level to summarize by, default 7.}
 
-\item{norm}{set the normalization value}
-
-\item{absolute}{logical, whether return the absolute abundance or not, default
+\item{absolute}{logical, whether return the absolute abundance or
+relative abundance, default \code{FALSE}
 FALSE.}
 
 \item{sep}{a character string to separate the taxonomic levels.}
