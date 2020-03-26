@@ -4,11 +4,16 @@
 #' @noRd
 get_feature_enrich_group <- function(class, feature) {
   feature$class <- class
+
+  # not use dev version of dplyr: cur_data()
+  # feature_mean <- group_by(feature, class) %>%
+  #   summarise(colMeans(cur_data(), ) %>% bind_rows())
   feature_mean <- group_by(feature, class) %>%
-    summarise(colMeans(cur_data(), ) %>% bind_rows())
+    group_modify(~ purrr::map_df(.x, mean)) %>%
+    ungroup()
+
   feature_enrich_index <- select(feature_mean, -class) %>%
     purrr::map_dbl(which.max)
-
   feature_enrich_group <- feature_mean$class[feature_enrich_index]
   names(feature_enrich_group) <- names(feature)[names(feature) != "class"]
   feature_max_mean <- purrr::map2_dbl(
@@ -74,7 +79,6 @@ check_bootstrap_sample <- function(feature_abundance,
 }
 
 #' bootstrap iteration of samples for lda analysis
-#' @importFrom dplyr group_by summarize cur_data
 #' @noRd
 bootstap_lda <- function(feature_abundance,
                          boot_n,
@@ -91,7 +95,7 @@ bootstap_lda <- function(feature_abundance,
     )
   ) %>%
     purrr::transpose() %>%
-    purrr::map(bind_rows) %>%
+    purrr::map(~ do.call(bind_rows, .x)) %>%
     bind_rows()
 
   mean_lds <- colMeans(ldas)
@@ -202,11 +206,15 @@ cal_pair_lda <- function(feature_abundance,
 #' feature abundance preprocess
 #' @noRd
 preprocess_feature_all <- function(x, class) {
-  res <- group_by(
-    x,
-    class
-  ) %>%
-    summarise(purrr::map_df(cur_data(), preprocess_feature))
+  # not dev version of dplyr: cur_data
+  # res <- group_by(
+  #   x,
+  #   class
+  # ) %>%
+  #   summarise(purrr::map_df(cur_data(), preprocess_feature))
+  res <- group_by(x, class) %>%
+    group_modify(~ purrr::map_df(.x, preprocess_feature)) %>%
+    ungroup()
 
   res
 }
