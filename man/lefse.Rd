@@ -7,6 +7,7 @@
 lefse(
   ps,
   class,
+  subclass = NULL,
   normalization = 1e+06,
   summarize = TRUE,
   kw_cutoff = 0.05,
@@ -24,7 +25,9 @@ lefse(
 \arguments{
 \item{ps}{a \code{\link[phyloseq]{phyloseq-class}} object}
 
-\item{class}{character, the column name to specify the class}
+\item{class}{character, the column name to set the class}
+
+\item{subclass}{character, the varibale name to set the subclass}
 
 \item{normalization}{norm set the normalization value}
 

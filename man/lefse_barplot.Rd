@@ -4,14 +4,24 @@
 \alias{lefse_barplot}
 \title{lefse bar plot}
 \usage{
-lefse_barplot(lefse_out, lda_threshold = 2)
+lefse_barplot(
+  lefse_out,
+  label_level = 1,
+  max_label_len = 60,
+  direction = c("h", "v")
+)
 }
 \arguments{
 \item{lefse_out}{data frame, out of \code{\link{lefse}}}
 
-\item{lda_threshold}{numberic, threshold of lda score, features whose lda score is less
-than, default is 2
-then it will not be plotted}
+\item{label_level}{integer, number of label levels to be displayed, default
+\code{1}, \code{0} means display the full name of the feature}
+
+\item{max_label_len}{integer, maximum number of characters of feature labels,
+default \code{60}}
+
+\item{direction}{the direction of bar, horizontal (\code{h}) or vertical (\code{v}),
+default \code{h}}
 }
 \value{
 a ggplot project

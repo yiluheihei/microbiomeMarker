@@ -6,7 +6,7 @@
 #' @docType package
 #' @name microbiomeMarker
 #' @importFrom dplyr %>% group_by summarise filter cur_data select bind_rows
-#'   group_split arrange slice mutate
+#' group_split arrange slice mutate desc
 #' @import phyloseq
 #' @importFrom rlang .data
 NULL

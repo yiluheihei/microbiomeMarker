@@ -129,7 +129,8 @@ lefse <- function(ps,
     p_value = kw_p[sig_ind][wilcoxon_p],
     stringsAsFactors = FALSE
   )
-  res <- filter(res, .data$lda >= lda_cutoff)
+  res <- filter(res, .data$lda >= lda_cutoff) %>%
+    arrange(.data$enrich_group, desc(.data$lda))
 
   res
 }
