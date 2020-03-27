@@ -1,0 +1,104 @@
+                                                                                         feature
+1                                                                        Bacteria|Actinobacteria
+2                                                         Bacteria|Actinobacteria|Actinobacteria
+3                                         Bacteria|Actinobacteria|Actinobacteria|Actinomycetales
+4                    Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Propionibacteriaceae
+5  Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Propionibacteriaceae|Propionibacterium
+6                      Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Corynebacteriaceae
+7      Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Corynebacteriaceae|Corynebacterium
+8                                                         Bacteria|Firmicutes|Bacilli|Bacillales
+9                                       Bacteria|Firmicutes|Bacilli|Bacillales|Staphylococcaceae
+10                       Bacteria|Firmicutes|Bacilli|Bacillales|Staphylococcaceae|Staphylococcus
+11                                Bacteria|Firmicutes|Clostridia|Clostridiales|Incertae_Sedis_XI
+12                                   Bacteria|Proteobacteria|Gammaproteobacteria|Pseudomonadales
+13                   Bacteria|Firmicutes|Clostridia|Clostridiales|Incertae_Sedis_XI|Anaerococcus
+14                                                            Bacteria|Bacteroidetes|Bacteroidia
+15                                              Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales
+16                                                                        Bacteria|Bacteroidetes
+17                   Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Bacteroidaceae|Bacteroides
+18                               Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Bacteroidaceae
+19                                                                Bacteria|Firmicutes|Clostridia
+20                                                  Bacteria|Firmicutes|Clostridia|Clostridiales
+21                                  Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae
+22                           Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Porphyromonadaceae
+23           Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Porphyromonadaceae|Parabacteroides
+24                                Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Rikenellaceae
+25                      Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Rikenellaceae|Alistipes
+26                                  Bacteria|Firmicutes|Clostridia|Clostridiales|Lachnospiraceae
+27                 Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae|Faecalibacterium
+28                     Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae|Ruminococcus
+29                    Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae|Oscillibacter
+30                        Bacteria|Firmicutes|Clostridia|Clostridiales|Lachnospiraceae|Roseburia
+31            Bacteria|Firmicutes|Clostridia|Clostridiales|Veillonellaceae|Phascolarctobacterium
+32                     Bacteria|Proteobacteria|Betaproteobacteria|Burkholderiales|Alcaligenaceae
+33                                    Bacteria|Proteobacteria|Betaproteobacteria|Burkholderiales
+34      Bacteria|Proteobacteria|Betaproteobacteria|Burkholderiales|Alcaligenaceae|Parasutterella
+35                      Bacteria|Firmicutes|Clostridia|Clostridiales|Lachnospiraceae|Coprococcus
+36                               Bacteria|Firmicutes|Clostridia|Clostridiales|Incertae_Sedis_XIV
+37                       Bacteria|Firmicutes|Clostridia|Clostridiales|Incertae_Sedis_XIV|Blautia
+38                  Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae|Subdoligranulum
+39                                                           Bacteria|Firmicutes|Erysipelotrichi
+40                                        Bacteria|Firmicutes|Erysipelotrichi|Erysipelotrichales
+41                            Bacteria|Firmicutes|Clostridia|Clostridiales|Lachnospiraceae|Dorea
+42                    Bacteria|Firmicutes|Erysipelotrichi|Erysipelotrichales|Erysipelotrichaceae
+43      Bacteria|Firmicutes|Erysipelotrichi|Erysipelotrichales|Erysipelotrichaceae|Coprobacillus
+44                      Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae|Sporobacter
+45                   Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae|Butyricicoccus
+46                    Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae|Anaerotruncus
+47                     Bacteria|Firmicutes|Clostridia|Clostridiales|Lachnospiraceae|Anaerostipes
+48                                                                   Bacteria|Firmicutes|Bacilli
+49                                                   Bacteria|Firmicutes|Bacilli|Lactobacillales
+50                                                                           Bacteria|Firmicutes
+51                       Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Actinomycetaceae
+   enrich_group log_max_mean      lda      p_value
+1       High_O2     6.426614 6.269562 4.148229e-09
+2       High_O2     5.826868 5.669547 4.148229e-09
+3       High_O2     5.826094 5.669062 3.841252e-09
+4       High_O2     5.697155 5.548285 9.483488e-10
+5       High_O2     5.697009 5.548188 1.034228e-09
+6       High_O2     5.199462 5.018344 1.944852e-06
+7       High_O2     5.199323 5.018242 1.944852e-06
+8       High_O2     5.116678 4.899909 1.741430e-08
+9       High_O2     5.106585 4.888614 1.761561e-08
+10      High_O2     5.099905 4.879382 1.610971e-09
+11      High_O2     4.236097 4.062535 1.610005e-05
+12      High_O2     4.195801 3.871571 1.077385e-06
+13      High_O2     3.871261 3.681489 3.657370e-06
+14       Low_O2     6.201029 6.000043 6.573397e-07
+15       Low_O2     5.833645 5.632932 8.733111e-07
+16       Low_O2     5.834568 5.631384 7.288825e-07
+17       Low_O2     5.613862 5.448998 3.034294e-07
+18       Low_O2     5.613862 5.448998 3.034294e-07
+19       Low_O2     5.396353 5.152371 2.115882e-06
+20       Low_O2     5.390938 5.146660 2.115882e-06
+21       Low_O2     5.092302 4.907490 2.913047e-07
+22       Low_O2     5.039550 4.846808 3.983134e-06
+23       Low_O2     4.857459 4.691251 1.187822e-07
+24       Low_O2     4.874112 4.681432 6.002321e-05
+25       Low_O2     4.838129 4.644162 7.352228e-05
+26       Low_O2     4.695126 4.507204 1.863285e-05
+27       Low_O2     4.720485 4.463215 5.514502e-07
+28       Low_O2     4.285776 4.208078 4.263458e-04
+29       Low_O2     4.332067 4.166372 2.777856e-06
+30       Low_O2     4.190767 4.039368 8.358699e-06
+31       Low_O2     4.010550 3.812367 5.299913e-03
+32       Low_O2     3.952940 3.785039 3.283892e-05
+33       Low_O2     3.998594 3.726790 2.068278e-03
+34       Low_O2     3.859844 3.674734 4.807036e-04
+35       Low_O2     3.776653 3.598394 6.427852e-06
+36       Low_O2     3.643862 3.480695 7.016768e-06
+37       Low_O2     3.635051 3.475958 4.311237e-06
+38       Low_O2     3.613439 3.427301 1.103024e-05
+39       Low_O2     3.451152 3.261969 1.969659e-05
+40       Low_O2     3.451152 3.261969 1.969659e-05
+41       Low_O2     3.251925 3.089472 2.366086e-05
+42       Low_O2     3.208269 3.034052 1.362102e-05
+43       Low_O2     2.772475 2.770864 5.666003e-05
+44       Low_O2     2.540133 2.717617 3.121784e-03
+45       Low_O2     2.790990 2.671645 7.555993e-05
+46       Low_O2     2.690272 2.599944 1.178632e-05
+47       Low_O2     2.518432 2.565576 1.606911e-03
+48       Mid_O2     5.663005 5.501959 4.631292e-07
+49       Mid_O2     5.655506 5.492029 5.889748e-08
+50       Mid_O2     5.756249 5.407577 2.549901e-04
+51       Mid_O2     4.470415 4.205531 4.095437e-05
