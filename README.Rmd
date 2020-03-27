@@ -1,29 +1,97 @@
 ---
+title:: R package for microbiome biomarker discovery
+bibliography: references.bib
 output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r set, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-```
 
-# microbiomeMarker
+# knitciations
+library(knitcitations)
+cleanbib()
+options("citation_format" = "pandoc")
+```
 
 <!-- badges: start -->
 [![R build status](https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check/badge.svg)](https://github.com/yiluheihei/microbiomeMarker/actions)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/yiluheihei/microbiomeMarker/blob/master/LICENSE.md)
 <!-- badges: end -->
 
-The goal of microbiomeMarker is to dicovery microbiome biomarker.
+Many statistical methods have been proposed to discovery the microbiome biomaker
+by compare the taxon abundance between different classes. Some methods developed 
+specifically for microbial community, such as  linear discriminant analysis 
+(LDA) effect size (LEfSe) `r citep("10.1186/gb-2011-12-6-r60")`, metagenomeSeq 
+`r citep("10.1038/nmeth.2658")`; and some methods developed specifically for 
+RNA-Seq data, such as DESeq2 `r citep("10.1186/s13059-014-0550-8")` and 
+edgeR `r citep("10.1093/bioinformatics/btp616")`, have been proposed for 
+microbiome biomarker discovery. We usually use several methods for microbiome 
+biomarker discovery and compare the results, which requires multiple tools 
+developed in different programming, even in different OS. **The aim of this 
+package is to build a unified toolbox in R for mcirobiome biomarker discovery by
+integrating various existing methods.**
 
-## TODO
+**microbiomeMarker** take the `phyloseq-class` object in package 
+[phyloseq](https://github.com/joey711/phyloseq) as input, since **phyloseq** is 
+the most popular R package in microbiome analysis and with phyloseq 
+you can easily import taxon abundance and phylogenetic tree of taxon output from 
+common microbiome bioinformatics platforms, such as 
+[DADA2](https://benjjneb.github.io/dada2/) and [qiime2](https://qiime2.org/).
 
-- plot_lefse_cladogram
+## Installation
+
+You can install the package directly from github
+
+```{r install, eval=FALSE}
+if (!require(remotes)) install.packages("remotes")
+remotes::install_github("yiluheihei/microbiomeMarker")
+```
+
+## LEfSe
+
+Curently, LEfSe is the most used tool for microbiome biomarker discovery, and 
+the first method to integrate to **microbiomeMarker** is LEfSe.
+
+```{r lefse}
+library(microbiomeMarker)
+
+# sample data
+data("oxygen")
+lefse_out <- lefse(
+  oxygen, 
+  normalization = 1e6, 
+  summarize = "lefse", 
+  class = "oxygen_availability", 
+  subclass = "body_site", 
+  multicls_strat = TRUE
+)
+lefse_out
+```
+
+Bar plot for output of lefse:
+
+```{r lefse-barplot}
+lefse_barplot(lefse_out, label_level = 1)
+```
+
+**Cladogram plot for output of lefse is in developing**
+
+## Welcome
+
+**microbiomeMarker is still a newborn, and only contains lefse methods right now. 
+Your suggestion and contribution will be highly appreciated.**
+
+## Reference
+
+```{r reference, echo=FALSE, message=FALSE}
+knitcitations::write.bibtex(file = "references.bib")
+```
 
 
