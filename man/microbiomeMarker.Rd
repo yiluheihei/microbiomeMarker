@@ -3,7 +3,7 @@
 \docType{package}
 \name{microbiomeMarker}
 \alias{microbiomeMarker}
-\title{microbiomeMarker: A package for micribiome biomarker discovery}
+\title{microbiomeMarker: A package for microbiome biomarker discovery}
 \description{
 The microboimeMarker package provides several methods to identify micribome
 biomarker, such as lefse and statistical analysis.

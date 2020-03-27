@@ -38,7 +38,7 @@ summarize_taxa <- function(ps,
                                   absolute = FALSE,
                                   sep = "|") {
   if (!absolute) {
-    ps <- microbiome::transform(ps, "compositional")
+    ps <- transform_sample_counts(ps, function(x)x/sum(x))
   }
 
   # norm the abundance data

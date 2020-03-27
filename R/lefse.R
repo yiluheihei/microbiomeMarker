@@ -75,8 +75,6 @@ lefse <- function(ps,
   subcls <- cls_info$subcls
   cls_hie <- cls_info$cls_hie
 
-  # not supported subclass now
-
   if (summarize == "lefse") {
     otus <- otu_table(ps) %>%
       add_missing_levels()

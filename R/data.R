@@ -54,3 +54,19 @@
 #' @docType data
 #' @author Yang Cao
 "pediatric_ibd"
+
+#' Oxygen availability 16S dataset, of which taxa table has been summarized for
+#' python lefse input
+#'
+#' A small subset of the HMP 16S dataset for finding biomarkers characterizing
+#' different level of oxygen availability in different bodysites
+#'
+#' @format a [`phyloseq::phyloseq-class`] object
+#' @source \url{http://huttenhower.sph.harvard.edu/webfm_send/129}
+#' @name data-oxygen
+#' @aliases oxygen
+#' @docType data
+#' @author Yang Cao
+"oxygen"
+
+
