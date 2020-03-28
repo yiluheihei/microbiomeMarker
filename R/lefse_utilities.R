@@ -457,23 +457,43 @@ add_missing_levels <- function(feature) {
         accumulate = TRUE
       )
     )
+
   unq_nms <- unlist(feature_nms2) %>% unique()
   missing_nms <- setdiff(unq_nms, feature_nms)
 
-  missing_indx <- purrr::map(
-    missing_nms,
-    function(i) purrr::map_lgl(feature_nms2, ~ i %in% .x) %>%
-      which()
-  )
-  missing_abd <- purrr::map_df(
-    feature,
-    function(i) purrr::map_dbl(missing_indx, ~ sum(i[.x]))
-  )
+  if (length(missing_nms) == 0) {
+    return(feature)
+  }
 
-  res <- rbind(feature, missing_abd)
-  row.names(res) <- c(feature_nms, missing_nms)
+  missing_nms_split <- strsplit(missing_nms, split =  "|", fixed = TRUE)
+  missing_mns_level <- lengths(missing_nms_split)
+  missing_level_range <- range(missing_mns_level)
 
-  otu_table(res, taxa_are_rows = TRUE)
+  # only sum the next level of tax, so we need first add the missing tax at
+  # the most depth level
+  for (i in missing_level_range[2]:missing_level_range[1]) {
+    missing_nms_i <- missing_nms[missing_mns_level == i]
+    taxs <- row.names(feature)
+
+    indx <- purrr::map(
+      missing_nms_i,
+      ~ purrr::map_lgl(taxs, function(x) grepl(.x, x, fixed = TRUE))
+    )
+
+    # only sum the next level of tax
+    feature_nms_level <- strsplit(taxs, split = "|", fixed = TRUE) %>%
+      lengths()
+    indx <- purrr::map(indx, ~ .x & feature_nms_level == (i + 1))
+    abd <- purrr::map_df(
+      feature,
+      ~ purrr::map_dbl(indx, function(x) sum(.x[x]))
+    )
+
+    feature <- rbind(feature, abd)
+    row.names(feature) <- c(taxs, missing_nms_i)
+  }
+
+  otu_table(feature, taxa_are_rows = TRUE)
 }
 
 #' normalize the summarized feature
