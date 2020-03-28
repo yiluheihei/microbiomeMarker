@@ -8,3 +8,4 @@
 ^dev_test$
 ^\.github/workflows/R-CMD-check\.yaml$
 ^LICENSE\.md$
+references.bib
