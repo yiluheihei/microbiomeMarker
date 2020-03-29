@@ -18,8 +18,8 @@ FALSE.}
 \item{sep}{a character string to separate the taxonomic levels.}
 }
 \value{
-a data frame, each row represnets a taxa, where each col represents
-the taxa abunance of each sample
+a data frame, each row represents a taxa, where each col represents
+the taxa abundance of each sample.
 }
 \description{
 Provids summary information of the representation of a taxonomic levels within

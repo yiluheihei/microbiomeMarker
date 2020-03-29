@@ -438,6 +438,8 @@ lefse_format_class <- function(sample_meta, cls, subcls = NULL) {
 #' add missing levels, used for summarized taxa
 #' @param feature feature data, a [phyloseq::otu_table-class]
 #' @noRd
+#' @description this function require the row names of `feature` is the
+#' summarized taxa
 #' @return a data frame, where taxa in rows
 add_missing_levels <- function(feature) {
   if (!taxa_are_rows(feature)) {

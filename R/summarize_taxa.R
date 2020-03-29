@@ -10,15 +10,15 @@
 #' FALSE.
 #' @param sep a character string to separate the taxonomic levels.
 #'
-#' @return a data frame, each row represnets a taxa, where each col represents
-#' the taxa abunance of each sample
+#' @return a data frame, each row represents a taxa, where each col represents
+#' the taxa abundance of each sample.
 #' @export
 
 summarize_taxa <- function(ps,
                            level = 7,
                            absolute = FALSE,
                            sep = "|") {
-  res <- purrr::map_dfr(
+  res <- purrr::map(
     1:level,
     ~.summarize_taxa_level(
       ps,
@@ -27,6 +27,9 @@ summarize_taxa <- function(ps,
       sep = sep
     )
   )
+  tax_nms <- purrr::map(res, row.names) %>% unlist()
+  res <- bind_rows(res)
+  row.names(res) <- tax_nms
 
   res
 }
