@@ -31,7 +31,7 @@ summarize_taxa <- function(ps,
   res <- bind_rows(res)
   row.names(res) <- tax_nms
 
-  res
+  otu_table(res, taxa_are_rows = TRUE)
 }
 
 #' Summarize the taxa for the specific rank

@@ -83,13 +83,14 @@ lefse <- function(ps,
   } else {
     otus <- summarize_taxa(ps)
   }
-  otus <- normalize_feature(otus, normalization = normalization)
-  otus <- as.data.frame(t(otus), stringsAsFactors = FALSE)
+  otus_norm <- normalize_feature(otus, normalization = normalization)
+  # transform it for test
+  otus_test <- as.data.frame(t(otus_norm), stringsAsFactors = FALSE)
 
   # kw rank sum test among classes
-  kw_p <- purrr::map_dbl(otus, ~ kruskal.test(.x, cls)$p.value)
+  kw_p <- purrr::map_dbl(otus_test, ~ kruskal.test(.x, cls)$p.value)
   sig_ind <- kw_p <= kw_cutoff
-  sig_otus <- otus[, sig_ind]
+  sig_otus <- otus_test[, sig_ind]
 
   # wilcoxon rank sum test is preformed for each class, if there is no subclass
   features_nms <- names(sig_otus)
@@ -119,18 +120,28 @@ lefse <- function(ps,
     sample_fract = bootstrap_fraction
   )
 
-  res <- data.frame(
+  lefse_out <- data.frame(
     feature = names(sig_otus),
     enrich_group = otus_enriched_group$group,
     log_max_mean = otus_enriched_group$log_max_mean,
     lda = ldas,
     p_value = kw_p[sig_ind][wilcoxon_p],
-    stringsAsFactors = FALSE
-  )
-  res <- filter(res, .data$lda >= lda_cutoff) %>%
+    stringsAsFactors = FALSE) %>%
+    filter(.data$lda >= lda_cutoff) %>%
     arrange(.data$enrich_group, desc(.data$lda))
 
-  res
+  if (summarize == "lefse" || summarize) {
+    tax <- matrix(row.names(otus)) %>%
+      tax_table()
+    row.names(tax) <- row.names(otus)
+  } else {
+    tax <- tax_table(ps)
+  }
+  microbiomeMarker(
+    microbiome_marker = lefse_out,
+    otus_norm,
+    tax
+  )
 }
 
 # suppress the checking notes “no visible binding for global variable", which is
