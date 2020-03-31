@@ -11,7 +11,7 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages("BiocManager")
-          BiocManager::install("phyloseq")
+          BiocManager::install(c("phyloseq", "ggtree"))
           install.packages(c("remotes", "rcmdcheck"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
