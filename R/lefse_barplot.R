@@ -1,6 +1,8 @@
+# bar plot ----------------------------------------------------------------
+
 #' lefse bar plot
 #'
-#' @param lefse_out data frame, out of \code{\link{lefse}}
+#' @param mm a [microbiomeMarker-class] object
 #' @param label_level integer, number of label levels to be displayed, default
 #'   `1`, `0` means display the full name of the feature
 #' @param max_label_len integer, maximum number of characters of feature labels,
@@ -11,10 +13,11 @@
 #' scale_y_discrete coord_flip guide_axis
 #' @return a ggplot project
 #' @export
-lefse_barplot <- function(lefse_out,
+lefse_barplot <- function(mm,
                           label_level = 1,
                           max_label_len = 60,
                           direction = c("h", "v")) {
+  lefse_out <- mm@microbiome_marker
   nms_check <- any(c("feature", "lda", "enrich_group") %in% names(lefse_out))
   if (!nms_check) {
     stop("`lefse_out` must contains variable `feature`, `lda` and `enrich_group`")
@@ -88,3 +91,4 @@ get_feature_label <- function(feature,
 
   feature
 }
+

@@ -26,6 +26,11 @@ options("citation_format" = "pandoc")
 [![Codecov test coverage](https://codecov.io/gh/yiluheihei/microbiomeMarker/branch/master/graph/badge.svg)](https://codecov.io/gh/yiluheihei/microbiomeMarker?branch=master)
 <!-- badges: end -->
 
+## Motivation
+
+**The aim of this package is to build a unified toolbox in R for mcirobiome 
+biomarker discovery by integrating various existing methods.**
+
 Many statistical methods have been proposed to discovery the microbiome biomaker
 by compare the taxon abundance between different classes. Some methods developed 
 specifically for microbial community, such as  linear discriminant analysis 
@@ -35,9 +40,7 @@ RNA-Seq data, such as DESeq2 `r citep("10.1186/s13059-014-0550-8")` and
 edgeR `r citep("10.1093/bioinformatics/btp616")`, have been proposed for 
 microbiome biomarker discovery. We usually use several methods for microbiome 
 biomarker discovery and compare the results, which requires multiple tools 
-developed in different programming, even in different OS. **The aim of this 
-package is to build a unified toolbox in R for mcirobiome biomarker discovery by
-integrating various existing methods.**
+developed in different programming, even in different OS.
 
 **microbiomeMarker** take the `phyloseq-class` object in package 
 [phyloseq](https://github.com/joey711/phyloseq) as input, since **phyloseq** is 
@@ -73,6 +76,7 @@ lefse_out <- lefse(
   subclass = "body_site", 
   multicls_strat = TRUE
 )
+# a microbioMarker class inherits from phyloseq
 lefse_out
 ```
 
@@ -82,12 +86,27 @@ Bar plot for output of lefse:
 lefse_barplot(lefse_out, label_level = 1)
 ```
 
-**Cladogram plot for output of lefse is in developing**
+Cladogram plot for output of lefse
+
+```{r lefse-cladogram}
+lefse_cladogram(lefse_out)
+```
 
 ## Welcome
 
 **microbiomeMarker is still a newborn, and only contains lefse methods right now. 
 Your suggestion and contribution will be highly appreciated.**
+
+## Acknowledgement
+
+Thanks to the 
+[lefse python module](https://bitbucket.org/biobakery/biobakery/wiki/lefse) and
+[microbiomeViz](https://github.com/lch14forever/microbiomeViz). The main lefse
+code are translated from **lefse python module**, and cladogram visualization of 
+lefse is modified from **microbiomeViz**. Thanks to the 
+[https://github.com/joey711/phyloseq](https://github.com/joey711/phyloseq), 
+the main data structures used in **microbiomeMarker** are from or inherit from 
+`phyloseq-class` in package **phyloseq**.
 
 ## Reference
 

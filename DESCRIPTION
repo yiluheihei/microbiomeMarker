@@ -31,4 +31,5 @@ RoxygenNote: 7.0.2
 Roxygen: list(markdown = TRUE)
 Suggests: 
     testthat,
-    covr
+    covr,
+    scales

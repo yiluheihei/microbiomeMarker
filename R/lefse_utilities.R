@@ -540,5 +540,36 @@ normalize_feature <- function(feature, normalization) {
   )
   row.names(normed_feature) <- row.names(feature)
 
-  normed_feature
+  otu_table(normed_feature, taxa_are_rows = TRUE)
+}
+
+# check whether tax have level prefix, such as `p__`
+check_tax_prefix <- function(taxa_nms) {
+  prefix <- paste0(c("k", "p", "c", "o", "f", "g", "s"), "__")
+  has_prefix <- purrr::map_lgl(prefix, ~ any(grepl(.x, taxa_nms, fixed = TRUE)))
+
+  any(has_prefix)
+}
+
+# add missing levels
+add_tax_level <- function(taxa_nms, sep = "|") {
+  prefixes <- paste0(c("k", "p", "c", "o", "f", "g", "s"), "__")
+  taxa_split <- strsplit(taxa_nms,,split = sep, fixed = TRUE)
+  nms <- purrr::map_chr(
+    taxa_split,
+    ~ paste0(prefixes[1:length(.x)], .x) %>% paste(collapse = sep)
+  )
+
+  nms
+}
+
+#' check whether tax abundance table is summarized or not
+#' @noRd
+check_tax_summarize <- function(ps) {
+  is_summarize <- ifelse(
+    ncol(tax_table(ps)) == 1,
+    TRUE, FALSE
+  )
+
+  is_summarize
 }

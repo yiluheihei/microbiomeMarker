@@ -11,6 +11,12 @@ v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/yil
 coverage](https://codecov.io/gh/yiluheihei/microbiomeMarker/branch/master/graph/badge.svg)](https://codecov.io/gh/yiluheihei/microbiomeMarker?branch=master)
 <!-- badges: end -->
 
+## Motivation
+
+**The aim of this package is to build a unified toolbox in R for
+mcirobiome biomarker discovery by integrating various existing
+methods.**
+
 Many statistical methods have been proposed to discovery the microbiome
 biomaker by compare the taxon abundance between different classes. Some
 methods developed specifically for microbial community, such as linear
@@ -21,9 +27,6 @@ specifically for RNA-Seq data, such as DESeq2 (Love, Huber, and Anders
 for microbiome biomarker discovery. We usually use several methods for
 microbiome biomarker discovery and compare the results, which requires
 multiple tools developed in different programming, even in different OS.
-**The aim of this package is to build a unified toolbox in R for
-mcirobiome biomarker discovery by integrating various existing
-methods.**
 
 **microbiomeMarker** take the `phyloseq-class` object in package
 [phyloseq](https://github.com/joey711/phyloseq) as input, since
@@ -50,6 +53,9 @@ LEfSe.
 
 ``` r
 library(microbiomeMarker)
+#> Registered S3 method overwritten by 'treeio':
+#>   method     from
+#>   root.phylo ape
 
 # sample data
 data("oxygen")
@@ -62,25 +68,11 @@ lefse_out <- lefse(
   multicls_strat = TRUE
 )
 #> Warning: Setting row names on a tibble is deprecated.
+# a microbioMarker class inherits from phyloseq
 lefse_out
-#>                                                                                         feature
-#> 1                                                                       Bacteria|Actinobacteria
-#> 2                                                        Bacteria|Actinobacteria|Actinobacteria
-#> 3                                        Bacteria|Actinobacteria|Actinobacteria|Actinomycetales
-#> 4                   Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Propionibacteriaceae
-#> 5 Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Propionibacteriaceae|Propionibacterium
-#> 6                               Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Bacteroidaceae
-#> 7                   Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Bacteroidaceae|Bacteroides
-#> 8                                                   Bacteria|Firmicutes|Bacilli|Lactobacillales
-#>   enrich_group log_max_mean      lda      p_value
-#> 1      High_O2     6.426614 6.256256 4.148229e-09
-#> 2      High_O2     5.826868 5.658028 4.148229e-09
-#> 3      High_O2     5.826094 5.656212 3.841252e-09
-#> 4      High_O2     5.697155 5.546813 9.483488e-10
-#> 5      High_O2     5.697009 5.546671 1.034228e-09
-#> 6       Low_O2     5.613862 5.431316 3.034294e-07
-#> 7       Low_O2     5.613862 5.431316 3.034294e-07
-#> 8       Mid_O2     5.655506 5.502118 5.889748e-08
+#> phyloseq-class experiment-level object
+#> otu_table()   OTU Table:         [ 1091 taxa and 55 samples ]
+#> tax_table()   Taxonomy Table:    [ 1091 taxa by 1 taxonomic ranks ]
 ```
 
 Bar plot for output of lefse:
@@ -91,13 +83,30 @@ lefse_barplot(lefse_out, label_level = 1)
 
 <img src="man/figures/README-lefse-barplot-1.png" width="100%" />
 
-**Cladogram plot for output of lefse is in developing**
+Cladogram plot for output of lefse
+
+``` r
+lefse_cladogram(lefse_out)
+```
+
+<img src="man/figures/README-lefse-cladogram-1.png" width="100%" />
 
 ## Welcome
 
 **microbiomeMarker is still a newborn, and only contains lefse methods
 right now. Your suggestion and contribution will be highly
 appreciated.**
+
+## Acknowledgement
+
+Thanks to the [lefse python
+module](https://bitbucket.org/biobakery/biobakery/wiki/lefse) and
+[microbiomeViz](https://github.com/lch14forever/microbiomeViz). The main
+lefse code are translated from **lefse python module**, and cladogram
+visualization of lefse is modified from **microbiomeViz**. Thanks to the
+<https://github.com/joey711/phyloseq>, the main data structures used in
+**microbiomeMarker** are from or inherit from `phyloseq-class` in
+package **phyloseq**.
 
 ## Reference
 
