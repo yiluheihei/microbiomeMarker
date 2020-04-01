@@ -21,7 +21,7 @@
 #' @author Chenhao Li, Guangchuang Yu, Chenghao Zhu, Yang Cao
 #' @seealso [ggtree::ggtree()]
 #' @export
-#' @references This function is scratch from `clada.anno` from microbiomeViz.
+#' @references This function is modified from `clada.anno` from microbiomeViz.
 #' \url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}
 #' @description annotate a ggtree plot to highlight certain clades
 lefse_cladogram <- function(mm,

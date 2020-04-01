@@ -1,10 +1,10 @@
 #' microbiomeMarker: A package for microbiome biomarker discovery
 #'
 #' The microboimeMarker package provides several methods to identify micribome
-#' biomarker, such as lefse and statistical analysis.
+#' biomarker, such as lefse, deseq2.
 #'
 #' @docType package
-#' @name microbiomeMarker
+#' @name microbiomeMarker-package
 #' @aliases microbiomeMarker-package
 #' @importFrom dplyr %>% group_by summarise filter select bind_rows
 #' group_split arrange slice mutate desc group_modify ungroup

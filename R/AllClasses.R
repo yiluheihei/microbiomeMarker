@@ -5,15 +5,13 @@
 #' results. And it provides a seamless interface with **phyloseq**, which makes
 #' **microbiomeMarker** simple and easy to use. For more details on see the
 #' document of [`phyloseq::phyloseq-class`].
+#' @name microbiomeMarker-class
+#' @aliases microbiomeMarker-class
 #' @importClassesFrom phyloseq phyloseq
-#' @slot microbiome_marker a class of data.frame, the result of microbiome
+#' @slot microbiome_marker a  data.frame, the result of microbiome
 #'  differntial analysis
-#' * `lda`, logarithmic LDA score
-#' * `p_value`, p value of kw test
 #' @seealso [`phyloseq::phyloseq-class`]
-#' @rdname microbiomeMarker-class
-#' @export
-.microbiomeMarker <- setClass("microbiomeMarker",
+`microbiomeMarker-class` <- setClass("microbiomeMarker",
   slots = c(
     microbiome_marker = "data.frame"
   ),
@@ -30,7 +28,7 @@
 #' @param ... arguments passed to [phyloseq::phyloseq()]
 #' @seealso [phyloseq::phyloseq()],
 #' @references [Is it bad practice to access S4 objects slots directly using @?](https://stackoverflow.com/questions/9900134/is-it-bad-practice-to-access-s4-objects-slots-directly-using/9900822#9900822)
-#' @rdname microbiomeMarker
+#' @name microbiomeMarker
 #' @export
 microbiomeMarker <- function(microbiome_marker, ...) {
   ps_slots <- list(...)
@@ -44,7 +42,7 @@ microbiomeMarker <- function(microbiome_marker, ...) {
     stop(msg)
   }
 
-  .microbiomeMarker(ps, microbiome_marker = microbiome_marker)
+  `microbiomeMarker-class`(ps, microbiome_marker = microbiome_marker)
 }
 
 # validity for microbiomeMarker, at least contains two slots: otu_table,

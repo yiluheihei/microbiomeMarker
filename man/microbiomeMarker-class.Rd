@@ -3,7 +3,6 @@
 \docType{class}
 \name{microbiomeMarker-class}
 \alias{microbiomeMarker-class}
-\alias{.microbiomeMarker}
 \title{The main class for microbiomeMarker data}
 \description{
 \code{microbiomeMarker-class} is inherited from the \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}
@@ -15,12 +14,8 @@ document of \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}.
 \section{Slots}{
 
 \describe{
-\item{\code{microbiome_marker}}{a class of data.frame, the result of microbiome
-differntial analysis
-\itemize{
-\item \code{lda}, logarithmic LDA score
-\item \code{p_value}, p value of kw test
-}}
+\item{\code{microbiome_marker}}{a  data.frame, the result of microbiome
+differntial analysis}
 }}
 
 \seealso{

@@ -40,7 +40,7 @@ a ggtree object
 annotate a ggtree plot to highlight certain clades
 }
 \references{
-This function is scratch from \code{clada.anno} from microbiomeViz.
+This function is modified from \code{clada.anno} from microbiomeViz.
 \url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}
 }
 \seealso{
