@@ -82,13 +82,13 @@ lefse_out
 
 Bar plot for output of lefse:
 
-```{r lefse-barplot}
+```{r lefse-barplot,dpi=300,out.width="100%"}
 lefse_barplot(lefse_out, label_level = 1)
 ```
 
 Cladogram plot for output of lefse
 
-```{r lefse-cladogram}
+```{r lefse-cladogram,dpi=300,out.width="100%"}
 lefse_cladogram(lefse_out)
 ```
 
