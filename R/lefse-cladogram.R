@@ -26,7 +26,8 @@
 #' @description annotate a ggtree plot to highlight certain clades
 lefse_cladogram <- function(mm,
                             color =
-                              scales::hue_pal()(length(unique(mm@microbiome_marker$enrich_group))),
+                              scales::hue_pal()(length(
+                                unique(mm@marker_table$enrich_group))),
                             branch_size = 0.2,
                             alpha = 0.2,
                             node_size_scale = 1,
@@ -38,7 +39,7 @@ lefse_cladogram <- function(mm,
 
 
   annotation <- generate_cladogram_annotation(
-    mm@microbiome_marker,
+    mm@marker_table,
     color = color
   )
 

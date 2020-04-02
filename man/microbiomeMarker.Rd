@@ -2,18 +2,18 @@
 % Please edit documentation in R/AllClasses.R
 \name{microbiomeMarker}
 \alias{microbiomeMarker}
-\title{Build microbiomeMarker-class objects from their slots}
+\title{Build microbiomeMarker-class objects}
 \usage{
-microbiomeMarker(microbiome_marker, ...)
+microbiomeMarker(marker_table, ...)
 }
 \arguments{
-\item{microbiome_marker}{a data frame, the result of microbiome
+\item{marker_table}{a \linkS4class{marker_table} object
 differtial analysis}
 
 \item{...}{arguments passed to \code{\link[phyloseq:phyloseq]{phyloseq::phyloseq()}}}
 }
 \description{
-This the constructor to build the \code{microbiomeMarker-class} object, don't use
+This the constructor to build the \code{\linkS4class{microbiomeMarker}} object, don't use
 the \code{new()} constructor.
 }
 \references{

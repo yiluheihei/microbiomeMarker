@@ -17,7 +17,7 @@ lefse_barplot <- function(mm,
                           label_level = 1,
                           max_label_len = 60,
                           direction = c("h", "v")) {
-  lefse_out <- mm@microbiome_marker
+  lefse_out <- mm@marker_table
   nms_check <- any(c("feature", "lda", "enrich_group") %in% names(lefse_out))
   if (!nms_check) {
     stop("`lefse_out` must contains variable `feature`, `lda` and `enrich_group`")

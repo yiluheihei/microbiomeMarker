@@ -6,7 +6,7 @@
 \usage{
 lefse_cladogram(
   mm,
-  color = (scales::hue_pal())(length(unique(mm@microbiome_marker$enrich_group))),
+  color = (scales::hue_pal())(length(unique(mm@marker_table$enrich_group))),
   branch_size = 0.2,
   alpha = 0.2,
   node_size_scale = 1,

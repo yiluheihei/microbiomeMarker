@@ -128,7 +128,8 @@ lefse <- function(ps,
     p_value = kw_p[sig_ind][wilcoxon_p],
     stringsAsFactors = FALSE) %>%
     filter(.data$lda >= lda_cutoff) %>%
-    arrange(.data$enrich_group, desc(.data$lda))
+    arrange(.data$enrich_group, desc(.data$lda)) %>%
+    marker_table()
 
   if (summarize == "lefse" || summarize) {
     tax <- matrix(row.names(otus)) %>%
@@ -137,11 +138,10 @@ lefse <- function(ps,
   } else {
     tax <- tax_table(ps)
   }
-  microbiomeMarker(
-    microbiome_marker = lefse_out,
-    otus_norm,
-    tax
-  )
+
+  mm <- microbiomeMarker(lefse_out, otus_norm, tax)
+
+  mm
 }
 
 # suppress the checking notes “no visible binding for global variable", which is
