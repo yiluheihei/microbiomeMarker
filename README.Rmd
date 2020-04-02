@@ -63,6 +63,8 @@ remotes::install_github("yiluheihei/microbiomeMarker")
 Curently, LEfSe is the most used tool for microbiome biomarker discovery, and 
 the first method to integrate to **microbiomeMarker** is LEfSe.
 
+### lefse analysis
+
 ```{r lefse}
 library(microbiomeMarker)
 
@@ -76,9 +78,19 @@ lefse_out <- lefse(
   subclass = "body_site", 
   multicls_strat = TRUE
 )
-# a microbioMarker class inherits from phyloseq
+# lefse return a microbioMarker class inherits from phyloseq
 lefse_out
 ```
+
+The microbiome biomarker information was stored in a new data structure 
+`marker_table-class` inherited from `data.frame`, and you can access it by 
+using `marker_table()`.
+
+```{r}
+marker_table(lefse_out)
+```
+
+### Visualization of the result of lefse analysis
 
 Bar plot for output of lefse:
 

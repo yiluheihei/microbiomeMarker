@@ -3,13 +3,14 @@
 \name{marker_table}
 \alias{marker_table}
 \alias{marker_table,data.frame-method}
-\alias{marker_table,}
-\alias{data.frame-method}
+\alias{marker_table,microbiomeMarker-method}
 \title{Build or access the marker_table}
 \usage{
 marker_table(object)
 
 \S4method{marker_table}{data.frame}(object)
+
+\S4method{marker_table}{microbiomeMarker}(object)
 }
 \arguments{
 \item{object}{an object among the set of classes difined by the

@@ -51,6 +51,8 @@ Curently, LEfSe is the most used tool for microbiome biomarker
 discovery, and the first method to integrate to **microbiomeMarker** is
 LEfSe.
 
+### lefse analysis
+
 ``` r
 library(microbiomeMarker)
 #> Registered S3 method overwritten by 'treeio':
@@ -68,12 +70,41 @@ lefse_out <- lefse(
   multicls_strat = TRUE
 )
 #> Warning: Setting row names on a tibble is deprecated.
-# a microbioMarker class inherits from phyloseq
+# lefse return a microbioMarker class inherits from phyloseq
 lefse_out
-#> phyloseq-class experiment-level object
-#> otu_table()   OTU Table:         [ 1091 taxa and 55 samples ]
+#> microbiomeMarker-class inherited from phyloseq-class
+#> marker_table  Marker Table:      [ 8 microbiome markers with 5 variables ]
+#> otu_table()   OTU Table:         [ 1091 taxa and  55 samples ]
 #> tax_table()   Taxonomy Table:    [ 1091 taxa by 1 taxonomic ranks ]
 ```
+
+The microbiome biomarker information was stored in a new data structure
+`marker_table-class` inherited from `data.frame`, and you can access it
+by using `marker_table()`.
+
+``` r
+marker_table(lefse_out)
+#>                                                                                         feature
+#> 1                                                        Bacteria|Actinobacteria|Actinobacteria
+#> 2                                                                       Bacteria|Actinobacteria
+#> 3                                        Bacteria|Actinobacteria|Actinobacteria|Actinomycetales
+#> 4                   Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Propionibacteriaceae
+#> 5 Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Propionibacteriaceae|Propionibacterium
+#> 6                               Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Bacteroidaceae
+#> 7                   Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Bacteroidaceae|Bacteroides
+#> 8                                                   Bacteria|Firmicutes|Bacilli|Lactobacillales
+#>   enrich_group log_max_mean      lda      p_value
+#> 1      High_O2     5.826868 5.656724 4.148229e-09
+#> 2      High_O2     5.826868 5.656724 4.148229e-09
+#> 3      High_O2     5.826094 5.656707 3.841252e-09
+#> 4      High_O2     5.697155 5.549470 9.483488e-10
+#> 5      High_O2     5.697009 5.548929 1.034228e-09
+#> 6       Low_O2     5.613862 5.432087 3.034294e-07
+#> 7       Low_O2     5.613862 5.432087 3.034294e-07
+#> 8       Mid_O2     5.655506 5.502668 5.889748e-08
+```
+
+### Visualization of the result of lefse analysis
 
 Bar plot for output of lefse:
 

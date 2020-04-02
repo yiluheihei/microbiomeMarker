@@ -14,7 +14,7 @@
 #' @field .S3Class character, the S3 class `marker_table` inherited from:
 #' "`data.frame`"
 #' @author Yang Cao
-#' @export
+#' @exportClass marker_table
 setClass("marker_table",contains = "data.frame")
 
 # validator of marker_table
@@ -54,6 +54,7 @@ setValidity("marker_table", validity_marker_table)
 #' @slot marker_table a  data.frame, the result of microbiome
 #'  differntial analysis
 #' @seealso [`phyloseq::phyloseq-class`]
+#' @exportClass microbiomeMarker
 `microbiomeMarker-class` <- setClass("microbiomeMarker",
   slots = c(
     marker_table = "marker_table"

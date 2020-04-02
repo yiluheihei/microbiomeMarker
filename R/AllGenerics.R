@@ -14,7 +14,7 @@ setGeneric(
 )
 
 # build marker_table from data.frame
-#' @aliases marker_table, data.frame-method
+#' @aliases marker_table,data.frame-method
 #' @rdname marker_table-methods
 setMethod("marker_table", "data.frame", function(object) {
   mt <- new("marker_table", object)
@@ -22,6 +22,15 @@ setMethod("marker_table", "data.frame", function(object) {
   mt
 })
 
+
+# access the marker_table of a microbiomeMarker-class object
+#' @rdname marker_table-methods
+#' @aliases marker_table,microbiomeMarker-method
+
+setMethod("marker_table", "microbiomeMarker", function(object) {
+  object@marker_table
+
+})
 
 # microbiomeMarker class ------------------------------------------------------
 
