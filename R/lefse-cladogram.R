@@ -16,7 +16,8 @@
 ##' `node_size=a*log(relative_abundance) + b`
 #' @return a ggtree object
 #' @importFrom tidytree treedata
-#' @importFrom ggplot2 geom_point theme element_blank
+#' @importFrom ggplot2 geom_point theme element_blank geom_rect guides
+#' guide_legend aes_
 #' @importFrom ggtree ggtree geom_hilight geom_point2 geom_cladelabel
 #' @author Chenhao Li, Guangchuang Yu, Chenghao Zhu, Yang Cao
 #' @seealso [ggtree::ggtree()]
@@ -63,6 +64,19 @@ lefse_cladogram <- function(mm,
   )
   hilights_g <- purrr::pmap(hilight_para, geom_hilight)
   tree <- purrr::reduce(hilights_g, `+`, .init = tree)
+  # hilight legend
+  hilights_df <- dplyr::distinct(annotation_info, .data$enrich_group, .data$color)
+  hilights_df$x <- 0
+  hilights_df$y <- 1
+  # set_hilight_legend
+  tree <- tree +
+    geom_rect(
+      aes_(xmin = ~x, xmax = ~x, ymax = ~y, ymin = ~y, fill = ~enrich_group),
+      data = hilights_df, inherit.aes = FALSE) +
+    guides(color = guide_legend(
+      title = NULL,
+      override.aes = list(fill = hilights_df$color))
+    )
 
   # set nodes color and size
   nodes_colors <- rep("white", nrow(tree$data))
@@ -106,10 +120,8 @@ lefse_cladogram <- function(mm,
     geom_point(
       data = guide_label,
       aes(x = 0, y = 0, shape = factor(.data$label2)),
-      size = 0,
-      stroke = 0) +
-    theme(legend.position = c(1,0.5),
-          legend.title = element_blank())
+      size = 0, stroke = 0) +
+    theme(legend.position = "right", legend.title = element_blank())
 }
 
 #' Generate tree data from phyloseq object
@@ -232,6 +244,7 @@ generate_cladogram_annotation <- function(lefse_out,
   annotation <- data.frame(
     node = label,
     color = color,
+    enrich_group = lefse_out$enrich_group,
     stringsAsFactors = FALSE
   )
 

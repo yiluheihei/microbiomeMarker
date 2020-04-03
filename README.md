@@ -133,11 +133,11 @@ appreciated.**
 Thanks to the [lefse python
 module](https://bitbucket.org/biobakery/biobakery/wiki/lefse) and
 [microbiomeViz](https://github.com/lch14forever/microbiomeViz). The main
-lefse code are translated from **lefse python module**, and cladogram
+lefse code are translated from **lefse python script**, and cladogram
 visualization of lefse is modified from **microbiomeViz**. Thanks to the
-<https://github.com/joey711/phyloseq>, the main data structures used in
-**microbiomeMarker** are from or inherit from `phyloseq-class` in
-package **phyloseq**.
+[phyloseq](https://github.com/joey711/phyloseq), the main data
+structures used in **microbiomeMarker** are from or inherit from
+`phyloseq-class` in package **phyloseq**.
 
 ## Reference
 
