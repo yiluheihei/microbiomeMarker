@@ -73,7 +73,7 @@ lefse_cladogram <- function(mm,
     geom_rect(
       aes_(xmin = ~x, xmax = ~x, ymax = ~y, ymin = ~y, fill = ~enrich_group),
       data = hilights_df, inherit.aes = FALSE) +
-    guides(color = guide_legend(
+    guides(fill = guide_legend(
       title = NULL,
       override.aes = list(fill = hilights_df$color))
     )
