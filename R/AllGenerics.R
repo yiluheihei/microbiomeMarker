@@ -98,3 +98,51 @@ setMethod("show", "microbiomeMarker", function(object){
 
 })
 
+# get the number of markers -----------------------------------------------
+
+#' Get the number of microbiome markers
+#' @param object a [`microbiomeMarker-class`] or [`marker_table-class`] object
+#' @docType methods
+#' @rdname nmarker-methods
+#' @return an integer, the number of microbiome markers
+#' @export
+setGeneric("nmarker", function(object) standardGeneric("nmarker"))
+
+#' @rdname nmarker-methods
+#' @aliases nmarker,microbiomeMarker-method
+setMethod("nmarker", "microbiomeMarker", function(object) {
+  nrow(marker_table(object))
+})
+
+#' @rdname nmarker-methods
+#' @aliases nmarker,marker_table-method
+setMethod("nmarker", "marker_table", function(object) {
+  nrow(object)
+})
+
+
+# get the number of classes for microbiome discorvery ---------------------
+
+#' Get the number of classes for microbiome discovery
+#' @inheritParams nmarker
+#' @docType methods
+#' @rdname nclass-methods
+#' @return an integer
+#' @export
+setGeneric("nclass", function(object) standardGeneric("nclass"))
+
+#' @rdname nclass-methods
+#' @aliases nclass,microbiomeMarker-method
+setMethod("nclass", "microbiomeMarker", function(object) {
+  length(unique(marker_table(object)$enrich_group))
+})
+
+#' @rdname nclass-methods
+#' @aliases nclass,marker_table-method
+setMethod("nclass", "marker_table", function(object) {
+  length(unique(object$enrich_group))
+})
+
+
+
+
