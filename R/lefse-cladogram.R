@@ -113,14 +113,22 @@ lefse_cladogram <- function(mm,
   ## add guide labels
   guide_label <- clade_label[ind, ] %>%
     mutate(
-      anno_shape = purrr::map_int(short_label, utf8ToInt),
-      label2 = paste0(short_label, ": ", .data$label))
+      # anno_shape = purrr::map_int(short_label, utf8ToInt),
+      label2 = paste0(short_label, ": ", .data$label),
+      color = annotation_info$color[match(.data$label, annotation_info$label)]
+    )
 
   tree +
     geom_point(
       data = guide_label,
-      aes(x = 0, y = 0, shape = factor(.data$label2)),
+      aes_(x = 0, y = 0, shape = ~label2),
       size = 0, stroke = 0) +
+    guides(
+      fill = guide_legend(order = 1),
+      shape = guide_legend(
+        override.aes = list(size = 5, shape = 22, fill = guide_label$color),
+        order = 2
+      )) +
     theme(legend.position = "right", legend.title = element_blank())
 }
 
