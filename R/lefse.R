@@ -92,8 +92,10 @@ lefse <- function(ps,
 
   # remove the taxa, while pvalue is na
   na_ind <- is.na(kw_p)
-  otus_test <- otus_test[-na_ind]
-  kw_p <- kw_p[-na_ind]
+  if (sum(na_ind) >= 1) {
+    otus_test <- otus_test[-na_ind]
+    kw_p <- kw_p[-na_ind]
+  }
 
   sig_ind <- kw_p <= kw_cutoff
   sig_otus <- otus_test[, sig_ind]

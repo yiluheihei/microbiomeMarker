@@ -157,7 +157,7 @@ lefse_barplot(lefse_out, label_level = 1) +
   scale_fill_manual(values = c("rag2" = "blue", "truc" = "red"))
 ```
 
-<img src="man/figures/README-lefse-barplot-1.png" width="100%" />
+![](man/figures/README-lefse-barplot-1.png)<!-- -->
 
 Cladogram plot for output of lefse
 
@@ -165,7 +165,7 @@ Cladogram plot for output of lefse
 lefse_cladogram(lefse_out, color = c("blue", "red"))
 ```
 
-<img src="man/figures/README-lefse-cladogram-1.png" width="100%" />
+![](man/figures/README-lefse-cladogram-1.png)<!-- -->
 
 ## Welcome
 
