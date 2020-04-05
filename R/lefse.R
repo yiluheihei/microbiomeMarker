@@ -89,6 +89,12 @@ lefse <- function(ps,
 
   # kw rank sum test among classes
   kw_p <- purrr::map_dbl(otus_test, ~ kruskal.test(.x, cls)$p.value)
+
+  # remove the taxa, while pvalue is na
+  na_ind <- is.na(kw_p)
+  otus_test <- otus_test[-na_ind]
+  kw_p <- kw_p[-na_ind]
+
   sig_ind <- kw_p <= kw_cutoff
   sig_otus <- otus_test[, sig_ind]
 

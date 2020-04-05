@@ -96,3 +96,33 @@ oxygen <- phyloseq(
 )
 
 usethis::use_data(oxygen, overwrite = TRUE)
+
+# data from lefse galaxy --------------------------------------------------
+# Fecal microbiota in a mouse model of spontaneous colitis. The dataset contains
+# 30 abundance profiles (obtained processing the 16S reads with RDP) belonging
+# to 10 rag2 (control) and 20 truc (case) mice
+spontaneous_colitis <- readr::read_tsv(
+  "http://www.huttenhower.org/webfm_send/73",
+  col_names = FALSE
+)
+class <- spontaneous_colitis[1, ]
+taxas <- spontaneous_colitis[, 1]
+
+sample_meta <- data.frame(
+  class = unlist(class[-1]),
+  stringsAsFactors = FALSE
+)
+tax_dat <- as.matrix(taxas[-1, ])
+row.names(tax_dat) <- tax_dat
+colnames(tax_dat) <- "summarized_taxa"
+tax_abd <- spontaneous_colitis[-1, -1] %>%
+  purrr::map_df(as.numeric)
+row.names(tax_abd) <- tax_dat[,1]
+
+spontaneous_colitis <- phyloseq(
+  otu_table(tax_abd, taxa_are_rows = TRUE),
+  tax_table(tax_dat),
+  sample_data(sample_meta)
+)
+
+usethis::use_data(spontaneous_colitis, overwrite = TRUE)

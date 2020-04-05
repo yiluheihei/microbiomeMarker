@@ -5,7 +5,7 @@
 #'
 #' @param mm a [microbiomeMarker-class] object
 #' @param color a color vector, used to highlight the clades of micribome
-#' biomaker
+#' biomarker
 #' @param branch_size numberic, size of branch, default `0.2`
 #' @param alpha alpha parameter for shading, default `0.2`
 #' @param clade_label_level max level of taxa used to label the clade, other
@@ -26,9 +26,7 @@
 #' \url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}
 #' @description annotate a ggtree plot to highlight certain clades
 lefse_cladogram <- function(mm,
-                            color =
-                              scales::hue_pal()(length(
-                                unique(mm@marker_table$enrich_group))),
+                            color,
                             branch_size = 0.2,
                             alpha = 0.2,
                             node_size_scale = 1,
@@ -75,6 +73,7 @@ lefse_cladogram <- function(mm,
       data = hilights_df, inherit.aes = FALSE) +
     guides(fill = guide_legend(
       title = NULL,
+      order = 1,
       override.aes = list(fill = hilights_df$color))
     )
 
@@ -118,18 +117,22 @@ lefse_cladogram <- function(mm,
       color = annotation_info$color[match(.data$label, annotation_info$label)]
     )
 
-  tree +
+  p <- tree +
     geom_point(
       data = guide_label,
       aes_(x = 0, y = 0, shape = ~label2),
       size = 0, stroke = 0) +
     guides(
-      fill = guide_legend(order = 1),
       shape = guide_legend(
         override.aes = list(size = 5, shape = 22, fill = guide_label$color),
         order = 2
       )) +
     theme(legend.position = "right", legend.title = element_blank())
+
+  # suppress warning: The shape palette can deal with a maximum of 6 discrete
+  # values because more than 6 becomes difficult to discriminate; you have 18.
+  # Consider specifying shapes manually if you must have them.
+  suppressWarnings(print(p))
 }
 
 #' Generate tree data from phyloseq object

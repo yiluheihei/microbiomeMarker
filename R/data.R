@@ -69,4 +69,18 @@
 #' @author Yang Cao
 "oxygen"
 
+#' This is a sample data from lefse python script, a 16S dataset for studying
+#' the characteristics of the fecal microbiota in a mouse model of spontaneous
+#' colitis.
+#'
+#' The dataset contains 30 abundance profiles (obtained processing the 16S reads
+#' with RDP) belonging to 10 rag2 (control) and 20 truc (case) mice.
+#'
+#' @format a [`phyloseq::phyloseq-class`] object
+#' @source \url{http://www.huttenhower.org/webfm_send/73}
+#' @name data-spontaneous_colitis
+#' @aliases spontaneous_colitis
+#' @docType data
+#' @author Yang Cao
+"spontaneous_colitis"
 
