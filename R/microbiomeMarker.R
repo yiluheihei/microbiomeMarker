@@ -13,4 +13,6 @@
 #' phy_tree ntaxa nsamples refseq
 #' @importClassesFrom phyloseq phyloseq
 #' @importFrom rlang .data
+#' @importFrom methods setClass setGeneric setMethod
+NULL
 NULL
