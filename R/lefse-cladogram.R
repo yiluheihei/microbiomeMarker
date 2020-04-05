@@ -17,7 +17,7 @@
 #' @return a ggtree object
 #' @importFrom tidytree treedata
 #' @importFrom ggplot2 geom_point theme element_blank geom_rect guides
-#' guide_legend aes_
+#' guide_legend aes_ scale_shape_manual
 #' @importFrom ggtree ggtree geom_hilight geom_point2 geom_cladelabel
 #' @author Chenhao Li, Guangchuang Yu, Chenghao Zhu, Yang Cao
 #' @seealso [ggtree::ggtree()]
@@ -117,11 +117,16 @@ lefse_cladogram <- function(mm,
       color = annotation_info$color[match(.data$label, annotation_info$label)]
     )
 
+  # suppress warning: The shape palette can deal with a maximum of 6 discrete
+  # values because more than 6 becomes difficult to discriminate; you have 18.
+  # Consider specifying shapes manually if you must have them.
+  # using scale_shape_manual
   p <- tree +
     geom_point(
       data = guide_label,
       aes_(x = 0, y = 0, shape = ~label2),
       size = 0, stroke = 0) +
+    scale_shape_manual(values = rep(22, nrow(guide_label))) +
     guides(
       shape = guide_legend(
         override.aes = list(size = 5, shape = 22, fill = guide_label$color),
@@ -129,10 +134,7 @@ lefse_cladogram <- function(mm,
       )) +
     theme(legend.position = "right", legend.title = element_blank())
 
-  # suppress warning: The shape palette can deal with a maximum of 6 discrete
-  # values because more than 6 becomes difficult to discriminate; you have 18.
-  # Consider specifying shapes manually if you must have them.
-  suppressWarnings(print(p))
+  p
 }
 
 #' Generate tree data from phyloseq object
@@ -278,4 +280,3 @@ get_angle <- function(tree, node){
   sp.df <- tree_data[match(sp2, tree_data$node),]
   mean(range(sp.df$angle))
 }
-
