@@ -67,15 +67,17 @@ the first method to integrate to **microbiomeMarker** is LEfSe.
 
 ```{r lefse}
 library(microbiomeMarker)
+library(ggplot2)
 
-# sample data
-data("oxygen")
+# sample data from lefse python script. The dataset contains 30 abundance 
+# profiles (obtained processing the 16S reads with RDP) belonging to 10 rag2 
+# (control) and 20 truc (case) mice
+data("spontaneous_colitis")
 lefse_out <- lefse(
-  oxygen, 
+  spontaneous_colitis, 
   normalization = 1e6, 
   summarize = "lefse", 
-  class = "oxygen_availability", 
-  subclass = "body_site", 
+  class = "class", 
   multicls_strat = TRUE
 )
 # lefse return a microbioMarker class inherits from phyloseq
@@ -95,13 +97,14 @@ marker_table(lefse_out)
 Bar plot for output of lefse:
 
 ```{r lefse-barplot,dpi=300,out.width="100%"}
-lefse_barplot(lefse_out, label_level = 1)
+lefse_barplot(lefse_out, label_level = 1) +
+  scale_fill_manual(values = c("rag2" = "blue", "truc" = "red"))
 ```
 
 Cladogram plot for output of lefse
 
 ```{r lefse-cladogram,dpi=300,out.width="100%"}
-lefse_cladogram(lefse_out)
+lefse_cladogram(lefse_out, color = c("blue", "red"))
 ```
 
 ## Welcome

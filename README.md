@@ -58,24 +58,26 @@ library(microbiomeMarker)
 #> Registered S3 method overwritten by 'treeio':
 #>   method     from
 #>   root.phylo ape
+library(ggplot2)
 
-# sample data
-data("oxygen")
+# sample data from lefse python script. The dataset contains 30 abundance 
+# profiles (obtained processing the 16S reads with RDP) belonging to 10 rag2 
+# (control) and 20 truc (case) mice
+data("spontaneous_colitis")
 lefse_out <- lefse(
-  oxygen, 
+  spontaneous_colitis, 
   normalization = 1e6, 
   summarize = "lefse", 
-  class = "oxygen_availability", 
-  subclass = "body_site", 
+  class = "class", 
   multicls_strat = TRUE
 )
 #> Warning: Setting row names on a tibble is deprecated.
 # lefse return a microbioMarker class inherits from phyloseq
 lefse_out
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 8 microbiome markers with 5 variables ]
-#> otu_table()   OTU Table:         [ 1091 taxa and  55 samples ]
-#> tax_table()   Taxonomy Table:    [ 1091 taxa by 1 taxonomic ranks ]
+#> marker_table  Marker Table:      [ 29 microbiome markers with 5 variables ]
+#> otu_table()   OTU Table:         [ 132 taxa and  30 samples ]
+#> tax_table()   Taxonomy Table:    [ 132 taxa by 1 taxonomic ranks ]
 ```
 
 The microbiome biomarker information was stored in a new data structure
@@ -84,24 +86,66 @@ by using `marker_table()`.
 
 ``` r
 marker_table(lefse_out)
-#>                                                                                         feature
-#> 1                                                        Bacteria|Actinobacteria|Actinobacteria
-#> 2                                                                       Bacteria|Actinobacteria
-#> 3                                        Bacteria|Actinobacteria|Actinobacteria|Actinomycetales
-#> 4                   Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Propionibacteriaceae
-#> 5 Bacteria|Actinobacteria|Actinobacteria|Actinomycetales|Propionibacteriaceae|Propionibacterium
-#> 6                               Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Bacteroidaceae
-#> 7                   Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Bacteroidaceae|Bacteroides
-#> 8                                                   Bacteria|Firmicutes|Bacilli|Lactobacillales
-#>   enrich_group log_max_mean      lda      p_value
-#> 1      High_O2     5.826868 5.656724 4.148229e-09
-#> 2      High_O2     5.826868 5.656724 4.148229e-09
-#> 3      High_O2     5.826094 5.656707 3.841252e-09
-#> 4      High_O2     5.697155 5.549470 9.483488e-10
-#> 5      High_O2     5.697009 5.548929 1.034228e-09
-#> 6       Low_O2     5.613862 5.432087 3.034294e-07
-#> 7       Low_O2     5.613862 5.432087 3.034294e-07
-#> 8       Mid_O2     5.655506 5.502668 5.889748e-08
+#>                                                                                                  feature
+#> 1                                                                                 Bacteria|Bacteroidetes
+#> 2                                                                     Bacteria|Bacteroidetes|Bacteroidia
+#> 3                                                       Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales
+#> 4            Bacteria|Actinobacteria|Actinobacteria|Bifidobacteriales|Bifidobacteriaceae|Bifidobacterium
+#> 5                                    Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Porphyromonadaceae
+#> 6                            Bacteria|Actinobacteria|Actinobacteria|Bifidobacteriales|Bifidobacteriaceae
+#> 7                                               Bacteria|Actinobacteria|Actinobacteria|Bifidobacteriales
+#> 8                                                                                Bacteria|Actinobacteria
+#> 9                                                                 Bacteria|Actinobacteria|Actinobacteria
+#> 10                       Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Porphyromonadaceae|Barnesiella
+#> 11                                                                Bacteria|Firmicutes|Bacilli|Bacillales
+#> 12                                              Bacteria|Firmicutes|Bacilli|Bacillales|Staphylococcaceae
+#> 13                               Bacteria|Firmicutes|Bacilli|Bacillales|Staphylococcaceae|Staphylococcus
+#> 14                   Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Porphyromonadaceae|Parabacteroides
+#> 15                                Bacteria|Firmicutes|Clostridia|Clostridiales|Lachnospiraceae|Roseburia
+#> 16             Bacteria|Actinobacteria|Actinobacteria|Bifidobacteriales|Bifidobacteriaceae|Metascardovia
+#> 17                            Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae|Papillibacter
+#> 18                                                          Bacteria|Firmicutes|Clostridia|Clostridiales
+#> 19                                                                        Bacteria|Firmicutes|Clostridia
+#> 20                                                                                   Bacteria|Firmicutes
+#> 21                                          Bacteria|Firmicutes|Clostridia|Clostridiales|Lachnospiraceae
+#> 22                                          Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae
+#> 23                            Bacteria|Firmicutes|Clostridia|Clostridiales|Ruminococcaceae|Oscillibacter
+#> 24                                                           Bacteria|Proteobacteria|Gammaproteobacteria
+#> 25 Bacteria|Proteobacteria|Gammaproteobacteria|Enterobacteriales|Enterobacteriaceae|Escherichia/Shigella
+#> 26                                          Bacteria|Firmicutes|Bacilli|Lactobacillales|Streptococcaceae
+#> 27                            Bacteria|Firmicutes|Bacilli|Lactobacillales|Streptococcaceae|Streptococcus
+#> 28             Bacteria|Actinobacteria|Actinobacteria|Coriobacteriales|Coriobacteriaceae|Asaccharobacter
+#> 29           Bacteria|Proteobacteria|Deltaproteobacteria|Desulfovibrionales|Desulfovibrionaceae|Lawsonia
+#>    enrich_group log_max_mean      lda      p_value
+#> 1          rag2     5.451241 5.178600 1.553428e-02
+#> 2          rag2     5.433686 5.178501 1.375221e-02
+#> 3          rag2     5.433686 5.178501 1.375221e-02
+#> 4          rag2     5.082944 5.044767 1.217981e-04
+#> 5          rag2     4.987349 4.886991 1.320110e-03
+#> 6          rag2     4.789752 4.750839 1.217981e-04
+#> 7          rag2     4.789752 4.750839 1.217981e-04
+#> 8          rag2     4.800377 4.743824 6.001591e-04
+#> 9          rag2     4.800377 4.743824 6.001591e-04
+#> 10         rag2     4.761159 4.645092 1.320110e-03
+#> 11         rag2     4.045278 3.839820 4.863507e-03
+#> 12         rag2     4.007237 3.788714 7.256517e-03
+#> 13         rag2     3.990162 3.770290 8.270483e-03
+#> 14         rag2     3.652599 3.454102 7.056806e-03
+#> 15         rag2     3.259877 3.225737 6.151322e-06
+#> 16         rag2     2.982350 2.884262 4.204414e-04
+#> 17         rag2     2.616605 2.571572 7.997905e-05
+#> 18         truc     5.826884 5.455265 5.098324e-04
+#> 19         truc     5.827542 5.453962 5.098324e-04
+#> 20         truc     5.893569 5.391350 3.659080e-04
+#> 21         truc     5.326873 4.943669 2.400614e-03
+#> 22         truc     4.945682 4.512788 3.688840e-03
+#> 23         truc     4.033392 3.639159 4.773320e-02
+#> 24         truc     3.273543 3.310445 4.368471e-02
+#> 25         truc     3.216059 3.259396 1.240061e-02
+#> 26         truc     3.354679 3.156800 6.378989e-03
+#> 27         truc     3.350311 3.149519 6.378989e-03
+#> 28         truc     3.103242 2.914455 3.430807e-02
+#> 29         truc     2.002354 2.021579 2.378651e-02
 ```
 
 ### Visualization of the result of lefse analysis
@@ -109,7 +153,8 @@ marker_table(lefse_out)
 Bar plot for output of lefse:
 
 ``` r
-lefse_barplot(lefse_out, label_level = 1)
+lefse_barplot(lefse_out, label_level = 1) +
+  scale_fill_manual(values = c("rag2" = "blue", "truc" = "red"))
 ```
 
 <img src="man/figures/README-lefse-barplot-1.png" width="100%" />
@@ -117,7 +162,7 @@ lefse_barplot(lefse_out, label_level = 1)
 Cladogram plot for output of lefse
 
 ``` r
-lefse_cladogram(lefse_out)
+lefse_cladogram(lefse_out, color = c("blue", "red"))
 ```
 
 <img src="man/figures/README-lefse-cladogram-1.png" width="100%" />
