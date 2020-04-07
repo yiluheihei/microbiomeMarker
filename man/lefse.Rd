@@ -41,7 +41,7 @@ taxa (\code{TRUE} or \code{FALSE}), default \code{TRUE}}
 \item{bootstrap_n}{integer, the number of bootstrap iteration for LDA,
 default 30}
 
-\item{bootstrap_fraction}{numberic, the subsampling fraction value for each
+\item{bootstrap_fraction}{numeric, the subsampling fraction value for each
 bootstrap iteration, default \code{2/3}}
 
 \item{wilcoxon_cutoff}{numeric, p value cutoff of wilcoxon test, default 0.05}

@@ -14,13 +14,16 @@
 #' `node_size=a*log(relative_abundance) + b`
 ##' @param node_size_offset the parameter 'b' controlling node size:
 ##' `node_size=a*log(relative_abundance) + b`
+##' @param annotation_shape shape used for annotation, default `22`
+##' @param annotation_shape_size size used for annotation shape, default `5`
+##' @param ... extra arguments passed to [set_marker_annotation()]
 #' @return a ggtree object
 #' @importFrom tidytree treedata
 #' @importFrom ggplot2 geom_point theme element_blank geom_rect guides
 #' guide_legend aes_ scale_shape_manual
 #' @importFrom ggtree ggtree geom_hilight geom_point2 geom_cladelabel
 #' @author Chenhao Li, Guangchuang Yu, Chenghao Zhu, Yang Cao
-#' @seealso [ggtree::ggtree()]
+#' @seealso [ggtree::ggtree()], [set_marker_annotation()]
 #' @export
 #' @references This function is modified from `clada.anno` from microbiomeViz.
 #' \url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}
@@ -31,7 +34,10 @@ lefse_cladogram <- function(mm,
                             alpha = 0.2,
                             node_size_scale = 1,
                             node_size_offset = 1,
-                            clade_label_level = 4){
+                            clade_label_level = 4,
+                            annotation_shape = 22,
+                            annotation_shape_size = 5,
+                            ...){
   ps <- phyloseq(mm@otu_table, mm@tax_table)
   tree <- get_treedata_phyloseq(ps) %>%
     generate_taxa_tree(size = branch_size)
@@ -117,21 +123,13 @@ lefse_cladogram <- function(mm,
       color = annotation_info$color[match(.data$label, annotation_info$label)]
     )
 
-  # suppress warning: The shape palette can deal with a maximum of 6 discrete
-  # values because more than 6 becomes difficult to discriminate; you have 18.
-  # Consider specifying shapes manually if you must have them.
-  # using scale_shape_manual
-  p <- tree +
-    geom_point(
-      data = guide_label,
-      aes_(x = 0, y = 0, shape = ~label2),
-      size = 0, stroke = 0) +
-    scale_shape_manual(values = rep(22, nrow(guide_label))) +
-    guides(
-      shape = guide_legend(
-        override.aes = list(size = 5, shape = 22, fill = guide_label$color),
-        order = 2
-      )) +
+  p <- set_marker_annotation(
+    tree,
+    guide_label$color,
+    guide_label$label2,
+    shape = annotation_shape,
+    size = annotation_shape_size,
+    ...) +
     theme(legend.position = "right", legend.title = element_blank())
 
   p
@@ -279,4 +277,55 @@ get_angle <- function(tree, node){
   sp2 <- c(sp, node)
   sp.df <- tree_data[match(sp2, tree_data$node),]
   mean(range(sp.df$angle))
+}
+
+#' set legend for multiple geom_cladelabel layers
+#'
+#' This function can be used to set the microbiome marker annotatios
+#'
+#' @param p a ggtree object
+#' @param color a color vector
+#' @param label a character vector, with the same length with `color`
+#' @param shape shape of label, default `22`
+#' @param size size of shape, default `5`
+#' @param ... extra arguments passed to  [ggplot2::guide_legend()],
+#' e.g. `ncol`, more details see [ggplot2::guide_legend()].
+#' @seealso [ggplot2::guide_legend()]
+#' @return an updated `ggtree` object
+#' @importFrom ggplot2 geom_point aes_ scale_shape_manual guides guide_legend
+#' @export
+set_marker_annotation <- function(p,
+                                  color,
+                                  label,
+                                  size = 5,
+                                  shape = 22,
+                                  ...) {
+  dat <- data.frame(
+    color = color,
+    label = label,
+    stringsAsFactors = FALSE
+  )
+
+  # suppress warning: The shape palette can deal with a maximum of 6 discrete
+  # values because more than 6 becomes difficult to discriminate; you have 18.
+  # Consider specifying shapes manually if you must have them.
+  # using scale_shape_manual
+  p <- p +
+    geom_point(
+      data = dat, inherit.aes = FALSE,
+      aes_(x = 0, y = 0, shape = ~label),
+      size = 0, stroke = 0,) +
+    scale_shape_manual(values = rep(shape, nrow(dat))) +
+    guides(
+      shape = guide_legend(
+        override.aes = list(
+          size = size,
+          shape = shape,
+          fill = dat$color),
+        order = 2,
+        ...
+      )
+    )
+
+  p
 }

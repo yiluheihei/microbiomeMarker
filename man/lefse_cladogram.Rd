@@ -11,7 +11,10 @@ lefse_cladogram(
   alpha = 0.2,
   node_size_scale = 1,
   node_size_offset = 1,
-  clade_label_level = 4
+  clade_label_level = 4,
+  annotation_shape = 22,
+  annotation_shape_size = 5,
+  ...
 )
 }
 \arguments{
@@ -32,6 +35,12 @@ biomarker}
 
 \item{clade_label_level}{max level of taxa used to label the clade, other
 level of taxa  will be shown on the side}
+
+\item{annotation_shape}{shape used for annotation, default \code{22}}
+
+\item{annotation_shape_size}{size used for annotation shape, default \code{5}}
+
+\item{...}{extra arguments passed to \code{\link[=set_marker_annotation]{set_marker_annotation()}}}
 }
 \value{
 a ggtree object
@@ -44,7 +53,7 @@ This function is modified from \code{clada.anno} from microbiomeViz.
 \url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}
 }
 \seealso{
-\code{\link[ggtree:ggtree]{ggtree::ggtree()}}
+\code{\link[ggtree:ggtree]{ggtree::ggtree()}}, \code{\link[=set_marker_annotation]{set_marker_annotation()}}
 }
 \author{
 Chenhao Li, Guangchuang Yu, Chenghao Zhu, Yang Cao
