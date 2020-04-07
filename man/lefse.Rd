@@ -31,9 +31,8 @@ lefse(
 
 \item{normalization}{norm set the normalization value}
 
-\item{summarize}{one of \code{TRUE}, \code{FALSE}, \code{lefse}, whether summarize the
-taxa (\code{TRUE} or \code{FALSE}), or the taxa has been summarized just like the
-input of https://bitbucket.org/nsegata/lefse (\code{lefse}), default \code{TRUE}}
+\item{summarize}{logical, whether summarize the
+taxa (\code{TRUE} or \code{FALSE}), default \code{TRUE}}
 
 \item{kw_cutoff}{numeric, p value cutoff of kw test, default 0.05}
 

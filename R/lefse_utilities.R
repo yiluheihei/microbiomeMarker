@@ -566,10 +566,16 @@ add_tax_level <- function(taxa_nms, sep = "|") {
 #' check whether tax abundance table is summarized or not
 #' @noRd
 check_tax_summarize <- function(ps) {
-  is_summarize <- ifelse(
-    ncol(tax_table(ps)) == 1,
+  taxa <- tax_table(ps)
+  is_single_level <- ifelse(
+    ncol(taxa) == 1,
     TRUE, FALSE
   )
 
+  # whether taxa is separated by `|` or `.`,
+  # may be required to add extra separate strings in the future
+  has_separate <- any(grepl("[|.]", taxa))
+
+  is_summarize <- is_single_level && has_separate
   is_summarize
 }

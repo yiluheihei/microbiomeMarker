@@ -8,9 +8,8 @@
 #' @param kw_cutoff numeric, p value cutoff of kw test, default 0.05
 #' @param wilcoxon_cutoff numeric, p value cutoff of wilcoxon test, default 0.05
 #' @param normalization norm set the normalization value
-#' @param summarize one of `TRUE`, `FALSE`, `lefse`, whether summarize the
-#'   taxa (`TRUE` or `FALSE`), or the taxa has been summarized just like the
-#'   input of https://bitbucket.org/nsegata/lefse (`lefse`), default `TRUE`
+#' @param summarize logical, whether summarize the
+#'   taxa (`TRUE` or `FALSE`), default `TRUE`
 #' @param lda_cutoff numeric, lda score cutoff, default 2
 #' @param bootstrap_n integer, the number of bootstrap iteration for LDA,
 #'   default 30
@@ -75,7 +74,10 @@ lefse <- function(ps,
   subcls <- cls_info$subcls
   cls_hie <- cls_info$cls_hie
 
-  if (summarize == "lefse") {
+  # check whether the taxa is summarized first
+  # e.g. phyloseq object is construct from lefse python script
+  # just for experiment, may be dropped in the future
+  if (check_tax_summarize(ps)) {
     otus <- otu_table(ps) %>%
       add_missing_levels()
   } else if (!summarize) {
