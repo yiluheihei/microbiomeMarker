@@ -13,7 +13,7 @@
 #' @param lda_cutoff numeric, lda score cutoff, default 2
 #' @param bootstrap_n integer, the number of bootstrap iteration for LDA,
 #'   default 30
-#' @param bootstrap_fraction numberic, the subsampling fraction value for each
+#' @param bootstrap_fraction numeric, the subsampling fraction value for each
 #'   bootstrap iteration, default `2/3`
 #' @param multicls_strat logical, for multiple class tasks, whether the test is
 #'   performed in a one-against one (more strict) or in a one-against all

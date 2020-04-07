@@ -538,6 +538,10 @@ normalize_feature <- function(feature, normalization) {
       res
     }
   )
+
+  # for row names setting, phyloseq requires otu_table and tax_table has the
+  # same taxa
+  normed_feature <- as.data.frame(normed_feature)
   row.names(normed_feature) <- row.names(feature)
 
   otu_table(normed_feature, taxa_are_rows = TRUE)
