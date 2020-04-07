@@ -67,11 +67,9 @@ data("spontaneous_colitis")
 lefse_out <- lefse(
   spontaneous_colitis, 
   normalization = 1e6, 
-  summarize = "lefse", 
   class = "class", 
   multicls_strat = TRUE
 )
-#> Warning: Setting row names on a tibble is deprecated.
 # lefse return a microbioMarker class inherits from phyloseq
 lefse_out
 #> microbiomeMarker-class inherited from phyloseq-class
@@ -175,14 +173,14 @@ appreciated.**
 
 ## Acknowledgement
 
-Thanks to the [lefse python
-module](https://bitbucket.org/biobakery/biobakery/wiki/lefse) and
-[microbiomeViz](https://github.com/lch14forever/microbiomeViz). The main
-lefse code are translated from **lefse python script**, and cladogram
-visualization of lefse is modified from **microbiomeViz**. Thanks to the
-[phyloseq](https://github.com/joey711/phyloseq), the main data
-structures used in **microbiomeMarker** are from or inherit from
-`phyloseq-class` in package **phyloseq**.
+  - [lefse python
+    script](https://bitbucket.org/biobakery/biobakery/wiki/lefse), The
+    main lefse code are translated from **lefse python script**,
+  - [microbiomeViz](https://github.com/lch14forever/microbiomeViz),
+    cladogram visualization of lefse is modified from **microbiomeViz**.
+  - [phyloseq](https://github.com/joey711/phyloseq), the main data
+    structures used in **microbiomeMarker** are from or inherit from
+    `phyloseq-class` in package **phyloseq**.
 
 ## Reference
 

@@ -75,7 +75,6 @@ data("spontaneous_colitis")
 lefse_out <- lefse(
   spontaneous_colitis, 
   normalization = 1e6, 
-  summarize = "lefse", 
   class = "class", 
   multicls_strat = TRUE
 )
