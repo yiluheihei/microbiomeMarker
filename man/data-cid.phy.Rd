@@ -5,7 +5,9 @@
 \alias{data-cid.phy}
 \alias{cid.phy}
 \title{16S rRNA data of 94 patients from CID 2012}
-\format{a \link[phyloseq:phyloseq]{phyloseq::phyloseq} object}
+\format{
+a \link[phyloseq:phyloseq]{phyloseq::phyloseq} object
+}
 \source{
 \url{https://github.com/ying14/yingtools2/tree/master/data}
 }

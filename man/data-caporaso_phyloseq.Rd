@@ -5,7 +5,9 @@
 \alias{data-caporaso_phyloseq}
 \alias{caporaso_phyloseq}
 \title{16S rRNA data from "Moving pictures of the human microbiome"}
-\format{a \link[phyloseq:phyloseq]{phyloseq::phyloseq} object}
+\format{
+a \link[phyloseq:phyloseq]{phyloseq::phyloseq} object
+}
 \source{
 Data was downloaded from https://www.microbiomeanalyst.ca:
 \url{https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/treebiom.zip}

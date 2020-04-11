@@ -6,7 +6,9 @@
 \alias{oxygen}
 \title{Oxygen availability 16S dataset, of which taxa table has been summarized for
 python lefse input}
-\format{a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object}
+\format{
+a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object
+}
 \source{
 \url{http://huttenhower.sph.harvard.edu/webfm_send/129}
 }

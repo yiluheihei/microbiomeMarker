@@ -7,7 +7,9 @@
 \title{This is a sample data from lefse python script, a 16S dataset for studying
 the characteristics of the fecal microbiota in a mouse model of spontaneous
 colitis.}
-\format{a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object}
+\format{
+a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object
+}
 \source{
 \url{http://www.huttenhower.org/webfm_send/73}
 }
