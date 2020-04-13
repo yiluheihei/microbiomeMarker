@@ -23,6 +23,7 @@ options("citation_format" = "pandoc")
 [![R build status](https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check/badge.svg)](https://github.com/yiluheihei/microbiomeMarker/actions)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/yiluheihei/microbiomeMarker/blob/master/LICENSE.md)
 [![Codecov test coverage](https://codecov.io/gh/yiluheihei/microbiomeMarker/branch/master/graph/badge.svg)](https://codecov.io/gh/yiluheihei/microbiomeMarker?branch=master)
+[![DOI](https://zenodo.org/badge/215731961.svg)](https://zenodo.org/badge/latestdoi/215731961)
 <!-- badges: end -->
 
 ## Motivation
@@ -110,13 +111,21 @@ lefse_cladogram(lefse_out, color = c("blue", "red"))
 **microbiomeMarker is still a newborn, and only contains lefse methods right now. 
 Your suggestion and contribution will be highly appreciated.**
 
+## Citation
+
+Kindly cite as follows:  Yang Cao (2020). microbiomeMarker: microbiome biomarker
+analysis. R package version 0.0.1.9000. https://github.com/yiluheihei/microbiomeMarker. 
+DOI: [10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
+
 ## Acknowledgement
 
 - [lefse python script](https://bitbucket.org/biobakery/biobakery/wiki/lefse), 
-The main lefse code are translated from **lefse python script**,
-- [microbiomeViz](https://github.com/lch14forever/microbiomeViz), cladogram visualization of lefse is modified from **microbiomeViz**.
+  The main lefse code are translated from **lefse python script**,
+- [microbiomeViz](https://github.com/lch14forever/microbiomeViz), cladogram 
+  visualization of lefse is modified from **microbiomeViz**.
 - [phyloseq](https://github.com/joey711/phyloseq), the main data structures used 
-in **microbiomeMarker** are from or inherit from `phyloseq-class` in package **phyloseq**.
+  in **microbiomeMarker** are from or inherit from `phyloseq-class` in package 
+  **phyloseq**.
 
 ## Reference
 

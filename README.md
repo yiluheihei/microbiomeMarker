@@ -9,6 +9,7 @@ status](https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check/bad
 v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/yiluheihei/microbiomeMarker/blob/master/LICENSE.md)
 [![Codecov test
 coverage](https://codecov.io/gh/yiluheihei/microbiomeMarker/branch/master/graph/badge.svg)](https://codecov.io/gh/yiluheihei/microbiomeMarker?branch=master)
+[![DOI](https://zenodo.org/badge/215731961.svg)](https://zenodo.org/badge/latestdoi/215731961)
 <!-- badges: end -->
 
 ## Motivation
@@ -161,6 +162,10 @@ Cladogram plot for output of lefse
 
 ``` r
 lefse_cladogram(lefse_out, color = c("blue", "red"))
+#> Warning: `data_frame()` is deprecated as of tibble 1.1.0.
+#> Please use `tibble()` instead.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_warnings()` to see where this warning was generated.
 ```
 
 ![](man/figures/README-lefse-cladogram-1.png)<!-- -->
@@ -170,6 +175,13 @@ lefse_cladogram(lefse_out, color = c("blue", "red"))
 **microbiomeMarker is still a newborn, and only contains lefse methods
 right now. Your suggestion and contribution will be highly
 appreciated.**
+
+## Citation
+
+Kindly cite as follows: Yang Cao (2020). microbiomeMarker: microbiome
+biomarker analysis. R package version 0.0.1.9000.
+<https://github.com/yiluheihei/microbiomeMarker>. DOI:
+[10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
 
 ## Acknowledgement
 
@@ -190,7 +202,8 @@ appreciated.**
 
 Love, Michael I, Wolfgang Huber, and Simon Anders. 2014. “Moderated
 Estimation of Fold Change and Dispersion for RNA-Seq Data with DESeq2.”
-*Genome Biology* 15 (12). <https://doi.org/10.1186/s13059-014-0550-8>.
+*Genome Biology* 15 (12). Springer Science; Business Media LLC.
+<https://doi.org/10.1186/s13059-014-0550-8>.
 
 </div>
 
@@ -198,8 +211,8 @@ Estimation of Fold Change and Dispersion for RNA-Seq Data with DESeq2.”
 
 Paulson, Joseph N, O Colin Stine, H’ector Corrada Bravo, and Mihai Pop.
 2013. “Differential Abundance Analysis for Microbial Marker-Gene
-Surveys.” *Nature Methods* 10 (12): 1200–1202.
-<https://doi.org/10.1038/nmeth.2658>.
+Surveys.” *Nature Methods* 10 (12). Springer Science; Business Media
+LLC: 1200–1202. <https://doi.org/10.1038/nmeth.2658>.
 
 </div>
 
@@ -207,8 +220,8 @@ Surveys.” *Nature Methods* 10 (12): 1200–1202.
 
 Robinson, M. D., D. J. McCarthy, and G. K. Smyth. 2009. “edgeR: A
 Bioconductor Package for Differential Expression Analysis of Digital
-Gene Expression Data.” *Bioinformatics* 26 (1): 139–40.
-<https://doi.org/10.1093/bioinformatics/btp616>.
+Gene Expression Data.” *Bioinformatics* 26 (1). Oxford University Press
+(OUP): 139–40. <https://doi.org/10.1093/bioinformatics/btp616>.
 
 </div>
 
@@ -216,7 +229,8 @@ Gene Expression Data.” *Bioinformatics* 26 (1): 139–40.
 
 Segata, Nicola, Jacques Izard, Levi Waldron, Dirk Gevers, Larisa
 Miropolsky, Wendy S Garrett, and Curtis Huttenhower. 2011. “Metagenomic
-Biomarker Discovery and Explanation.” *Genome Biology* 12 (6): R60.
+Biomarker Discovery and Explanation.” *Genome Biology* 12 (6). Springer
+Science; Business Media LLC: R60.
 <https://doi.org/10.1186/gb-2011-12-6-r60>.
 
 </div>
