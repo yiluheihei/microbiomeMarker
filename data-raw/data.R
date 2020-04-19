@@ -126,3 +126,21 @@ spontaneous_colitis <- phyloseq(
 )
 
 usethis::use_data(spontaneous_colitis, overwrite = TRUE)
+
+# Enterotypes data from Arumugam's paper from stamp -----------------------
+
+enterotypes_arumugam <- readr::read_tsv("https://github.com/yiluheihei/STAMP/raw/master/examples/EnterotypesArumugam/Enterotypes.profile.spf")
+
+enterotypes_arumugam_meta <- readr::read_tsv("https://github.com/yiluheihei/STAMP/raw/master/examples/EnterotypesArumugam/Enterotypes.metadata.tsv") %>% as.data.frame()
+row.names(enterotypes_arumugam_meta) <- enterotypes_arumugam_meta$`Sample Id`
+
+enterotype_abd <- dplyr::select(enterotypes_arumugam, -Phyla, -Genera)
+enterotype_tax <- dplyr::select(enterotypes_arumugam, Phyla, Genera)
+
+enterotypes_arumugam <- phyloseq(
+  otu_table(enterotype_abd, taxa_are_rows = TRUE),
+  tax_table(as.matrix(enterotype_tax)),
+  sample_data(enterotypes_arumugam_meta)
+)
+
+usethis::use_data(enterotypes_arumugam, overwrite = TRUE)

@@ -84,3 +84,18 @@
 #' @author Yang Cao
 "spontaneous_colitis"
 
+#' Enterotypes data of 39 samples
+#'
+#' The data contains 22 European metagenomes from Danish, French, Italian,
+#' and Spanish individuals, and 13 Japanese and 4 American.
+#'
+#' @format a [`phyloseq::phyloseq-class`] object
+#' @source \url{https://github.com/dparks1134/STAMP/tree/master/examples/EnterotypesArumugam}
+#' @references
+#' Arumugam, Manimozhiyan, et al. Enterotypes of the human gut microbiome.
+#' nature 473.7346 (2011): 174-180.
+#' @name data-enterotypes_arumugam
+#' @aliases enterotypes_arumugam
+#' @docType data
+#' @author Yang Cao
+"enterotypes_arumugam"
