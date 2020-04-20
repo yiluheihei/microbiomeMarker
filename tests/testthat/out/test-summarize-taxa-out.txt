@@ -1,10 +1,134 @@
- [1] "k__Archaea|p__Euryarchaeota|c__Methanobacteria|o__Methanobacteriales|f__Methanobacteriaceae|g__Methanobacterium|s__"  
- [2] "k__Archaea|p__Euryarchaeota|c__Methanobacteria|o__Methanobacteriales|f__Methanobacteriaceae|g__Methanobrevibacter|s__"
- [3] "k__Archaea|p__Euryarchaeota|c__Methanobacteria|o__Methanobacteriales|f__WSA2|g__|s__"                                 
- [4] "k__Bacteria|NA|NA|NA|NA|NA|NA"                                                                                        
- [5] "k__Bacteria|p__Acidobacteria|c__Acidobacteria-6|o__iii1-15|f__mb2424|g__|s__"                                         
- [6] "k__Bacteria|p__Acidobacteria|c__Acidobacteria-6|o__iii1-15|f__|g__|s__"                                               
- [7] "k__Bacteria|p__Acidobacteria|c__[Chloracidobacteria]|o__DS-100|f__|g__|s__"                                           
- [8] "k__Bacteria|p__Acidobacteria|c__[Chloracidobacteria]|o__RB41|f__Ellin6075|g__|s__"                                    
- [9] "k__Bacteria|p__Actinobacteria|c__Acidimicrobiia|o__Acidimicrobiales|NA|NA|NA"                                         
-[10] "k__Bacteria|p__Actinobacteria|c__Acidimicrobiia|o__Acidimicrobiales|f__C111|g__|s__"                                  
+OTU Table:          [10 taxa and 43 samples]
+                     taxa are rows
+                                    206700      206701      206702       206703
+k__Archaea                    0.000000e+00 0.000000000 0.000000000 0.0000000000
+k__Bacteria                   1.000000e+00 1.000000000 1.000000000 1.0000000000
+k__Archaea|p__Euryarchaeota   0.000000e+00 0.000000000 0.000000000 0.0000000000
+k__Bacteria|NA                6.273422e-04 0.006407191 0.021143796 0.0001225378
+k__Bacteria|p__Acidobacteria  0.000000e+00 0.000000000 0.000000000 0.0000000000
+k__Bacteria|p__Actinobacteria 8.254503e-05 0.002056039 0.000000000 0.0018380664
+k__Bacteria|p__Bacteroidetes  2.194542e-01 0.004924931 0.005883231 0.5398094538
+k__Bacteria|p__Chloroflexi    0.000000e+00 0.000000000 0.000000000 0.0000000000
+k__Bacteria|p__Cyanobacteria  0.000000e+00 0.000000000 0.000000000 0.0000000000
+k__Bacteria|p__Firmicutes     3.670447e-01 0.007315674 0.002180081 0.3949391906
+                                    206704      206708       206709
+k__Archaea                    0.000000e+00 0.000000000 0.0000000000
+k__Bacteria                   1.000000e+00 1.000000000 1.0000000000
+k__Archaea|p__Euryarchaeota   0.000000e+00 0.000000000 0.0000000000
+k__Bacteria|NA                8.691873e-05 0.001273919 0.0003465558
+k__Bacteria|p__Acidobacteria  0.000000e+00 0.000000000 0.0000000000
+k__Bacteria|p__Actinobacteria 7.967550e-03 0.003980997 0.0015994882
+k__Bacteria|p__Bacteroidetes  3.017239e-01 0.352716367 0.5741362764
+k__Bacteria|p__Chloroflexi    0.000000e+00 0.000000000 0.0000000000
+k__Bacteria|p__Cyanobacteria  0.000000e+00 0.000000000 0.0000000000
+k__Bacteria|p__Firmicutes     5.933652e-01 0.618646992 0.3823576456
+                                    206710     206711       206718      206719
+k__Archaea                    0.000000e+00 0.00000000 0.0000000000 0.000000000
+k__Bacteria                   1.000000e+00 1.00000000 1.0000000000 1.000000000
+k__Archaea|p__Euryarchaeota   0.000000e+00 0.00000000 0.0000000000 0.000000000
+k__Bacteria|NA                7.793422e-05 0.00000000 0.0000000000 0.000000000
+k__Bacteria|p__Acidobacteria  0.000000e+00 0.00000000 0.0000000000 0.000000000
+k__Bacteria|p__Actinobacteria 2.205539e-02 0.01142714 0.0009515083 0.003441508
+k__Bacteria|p__Bacteroidetes  4.109731e-01 0.36148848 0.5097265295 0.483720055
+k__Bacteria|p__Chloroflexi    0.000000e+00 0.00000000 0.0000000000 0.000000000
+k__Bacteria|p__Cyanobacteria  0.000000e+00 0.00000000 0.0000000000 0.000000000
+k__Bacteria|p__Firmicutes     5.565802e-01 0.61920124 0.4804412179 0.495899766
+                                    206720       206721       206725
+k__Archaea                    0.0000000000 0.0000000000 0.0000000000
+k__Bacteria                   1.0000000000 1.0000000000 1.0000000000
+k__Archaea|p__Euryarchaeota   0.0000000000 0.0000000000 0.0000000000
+k__Bacteria|NA                0.0004200336 0.0001241696 0.0000000000
+k__Bacteria|p__Acidobacteria  0.0000000000 0.0000000000 0.0000000000
+k__Bacteria|p__Actinobacteria 0.0017201376 0.0011175265 0.0008208906
+k__Bacteria|p__Bacteroidetes  0.5456636531 0.5588460504 0.3546469061
+k__Bacteria|p__Chloroflexi    0.0000000000 0.0000000000 0.0000000000
+k__Bacteria|p__Cyanobacteria  0.0000000000 0.0000000000 0.0000000000
+k__Bacteria|p__Firmicutes     0.3910312825 0.3670867739 0.6121181195
+                                   206726      206727      206728       206734
+k__Archaea                    0.000000000 0.000000000 0.000000000 0.000000e+00
+k__Bacteria                   1.000000000 1.000000000 1.000000000 1.000000e+00
+k__Archaea|p__Euryarchaeota   0.000000000 0.000000000 0.000000000 0.000000e+00
+k__Bacteria|NA                0.000000000 0.001241330 0.001550838 7.684771e-05
+k__Bacteria|p__Acidobacteria  0.000000000 0.000000000 0.000000000 0.000000e+00
+k__Bacteria|p__Actinobacteria 0.001480301 0.001517182 0.001395755 1.383259e-03
+k__Bacteria|p__Bacteroidetes  0.488544751 0.296165668 0.258873704 6.380857e-01
+k__Bacteria|p__Chloroflexi    0.000000000 0.000000000 0.000000000 0.000000e+00
+k__Bacteria|p__Cyanobacteria  0.000000000 0.000000000 0.000000000 0.000000e+00
+k__Bacteria|p__Firmicutes     0.491414256 0.535959174 0.624290007 2.465659e-01
+                                    206738      206739       206740      206741
+k__Archaea                    0.0000000000 0.000000000 0.000000e+00 0.000000000
+k__Bacteria                   1.0000000000 1.000000000 1.000000e+00 1.000000000
+k__Archaea|p__Euryarchaeota   0.0000000000 0.000000000 0.000000e+00 0.000000000
+k__Bacteria|NA                0.0011604967 0.010978996 5.382462e-03 0.002217295
+k__Bacteria|p__Acidobacteria  0.0000000000 0.000000000 9.227078e-05 0.000000000
+k__Bacteria|p__Actinobacteria 0.0079494023 0.009135033 5.105650e-03 0.002760306
+k__Bacteria|p__Bacteroidetes  0.2786352559 0.284288167 4.589549e-01 0.426195755
+k__Bacteria|p__Chloroflexi    0.0000000000 0.000000000 0.000000e+00 0.000000000
+k__Bacteria|p__Cyanobacteria  0.0008993849 0.000000000 0.000000e+00 0.000000000
+k__Bacteria|p__Firmicutes     0.6432343043 0.673936542 4.605235e-01 0.508823929
+                                   206742      206743       206750       206751
+k__Archaea                    0.002495148 0.001249397 0.000000e+00 0.0001460890
+k__Bacteria                   0.997504852 0.998750603 1.000000e+00 0.9998539110
+k__Archaea|p__Euryarchaeota   0.002495148 0.001249397 0.000000e+00 0.0001460890
+k__Bacteria|NA                0.000000000 0.002739906 5.043409e-04 0.0007513148
+k__Bacteria|p__Acidobacteria  0.000000000 0.000263031 0.000000e+00 0.0000000000
+k__Bacteria|p__Actinobacteria 0.004458922 0.005435974 3.188155e-03 0.0005843560
+k__Bacteria|p__Bacteroidetes  0.530288328 0.647450791 5.268381e-01 0.4860171968
+k__Bacteria|p__Chloroflexi    0.000000000 0.000000000 9.006088e-05 0.0000000000
+k__Bacteria|p__Cyanobacteria  0.000000000 0.000000000 0.000000e+00 0.0000000000
+k__Bacteria|p__Firmicutes     0.394972738 0.246218929 4.136316e-01 0.4809458219
+                                    206756      206767      206768      215075
+k__Archaea                    0.0000000000 0.000000000 0.003666841 0.000000000
+k__Bacteria                   1.0000000000 1.000000000 0.996333159 1.000000000
+k__Archaea|p__Euryarchaeota   0.0000000000 0.000000000 0.003666841 0.000000000
+k__Bacteria|NA                0.0004086915 0.006743402 0.021267679 0.000607226
+k__Bacteria|p__Acidobacteria  0.0000000000 0.000000000 0.000000000 0.000000000
+k__Bacteria|p__Actinobacteria 0.0009536135 0.001627718 0.028706129 0.003997571
+k__Bacteria|p__Bacteroidetes  0.5114774198 0.465759795 0.016238869 0.522416759
+k__Bacteria|p__Chloroflexi    0.0000000000 0.000000000 0.000000000 0.000000000
+k__Bacteria|p__Cyanobacteria  0.0000000000 0.000000000 0.001047669 0.000000000
+k__Bacteria|p__Firmicutes     0.3564016983 0.287989769 0.113148245 0.408258273
+                                    219633      219634     219651       219652
+k__Archaea                    0.0000000000 0.000000000 0.00000000 0.0000000000
+k__Bacteria                   1.0000000000 1.000000000 1.00000000 1.0000000000
+k__Archaea|p__Euryarchaeota   0.0000000000 0.000000000 0.00000000 0.0000000000
+k__Bacteria|NA                0.0022574931 0.015753766 0.00157751 0.0027753899
+k__Bacteria|p__Acidobacteria  0.0000000000 0.000000000 0.00000000 0.0001228049
+k__Bacteria|p__Actinobacteria 0.0007988053 0.005136264 0.05332925 0.1272995211
+k__Bacteria|p__Bacteroidetes  0.1362483937 0.077580590 0.21609531 0.1903229768
+k__Bacteria|p__Chloroflexi    0.0000000000 0.000000000 0.00000000 0.0000000000
+k__Bacteria|p__Cyanobacteria  0.0000000000 0.000000000 0.01003014 0.0095296574
+k__Bacteria|p__Firmicutes     0.8012711423 0.792402928 0.69749482 0.6424413607
+                                    219655      219656      219659       219675
+k__Archaea                    0.0000000000 0.000000000 0.006481722 0.0000000000
+k__Bacteria                   1.0000000000 1.000000000 0.993518278 1.0000000000
+k__Archaea|p__Euryarchaeota   0.0000000000 0.000000000 0.006481722 0.0000000000
+k__Bacteria|NA                0.0003437698 0.027429359 0.001555613 0.0000000000
+k__Bacteria|p__Acidobacteria  0.0000000000 0.000000000 0.000000000 0.0001539172
+k__Bacteria|p__Actinobacteria 0.0008726465 0.003308063 0.116411719 0.0042788980
+k__Bacteria|p__Bacteroidetes  0.1342024540 0.245991270 0.284158673 0.1894104972
+k__Bacteria|p__Chloroflexi    0.0000000000 0.000000000 0.000000000 0.0000000000
+k__Bacteria|p__Cyanobacteria  0.0000000000 0.000000000 0.000000000 0.0000000000
+k__Bacteria|p__Firmicutes     0.8358631267 0.584975879 0.367643246 0.3987070956
+                                    219691      224323      224324     224327
+k__Archaea                    0.0000000000 0.000000000 0.000000000 0.00000000
+k__Bacteria                   1.0000000000 1.000000000 1.000000000 1.00000000
+k__Archaea|p__Euryarchaeota   0.0000000000 0.000000000 0.000000000 0.00000000
+k__Bacteria|NA                0.0010020364 0.001257961 0.001270210 0.00000000
+k__Bacteria|p__Acidobacteria  0.0000000000 0.000000000 0.000000000 0.00000000
+k__Bacteria|p__Actinobacteria 0.0038788506 0.001939356 0.001463971 0.01846197
+k__Bacteria|p__Bacteroidetes  0.1105149174 0.540818198 0.666559022 0.47157890
+k__Bacteria|p__Chloroflexi    0.0000000000 0.000000000 0.000000000 0.00000000
+k__Bacteria|p__Cyanobacteria  0.0007757701 0.000000000 0.000000000 0.00000000
+k__Bacteria|p__Firmicutes     0.7912855157 0.349477160 0.195138754 0.34986142
+                                  224328
+k__Archaea                    0.00000000
+k__Bacteria                   1.00000000
+k__Archaea|p__Euryarchaeota   0.00000000
+k__Bacteria|NA                0.00000000
+k__Bacteria|p__Acidobacteria  0.00000000
+k__Bacteria|p__Actinobacteria 0.01454019
+k__Bacteria|p__Bacteroidetes  0.49537358
+k__Bacteria|p__Chloroflexi    0.00000000
+k__Bacteria|p__Cyanobacteria  0.00000000
+k__Bacteria|p__Firmicutes     0.33807516

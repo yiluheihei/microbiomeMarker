@@ -18,8 +18,9 @@ summarize_taxa <- function(ps,
                            level = "Kingdom",
                            absolute = FALSE,
                            sep = "|") {
-  level <- match(level, availabel_ranks)
-  level <- availabel_ranks[level:7]
+  ranks <- setdiff(availabel_ranks, "Summarize")
+  level <- match(level, ranks)
+  level <- ranks[level:7]
   res <- purrr::map(
     level,
     ~.summarize_taxa_level(
@@ -46,7 +47,6 @@ summarize_taxa <- function(ps,
     ps <- transform_sample_counts(ps, function(x)x/sum(x))
   }
 
-  rank <- 8 - match(rank_name, availabel_ranks)
   # norm the abundance data
   # if (norm > 0) {
   #   ps@otu_table <- ps@otu_table*norm
@@ -59,7 +59,11 @@ summarize_taxa <- function(ps,
   taxas <- tax_table(ps)@.Data %>%
     tibble::as_tibble()
 
-  consensus <- taxas[, 1:rank]  %>%
+  ranks <- setdiff(availabel_ranks, "Summarize")
+  rank_level <- match(rank_name, ranks)
+  select_ranks <- intersect(ranks[1:rank_level], rank_names(ps))
+
+  consensus <- taxas[, select_ranks]  %>%
     purrr::pmap_chr(paste, sep = sep)
   otus_extend$consensus <- consensus
 
