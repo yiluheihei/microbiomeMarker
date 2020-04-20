@@ -9,6 +9,7 @@ test_that("check the summarize_taxa", {
   skip_on_cran()
   sep = "|"
   taxa <- summarize_taxa(pediatric_ibd, sep = sep)
+  taxa <- round(taxa, 7)
 
   expect_true(any(grepl(sep, row.names(taxa), fixed = TRUE)))
   expect_known_output(
