@@ -68,7 +68,7 @@ lefse <- function(ps,
   diff_rank <- setdiff(ranks, availabel_ranks)
   if (length(diff_rank)) {
     stop(
-      "ranks of `ps` must be one of",
+      "ranks of `ps` must be one of ",
       paste(availabel_ranks, collapse = ", ")
     )
   }
