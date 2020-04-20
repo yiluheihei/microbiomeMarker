@@ -87,7 +87,7 @@ row.names(sample_abd) <- tax_dat
 
 tax_mat <- as.matrix(tax_dat)
 row.names(tax_mat) <- tax_dat
-colnames(tax_mat) <- "summarized_taxa"
+colnames(tax_mat) <- "Summarize"
 
 oxygen <- phyloseq(
   otu_table(sample_abd, taxa_are_rows = TRUE),
@@ -135,7 +135,7 @@ enterotypes_arumugam_meta <- readr::read_tsv("https://github.com/yiluheihei/STAM
 row.names(enterotypes_arumugam_meta) <- enterotypes_arumugam_meta$`Sample Id`
 
 enterotype_abd <- dplyr::select(enterotypes_arumugam, -Phyla, -Genera)
-enterotype_tax <- dplyr::select(enterotypes_arumugam, Phyla, Genera)
+enterotype_tax <- dplyr::select(enterotypes_arumugam, Phylum = Phyla, Genus = Genera)
 
 enterotypes_arumugam <- phyloseq(
   otu_table(enterotype_abd, taxa_are_rows = TRUE),

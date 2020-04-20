@@ -30,6 +30,7 @@
 #' @importFrom  dplyr mutate filter arrange rowwise select
 #' @importFrom  purrr map_dbl pmap_dbl pmap_chr
 #' @importFrom stats p.adjust
+#' @importFrom phyloseq rank_names
 #' @export
 #' @return a data frame contains five variables:
 #' * `feature`, significantly different features.
@@ -59,11 +60,18 @@ lefse <- function(ps,
   if (!inherits(ps, "phyloseq")) {
     stop("`ps` must be phyloseq object", call. = FALSE)
   }
-  if (!summarize %in% c(TRUE, FALSE, "lefse")) {
-    stop("`summarize must be one of `TRUE`, `FALSE` or `lefse`")
-  }
+
   correct <- match.arg(correct)
   correct <- as.numeric(correct)
+
+  ranks <- rank_names(ps)
+  diff_rank <- setdiff(ranks, availabel_ranks)
+  if (length(diff_rank)) {
+    stop(
+      "ranks of `ps` must be one of",
+      paste(availabel_ranks, collapse = ", ")
+    )
+  }
 
   # filter the taxa whose abundance is zero
   ps <- phyloseq_qc(ps)

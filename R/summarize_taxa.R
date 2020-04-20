@@ -4,7 +4,7 @@
 #' each sample.
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object.
-#' @param level integer, taxonomic level to summarize by, default 7.
+#' @param level taxonomic level to summarize, default `Kingdom`.
 #' @param absolute logical, whether return the absolute abundance or
 #'   relative abundance, default `FALSE`
 #' FALSE.
@@ -15,11 +15,13 @@
 #' @export
 
 summarize_taxa <- function(ps,
-                           level = 7,
+                           level = "Kingdom",
                            absolute = FALSE,
                            sep = "|") {
+  level <- match(level, availabel_ranks)
+  level <- availabel_ranks[level:7]
   res <- purrr::map(
-    1:level,
+    level,
     ~.summarize_taxa_level(
       ps,
       rank = .x,
@@ -37,13 +39,14 @@ summarize_taxa <- function(ps,
 #' Summarize the taxa for the specific rank
 #' @noRd
 .summarize_taxa_level <- function(ps,
-                                  rank = 6,
+                                  rank_name,
                                   absolute = FALSE,
                                   sep = "|") {
   if (!absolute) {
     ps <- transform_sample_counts(ps, function(x)x/sum(x))
   }
 
+  rank <- 8 - match(rank_name, availabel_ranks)
   # norm the abundance data
   # if (norm > 0) {
   #   ps@otu_table <- ps@otu_table*norm
