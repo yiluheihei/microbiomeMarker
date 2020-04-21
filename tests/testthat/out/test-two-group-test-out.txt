@@ -1,0 +1,4 @@
+microbiomeMarker-class inherited from phyloseq-class
+marker_table  Marker Table:      [ 248 microbiome markers with 8 variables ]
+otu_table()   OTU Table:         [ 248 taxa and  39 samples ]
+tax_table()   Taxonomy Table:    [ 248 taxa by 2 taxonomic ranks ]
