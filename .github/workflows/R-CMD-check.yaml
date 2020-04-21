@@ -20,7 +20,6 @@ jobs:
         config:
           - {os: windows-latest, r: '3.6'}
           - {os: macOS-latest, r: '3.6'}
-          - {os: macOS-latest, r: 'devel'}
           - {os: ubuntu-16.04, r: '3.6', rspm: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
 
     env:
@@ -55,6 +54,7 @@ jobs:
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
+          sudo apt-get install libglpk-dev
           Rscript -e "remotes::install_github('r-hub/sysreqs')"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
