@@ -5,19 +5,31 @@
 #' @param rank_name character, taxonomic names of [`phyloseq::phyloseq-class`]
 #' to compare
 #' @param method test method
-#' @param p_adjust_method method for multiple test correction
+#' @param p_adjust_method method for multiple test correction, default `none`,
+#' for more details see [stats::p.adjust].
+#' @param p_value_cutoff numeric, p value cutoff, default 0.05
+#' @param diff_mean_cutoff,ratio_proportion_cutoff cutoff of different mean
+#' proportions and ratio proportions, default `NULL` which means no effect size
+#' filter.
 #' @param conf_level numeric, confidence level of interval
 #' @importFrom phyloseq rank_names tax_glom
-#' @importFrom dplyr select everything
+#' @importFrom dplyr select everything filter
 #' @export
 #' @author Yang Cao
 test_two_groups <- function(ps,
                            groups,
                            rank_name,
                            method = "welch.test",
-                           p_adjust_method = "fdr",
+                           p_adjust_method = c("none", "fdr", "bonferroni", "holm",
+                                               "hochberg", "hommel", "BH", "BY"),
+                           p_value_cutoff = 0.05,
+                           diff_mean_cutoff = NULL,
+                           ratio_proportion_cutoff = NULL,
                            conf_level = 0.95) {
   stopifnot(inherits(ps, "phyloseq"))
+
+  p_adjust_method <- match.arg(p_adjust_method)
+
   ranks <- rank_names(ps)
   if (!rank_name %in% ranks) {
     stop("`rank_name` must be one of availabel taxonomic ranks of `ps`")
@@ -53,11 +65,42 @@ test_two_groups <- function(ps,
     ci_upper = ifelse(.data$pvalue == 1, 0, .data$ci_upper)) %>%
     select(.data$feature, everything())
 
-  microbiomeMarker(
-    marker_table(test_res),
-    otu_table(t(abd), taxa_are_rows = TRUE),
-    tax_table(ps)
-  )
+  # p value correction for multiple comparisons
+  test_res$pvalue_corrected <- p.adjust(test_res$pvalue, method = p_adjust_method)
+
+  # p <= 0.05
+  test_filtered <-  filter(test_res, .data$pvalue_corrected <= p_value_cutoff)
+  # abs(diff_mean) >= cutoff
+  if (!is.null(diff_mean_cutoff)) {
+    test_filtered <- filter(
+      test_filtered,
+      abs(.data$diff_mean) >= diff_mean_cutoff
+    )
+  }
+  # ratio proportion >= cutoff or <= 1/cutoff
+  if (!is.null(ratio_proportion_cutoff)) {
+    test_filtered <- filter(
+      test_filtered,
+      .data$ratio_proportion >= ratio_proportion_cutoff | .data$ratio_proportion <= 1/ratio_proportion_cutoff
+    )
+  }
+
+  if (nrow(test_filtered) == 0) {
+    warning("No significant features were found, return all the features")
+    marker <- microbiomeMarker(
+      marker_table(test_res),
+      otu_table(t(abd), taxa_are_rows = TRUE),
+      tax_table(ps)
+    )
+  } else {
+    marker <- microbiomeMarker(
+      marker_table(test_filtered),
+      otu_table(t(abd), taxa_are_rows = TRUE),
+      tax_table(ps)
+    )
+  }
+
+  marker
 }
 
 #' welch test
