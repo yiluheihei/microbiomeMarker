@@ -19,7 +19,7 @@
 test_two_groups <- function(ps,
                            groups,
                            rank_name,
-                           method = "welch.test",
+                           method = c("welch.test", "t.test"),
                            p_adjust_method = c("none", "fdr", "bonferroni", "holm",
                                                "hochberg", "hommel", "BH", "BY"),
                            p_value_cutoff = 0.05,
@@ -28,7 +28,11 @@ test_two_groups <- function(ps,
                            conf_level = 0.95) {
   stopifnot(inherits(ps, "phyloseq"))
 
-  p_adjust_method <- match.arg(p_adjust_method)
+  p_adjust_method <- match.arg(
+    p_adjust_method,
+    c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY")
+  )
+  method <- match.arg(method, c("welch.test", "t.test"))
 
   ranks <- rank_names(ps)
   if (!rank_name %in% ranks) {
@@ -50,7 +54,12 @@ test_two_groups <- function(ps,
   groups <- sample_meta[[groups]]
   abd_group <- split(abd, groups)
 
-  test_res <- run_welch_test(abd_group, conf_level = conf_level)
+  if (method == "welch.test") {
+    test_res <- run_t_test(abd_group, conf_level = conf_level)
+  } else if (method == "t.test") {
+    test_res <- run_t_test(abd_group, conf_level, var_equal = TRUE)
+  }
+
   feature <- tax_table(ps)[, rank_name] %>% unclass()
   test_res$feature <- feature[, 1]
 
@@ -103,19 +112,24 @@ test_two_groups <- function(ps,
   marker
 }
 
-#' welch test
+#' run t test or welch test
 #'
 #' @param abd_group a two length list, each element represents the feature
 #' abundance of a group
 #' @param conf_level numeric, confidence level of the interval, default 0.95
-run_welch_test <- function(abd_group, conf_level = 0.95) {
+#' @param var_equal a logical variable indicating whether to treat the two
+#' variances as being equal. If TRUE then the pooled variance is used to
+#' estimate the variance otherwise the Welch (or Satterthwaite) approximation
+#' to the degrees of freedom is used.
+#' @seealso [stats::t.test()]
+run_t_test <- function(abd_group, conf_level = 0.95, var_equal = FALSE) {
   if (length(abd_group) != 2) {
     stop("welch test requires test between two groups")
   }
-  # welch test
+
   t_res <- purrr::pmap(
     abd_group,
-    ~ t.test(.x, .y, conf.level = conf_level)
+    ~ t.test(.x, .y, conf.level = conf_level, var.equal = var_equal)
   )
 
   # p value

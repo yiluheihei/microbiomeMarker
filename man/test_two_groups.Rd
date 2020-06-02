@@ -8,7 +8,7 @@ test_two_groups(
   ps,
   groups,
   rank_name,
-  method = "welch.test",
+  method = c("welch.test", "t.test"),
   p_adjust_method = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH",
     "BY"),
   p_value_cutoff = 0.05,

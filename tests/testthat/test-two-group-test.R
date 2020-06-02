@@ -15,12 +15,23 @@ test_that("ratio proportion", {
 
 test_that("test two group result", {
   skip_on_cran()
-  skip
-  res <- test_two_groups(enterotypes_arumugam, "Gender", "Genus")
 
+  welch_res <- test_two_groups(enterotypes_arumugam, "Gender", "Genus")
   expect_known_output(
-    res,
-    test_path("out/test-two-group-test-out.txt"),
+    welch_res,
+    test_path("out/test-two-group-test-welch.txt"),
+    print = TRUE
+  )
+
+  t_res <- test_two_groups(
+    enterotypes_arumugam,
+    "Gender",
+    "Genus",
+    method = "t.test"
+  )
+  expect_known_output(
+    t_res,
+    test_path("out/test-two-group-test-t.txt"),
     print = TRUE
   )
 })
