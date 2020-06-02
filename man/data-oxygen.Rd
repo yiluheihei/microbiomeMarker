@@ -12,9 +12,6 @@ a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object
 \source{
 \url{http://huttenhower.sph.harvard.edu/webfm_send/129}
 }
-\usage{
-oxygen
-}
 \description{
 A small subset of the HMP 16S dataset for finding biomarkers characterizing
 different level of oxygen availability in different bodysites
@@ -22,4 +19,3 @@ different level of oxygen availability in different bodysites
 \author{
 Yang Cao
 }
-\keyword{datasets}

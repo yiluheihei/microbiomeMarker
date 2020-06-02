@@ -13,9 +13,6 @@ a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object
 \source{
 \url{http://www.huttenhower.org/webfm_send/73}
 }
-\usage{
-spontaneous_colitis
-}
 \description{
 The dataset contains 30 abundance profiles (obtained processing the 16S reads
 with RDP) belonging to 10 rag2 (control) and 20 truc (case) mice.
@@ -23,4 +20,3 @@ with RDP) belonging to 10 rag2 (control) and 20 truc (case) mice.
 \author{
 Yang Cao
 }
-\keyword{datasets}

@@ -19,7 +19,7 @@
 #' @aliases caporaso_phyloseq
 #' @docType data
 #' @author Yang Cao
-"caporaso_phyloseq"
+NA
 
 #' 16S rRNA data of 94 patients from CID 2012
 #'
@@ -40,7 +40,7 @@
 #' @aliases cid.phy
 #' @docType data
 #' @author Yang Cao
-"cid.phy"
+NA
 
 #' IBD stool samples
 #'
@@ -53,7 +53,7 @@
 #' @aliases pediatric_ibd
 #' @docType data
 #' @author Yang Cao
-"pediatric_ibd"
+NA
 
 #' Oxygen availability 16S dataset, of which taxa table has been summarized for
 #' python lefse input
@@ -67,7 +67,7 @@
 #' @aliases oxygen
 #' @docType data
 #' @author Yang Cao
-"oxygen"
+NA
 
 #' This is a sample data from lefse python script, a 16S dataset for studying
 #' the characteristics of the fecal microbiota in a mouse model of spontaneous
@@ -82,7 +82,7 @@
 #' @aliases spontaneous_colitis
 #' @docType data
 #' @author Yang Cao
-"spontaneous_colitis"
+NA
 
 #' Enterotypes data of 39 samples
 #'
@@ -98,4 +98,4 @@
 #' @aliases enterotypes_arumugam
 #' @docType data
 #' @author Yang Cao
-"enterotypes_arumugam"
+NA

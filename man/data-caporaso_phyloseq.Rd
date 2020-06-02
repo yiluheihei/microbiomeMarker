@@ -12,9 +12,6 @@ a \link[phyloseq:phyloseq]{phyloseq::phyloseq} object
 Data was downloaded from https://www.microbiomeanalyst.ca:
 \url{https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/treebiom.zip}
 }
-\usage{
-caporaso_phyloseq
-}
 \description{
 16S read counts and phylogenetic tree file of 34 Illumina samples derived
 from Moving Pictures of the Human Microbiome (Caporaso et al.) Group label:
@@ -29,4 +26,3 @@ Caporaso, et al. Moving pictures of the human microbiome. Genome Biol 12, R50 (2
 \author{
 Yang Cao
 }
-\keyword{datasets}

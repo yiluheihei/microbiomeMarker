@@ -11,9 +11,6 @@ a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object
 \source{
 \url{https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/ibd_data.zip}
 }
-\usage{
-pediatric_ibd
-}
 \description{
 43 pediatric IBD stool samples obtained from the Integrative Human Microbiome
 Project Consortium (iHMP). Group label: CD and Controls.
@@ -21,4 +18,3 @@ Project Consortium (iHMP). Group label: CD and Controls.
 \author{
 Yang Cao
 }
-\keyword{datasets}

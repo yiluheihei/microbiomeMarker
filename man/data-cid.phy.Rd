@@ -11,9 +11,6 @@ a \link[phyloseq:phyloseq]{phyloseq::phyloseq} object
 \source{
 \url{https://github.com/ying14/yingtools2/tree/master/data}
 }
-\usage{
-cid.phy
-}
 \description{
 Data from a cohort of 94 Bone Marrow Transplant patients previously published
 on in CID
@@ -29,4 +26,3 @@ Pages 905–914,
 \author{
 Yang Cao
 }
-\keyword{datasets}
