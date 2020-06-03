@@ -34,4 +34,18 @@ test_that("test two group result", {
     test_path("out/test-two-group-test-t.txt"),
     print = TRUE
   )
+
+  white_res <- test_two_groups(
+    enterotypes_arumugam,
+    "Gender",
+    "Genus",
+    method = "white.test",
+    nperm = 50
+  )
+  expect_known_output(
+    white_res,
+    test_path("out/test-two-group-test-white.txt"),
+    print = TRUE
+  )
+
 })
