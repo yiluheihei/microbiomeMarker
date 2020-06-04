@@ -6,11 +6,10 @@
 \usage{
 test_two_groups(
   ps,
-  groups,
+  group,
   rank_name,
   method = c("welch.test", "t.test", "white.test"),
-  p_adjust_method = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH",
-    "BY"),
+  p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
   p_value_cutoff = 0.05,
   diff_mean_cutoff = NULL,
   ratio_proportion_cutoff = NULL,
@@ -22,7 +21,7 @@ test_two_groups(
 \arguments{
 \item{ps}{a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object}
 
-\item{groups}{character, the variable to set the group}
+\item{group}{character, the variable to set the group}
 
 \item{rank_name}{character, taxonomic names of \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}
 to compare}
@@ -30,7 +29,7 @@ to compare}
 \item{method}{test method, must be one of "welch.test", "t.test" or
 "white.test"}
 
-\item{p_adjust_method}{method for multiple test correction, default \code{none},
+\item{p_adjust}{method for multiple test correction, default \code{none},
 for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 
 \item{p_value_cutoff}{numeric, p value cutoff, default 0.05}

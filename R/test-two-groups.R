@@ -1,12 +1,12 @@
 #' Statistical test between two groups
 #'
 #' @param ps a [`phyloseq::phyloseq-class`] object
-#' @param groups character, the variable to set the group
+#' @param group character, the variable to set the group
 #' @param rank_name character, taxonomic names of [`phyloseq::phyloseq-class`]
 #' to compare
 #' @param method test method, must be one of "welch.test", "t.test" or
 #' "white.test"
-#' @param p_adjust_method method for multiple test correction, default `none`,
+#' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
 #' @param p_value_cutoff numeric, p value cutoff, default 0.05
 #' @param diff_mean_cutoff,ratio_proportion_cutoff cutoff of different mean
@@ -21,11 +21,11 @@
 #' @export
 #' @author Yang Cao
 test_two_groups <- function(ps,
-                           groups,
+                           group,
                            rank_name,
                            method = c("welch.test", "t.test", "white.test"),
-                           p_adjust_method = c("none", "fdr", "bonferroni", "holm",
-                                               "hochberg", "hommel", "BH", "BY"),
+                           p_adjust = c("none", "fdr", "bonferroni", "holm",
+                                        "hochberg", "hommel", "BH", "BY"),
                            p_value_cutoff = 0.05,
                            diff_mean_cutoff = NULL,
                            ratio_proportion_cutoff = NULL,
@@ -34,8 +34,8 @@ test_two_groups <- function(ps,
                            ...) {
   stopifnot(inherits(ps, "phyloseq"))
 
-  p_adjust_method <- match.arg(
-    p_adjust_method,
+  p_adjust <- match.arg(
+    p_adjust,
     c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY")
   )
   method <- match.arg(method, c("welch.test", "t.test", "white.test"))
@@ -56,8 +56,12 @@ test_two_groups <- function(ps,
   # relative abundance
   abd_sum <- rowSums(abd)
   abd_prop <- sweep(abd, 1, abd_sum, "/")
+
   sample_meta <- sample_data(ps)
-  groups <- sample_meta[[groups]]
+  if (!group %in% names(sample_meta)) {
+    stop("`group` must in the field of sample meta data")
+  }
+  groups <- sample_meta[[group]]
   abd_prop_group <- split(abd_prop, groups)
 
   # used for permutate statistic in white's non parametric t test method
@@ -95,7 +99,7 @@ test_two_groups <- function(ps,
     select(.data$feature, everything())
 
   # p value correction for multiple comparisons
-  test_res$pvalue_corrected <- p.adjust(test_res$pvalue, method = p_adjust_method)
+  test_res$pvalue_corrected <- p.adjust(test_res$pvalue, method = p_adjust)
 
   # p <= 0.05
   test_filtered <-  filter(test_res, .data$pvalue_corrected <= p_value_cutoff)
