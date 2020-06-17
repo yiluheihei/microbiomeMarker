@@ -7,6 +7,7 @@
 test_multiple_groups(
   ps,
   group,
+  rank_name,
   method = c("anova", "kruskal"),
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
   p_value_cutoff = 0.05,
@@ -17,6 +18,9 @@ test_multiple_groups(
 \item{ps}{a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object}
 
 \item{group}{character, the variable to set the group}
+
+\item{rank_name}{character, taxonomic names of \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}
+to compare}
 
 \item{method}{test method, must be one of "anova" or "kruskal"}
 
@@ -30,4 +34,7 @@ which means no effect size filter}
 }
 \description{
 Statistical test for multiple groups
+}
+\seealso{
+\code{\link[=posthoc_test]{posthoc_test()}}
 }

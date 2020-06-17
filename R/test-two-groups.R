@@ -64,7 +64,7 @@ test_two_groups <- function(ps,
   groups <- sample_meta[[group]]
   abd_prop_group <- split(abd_prop, groups)
 
-  # used for permutate statistic in white's non parametric t test method
+  # used for permute statistic in white's non parametric t test method
   orig_abd_group <- split(abd, groups)
 
   if (method == "welch.test") {

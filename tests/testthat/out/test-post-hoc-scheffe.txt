@@ -1,0 +1,11 @@
+DataFrame with 3 rows and 5 columns
+                 comparions diff_mean_prop      pvalue ci_lower_prop
+                <character>      <numeric>   <numeric>     <numeric>
+1 Enterotype 2-Enterotype 1      -28.13948 9.13691e-08     -37.53585
+2 Enterotype 3-Enterotype 1      -26.04547 3.26252e-09     -33.43850
+3 Enterotype 3-Enterotype 2        2.09401 8.06298e-01      -6.10782
+  ci_upper_prop
+      <numeric>
+1      -18.7431
+2      -18.6524
+3       10.2958

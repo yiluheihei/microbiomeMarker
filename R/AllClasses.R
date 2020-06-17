@@ -15,7 +15,7 @@
 #' "`data.frame`"
 #' @author Yang Cao
 #' @exportClass marker_table
-setClass("marker_table",contains = "data.frame")
+setClass("marker_table", contains = "data.frame")
 
 # validator of marker_table
 validity_marker_table <- function(object) {
@@ -51,8 +51,8 @@ setValidity("marker_table", validity_marker_table)
 #' @name microbiomeMarker-class
 #' @aliases microbiomeMarker-class
 #' @importClassesFrom phyloseq phyloseq
-#' @slot marker_table a  data.frame, the result of microbiome
-#'  differntial analysis
+#' @slot marker_table a data.frame, the result of microbiome
+#'  differential analysis
 #' @seealso [`phyloseq::phyloseq-class`]
 #' @exportClass microbiomeMarker
 `microbiomeMarker-class` <- setClass("microbiomeMarker",
@@ -136,7 +136,95 @@ validity_microbiomeMarker <- function(object) {
 
 setValidity("microbiomeMarker", validity_microbiomeMarker)
 
+# postHocTest  class ------------------------------------------------------
+
+#' The postHocTest Class, represents the result of post-hoc test result among
+#' multiple groups
+#'
+#' @slot result  a [`IRanges::DataFrameList-class`], each `DataFrame` consists of
+#' five variables:
+#' * `comparisons`: character, specify which two groups to test (the group names
+#'   are separated by "_)
+#' * `diff_mean_prop`: numeric, difference in mean proportions
+#' * `pvalue`: numeric, p values
+#' * `ci_lower_prop` and `ci_upper_prop`: numeric, lower and upper confidence
+#' interval of difference in mean proportions
+#' @slot conf_level confidence level
+#' @slot method method used for post-hoc test
+#' @slot method_str method illustration
+#' @name postHocTest-class
+#' @aliases postHocTest-class
+#' @author Yang Cao
+#' @exportClass postHocTest
+#' @importClassesFrom IRanges DataFrameList
+setClass("postHocTest",
+  slots = c(
+    result = "DataFrameList",
+    conf_level = "numeric",
+    method = "character",
+    method_str = "character"
+  ),
+  prototype = list(
+    result = NULL,
+    conf_level = NULL,
+    method = NULL,
+    method_str = NULL
+  )
+)
+
+# validity for postHocTest
+validity_postHocTest <- function(object) {
+  msg <- NULL
+
+  # result <- object@result
+  # diff_var <- setdiff(
+  #   c("comparisons", "diff_means", "pvalue", "ci_lower", "ci_upper"),
+  #   names(result)
+  # )
+  # if (length(diff_var) > 0) {
+  #   msg <- c(
+  #     msg,
+  #     paste0("`", diff_var, "`", collapse = ", ")
+  #   )
+  # }
+
+  conf_level <- object@conf_level
+  if (!is.numeric(conf_level) || conf_level < 0 || conf_level > 1) {
+    msg <- c(
+      msg,
+      "conf_level must in the range of (0,1)"
+    )
+  }
+
+  method <- object@method
+  if (!method %in% c("tukey", "games_howell", "scheffe", "welch_uncorrected")) {
+    msg <- c(
+      msg,
+      "method must be one of tukey, games_howell, scheffe or welch_uncorrected"
+    )
+  }
+
+  if (length(msg)) {
+    return(msg)
+  } else {
+    return(TRUE)
+  }
+}
+
+setValidity("postHocTest", validity_postHocTest)
 
 
-
-
+#' Build postHocTest
+#' @noRd
+postHocTest <- function(result,
+                        conf_level = 0.95,
+                        method = "tukey",
+                        method_str = paste("Posthoc multiple comparisons of means: ", method)) {
+  new(
+    "postHocTest",
+    result = result,
+    conf_level = conf_level,
+    method = method,
+    method_str = method_str
+  )
+}

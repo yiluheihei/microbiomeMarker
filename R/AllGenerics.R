@@ -144,5 +144,30 @@ setMethod("nclass", "marker_table", function(object) {
 })
 
 
-
+# postHocTest class -------------------------------------------------------
+#' @rdname postHocTest-class
+#' @param object a `postHocTest-class` object
+#' @export
+setMethod("show", "postHocTest", function(object){
+  cat("postHocTest-class object", fill = TRUE)
+  result <- object@result
+  var_mean <- c(
+    "pair groups to test which separated by '-'",
+    "difference in mean proportions",
+    "post hoc test p values",
+    "lower confidence interval",
+    "upper confidence interval"
+  )
+  cat(
+    "Pairwise test result of", length(result), " features, ",
+    "DataFrameList object, each DataFrame has five variables:\n       ",
+    paste0(
+      names(result[[1]]),
+      c("    : ", ": ", "        : ", " : ", " : "),
+      var_mean,
+      collapse = "        ",
+      "\n")
+  )
+  cat(object@method_str, fill = TRUE)
+})
 

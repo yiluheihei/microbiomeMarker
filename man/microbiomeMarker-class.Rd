@@ -21,8 +21,8 @@ document of \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}.
 \section{Slots}{
 
 \describe{
-\item{\code{marker_table}}{a  data.frame, the result of microbiome
-differntial analysis}
+\item{\code{marker_table}}{a data.frame, the result of microbiome
+differential analysis}
 }}
 
 \seealso{
