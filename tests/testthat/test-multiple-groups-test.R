@@ -5,11 +5,17 @@ ps <- phyloseq::subset_samples(
   Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
 )
 
-# round DataFrame, return a list.
-# This function don't keep the output as the same type as the input, since
-# is just used for unit test.
 round_DF <- function(DF) {
-  purrr::map_if(as.data.frame(DF), is.numeric, round, 5)
+  round2 <- function(x) {
+    ifelse(
+      x <= 1e-5,
+      as.numeric(formatC(x, format = "g", digits = 5)),
+      as.numeric(formatC(x, format = "f", digits = 5))
+    )
+  }
+  purrr::map_if(as.data.frame(DF), is.numeric, round2) %>%
+    dplyr::bind_cols() %>%
+    as.data.frame()
 }
 
 test_that("etaseq effect size", {
