@@ -5,6 +5,13 @@ ps <- phyloseq::subset_samples(
   Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
 )
 
+# round DataFrame, return a list.
+# This function don't keep the output as the same type as the input, since
+# is just used for unit test.
+round_DF <- function(DF) {
+  purrr::map_if(as.data.frame(DF), is.numeric, round, 5)
+}
+
 test_that("etaseq effect size", {
   etasq <- calc_etasq(c(1, 2, 1.2, 3, 4, 1.4), c("a", "b", "c", "a", "b", "c"))
   expect_equal(signif(etasq, 3), 0.421)
@@ -53,30 +60,29 @@ test_that("test post hoc test result", {
 
   tukey_res <- posthoc_test(ps, "Enterotype", rank_name = "Genus", method = "tukey")
   expect_known_output(
-    tukey_res@result[[1]],
+   round_DF(tukey_res@result[[1]]),
     test_path("out/test-post-hoc-tukey.txt"),
     print = TRUE
   )
 
   games_res <- posthoc_test(ps, "Enterotype", rank_name = "Genus", method = "games_howell")
   expect_known_output(
-    games_res@result[[1]],
+    round_DF(games_res@result[[1]]),
     test_path("out/test-post-hoc-games.txt"),
     print = TRUE
   )
 
   scheffe_res <- posthoc_test(ps, "Enterotype", rank_name = "Genus", method = "scheffe")
   expect_known_output(
-    scheffe_res@result[[1]],
+    round_DF(scheffe_res@result[[1]]),
     test_path("out/test-post-hoc-scheffe.txt"),
     print = TRUE
   )
 
   welch_res <- posthoc_test(ps, "Enterotype", rank_name = "Genus", method = "welch_uncorrected")
   expect_known_output(
-    welch_res@result[[1]],
+    round_DF(welch_res@result[[1]]),
     test_path("out/test-post-hoc-welch.txt"),
     print = TRUE
   )
-
 })

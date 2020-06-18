@@ -1,11 +1,16 @@
-DataFrame with 3 rows and 5 columns
-                 comparions diff_mean_prop      pvalue ci_lower_prop
-                <character>      <numeric>   <numeric>     <numeric>
-1 Enterotype 2-Enterotype 1      -28.13948 3.65257e-05     -37.64661
-2 Enterotype 3-Enterotype 1      -26.04547 9.16696e-05     -34.65461
-3 Enterotype 3-Enterotype 2        2.09401 4.64193e-01      -4.24946
-  ci_upper_prop
-      <numeric>
-1     -18.63235
-2     -17.43633
-3       8.43748
+$comparions
+[1] "Enterotype 2-Enterotype 1" "Enterotype 3-Enterotype 1"
+[3] "Enterotype 3-Enterotype 2"
+
+$diff_mean_prop
+[1] -28.13948 -26.04547   2.09401
+
+$pvalue
+[1] 0.00004 0.00009 0.46419
+
+$ci_lower_prop
+[1] -37.64661 -34.65461  -4.24946
+
+$ci_upper_prop
+[1] -18.63235 -17.43633   8.43748
+
