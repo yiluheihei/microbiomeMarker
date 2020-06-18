@@ -35,7 +35,7 @@ test_that("test multiple groups result", {
     effect_size_cutoff = 0.7
   )
   expect_known_output(
-    res_anova,
+    round_DF(marker_table(res_anova)),
     test_path("out/test-multiple-group-anova.txt"),
     print = TRUE
   )
@@ -47,7 +47,7 @@ test_that("test multiple groups result", {
     method = "kruskal"
   )
   expect_known_output(
-    res_kruk,
+    round_DF(marker_table(res_kruk)),
     test_path("out/test-multiple-group-kruk.txt"),
     print = TRUE
   )

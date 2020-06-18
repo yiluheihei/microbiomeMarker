@@ -10,7 +10,7 @@
 #' @param p_value_cutoff numeric, p value cutoff, default 0.05
 #' @param effect_size_cutoff numeric, cutoff of effect size default `NULL`
 #' which means no effect size filter
-#' @importFrom dplyr mutate bind_cols filter
+#' @importFrom dplyr mutate bind_cols filter select
 #' @importFrom stats p.adjust
 #' @seealso [posthoc_test()]
 test_multiple_groups <- function(ps,
@@ -89,6 +89,11 @@ test_multiple_groups <- function(ps,
   )
   names(res) <- c("pvalue", "pvalue_corrected", "effect_size", mean_names)
 
+  # append feature
+  feature <- tax_table(ps)[, rank_name] %>% unclass()
+  res <- mutate(res,feature = feature[, 1]) %>%
+    select(.data$feature, everything())
+
   # filter: pvalue and effect size
   res_filtered <- filter(res, .data$pvalue_corrected <= p_value_cutoff)
   if (!is.null(effect_size_cutoff)) {
@@ -98,7 +103,22 @@ test_multiple_groups <- function(ps,
     )
   }
 
-  res_filtered
+  if (nrow(res_filtered) == 0) {
+    warning("No significant features were found, return all the features")
+    marker <- microbiomeMarker(
+      marker_table(res),
+      otu_table(t(abd), taxa_are_rows = TRUE),
+      tax_table(ps)
+    )
+  } else {
+    marker <- microbiomeMarker(
+      marker_table(res_filtered),
+      otu_table(t(abd), taxa_are_rows = TRUE),
+      tax_table(ps)
+    )
+  }
+
+  marker
 }
 
 # effect  size ------------------------------------------------------------

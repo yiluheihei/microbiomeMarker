@@ -1,9 +1,25 @@
-            pvalue pvalue_corrected effect_size
-sp1   8.396825e-10     8.396825e-10   0.7633661
-sp205 9.036411e-09     9.036411e-09   0.7212332
-      Enterotype 1_mean_rel_freq_percent Enterotype 2_mean_rel_freq_percent
-sp1                           34.9587076                           6.819226
-sp205                          0.3285194                          22.031839
-      Enterotype 3_mean_rel_freq_percent
-sp1                             8.913236
-sp205                           1.147909
+$feature
+          sp1         sp205 
+"Bacteroides"  "Prevotella" 
+
+$pvalue
+[1] 0 0
+
+$pvalue_corrected
+[1] 0 0
+
+$effect_size
+[1] 0.76337 0.72123
+
+$`Enterotype 1_mean_rel_freq_percent`
+     sp1    sp205 
+34.95871  0.32852 
+
+$`Enterotype 2_mean_rel_freq_percent`
+     sp1    sp205 
+ 6.81923 22.03184 
+
+$`Enterotype 3_mean_rel_freq_percent`
+    sp1   sp205 
+8.91324 1.14791 
+
