@@ -30,6 +30,8 @@ are separated by "_)
 interval of difference in mean proportions
 }}
 
+\item{\code{mean_proportion}}{mean proportion of each feature in each group}
+
 \item{\code{conf_level}}{confidence level}
 
 \item{\code{method}}{method used for post-hoc test}

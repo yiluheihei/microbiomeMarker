@@ -23,7 +23,7 @@
 22        Gordonibacter 0.04669          0.04669     0.10956
 23              Slackia 0.00991          0.00991     0.15685
 24         Unclassified 0.00037          0.00037     0.44973
-   Enterotype 1_mean_rel_freq_percent Enterotype 2_mean_rel_freq_percent
+   Enterotype 1:mean_rel_freq_percent Enterotype 2:mean_rel_freq_percent
 1                            34.95871                            6.81923
 2                             0.00000                            0.00120
 3                             0.00000                            0.00070
@@ -48,7 +48,7 @@
 22                            0.02431                            0.03107
 23                            0.00062                            0.00524
 24                           33.07300                           50.03951
-   Enterotype 3_mean_rel_freq_percent
+   Enterotype 3:mean_rel_freq_percent
 1                             8.91324
 2                             0.00000
 3                             0.00000

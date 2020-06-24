@@ -71,13 +71,8 @@ test_multiple_groups <- function(ps,
   ef <- purrr::map_dbl(abd_prop, calc_etasq, groups)
 
   # freq means prop
-  abd_prop_groups <- split(abd_prop, groups)
-  freq_means_prop <- purrr::map(abd_prop_groups, ~ colMeans(.x)*100)
-  mean_names <- paste(
-    names(abd_prop_groups),
-    "mean_rel_freq_percent",
-    sep = "_"
-  )
+  freq_means_prop <- calc_mean_prop(abd_prop, groups)
+  row.names(freq_means_prop) <- tax_table(ps)@.Data[, rank_name]
 
   res <- bind_cols(
     data.frame(
@@ -87,7 +82,6 @@ test_multiple_groups <- function(ps,
     ),
     freq_means_prop
   )
-  names(res) <- c("pvalue", "pvalue_corrected", "effect_size", mean_names)
 
   # append feature
   feature <- tax_table(ps)[, rank_name] %>% unclass()
@@ -119,6 +113,24 @@ test_multiple_groups <- function(ps,
   }
 
   marker
+}
+
+# calculate mean proportion of each feature in each group
+#' @importFrom dplyr bind_cols
+#' @noRd
+calc_mean_prop <- function(abd_prop, groups) {
+  abd_prop_groups <- split(abd_prop, groups)
+  freq_means_prop <- purrr::map(abd_prop_groups, ~ colMeans(.x)*100) %>%
+    bind_cols() %>%
+    as.data.frame()
+  row.names(freq_means_prop) <- names(abd_prop)
+  names(freq_means_prop) <- paste(
+    names(abd_prop_groups),
+    "mean_rel_freq_percent",
+    sep = ":"
+  )
+
+  freq_means_prop
 }
 
 # effect  size ------------------------------------------------------------
@@ -201,6 +213,10 @@ posthoc_test <- function(ps,
 
   groups <- sample_data(ps)[[group]]
 
+  # mean proportion of each feature in each group
+  freq_means_prop <- calc_mean_prop(abd_prop, groups)
+  # row.names(freq_means_prop) <- tax_table(ps)@.Data[, rank_name]
+
   result = switch(method,
     tukey = purrr::map(abd_prop,
       calc_tukey_test,
@@ -236,6 +252,7 @@ posthoc_test <- function(ps,
 
   postHocTest(
     result = DataFrameList(result),
+    mean_proportion = freq_means_prop,
     conf_level = conf_level,
     method = method,
     method_str = paste("Posthoc multiple comparisons of means:", method)

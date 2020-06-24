@@ -149,6 +149,7 @@ setValidity("microbiomeMarker", validity_microbiomeMarker)
 #' * `pvalue`: numeric, p values
 #' * `ci_lower_prop` and `ci_upper_prop`: numeric, lower and upper confidence
 #' interval of difference in mean proportions
+#' @slot mean_proportion mean proportion of each feature in each group
 #' @slot conf_level confidence level
 #' @slot method method used for post-hoc test
 #' @slot method_str method illustration
@@ -160,6 +161,7 @@ setValidity("microbiomeMarker", validity_microbiomeMarker)
 setClass("postHocTest",
   slots = c(
     result = "DataFrameList",
+    mean_proportion = "data.frame",
     conf_level = "numeric",
     method = "character",
     method_str = "character"
@@ -217,12 +219,14 @@ setValidity("postHocTest", validity_postHocTest)
 #' Build postHocTest
 #' @noRd
 postHocTest <- function(result,
+                        mean_proportion,
                         conf_level = 0.95,
                         method = "tukey",
                         method_str = paste("Posthoc multiple comparisons of means: ", method)) {
   new(
     "postHocTest",
     result = result,
+    mean_proportion = mean_proportion,
     conf_level = conf_level,
     method = method,
     method_str = method_str

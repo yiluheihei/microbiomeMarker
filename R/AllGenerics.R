@@ -168,6 +168,9 @@ setMethod("show", "postHocTest", function(object){
       collapse = "        ",
       "\n")
   )
-  cat(object@method_str, fill = TRUE)
+  cat(
+    "Posthoc multiple comparisons of means",
+    " using ", object@method, " method", fill = TRUE
+  )
 })
 
