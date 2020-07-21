@@ -13,6 +13,7 @@
 #' @importFrom dplyr mutate bind_cols filter select
 #' @importFrom stats p.adjust
 #' @seealso [posthoc_test()]
+#' @export
 test_multiple_groups <- function(ps,
                                  group,
                                  rank_name,
@@ -182,6 +183,7 @@ calc_etasq <- function(feature, group) {
 #' @seealso [postHocTest-class], [test_multiple_groups()]
 #' @importFrom IRanges DataFrameList
 #' @importFrom dplyr mutate
+#' @export
 posthoc_test <- function(ps,
                          group,
                          rank_name,

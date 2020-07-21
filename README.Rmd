@@ -106,6 +106,87 @@ Cladogram plot for output of lefse
 lefse_cladogram(lefse_out, color = c("blue", "red"))
 ```
 
+## statistical analysis (stamp)
+
+STAMP `r citep("10.1093/bioinformatics/btu494")` is a widely-used graphical 
+software package that provides "best pratices" in choose appropriate statistical
+methods for microbial taxonomic and functional analysis. Users can tests for 
+both two groups or multiple groups, and effect sizes and confidence intervals are
+supported that allows critical assessment of the biological relevancy of test 
+results. Here, **microbiomeMarker** also integrates the statistical methods used
+in STAMP for microbial comparison analysis between two-groups and multiple-groups.
+
+### Statitical analysis between two groups
+
+Function `test_two_groups()` is developed for statistical test between two 
+groups, and three test methods are provided: welch test, t test and white test.
+
+```{r test-two-groups}
+data("enterotypes_arumugam")
+# take welch test for example
+two_group_welch <- test_two_groups(
+  enterotypes_arumugam, 
+  group = "Gender", 
+  rank_name = "Genus", 
+  method = "welch.test"
+)
+
+# three significantly differential genera (marker)
+two_group_welch
+# details of result of the three markers
+marker_table(two_group_welch)
+```
+
+### Statistical analysis multiple groups
+
+Function `test_multiple_groups()` is constructed for statistical test for multiple
+groups, two test method are provided: anova and kruskal test.
+
+```{r test-multiple-groups}
+# three groups
+ps <- phyloseq::subset_samples(
+  enterotypes_arumugam,
+  Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+)
+
+multiple_group_anova <-  test_multiple_groups(
+  ps, 
+  group = "Enterotype", 
+  rank_name = "Genus",
+  method = "anova"
+)
+
+# 22 markers (significantly differential genera)
+multiple_group_anova
+marker_table(multiple_group_anova)
+```
+
+The result of multiple group statistic specified whether the means of all groups
+is equal or not. To identify which pairs of groups may differ from each other, 
+post-hoc test must be performed.
+
+```{r post-hoc-test}
+pht <- posthoc_test(ps, group = "Enterotype" , rank_name = "Genus")
+pht
+
+# 22 significantly differential genera
+markers <- marker_table(multiple_group_anova)$feature
+markers
+# take a marker Bacteroides for example, we will show Bacteroides differ from 
+# between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
+pht@result$Bacteroides
+```
+
+Visualization of post test result of a given feature.
+
+```{r plot-posthoctest}
+# visualize the post hoc test result of Bacteroides
+plot_postHocTest(pht, feature = "Bacteroides")
+```
+
+
+
+
 ## Welcome
 
 **microbiomeMarker is still a newborn, and only contains lefse methods right now. 

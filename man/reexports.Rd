@@ -18,8 +18,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{magrittr}{\code{\link[magrittr]{\%>\%}}}
+  \item{magrittr}{\code{\link[magrittr:pipe]{\%>\%}}}
 
-  \item{phyloseq}{\code{\link[phyloseq]{nsamples}}, \code{\link[phyloseq]{ntaxa}}, \code{\link[phyloseq]{otu_table}}, \code{\link[phyloseq]{sample_data}}, \code{\link[phyloseq]{sample_names}}, \code{\link[phyloseq]{tax_table}}, \code{\link[phyloseq]{taxa_names}}}
+  \item{phyloseq}{\code{\link[phyloseq:nsamples-methods]{nsamples}}, \code{\link[phyloseq:ntaxa-methods]{ntaxa}}, \code{\link[phyloseq:otu_table-methods]{otu_table}}, \code{\link[phyloseq:sample_data-methods]{sample_data}}, \code{\link[phyloseq:sample_names-methods]{sample_names}}, \code{\link[phyloseq:tax_table-methods]{tax_table}}, \code{\link[phyloseq:taxa_names-methods]{taxa_names}}}
 }}
 
