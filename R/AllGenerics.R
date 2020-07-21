@@ -146,6 +146,7 @@ setMethod("nclass", "marker_table", function(object) {
 
 # postHocTest class -------------------------------------------------------
 #' @rdname postHocTest-class
+#' @aliases show, postHocTest-method
 #' @param object a `postHocTest-class` object
 #' @export
 setMethod("show", "postHocTest", function(object){
@@ -173,4 +174,3 @@ setMethod("show", "postHocTest", function(object){
     " using ", object@method, " method", fill = TRUE
   )
 })
-

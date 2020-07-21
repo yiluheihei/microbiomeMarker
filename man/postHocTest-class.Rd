@@ -4,6 +4,8 @@
 \name{postHocTest-class}
 \alias{postHocTest-class}
 \alias{show,postHocTest-method}
+\alias{show,}
+\alias{postHocTest-method}
 \title{The postHocTest Class, represents the result of post-hoc test result among
 multiple groups}
 \usage{
@@ -30,7 +32,7 @@ are separated by "_)
 interval of difference in mean proportions
 }}
 
-\item{\code{mean_proportion}}{mean proportion of each feature in each group}
+\item{\code{abundance_proportion}}{abundance proportion of each feature in each group}
 
 \item{\code{conf_level}}{confidence level}
 

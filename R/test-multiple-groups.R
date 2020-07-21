@@ -214,7 +214,7 @@ posthoc_test <- function(ps,
   groups <- sample_data(ps)[[group]]
 
   # mean proportion of each feature in each group
-  freq_means_prop <- calc_mean_prop(abd_prop, groups)
+  # freq_means_prop <- calc_mean_prop(abd_prop, groups)
   # row.names(freq_means_prop) <- tax_table(ps)@.Data[, rank_name]
 
   result = switch(method,
@@ -250,9 +250,11 @@ posthoc_test <- function(ps,
     .keep = "none"
   ))
 
+  abundance_proportion <- abd_prop*100
+  abundance_proportion$group <- groups
   postHocTest(
     result = DataFrameList(result),
-    mean_proportion = freq_means_prop,
+    abundance_proportion = abundance_proportion,
     conf_level = conf_level,
     method = method,
     method_str = paste("Posthoc multiple comparisons of means:", method)

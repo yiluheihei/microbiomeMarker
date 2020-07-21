@@ -5,6 +5,8 @@ ps <- phyloseq::subset_samples(
   Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
 )
 
+tukey_res <- posthoc_test(ps, "Enterotype", rank_name = "Genus", method = "tukey")
+
 round_DF <- function(DF) {
   round2 <- function(x) {
     ifelse(
@@ -64,7 +66,7 @@ test_that("test post hoc test result", {
   skip_on_cran()
   skip_on_bioc()
 
-  tukey_res <- posthoc_test(ps, "Enterotype", rank_name = "Genus", method = "tukey")
+  # tukey_res <- posthoc_test(ps, "Enterotype", rank_name = "Genus", method = "tukey")
   expect_known_output(
    round_DF(tukey_res@result[[1]]),
     test_path("out/test-post-hoc-tukey.txt"),
@@ -89,6 +91,36 @@ test_that("test post hoc test result", {
   expect_known_output(
     round_DF(welch_res@result[[1]]),
     test_path("out/test-post-hoc-welch.txt"),
+    print = TRUE
+  )
+})
+
+test_that("test visualization of post hoc test, p value significance level ", {
+  expect_equal(
+    pvalue2siglevel(c(0.05, 0.01, 0.0001, 0.06)),
+    c("*", "**", "***", "NS.")
+  )
+})
+
+test_that("test visualization of post hoc test, data of signicance level annotation", {
+  # single feature
+  abd <- tukey_res@abundance_proportion
+  group <- abd$group
+  pht_df <- as.data.frame(tukey_res@result$Bacteroides)
+  annotation_single <- get_sig_annotation_single(abd$Bacteroides, pht_df, group)
+  annotation_single$y_position <- formatC(annotation_single$y_position, format = "g", digits = 5)
+  expect_known_output(
+    annotation_single,
+    test_path("out/test-posthoc-vis-sig_annotation_single.txt"),
+    print = TRUE
+  )
+
+  # all features
+  annotation_all <- get_sig_annotation(tukey_res)
+  annotation_all$y_position <- formatC(annotation_all$y_position, format = "g", digits = 5)
+  expect_known_output(
+    head(annotation_all),
+    test_path("out/test-posthoc-vis-sig_annotation.txt"),
     print = TRUE
   )
 })
