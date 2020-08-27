@@ -180,12 +180,19 @@ cal_pair_lda <- function(feature_abundance,
     pair,
     function(x) {
       if (x %in% lda_row_nms) {
-        lda_means[x, ]
+        # fixes #7, Since `pair` is a level, and `lda_means[pair[i], ]` corced
+        # pair[i]` to numeric rather than use the corresponding level of pair[i]
+        ind <- match(x, lda_row_nms)
+        lda_means[ind, ]
       } else {
         rep(0, feature_n)
       }
     }
   )
+
+  # res <- lapply(pair,
+  #   function(x) ifelse(x %in% row.names(lda_res$means), lda_res$means[x, ], rep(0, feature_n))
+  # )
   names(res) <- pair
 
   feature <- names(feature_remove_class)
