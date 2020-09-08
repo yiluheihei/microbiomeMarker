@@ -119,7 +119,7 @@ get_sig_annotation_single <- function(abd,
 
 #' covert p value to significance level
 #'
-#' <= 0.001 "\*\*\*", <= 0.01 "\*\*", <=0.05 "\*", > 0.05 "NS."
+#' <= 0.001 "\\*\\*\\*", <= 0.01 "\\*\\*", <=0.05 "\\*", > 0.05 "NS."
 #' @noRd
 #'
 pvalue2siglevel <- function(p) {
