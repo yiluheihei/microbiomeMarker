@@ -1,6 +1,6 @@
-data("oxygen")
-data("pediatric_ibd")
-data("enterotypes_arumugam")
+# data("oxygen")
+# data("pediatric_ibd")
+# data("enterotypes_arumugam")
 
 lefse_out <- lefse(
   oxygen,
