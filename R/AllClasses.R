@@ -86,7 +86,7 @@ microbiomeMarker <- function(marker_table, ...) {
     stop(msg)
   }
 
-  `microbiomeMarker-class`(ps, marker_table = marker_table)
+  `microbiomeMarker-class`(marker_table = marker_table, ps)
 }
 
 # validity for microbiomeMarker, at least contains two slots: otu_table,

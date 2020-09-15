@@ -15,4 +15,3 @@
 #' @importFrom rlang .data
 #' @importFrom methods setClass setGeneric setMethod
 NULL
-NULL
