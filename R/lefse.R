@@ -75,6 +75,8 @@ lefse <- function(ps,
 
   # filter the taxa whose abundance is zero
   ps <- phyloseq_qc(ps)
+  # fix duplicated tax
+  ps <- fix_duplicate_tax(ps)
 
   sample_meta <- sample_data(ps)
   cls_info <- lefse_format_class(sample_meta, class, subcls = subclass)
