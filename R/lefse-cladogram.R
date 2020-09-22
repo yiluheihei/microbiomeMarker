@@ -106,7 +106,7 @@ lefse_cladogram <- function(mm,
   ) %>%
     dplyr::arrange(desc(.data$level))
   ind <- clade_label$level < clade_label_level
-  short_label <- letters[1:sum(ind)]
+  short_label <- get_short_label_id(clade_label, clade_label_level)
   clade_label_para <- mutate(
     clade_label,
     label = c(.data$label[!ind], short_label),
@@ -133,6 +133,31 @@ lefse_cladogram <- function(mm,
     theme(legend.position = "right", legend.title = element_blank())
 
   p
+}
+
+#' Get short label id
+#' @keywords internal
+get_short_label_id <- function(clade_label, clade_label_level) {
+  ind <- clade_label$level < clade_label_level
+  unique_id <- get_unique_id(sum(ind))
+  short_label <- unique_id[1:sum(ind)]
+
+  short_label
+}
+
+#' Get unique id for short label annotation
+#' @references https://stackoverflow.com/questions/21681785/repeating-vector-of-letters/21689613#21689613
+#' @keywords internal
+get_unique_id <- function(n, depth =  1) {
+  args <- lapply(1:depth, FUN = function(x) letters)
+  x <- do.call(expand.grid, args = list(args, stringsAsFactors = F))
+  x <- x[, rev(names(x)), drop = FALSE]
+  x <- do.call(paste0, x)
+  if (n <= length(x)) {
+    return(x[1:n])
+  }
+
+  return(c(x, get_unique_id(n - length(x), depth = depth + 1)))
 }
 
 #' Generate tree data from phyloseq object

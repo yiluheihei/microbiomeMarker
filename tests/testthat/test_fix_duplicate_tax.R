@@ -1,7 +1,7 @@
 context("fix duplicate tax")
 
 test_that("fix duplicate tax", {
-  ps <- readRDS("tests/testthat/data/data_tax_duplicate.rds")
+  ps <- readRDS("data/data_tax_duplicate.rds")
   ps_fixed <- fix_duplicate_tax(ps)
 
   expect_fixed_length_qual <- function(ps, ps_fixed, level) {
