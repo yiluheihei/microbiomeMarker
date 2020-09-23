@@ -32,4 +32,8 @@ test_that("ensure the results are the same for phylosq and otu_table object ", {
   clr_ot <- norm_clr(ot)
   expect_equal(otu_table(clr_ps), clr_ot)
 
+  # value
+  value_ps <- norm_value(enterotypes_arumugam, 1e6)
+  value_ot <- norm_value(ot, 1e6)
+  expect_equal(otu_table(value_ps), value_ot)
 })

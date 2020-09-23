@@ -88,7 +88,7 @@ The microbiome biomarker information was stored in a new data structure
 using `marker_table()`.
 
 ```{r}
-marker_table(lefse_out)
+head(marker_table(lefse_out))
 ```
 
 ### Visualization of the result of lefse analysis
@@ -134,7 +134,7 @@ two_group_welch <- test_two_groups(
 # three significantly differential genera (marker)
 two_group_welch
 # details of result of the three markers
-marker_table(two_group_welch)
+head(marker_table(two_group_welch))
 ```
 
 ### Statistical analysis multiple groups
@@ -158,7 +158,7 @@ multiple_group_anova <-  test_multiple_groups(
 
 # 22 markers (significantly differential genera)
 multiple_group_anova
-marker_table(multiple_group_anova)
+head(marker_table(multiple_group_anova))
 ```
 
 The result of multiple group statistic specified whether the means of all groups

@@ -4,7 +4,7 @@
 \alias{summarize_taxa}
 \title{Summarize taxa into a taxonomic level within each sample}
 \usage{
-summarize_taxa(ps, level = "Kingdom", absolute = FALSE, sep = "|")
+summarize_taxa(ps, level = "Kingdom", absolute = TRUE, sep = "|")
 }
 \arguments{
 \item{ps}{a \code{\link[phyloseq]{phyloseq-class}} object.}
@@ -22,6 +22,6 @@ a data frame, each row represents a taxa, where each col represents
 the taxa abundance of each sample.
 }
 \description{
-Provids summary information of the representation of a taxonomic levels within
+Provides summary information of the representation of a taxonomic levels within
 each sample.
 }

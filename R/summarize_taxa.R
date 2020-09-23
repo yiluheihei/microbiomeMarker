@@ -1,6 +1,6 @@
 #' Summarize taxa into a taxonomic level within each sample
 #'
-#' Provids summary information of the representation of a taxonomic levels within
+#' Provides summary information of the representation of a taxonomic levels within
 #' each sample.
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object.
@@ -16,13 +16,20 @@
 
 summarize_taxa <- function(ps,
                            level = "Kingdom",
-                           absolute = FALSE,
+                           absolute = TRUE,
                            sep = "|") {
-  ranks <- setdiff(availabel_ranks, "Summarize")
-  level <- match(level, ranks)
-  level <- ranks[level:7]
+  ps_ranks <- rank_names(ps)
+  if (!level %in% ps_ranks) {
+    stop("`level` must in the ranks of `ps` (rank_names(ps))")
+  }
+
+  # ranks <- setdiff(availabel_ranks, "Summarize")
+  # level <- match(level, ranks)
+
+  ind <- match(level, ps_ranks)
+  levels <- ps_ranks[ind:length(ps_ranks)]
   res <- purrr::map(
-    level,
+    levels,
     ~.summarize_taxa_level(
       ps,
       rank = .x,
@@ -41,7 +48,7 @@ summarize_taxa <- function(ps,
 #' @noRd
 .summarize_taxa_level <- function(ps,
                                   rank_name,
-                                  absolute = FALSE,
+                                  absolute = TRUE,
                                   sep = "|") {
   if (!absolute) {
     ps <- transform_sample_counts(ps, function(x)x/sum(x))

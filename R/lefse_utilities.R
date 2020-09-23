@@ -505,55 +505,6 @@ add_missing_levels <- function(feature) {
   otu_table(feature, taxa_are_rows = TRUE)
 }
 
-#' normalize the summarized feature
-#' @param feature otu table or data.frame
-#' @param normalization  set the normalization value
-#' @param hie by otu or summarized
-#' @noRd
-normalize_feature <- function(feature, normalization) {
-  if (inherits(feature, "otu_table")) {
-    if (!taxa_are_rows(feature)) {
-      feature <- t(feature)
-    }
-    feature <- feature@.Data %>% data.frame()
-  }
-  if (is.null(normalization)) {
-    return(feature)
-  }
-
-  feature_split <- strsplit(row.names(feature), "\\|")
-  hie <- ifelse(any(lengths(feature_split) > 1), TRUE, FALSE)
-  if (hie) {
-    single_indx <- which(lengths(feature_split) < 2)
-    abd <- purrr::map_dbl(feature, ~ sum(.x[single_indx]))
-
-    # `sum(abd)` must be greaer than 0 since the missing level is added
-    # if (sum(abd) == 0) {
-    #   abd <- purrr::map_dbl(feature, sum)
-    # }
-  } else {
-    abd <- purrr::map_dbl(feature, sum)
-  }
-  normed_coef <- normalization/abd
-  normed_feature <- purrr::map2_df(
-    feature, normed_coef,
-    function(x, y) {
-      res <- x * y
-      if (mean(res) && stats::sd(res)/mean(res) < 1e-10) {
-        res <- round(res * 1e6)/1e6
-      }
-      res
-    }
-  )
-
-  # for row names setting, phyloseq requires otu_table and tax_table has the
-  # same taxa
-  normed_feature <- as.data.frame(normed_feature)
-  row.names(normed_feature) <- row.names(feature)
-
-  otu_table(normed_feature, taxa_are_rows = TRUE)
-}
-
 # check whether tax have level prefix, such as `p__`
 check_tax_prefix <- function(taxa_nms) {
   prefix <- paste0(c("k", "p", "c", "o", "f", "g", "s"), "__")
@@ -562,7 +513,29 @@ check_tax_prefix <- function(taxa_nms) {
   any(has_prefix)
 }
 
-# add missing levels
+# add ranks prefix, e.g k__, p__
+add_prefix <- function(ps) {
+  tax <- as(tax_table(ps), "matrix") %>%
+    as.data.frame()
+  lvl <- colnames(tax)
+
+  diff_lvl <- setdiff(lvl, availabel_ranks)
+  if (diff_lvl != 0) {
+    stop("rank names of `ps` must be one of Kingdom, Phylum, Class, Order, Family, Genus, Species")
+  }
+
+  prefix <- substr(lvl, 1, 1) %>%
+    tolower() %>%
+    paste("__", sep = "")
+  tax_new <- mapply(function(x, y) paste0(x, y), prefix, tax, SIMPLIFY = FALSE)
+  tax_new <- do.call(cbind, tax_new)
+  colnames(tax_new) <- lvl
+  tax_table(ps) <- tax_table(tax_new)
+
+  ps
+}
+
+# add tax level prefix
 add_tax_level <- function(taxa_nms, sep = "|") {
   prefixes <- paste0(c("k", "p", "c", "o", "f", "g", "s"), "__")
   taxa_split <- strsplit(taxa_nms,,split = sep, fixed = TRUE)
@@ -577,18 +550,13 @@ add_tax_level <- function(taxa_nms, sep = "|") {
 #' check whether tax abundance table is summarized or not
 #' @noRd
 check_tax_summarize <- function(ps) {
-  taxa <- tax_table(ps)
-  is_single_level <- ifelse(
-    ncol(taxa) == 1,
-    TRUE, FALSE
-  )
+  taxa <- row.names(otu_table(ps))
 
   # whether taxa is separated by `|` or `.`,
   # may be required to add extra separate strings in the future
   has_separate <- any(grepl("[|.]", taxa))
 
-  is_summarize <- is_single_level && has_separate
-  is_summarize
+  has_separate
 }
 
 #' Duplicated taxa: e.g. maybe multiple species (s__uncultured)

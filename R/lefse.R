@@ -61,7 +61,19 @@ lefse <- function(ps,
     stop("`ps` must be phyloseq object", call. = FALSE)
   }
 
-  correct <- match.arg(correct)
+  summarized <- check_tax_summarize(ps)
+  if (summarized && !is.numeric(normalization)) {
+    stop("`normalization` must be a numeric or 'none' while the `ps` has been summarized")
+  }
+  if (summarize == "lefse") {
+    summarize <- TRUE
+  }
+  if (summarized && summarize) {
+    warning("`ps` has been summarized, argument `summarize` is not working, set `summarize = FALSE`")
+    summarize <- FALSE
+  }
+
+  correct <- match.arg(correct, c("0", "1", "2"))
   correct <- as.numeric(correct)
 
   ranks <- rank_names(ps)
@@ -77,6 +89,8 @@ lefse <- function(ps,
   ps <- phyloseq_qc(ps)
   # fix duplicated tax
   ps <- fix_duplicate_tax(ps)
+  # normalization
+  ps <- normalize(ps, normalization)
 
   sample_meta <- sample_data(ps)
   cls_info <- lefse_format_class(sample_meta, class, subcls = subclass)
@@ -86,18 +100,20 @@ lefse <- function(ps,
 
   # check whether the taxa is summarized first
   # e.g. phyloseq object is construct from lefse python script
-  # just for experiment, may be dropped in the future
-  if (check_tax_summarize(ps)) {
+  # just for experiment, and may be dropped in the future
+  if (summarized) {
     otus <- otu_table(ps) %>%
       add_missing_levels()
-  } else if (!summarize) {
-    otus <- otu_table(ps)
   } else {
-    otus <- summarize_taxa(ps)
+    if (!summarize) {
+      otus <- otu_table(ps)
+    } else {
+      otus <- summarize_taxa(ps)
+    }
   }
-  otus_norm <- normalize_feature(otus, normalization = normalization)
+  # otus_norm <- normalize_feature(otus, normalization = normalization)
   # transform it for test
-  otus_test <- as.data.frame(t(otus_norm), stringsAsFactors = FALSE)
+  otus_test <- as.data.frame(t(otus), stringsAsFactors = FALSE)
 
   # kw rank sum test among classes
   kw_p <- purrr::map_dbl(otus_test, ~ kruskal.test(.x, cls)$p.value)
@@ -105,8 +121,8 @@ lefse <- function(ps,
   # remove the taxa, while pvalue is na
   na_ind <- is.na(kw_p)
   if (sum(na_ind) >= 1) {
-    otus_test <- otus_test[-na_ind]
-    kw_p <- kw_p[-na_ind]
+    otus_test <- otus_test[!na_ind]
+    kw_p <- kw_p[!na_ind]
   }
 
   sig_ind <- kw_p <= kw_cutoff
@@ -150,16 +166,31 @@ lefse <- function(ps,
     filter(.data$lda >= lda_cutoff) %>%
     arrange(.data$enrich_group, desc(.data$lda)) %>%
     marker_table()
+  row.names(lefse_out) <- NULL
 
-  if (summarize == "lefse" || summarize) {
+  # if (summarize == "lefse" || summarize) {
+  #   tax <- matrix(row.names(otus)) %>%
+  #     tax_table()
+  # } else {
+  #   tax <- tax_table(ps)
+  # }
+  # row.names(tax) <- row.names(otus)
+
+  if (summarized) {
     tax <- matrix(row.names(otus)) %>%
       tax_table()
     row.names(tax) <- row.names(otus)
   } else {
-    tax <- tax_table(ps)
+    if (summarize) {
+      tax <- matrix(row.names(otus)) %>%
+        tax_table()
+      row.names(tax) <- row.names(otus)
+    } else {
+      tax <- tax_table(ps)
+    }
   }
 
-  mm <- microbiomeMarker(lefse_out, otus_norm, tax)
+  mm <- microbiomeMarker(lefse_out, otus, tax)
 
   mm
 }

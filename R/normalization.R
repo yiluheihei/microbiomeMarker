@@ -4,6 +4,7 @@
 #'   object
 #' @param method the methods used to normalize the microbial abundance data.
 #'   Options includes:
+#'   * a integer, e.g. 1e6, indicating pre-sample normalization of the sum of the      values to 1e6.
 #'   * "none": do not normalize.
 #'   * "rarefy": random subsampling counts to the smallest library size in the
 #'     data set.
@@ -25,43 +26,50 @@
 #' @seealso [edgeR::calcNormFactors()],[DESeq2::estimateSizeFactorsForMatrix()],
 #' [metagenomeSeq::cumNorm()]
 #' @importMethodsFrom BiocGenerics normalize
-#' @aliases normalize,otu_table-method normalize
-#' @rdname normalize-methods
-setMethod("normalize", "otu_table",
-  function(object,
-    method = c("none", "rarefy", "TSS", "TMM", "RLE", "CSS", "CLR"),
-    ...) {
-    method <- match.arg(
-      method,
-      c("none", "rarefy", "TSS", "TMM", "RLE", "CSS", "CLR")
-    )
-    switch (method,
-      none = object,
-      rafefy = norm_rarefy(object, ...),
-      TSS = norm_tss(object),
-      TMM = norm_tmm(object, ...),
-      RLE = norm_rle(object, ...),
-      CSS = norm_css(object, ...),
-      CLR = norm_clr(object)
-    )
-  })
-
-#' @importMethodsFrom BiocGenerics normalize
 #' @aliases normalize,phyloseq-method
 #' @rdname normalize-methods
 setMethod("normalize", "phyloseq",
   function(object,
-    method = c("none", "rarefy", "TSS", "TMM", "RLE", "CSS", "CLR"),
+    method = "TSS",
     ...) {
     otu <- otu_table(object)
 
     otu_table(object) <- otu_table(
-      normalize(otu),
+      normalize(otu, method = method),
       taxa_are_rows = taxa_are_rows(object)
     )
 
     object
+  }
+)
+
+#' @importMethodsFrom BiocGenerics normalize
+#' @aliases normalize,otu_table-method normalize
+#' @rdname normalize-methods
+setMethod("normalize", "otu_table",
+  function(object,
+    method = "TSS",
+    ...) {
+    if (method %in% c("none", "rarefy", "TSS", "TMM", "RLE", "CSS", "CLR")) {
+      object_normed <- switch (method,
+        none = object,
+        rafefy = norm_rarefy(object, ...),
+        TSS = norm_tss(object),
+        TMM = norm_tmm(object, ...),
+        RLE = norm_rle(object, ...),
+        CSS = norm_css(object, ...),
+        CLR = norm_clr(object)
+      )
+    } else if (is.numeric(method)) {
+      object_normed <- norm_value(object, normalization = method)
+    } else {
+      stop("`method` must be one of none, rarefy, TSS, TMM, RLE, CSS, CLR, or an integer")
+    }
+
+    object_normed
   })
+
+
 
 
 #' rarefying
@@ -234,4 +242,101 @@ norm_clr <- function(object) {
 
   object
 
+}
+
+#' Normalize the sum of values of each sample to a given value
+#' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class]
+#' @param normalization  set the normalization value, return the feature itself
+#'   if not supported.
+#' @keywords internal
+norm_value <- function(object, normalization) {
+  if (missing(normalization)) {
+    return(object)
+  }
+
+  otu <- as(otu_table(object), "matrix") %>%
+    as.data.frame()
+
+  # whether the object is summarized
+  hie <- check_tax_summarize(object)
+  if (hie) {
+    features <- row.names(otu)
+    features_split <- strsplit(features, "|", fixed = TRUE)
+    single_indx <- which(lengths(features_split) < 2)
+    lib_size <- purrr::map_dbl(otu, ~ sum(.x[single_indx]))
+
+    # `sum(abd)` must be greaer than 0 since the missing level is added
+    # if (sum(abd) == 0) {
+    #   abd <- purrr::map_dbl(feature, sum)
+    # }
+  } else {
+    lib_size <- colSums(otu)
+  }
+  normed_coef <- normalization/lib_size
+
+  otu_normed <- purrr::map2_df(
+    otu, normed_coef,
+    function(x, y) {
+      res <- x * y
+      if (mean(res) && stats::sd(res)/mean(res) < 1e-10) {
+        res <- round(res * 1e6)/1e6
+      }
+      res
+    }
+  )
+  otu_normed <- as.data.frame(otu_normed)
+
+  row.names(otu_normed) <- row.names(otu)
+  otu_table(object) <- otu_table(otu_normed, taxa_are_rows = TRUE)
+
+  object
+}
+
+
+#' normalize the summarized feature
+#' @param feature otu table or data.frame
+#' @param normalization  set the normalization value
+#' @noRd
+normalize_feature <- function(feature, normalization) {
+  if (inherits(feature, "otu_table")) {
+    if (!taxa_are_rows(feature)) {
+      feature <- t(feature)
+    }
+    feature <- feature@.Data %>% data.frame()
+  }
+  if (is.null(normalization)) {
+    return(feature)
+  }
+
+  feature_split <- strsplit(row.names(feature), "\\|")
+  hie <- ifelse(any(lengths(feature_split) > 1), TRUE, FALSE)
+  if (hie) {
+    single_indx <- which(lengths(feature_split) < 2)
+    abd <- purrr::map_dbl(feature, ~ sum(.x[single_indx]))
+
+    # `sum(abd)` must be greaer than 0 since the missing level is added
+    # if (sum(abd) == 0) {
+    #   abd <- purrr::map_dbl(feature, sum)
+    # }
+  } else {
+    abd <- purrr::map_dbl(feature, sum)
+  }
+  normed_coef <- normalization/abd
+  normed_feature <- purrr::map2_df(
+    feature, normed_coef,
+    function(x, y) {
+      res <- x * y
+      if (mean(res) && stats::sd(res)/mean(res) < 1e-10) {
+        res <- round(res * 1e6)/1e6
+      }
+      res
+    }
+  )
+
+  # for row names setting, phyloseq requires otu_table and tax_table has the
+  # same taxa
+  normed_feature <- as.data.frame(normed_feature)
+  row.names(normed_feature) <- row.names(feature)
+
+  otu_table(normed_feature, taxa_are_rows = TRUE)
 }

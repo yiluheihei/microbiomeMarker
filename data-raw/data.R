@@ -65,29 +65,29 @@ unlink("data-raw/pediatric_idb.zip")
 # different level of oxygen availability in different bodysites
 
 oxygen_dat <- readr::read_tsv(
-  "http://huttenhower.sph.harvard.edu/webfm_send/129",
+  "https://raw.githubusercontent.com/biobakery/biobakery/master/demos/biobakery_demos/data/lefse/input/hmp_small_aerobiosis.txt",
   col_names = FALSE
 )
 
-sample_meta <- dplyr::bind_rows(
-  oxygen_availability	= oxygen_dat[1, ][-1],
-  body_site = oxygen_dat[2, ][-1],
-  subject_id = oxygen_dat[3, ][-1]
-) %>%
-  tibble::rownames_to_column() %>%
-  tidyr::pivot_longer(-rowname) %>%
-  tidyr::pivot_wider(names_from = "rowname", values_from = "value") %>%
-  tibble::column_to_rownames("name")
+sample_meta <- data.frame(
+  oxygen_availability	= c(oxygen_dat[1, ][-1], recursive = TRUE),
+  body_site = c(oxygen_dat[2, ][-1], recursive = TRUE),
+  subject_id = c(oxygen_dat[3, ][-1], recursive = TRUE)
+)
+  # tibble::rownames_to_column() %>%
+  # tidyr::pivot_longer(-rowname) %>%
+  #tidyr::pivot_wider(names_from = "rowname", values_from = "value") %>%
+  #tibble::column_to_rownames("name")
 tax_dat <- oxygen_dat$X1[-(1:3)]
 
 sample_abd <- dplyr::slice(oxygen_dat, -(1:3)) %>%
-  select(-1) %>%
+  dplyr::select(-1) %>%
   purrr::map_df(as.numeric)
 row.names(sample_abd) <- tax_dat
 
 tax_mat <- as.matrix(tax_dat)
 row.names(tax_mat) <- tax_dat
-colnames(tax_mat) <- "Summarize"
+colnames(tax_mat) <-  "Summarize"
 
 oxygen <- phyloseq(
   otu_table(sample_abd, taxa_are_rows = TRUE),
@@ -102,7 +102,7 @@ usethis::use_data(oxygen, overwrite = TRUE)
 # 30 abundance profiles (obtained processing the 16S reads with RDP) belonging
 # to 10 rag2 (control) and 20 truc (case) mice
 spontaneous_colitis <- readr::read_tsv(
-  "http://www.huttenhower.org/webfm_send/73",
+  "https://raw.githubusercontent.com/biobakery/galaxy_lefse/master/test-data/lefse_input",
   col_names = FALSE
 )
 class <- spontaneous_colitis[1, ]
@@ -114,7 +114,7 @@ sample_meta <- data.frame(
 )
 tax_dat <- as.matrix(taxas[-1, ])
 row.names(tax_dat) <- tax_dat
-colnames(tax_dat) <- "summarized_taxa"
+colnames(tax_dat) <- "Summarize"
 tax_abd <- spontaneous_colitis[-1, -1] %>%
   purrr::map_df(as.numeric)
 row.names(tax_abd) <- tax_dat[,1]
