@@ -64,7 +64,7 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           install.packages("BiocManager")
-          BiocManager::install(c("phyloseq", "ggtree"))
+          BiocManager::install(c("phyloseq", "ggtree", "metagenomeSeq", "DESeq2", "edgeR"))
         shell: Rscript {0}
 
       - name: Check
