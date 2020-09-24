@@ -7,7 +7,27 @@
 #' @param subclass character, the varibale name to set the subclass
 #' @param kw_cutoff numeric, p value cutoff of kw test, default 0.05
 #' @param wilcoxon_cutoff numeric, p value cutoff of wilcoxon test, default 0.05
-#' @param normalization norm set the normalization value
+#' @param norm_method the methods used to normalize the microbial abundance data.
+#'   Options includes:
+#'   * a integer, e.g. 1e6, indicating pre-sample normalization of the sum of
+#'     the values to 1e6.
+#'   * "none": do not normalize.
+#'   * "rarefy": random subsampling counts to the smallest library size in the
+#'     data set.
+#'   * "TSS": total sum scaling, also referred to as "relative abundance", the
+#'     abundances were normalized by dividing the corresponding sample library
+#'     size.
+#'   * "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
+#'     The scaling factor is then derived using a weighted trimmed mean over the
+#'     differences of the log-transformed gene-count fold-change between the
+#'     sample and the reference.
+#'   * "RLE", relative log expression, RLE uses a pseudo-reference calculated
+#'     using the geometric mean of the gene-specific abundances over all
+#'     samples. The scaling factors are then calculated as the median of the
+#'     gene counts ratios between the samples and the reference.
+#'   * "CSS": cumulative sum scaling, calculates scaling factors as the
+#'     cumulative sum of gene abundances up to a data-derived threshold.
+#'   * "CLR": centered log-ratio normalization.
 #' @param summarize logical, whether summarize the
 #'   taxa (`TRUE` or `FALSE`), default `TRUE`
 #' @param lda_cutoff numeric, lda score cutoff, default 2
@@ -26,26 +46,28 @@
 #'   among the subclasses with the same name, default `FALSE`
 #' @param curv logical, whether perform the wilcoxon test using the
 #'   Curtis's approach, defalt `FALSE`
-#'
+#' @param ... other arguments passed to specific normalization methods.
 #' @importFrom  dplyr mutate filter arrange rowwise select
 #' @importFrom  purrr map_dbl pmap_dbl pmap_chr
 #' @importFrom stats p.adjust
 #' @importFrom phyloseq rank_names
 #' @export
-#' @return a data frame contains five variables:
+#' @return a [microbiomeMarker-class] object, in which the `slot` of `marker_table`
+#' contains five variables:
 #' * `feature`, significantly different features.
 #' * `enrich_group`, the class of the differential features enriched
 #' * `log_max_mean`, the logarithm value of the highest mean among all the
 #'   classes
 #' * `lda`, logarithmic LDA score
-#' * `p_value`, p value of kw test
+#' * `p_value`, p value of kw test.
 #' @author Yang Cao \email{yiluheihei@gmail.com}
+#' @seealso [normalize]
 #' @references Segata, Nicola, et al. Metagenomic biomarker discovery and
 #' explanation. Genome biology 12.6 (2011): R60.
 lefse <- function(ps,
                   class,
                   subclass = NULL,
-                  normalization = 1000000,
+                  norm_method = 1000000,
                   summarize = TRUE,
                   kw_cutoff = 0.05,
                   lda_cutoff = 2,
@@ -56,14 +78,15 @@ lefse <- function(ps,
                   correct = c("0", "1", "2"),
                   sample_min = 10,
                   only_same_subcls = FALSE,
-                  curv = FALSE) {
+                  curv = FALSE,
+                  ...) {
   if (!inherits(ps, "phyloseq")) {
     stop("`ps` must be phyloseq object", call. = FALSE)
   }
 
   summarized <- check_tax_summarize(ps)
-  if (summarized && !is.numeric(normalization)) {
-    stop("`normalization` must be a numeric or 'none' while the `ps` has been summarized")
+  if (summarized && !is.numeric(norm_method)) {
+    stop("`norm_method` must be a numeric or 'none' while the `ps` has been summarized")
   }
   if (summarize == "lefse") {
     summarize <- TRUE
@@ -90,7 +113,7 @@ lefse <- function(ps,
   # fix duplicated tax
   ps <- fix_duplicate_tax(ps)
   # normalization
-  ps <- normalize(ps, normalization)
+  ps <- normalize(ps, norm_method, ...)
 
   sample_meta <- sample_data(ps)
   cls_info <- lefse_format_class(sample_meta, class, subcls = subclass)

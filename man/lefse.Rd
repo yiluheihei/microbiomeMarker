@@ -8,7 +8,7 @@ lefse(
   ps,
   class,
   subclass = NULL,
-  normalization = 1e+06,
+  norm_method = 1e+06,
   summarize = TRUE,
   kw_cutoff = 0.05,
   lda_cutoff = 2,
@@ -19,7 +19,8 @@ lefse(
   correct = c("0", "1", "2"),
   sample_min = 10,
   only_same_subcls = FALSE,
-  curv = FALSE
+  curv = FALSE,
+  ...
 )
 }
 \arguments{
@@ -29,7 +30,29 @@ lefse(
 
 \item{subclass}{character, the varibale name to set the subclass}
 
-\item{normalization}{norm set the normalization value}
+\item{norm_method}{the methods used to normalize the microbial abundance data.
+Options includes:
+\itemize{
+\item a integer, e.g. 1e6, indicating pre-sample normalization of the sum of
+the values to 1e6.
+\item "none": do not normalize.
+\item "rarefy": random subsampling counts to the smallest library size in the
+data set.
+\item "TSS": total sum scaling, also referred to as "relative abundance", the
+abundances were normalized by dividing the corresponding sample library
+size.
+\item "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
+The scaling factor is then derived using a weighted trimmed mean over the
+differences of the log-transformed gene-count fold-change between the
+sample and the reference.
+\item "RLE", relative log expression, RLE uses a pseudo-reference calculated
+using the geometric mean of the gene-specific abundances over all
+samples. The scaling factors are then calculated as the median of the
+gene counts ratios between the samples and the reference.
+\item "CSS": cumulative sum scaling, calculates scaling factors as the
+cumulative sum of gene abundances up to a data-derived threshold.
+\item "CLR": centered log-ratio normalization.
+}}
 
 \item{summarize}{logical, whether summarize the
 taxa (\code{TRUE} or \code{FALSE}), default \code{TRUE}}
@@ -61,16 +84,20 @@ among the subclasses with the same name, default \code{FALSE}}
 
 \item{curv}{logical, whether perform the wilcoxon test using the
 Curtis's approach, defalt \code{FALSE}}
+
+\item{...}{other arguments passed to normalization methods. See \link{normalize}
+for more details.}
 }
 \value{
-a data frame contains five variables:
+a \linkS4class{microbiomeMarker} object, in which the \code{slot} of \code{marker_table}
+contains five variables:
 \itemize{
 \item \code{feature}, significantly different features.
 \item \code{enrich_group}, the class of the differential features enriched
 \item \code{log_max_mean}, the logarithm value of the highest mean among all the
 classes
 \item \code{lda}, logarithmic LDA score
-\item \code{p_value}, p value of kw test
+\item \code{p_value}, p value of kw test.
 }
 }
 \description{
@@ -79,6 +106,9 @@ Perform Metagenomic LEFSe analysis based on phyloseq object.
 \references{
 Segata, Nicola, et al. Metagenomic biomarker discovery and
 explanation. Genome biology 12.6 (2011): R60.
+}
+\seealso{
+\link{normalize}
 }
 \author{
 Yang Cao \email{yiluheihei@gmail.com}
