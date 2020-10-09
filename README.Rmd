@@ -208,10 +208,27 @@ DOI: [10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
   in **microbiomeMarker** are from or inherit from `phyloseq-class` in package 
   **phyloseq**.
 
+## Question
+
+If you have any question, please file an issue on the issue tracker following 
+the instructions in the issue template:
+
+Please briefly describe your problem, what output actually happend, and what 
+output you expect.
+
+Please provide a minimal reproducible example. For more deails on how to make 
+a great minimal reproducible example, see https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example and
+https://www.tidyverse.org/help/#reprex.
+
+```
+Brief description of the problem
+
+# insert minimal reprducible example here
+```
+
 ## Reference
 
 ```{r reference, echo=FALSE, message=FALSE}
 knitcitations::write.bibtex(file = "references.bib")
 ```
-
 

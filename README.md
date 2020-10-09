@@ -299,6 +299,23 @@ biomarker analysis. R package version 0.0.1.9000.
     structures used in **microbiomeMarker** are from or inherit from
     `phyloseq-class` in package **phyloseq**.
 
+## Question
+
+If you have any question, please file an issue on the issue tracker
+following the instructions in the issue template:
+
+Please briefly describe your problem, what output actually happend, and
+what output you expect.
+
+Please provide a minimal reproducible example. For more deails on how to
+make a great minimal reproducible example, see
+<https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example>
+and <https://www.tidyverse.org/help/#reprex>.
+
+    Brief description of the problem
+    
+    # insert minimal reprducible example here
+
 ## Reference
 
 <div id="refs" class="references">
