@@ -249,6 +249,7 @@ norm_clr <- function(object) {
 #' @param normalization  set the normalization value, return the feature itself
 #'   if not supported.
 #' @keywords internal
+#' @importFrom phyloseq transform_sample_counts
 norm_value <- function(object, normalization) {
   if (missing(normalization)) {
     return(object)
@@ -263,33 +264,64 @@ norm_value <- function(object, normalization) {
     features <- row.names(otu)
     features_split <- strsplit(features, "|", fixed = TRUE)
     single_indx <- which(lengths(features_split) < 2)
-    lib_size <- purrr::map_dbl(otu, ~ sum(.x[single_indx]))
+
+    ## keep the counts of a sample identical with `normalization`
+    ## if we norm the counts in two steps:
+    ## 1. calculate scale size: norm_coef = normalization/lib_size
+    ## 2. multiple the scale size value * norm_coef
+    ## the counts of a sample colSums(otu) may not equal to the argument normalization
+    ## e.g. normalization = 1e6, colSums(otu) = 999999
+    ## Finally, the kruskal test may be inaccurate,
+    ## e.g. https://github.com/yiluheihei/microbiomeMarker/issues/13
+    ps_normed <- transform_sample_counts(
+      object,
+      function(x) x * normalization/ sum(x[single_indx])
+    )
+
+    # lib_size <- purrr::map_dbl(otu, ~ sum(.x[single_indx]))
 
     # `sum(abd)` must be greaer than 0 since the missing level is added
     # if (sum(abd) == 0) {
     #   abd <- purrr::map_dbl(feature, sum)
     # }
   } else {
-    lib_size <- colSums(otu)
+    ps_normed <- transform_sample_counts(
+      object,
+      function(x) x * normalization / sum(x)
+    )
   }
-  normed_coef <- normalization/lib_size
 
-  otu_normed <- purrr::map2_df(
-    otu, normed_coef,
-    function(x, y) {
-      res <- x * y
-      if (mean(res) && stats::sd(res)/mean(res) < 1e-10) {
-        res <- round(res * 1e6)/1e6
+  otu_normed <- data.frame(otu_table(ps_normed))
+  otu_normed <- purrr::map_df(otu_normed,
+    function(x) {
+      if (mean(x) && stats::sd(x)/mean(x) < 1e-10) {
+        return(round(x*1e6)/1e6)
+      } else {
+        return(x)
       }
-      res
     }
   )
-  otu_normed <- as.data.frame(otu_normed)
 
+  # normed_coef <- normalization/lib_size
+
+  # otu_normed <- purrr::map2_df(
+  #   otu, normed_coef,
+  #   function(x, y) {
+  #     res <- x * y
+  #     if (mean(res) && stats::sd(res)/mean(res) < 1e-10) {
+  #       res <- round(res * 1e6)/1e6
+  #     }
+  #     res
+  #   }
+  # )
+
+  otu_normed <- as.data.frame(otu_normed)
   row.names(otu_normed) <- row.names(otu)
+  colnames(otu_normed) <- colnames(otu)
   otu_table(object) <- otu_table(otu_normed, taxa_are_rows = TRUE)
 
   object
+
 }
 
 

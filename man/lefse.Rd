@@ -85,8 +85,7 @@ among the subclasses with the same name, default \code{FALSE}}
 \item{curv}{logical, whether perform the wilcoxon test using the
 Curtis's approach, defalt \code{FALSE}}
 
-\item{...}{other arguments passed to normalization methods. See \link{normalize}
-for more details.}
+\item{...}{other arguments passed to specific normalization methods.}
 }
 \value{
 a \linkS4class{microbiomeMarker} object, in which the \code{slot} of \code{marker_table}
