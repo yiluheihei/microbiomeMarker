@@ -568,6 +568,9 @@ check_tax_summarize <- function(ps) {
 #' @keywords internal
 #' @references https://github.com/lch14forever/microbiomeViz/blob/94cbfe452a735aadf88733b27b8221a03f450a55/R/utils.R#L68-L86
 fix_duplicate_tax <-  function(ps) {
+  # convert na to Unkown first
+  ps <- fix_na_tax(ps)
+
   tax <- tax_table(ps)
   if (ncol(tax) == 1) {
     return(ps)
@@ -585,6 +588,16 @@ fix_duplicate_tax <-  function(ps) {
   }
 
   tax_table(ps) <- tax
+
+  ps
+}
+
+#' set NA (missing) tax to "Unkown"
+#' @keywords internal
+fix_na_tax <- function(ps) {
+  tax <- tax_table(ps)
+  tax_fixed <- apply(tax, 2, function(x) ifelse(is.na(x), "Unkown", x))
+  tax_table(ps) <- tax_fixed
 
   ps
 }

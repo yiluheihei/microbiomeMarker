@@ -108,6 +108,8 @@ lefse <- function(ps,
     )
   }
 
+  # keep taxa in rows
+  ps <- keep_taxa_in_rows(ps)
   # filter the taxa whose abundance is zero
   ps <- phyloseq_qc(ps)
   # fix duplicated tax
