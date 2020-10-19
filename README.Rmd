@@ -26,6 +26,8 @@ options("citation_format" = "pandoc")
 [![DOI](https://zenodo.org/badge/215731961.svg)](https://zenodo.org/badge/latestdoi/215731961)
 <!-- badges: end -->
 
+**If you think this project is helpful to you, you can give this project a star** :star:
+
 ## Motivation
 
 **The aim of this package is to build a unified toolbox in R for mcirobiome 
@@ -207,6 +209,8 @@ DOI: [10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
 - [phyloseq](https://github.com/joey711/phyloseq), the main data structures used 
   in **microbiomeMarker** are from or inherit from `phyloseq-class` in package 
   **phyloseq**.
+- [MicrobiotaProcess](https://github.com/YuLab-SMU/MicrobiotaProcess), function 
+  `import_dada2()` are modified from the `MicrobiotaProcess::import_dada2()`.
 
 ## Question
 

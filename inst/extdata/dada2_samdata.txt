@@ -1,0 +1,21 @@
+Subject	Gender	Day	When
+F3D0	3	F	0	Early
+F3D1	3	F	1	Early
+F3D141	3	F	141	Late
+F3D142	3	F	142	Late
+F3D143	3	F	143	Late
+F3D144	3	F	144	Late
+F3D145	3	F	145	Late
+F3D146	3	F	146	Late
+F3D147	3	F	147	Late
+F3D148	3	F	148	Late
+F3D149	3	F	149	Late
+F3D150	3	F	150	Late
+F3D2	3	F	2	Early
+F3D3	3	F	3	Early
+F3D5	3	F	5	Early
+F3D6	3	F	6	Early
+F3D7	3	F	7	Early
+F3D8	3	F	8	Early
+F3D9	3	F	9	Early
+Mock	ock	M	NA	Early
