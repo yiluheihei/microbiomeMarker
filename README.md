@@ -12,6 +12,9 @@ coverage](https://codecov.io/gh/yiluheihei/microbiomeMarker/branch/master/graph/
 [![DOI](https://zenodo.org/badge/215731961.svg)](https://zenodo.org/badge/latestdoi/215731961)
 <!-- badges: end -->
 
+**If you think this project is helpful to you, you can give this project
+a star** :star:
+
 ## Motivation
 
 **The aim of this package is to build a unified toolbox in R for
@@ -298,17 +301,20 @@ biomarker analysis. R package version 0.0.1.9000.
   - [phyloseq](https://github.com/joey711/phyloseq), the main data
     structures used in **microbiomeMarker** are from or inherit from
     `phyloseq-class` in package **phyloseq**.
+  - [MicrobiotaProcess](https://github.com/YuLab-SMU/MicrobiotaProcess),
+    function `import_dada2()` are modified from the
+    `MicrobiotaProcess::import_dada2()`.
 
 ## Question
 
 If you have any question, please file an issue on the issue tracker
 following the instructions in the issue template:
 
-Please briefly describe your problem, what output actually happend, and
+Please briefly describe your problem, what output actually happened, and
 what output you expect.
 
-Please provide a minimal reproducible example. For more deails on how to
-make a great minimal reproducible example, see
+Please provide a minimal reproducible example. For more details on how
+to make a great minimal reproducible example, see
 <https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example>
 and <https://www.tidyverse.org/help/#reprex>.
 
