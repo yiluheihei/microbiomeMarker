@@ -91,6 +91,7 @@ microbiomeMarker <- function(marker_table, ...) {
 
 # validity for microbiomeMarker, at least contains two slots: otu_table,
 #  tax_table
+#' @importMethodsFrom phyloseq taxa_names
 validity_microbiomeMarker <- function(object) {
   msg <- NULL
   # if (is.null(object@microbiome_marker)) {
@@ -101,7 +102,8 @@ validity_microbiomeMarker <- function(object) {
   marker <- object@marker_table
 
   # marker in marker_table must be contained in tax_table
-  if (!all(marker$feature %in% tax)) {
+  if (!all(row.names(marker) %in% taxa_names(object)) &&
+      !all(marker$feature %in% taxa_names(object))) {
     msg <- c(msg, "marker in marker_table must be contained in tax_table")
   }
 

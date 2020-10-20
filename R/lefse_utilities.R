@@ -552,9 +552,9 @@ add_tax_level <- function(taxa_nms, sep = "|") {
 check_tax_summarize <- function(ps) {
   taxa <- row.names(otu_table(ps))
 
-  # whether taxa is separated by `|` or `.`,
+  # whether taxa is separated by `|`,
   # may be required to add extra separate strings in the future
-  has_separate <- any(grepl("[|.]", taxa))
+  has_separate <- any(grepl("[|]", taxa))
 
   has_separate
 }

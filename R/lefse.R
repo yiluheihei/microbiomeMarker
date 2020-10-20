@@ -215,7 +215,11 @@ lefse <- function(ps,
     }
   }
 
-  mm <- microbiomeMarker(lefse_out, otus, tax)
+  mm <- microbiomeMarker(
+    lefse_out,
+    otu_table(otus, taxa_are_rows = TRUE),
+    tax
+  )
 
   mm
 }

@@ -38,6 +38,15 @@ lefse_cladogram <- function(mm,
                             annotation_shape = 22,
                             annotation_shape_size = 5,
                             ...){
+  # can not plot cladogram if taxas are not summarized
+  summarized <- check_tax_summarize(mm)
+  if (!summarized) {
+    stop(
+      paste("can not plot cladogram if taxas are not summarized.\n",
+         "set para `summarize = TRUE` is recommended in lefse analysis.")
+    )
+
+  }
   ps <- phyloseq(mm@otu_table, mm@tax_table)
   tree <- get_treedata_phyloseq(ps) %>%
     generate_taxa_tree(size = branch_size)
@@ -275,7 +284,14 @@ generate_cladogram_annotation <- function(lefse_out,
   label <- strsplit(feature, split = sep, fixed = TRUE) %>%
     purrr::map_chr(utils::tail, n =1)
   label_level <- lengths(strsplit(feature, sep, fixed = TRUE))
-  color <- rep(color, times = table(lefse_out$enrich_group))
+
+  # may be no marker are identified enriched in some groups
+  # drop the levels of this groups if the enrich_group is a factor
+  enrich_group <- lefse_out$enrich_group
+  if (inherits(enrich_group, "factor")) {
+    enrich_group <- droplevels(enrich_group)
+  }
+  color <- rep(color, times = table(enrich_group))
 
   annotation <- data.frame(
     node = label,

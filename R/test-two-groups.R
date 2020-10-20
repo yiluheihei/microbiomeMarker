@@ -100,6 +100,7 @@ test_two_groups <- function(ps,
 
   # p value correction for multiple comparisons
   test_res$pvalue_corrected <- p.adjust(test_res$pvalue, method = p_adjust)
+  row.names(test_res) <- row.names(feature)[match(test_res$feature, feature)]
 
   # p <= 0.05
   test_filtered <-  filter(test_res, .data$pvalue_corrected <= p_value_cutoff)

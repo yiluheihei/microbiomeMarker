@@ -88,9 +88,11 @@ test_multiple_groups <- function(ps,
   feature <- tax_table(ps)[, rank_name] %>% unclass()
   res <- mutate(res,feature = feature[, 1]) %>%
     select(.data$feature, everything())
+  row.names(res) <- row.names(feature)[match(res$feature, feature)]
 
   # filter: pvalue and effect size
   res_filtered <- filter(res, .data$pvalue_corrected <= p_value_cutoff)
+
   if (!is.null(effect_size_cutoff)) {
     res_filtered <- filter(
       res_filtered,

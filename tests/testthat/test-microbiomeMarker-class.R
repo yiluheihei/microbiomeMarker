@@ -3,14 +3,14 @@ context("microbiomeMarker class")
 test_that("microbiomeMarker constructor", {
   marker1 <- marker_table(
     data.frame(
-      feature = letters[1:5],
+      feature = paste0("sp", 1:5),
       enrich_group = c("cr", "er", "cr", "cr", "er"),
       stringsAsFactors = FALSE
     )
   )
   marker2 <- marker_table(
     data.frame(
-      feature = letters[c(1:5, 11)],
+      feature = paste0("sp", c(1:5, 11)),
       enrich_group = c("cr", "er", "cr", "cr", "er", "cr"),
       stringsAsFactors = FALSE
     )
@@ -23,7 +23,7 @@ test_that("microbiomeMarker constructor", {
     ),
     taxa_are_rows = TRUE
   )
-  tax1 <- tax_table(data.frame(feature = letters[1:10]) %>% as.matrix())
+  tax1 <- tax_table(data.frame(feature = paste0("sp", 1:10)) %>% as.matrix())
   otu2 <- otu1[1:3, ]
   tax2 <- tax1[1:3, ]
 
@@ -51,5 +51,20 @@ test_that("microbiomeMarker constructor", {
   expect_equal(
     is(microbiomeMarker(marker1, otu1, tax1)),
     c("microbiomeMarker", "phyloseq")
+  )
+})
+
+test_that("marker are contained in the original taxa", {
+  skip_on_cran()
+  skip_on_bioc()
+
+  expect_error(
+    lefse(caporaso_phyloseq,
+      normalization = 1e6,
+      class = "SampleType",
+      multicls_strat = TRUE,
+      summarize = FALSE
+    ),
+    NA
   )
 })
