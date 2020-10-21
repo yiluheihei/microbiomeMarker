@@ -60,6 +60,63 @@ if (!require(remotes)) install.packages("remotes")
 remotes::install_github("yiluheihei/microbiomeMarker")
 ```
 
+## Data import
+
+Since  [phyloseq](https://github.com/joey711/phyloseq) objects are a great 
+data-standard for microbiome data in R, the core functions in 
+**microbiomeMarker** take `phylosq` object as input. Conveniently, 
+**microbiomeMarker** provides features to import external data files form two 
+common tools of microbiome analysis, [qiime2](http://qiime.org/) and
+[dada2](https://benjjneb.github.io/dada2).
+
+### Import from dada2
+
+The output of the [dada2](https://benjjneb.github.io/dada2) pipeline is a 
+feature table of amplicon sequence variants (an ASV table): A matrix with rows 
+corresponding to samples and columns to ASVs, in which the value of each entry 
+is the number of times that ASV was observed in that sample. This table is 
+analogous to the traditional OTU table. Conveniently, taxa names are saved as ASV1, ASV2, ..., in the returned `phyloseq` object.
+
+```{r import-dada2}
+library(microbiomeMarker)
+
+seq_tab <- readRDS(system.file("extdata", "dada2_seqtab.rds",
+  package= "microbiomeMarker"))
+tax_tab <- readRDS(system.file("extdata", "dada2_taxtab.rds",
+ package= "microbiomeMarker"))
+sam_tab <- read.table(system.file("extdata", "dada2_samdata.txt",
+ package= "microbiomeMarker"), sep = "\t", header = TRUE, row.names = 1)
+ps <- import_dada2(seq_tab = seq_tab, tax_tab = tax_tab, sam_tab = sam_tab)
+ps
+```
+
+### Import from qiime2
+
+[qiime2](http://qiime.org/) is the most widely used software for metagenomic
+analysis. User can import the feature table, taxonomic table, phylogenetic 
+tree, representative sequence and sample metadata from qiime2 using
+`import_qiime2()`.
+
+```{r import-qiime2}
+otuqza_file <- system.file("extdata", "table.qza",package = "microbiomeMarker")
+taxaqza_file <- system.file("extdata", "taxonomy.qza",package = "microbiomeMarker")
+sample_file <- system.file(
+  "extdata", "sample-metadata.tsv",
+  package = "microbiomeMarker"
+)
+treeqza_file <- system.file("extdata", "tree.qza",package = "microbiomeMarker")
+ps <- import_qiime2(
+  otu_qza = otuqza_file, taxa_qza = taxaqza_file,
+  sam_tab = sample_file, tree_qza = treeqza_file
+)
+ps
+```
+
+Users can also import the external files into `phyloseq` object manually. For 
+more details on how to create `phyloseq` object from manually imported data, 
+please see 
+[this tutorial](http://joey711.github.io/phyloseq/import-data.html#manual).
+
 ## LEfSe
 
 Curently, LEfSe is the most used tool for microbiome biomarker discovery, and 
@@ -68,7 +125,6 @@ the first method to integrate to **microbiomeMarker** is LEfSe.
 ### lefse analysis
 
 ```{r lefse,warning=FALSE}
-library(microbiomeMarker)
 library(ggplot2)
 
 # sample data from lefse python script. The dataset contains 30 abundance 
@@ -210,7 +266,10 @@ DOI: [10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
   in **microbiomeMarker** are from or inherit from `phyloseq-class` in package 
   **phyloseq**.
 - [MicrobiotaProcess](https://github.com/YuLab-SMU/MicrobiotaProcess), function 
-  `import_dada2()` are modified from the `MicrobiotaProcess::import_dada2()`.
+  `import_dada2()` and `import_qiime2()` are modified from the 
+  `MicrobiotaProcess::import_dada2()`.
+- [qiime2R](https://github.com/jbisanz/qiime2R), `import_qiime2()` are refer to 
+  the functions in qiime2R.
 
 ## Question
 

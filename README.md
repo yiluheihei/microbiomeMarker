@@ -49,6 +49,79 @@ if (!require(remotes)) install.packages("remotes")
 remotes::install_github("yiluheihei/microbiomeMarker")
 ```
 
+## Data import
+
+Since [phyloseq](https://github.com/joey711/phyloseq) objects are a
+great data-standard for microbiome data in R, the core functions in
+**microbiomeMarker** take `phylosq` object as input. Conveniently,
+**microbiomeMarker** provides features to import external data files
+form two common tools of microbiome analysis,
+[qiime2](http://qiime.org/) and
+[dada2](https://benjjneb.github.io/dada2).
+
+### Import from dada2
+
+The output of the [dada2](https://benjjneb.github.io/dada2) pipeline is
+a feature table of amplicon sequence variants (an ASV table): A matrix
+with rows corresponding to samples and columns to ASVs, in which the
+value of each entry is the number of times that ASV was observed in that
+sample. This table is analogous to the traditional OTU table.
+Conveniently, taxa names are saved as ASV1, ASV2, …, in the returned
+`phyloseq` object.
+
+``` r
+library(microbiomeMarker)
+#> Registered S3 method overwritten by 'treeio':
+#>   method     from
+#>   root.phylo ape
+
+seq_tab <- readRDS(system.file("extdata", "dada2_seqtab.rds",
+  package= "microbiomeMarker"))
+tax_tab <- readRDS(system.file("extdata", "dada2_taxtab.rds",
+ package= "microbiomeMarker"))
+sam_tab <- read.table(system.file("extdata", "dada2_samdata.txt",
+ package= "microbiomeMarker"), sep = "\t", header = TRUE, row.names = 1)
+ps <- import_dada2(seq_tab = seq_tab, tax_tab = tax_tab, sam_tab = sam_tab)
+ps
+#> phyloseq-class experiment-level object
+#> otu_table()   OTU Table:         [ 232 taxa and 20 samples ]
+#> sample_data() Sample Data:       [ 20 samples by 4 sample variables ]
+#> tax_table()   Taxonomy Table:    [ 232 taxa by 6 taxonomic ranks ]
+#> refseq()      DNAStringSet:      [ 232 reference sequences ]
+```
+
+### Import from qiime2
+
+[qiime2](http://qiime.org/) is the most widely used software for
+metagenomic analysis. User can import the feature table, taxonomic
+table, phylogenetic tree, representative sequence and sample metadata
+from qiime2 using `import_qiime2()`.
+
+``` r
+otuqza_file <- system.file("extdata", "table.qza",package = "microbiomeMarker")
+taxaqza_file <- system.file("extdata", "taxonomy.qza",package = "microbiomeMarker")
+sample_file <- system.file(
+  "extdata", "sample-metadata.tsv",
+  package = "microbiomeMarker"
+)
+treeqza_file <- system.file("extdata", "tree.qza",package = "microbiomeMarker")
+ps <- import_qiime2(
+  otu_qza = otuqza_file, taxa_qza = taxaqza_file,
+  sam_tab = sample_file, tree_qza = treeqza_file
+)
+ps
+#> phyloseq-class experiment-level object
+#> otu_table()   OTU Table:         [ 770 taxa and 34 samples ]
+#> sample_data() Sample Data:       [ 34 samples by 9 sample variables ]
+#> tax_table()   Taxonomy Table:    [ 770 taxa by 7 taxonomic ranks ]
+#> phy_tree()    Phylogenetic Tree: [ 770 tips and 768 internal nodes ]
+```
+
+Users can also import the external files into `phyloseq` object
+manually. For more details on how to create `phyloseq` object from
+manually imported data, please see [this
+tutorial](http://joey711.github.io/phyloseq/import-data.html#manual).
+
 ## LEfSe
 
 Curently, LEfSe is the most used tool for microbiome biomarker
@@ -58,10 +131,6 @@ LEfSe.
 ### lefse analysis
 
 ``` r
-library(microbiomeMarker)
-#> Registered S3 method overwritten by 'treeio':
-#>   method     from
-#>   root.phylo ape
 library(ggplot2)
 
 # sample data from lefse python script. The dataset contains 30 abundance 
@@ -158,14 +227,18 @@ two_group_welch
 #> tax_table()   Taxonomy Table:    [ 248 taxa by 2 taxonomic ranks ]
 # details of result of the three markers
 head(marker_table(two_group_welch))
-#>              feature     pvalue F_mean_rel_freq M_mean_rel_freq     diff_mean
-#> 1         Parvimonas 0.03281399    0.0003822353     0.001722092 -0.0013398567
-#> 2 Peptostreptococcus 0.01714937    0.0039598236     0.010654869 -0.0066950454
-#> 3     Heliobacterium 0.02940341    0.0002076471     0.001061864 -0.0008542172
-#>       ci_lower      ci_upper ratio_proportion pvalue_corrected
-#> 1 -0.002560839 -1.188741e-04        0.2219599       0.03281399
-#> 2 -0.012106408 -1.283683e-03        0.3716445       0.01714937
-#> 3 -0.001616006 -9.242875e-05        0.1955495       0.02940341
+#>                  feature     pvalue F_mean_rel_freq M_mean_rel_freq
+#> sp167         Parvimonas 0.03281399    0.0003822353     0.001722092
+#> sp174 Peptostreptococcus 0.01714937    0.0039598236     0.010654869
+#> sp175     Heliobacterium 0.02940341    0.0002076471     0.001061864
+#>           diff_mean     ci_lower      ci_upper ratio_proportion
+#> sp167 -0.0013398567 -0.002560839 -1.188741e-04        0.2219599
+#> sp174 -0.0066950454 -0.012106408 -1.283683e-03        0.3716445
+#> sp175 -0.0008542172 -0.001616006 -9.242875e-05        0.1955495
+#>       pvalue_corrected
+#> sp167       0.03281399
+#> sp174       0.01714937
+#> sp175       0.02940341
 ```
 
 ### Statistical analysis multiple groups
@@ -195,27 +268,27 @@ multiple_group_anova
 #> otu_table()   OTU Table:         [ 248 taxa and  32 samples ]
 #> tax_table()   Taxonomy Table:    [ 248 taxa by 2 taxonomic ranks ]
 head(marker_table(multiple_group_anova))
-#>          feature       pvalue pvalue_corrected effect_size
-#> 1    Bacteroides 8.396825e-10     8.396825e-10   0.7633661
-#> 2     Bartonella 7.531192e-03     7.531192e-03   0.2861996
-#> 3       Brucella 3.063042e-02     3.063042e-02   0.2136846
-#> 4  Granulibacter 1.354378e-02     1.354378e-02   0.2567165
-#> 5    Macrococcus 1.522491e-02     1.522491e-02   0.2506944
-#> 6 Rhodospirillum 1.198159e-03     1.198159e-03   0.3711917
-#>   Enterotype 1:mean_rel_freq_percent Enterotype 2:mean_rel_freq_percent
-#> 1                           34.95871                       6.8192256518
-#> 2                            0.00000                       0.0012021667
-#> 3                            0.00000                       0.0007033333
-#> 4                            0.00000                       0.0008008333
-#> 5                            0.00000                       0.0006470000
-#> 6                            0.00000                       0.0010731667
-#>   Enterotype 3:mean_rel_freq_percent
-#> 1                       8.913236e+00
-#> 2                       0.000000e+00
-#> 3                       0.000000e+00
-#> 4                       0.000000e+00
-#> 5                       2.072222e-05
-#> 6                       7.238889e-05
+#>             feature       pvalue pvalue_corrected effect_size
+#> sp1     Bacteroides 8.396825e-10     8.396825e-10   0.7633661
+#> sp12     Bartonella 7.531192e-03     7.531192e-03   0.2861996
+#> sp15       Brucella 3.063042e-02     3.063042e-02   0.2136846
+#> sp22  Granulibacter 1.354378e-02     1.354378e-02   0.2567165
+#> sp25    Macrococcus 1.522491e-02     1.522491e-02   0.2506944
+#> sp27 Rhodospirillum 1.198159e-03     1.198159e-03   0.3711917
+#>      Enterotype 1:mean_rel_freq_percent Enterotype 2:mean_rel_freq_percent
+#> sp1                            34.95871                       6.8192256518
+#> sp12                            0.00000                       0.0012021667
+#> sp15                            0.00000                       0.0007033333
+#> sp22                            0.00000                       0.0008008333
+#> sp25                            0.00000                       0.0006470000
+#> sp27                            0.00000                       0.0010731667
+#>      Enterotype 3:mean_rel_freq_percent
+#> sp1                        8.913236e+00
+#> sp12                       0.000000e+00
+#> sp15                       0.000000e+00
+#> sp22                       0.000000e+00
+#> sp25                       2.072222e-05
+#> sp27                       7.238889e-05
 ```
 
 The result of multiple group statistic specified whether the means of
@@ -302,8 +375,10 @@ biomarker analysis. R package version 0.0.1.9000.
     structures used in **microbiomeMarker** are from or inherit from
     `phyloseq-class` in package **phyloseq**.
   - [MicrobiotaProcess](https://github.com/YuLab-SMU/MicrobiotaProcess),
-    function `import_dada2()` are modified from the
-    `MicrobiotaProcess::import_dada2()`.
+    function `import_dada2()` and `import_qiime2()` are modified from
+    the `MicrobiotaProcess::import_dada2()`.
+  - [qiime2R](https://github.com/jbisanz/qiime2R), `import_qiime2()` are
+    refer to the functions in qiime2R.
 
 ## Question
 
