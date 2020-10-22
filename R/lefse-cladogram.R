@@ -5,7 +5,8 @@
 #'
 #' @param mm a [microbiomeMarker-class] object
 #' @param color a color vector, used to highlight the clades of micribome
-#' biomarker
+#'   biomarker. The values will be matched in order (usually alphabetical) with
+#'   the groups.
 #' @param branch_size numberic, size of branch, default `0.2`
 #' @param alpha alpha parameter for shading, default `0.2`
 #' @param clade_label_level max level of taxa used to label the clade, other
@@ -16,7 +17,10 @@
 ##' `node_size=a*log(relative_abundance) + b`
 ##' @param annotation_shape shape used for annotation, default `22`
 ##' @param annotation_shape_size size used for annotation shape, default `5`
-##' @param ... extra arguments passed to [set_marker_annotation()]
+##' @param  group_legend_param,marker_legend_param a list specifying
+##'   extra parameters of group legend and marker legend, such as `direction` (
+##'   the direction of the guide), `nrow` (the desired number of rows of
+##'   legends). See [`ggplot2::guide_legend()`] for more details.
 #' @return a ggtree object
 #' @importFrom tidytree treedata
 #' @importFrom ggplot2 geom_point theme element_blank geom_rect guides
@@ -37,7 +41,9 @@ lefse_cladogram <- function(mm,
                             clade_label_level = 4,
                             annotation_shape = 22,
                             annotation_shape_size = 5,
-                            ...){
+                            group_legend_param = list(),
+                            marker_legend_param = list()
+                            ) {
   # can not plot cladogram if taxas are not summarized
   summarized <- check_tax_summarize(mm)
   if (!summarized) {
@@ -57,7 +63,7 @@ lefse_cladogram <- function(mm,
     color = color
   )
 
-  # backgroup hilight
+  # background highlight
   annotation_info <- dplyr::left_join(
     annotation,
     tree$data,
@@ -77,20 +83,25 @@ lefse_cladogram <- function(mm,
   )
   hilights_g <- purrr::pmap(hilight_para, geom_hilight)
   tree <- purrr::reduce(hilights_g, `+`, .init = tree)
+
   # hilight legend
   hilights_df <- dplyr::distinct(annotation_info, .data$enrich_group, .data$color)
   hilights_df$x <- 0
   hilights_df$y <- 1
-  # set_hilight_legend
+  group_legend_param <- c(
+    group_legend_param,
+    list(
+      title = NULL,
+      order = 1,
+      override.aes = list(fill = hilights_df$color)
+    )
+  )
+  group_lgd <- do.call(guide_legend, group_legend_param)
   tree <- tree +
     geom_rect(
       aes_(xmin = ~x, xmax = ~x, ymax = ~y, ymin = ~y, fill = ~enrich_group),
       data = hilights_df, inherit.aes = FALSE) +
-    guides(fill = guide_legend(
-      title = NULL,
-      order = 1,
-      override.aes = list(fill = hilights_df$color))
-    )
+    guides(fill = group_lgd)
 
   # set nodes color and size
   nodes_colors <- rep("white", nrow(tree$data))
@@ -99,7 +110,6 @@ lefse_cladogram <- function(mm,
   tree$data$node_size <- node_size
   tree <- tree +
     geom_point2(aes(size = I(node_size)), fill = nodes_colors, shape = 21)
-
 
   ## add clade labels
   clade_label <-dplyr::transmute(
@@ -132,13 +142,18 @@ lefse_cladogram <- function(mm,
       color = annotation_info$color[match(.data$label, annotation_info$label)]
     )
 
-  p <- set_marker_annotation(
-    tree,
-    guide_label$color,
-    guide_label$label2,
-    shape = annotation_shape,
-    size = annotation_shape_size,
-    ...) +
+  # marker annotation, legend
+  marker_legend_param <- c(
+    marker_legend_param,
+    list(
+      p = tree,
+      color = guide_label$color,
+      label = guide_label$label2,
+      shape = annotation_shape,
+      size = annotation_shape_size
+    )
+  )
+  p <- do.call(set_marker_annotation, marker_legend_param) +
     theme(legend.position = "right", legend.title = element_blank())
 
   p
@@ -322,7 +337,7 @@ get_angle <- function(tree, node){
 
 #' set legend for multiple geom_cladelabel layers
 #'
-#' This function can be used to set the microbiome marker annotatios
+#' This function can be used to set the microbiome marker annotations
 #'
 #' @param p a ggtree object
 #' @param color a color vector

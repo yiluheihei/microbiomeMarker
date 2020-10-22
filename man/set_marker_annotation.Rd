@@ -24,7 +24,7 @@ e.g. \code{ncol}, more details see \code{\link[ggplot2:guide_legend]{ggplot2::gu
 an updated \code{ggtree} object
 }
 \description{
-This function can be used to set the microbiome marker annotatios
+This function can be used to set the microbiome marker annotations
 }
 \seealso{
 \code{\link[ggplot2:guide_legend]{ggplot2::guide_legend()}}

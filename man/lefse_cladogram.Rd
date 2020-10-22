@@ -14,14 +14,16 @@ lefse_cladogram(
   clade_label_level = 4,
   annotation_shape = 22,
   annotation_shape_size = 5,
-  ...
+  group_legend_param = list(),
+  marker_legend_param = list()
 )
 }
 \arguments{
 \item{mm}{a \linkS4class{microbiomeMarker} object}
 
 \item{color}{a color vector, used to highlight the clades of micribome
-biomarker}
+biomarker. The values will be matched in order (usually alphabetical) with
+the groups.}
 
 \item{branch_size}{numberic, size of branch, default \code{0.2}}
 
@@ -40,7 +42,10 @@ level of taxa  will be shown on the side}
 
 \item{annotation_shape_size}{size used for annotation shape, default \code{5}}
 
-\item{...}{extra arguments passed to \code{\link[=set_marker_annotation]{set_marker_annotation()}}}
+\item{group_legend_param, marker_legend_param}{a list specifying
+extra parameters of group legend and marker legend, such as \code{direction} (
+the direction of the guide), \code{nrow} (the desired number of rows of
+legends). See \code{\link[ggplot2:guide_legend]{ggplot2::guide_legend()}} for more details.}
 }
 \value{
 a ggtree object
