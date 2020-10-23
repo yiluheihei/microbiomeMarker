@@ -23,7 +23,8 @@ lefse_cladogram(
 
 \item{color}{a color vector, used to highlight the clades of micribome
 biomarker. The values will be matched in order (usually alphabetical) with
-the groups.}
+the groups. If this is a named vector, then the colors will be matched
+based on the names instead.}
 
 \item{branch_size}{numberic, size of branch, default \code{0.2}}
 

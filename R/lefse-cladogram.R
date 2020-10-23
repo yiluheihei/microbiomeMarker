@@ -6,7 +6,8 @@
 #' @param mm a [microbiomeMarker-class] object
 #' @param color a color vector, used to highlight the clades of micribome
 #'   biomarker. The values will be matched in order (usually alphabetical) with
-#'   the groups.
+#'   the groups. If this is a named vector, then the colors will be matched
+#'   based on the names instead.
 #' @param branch_size numberic, size of branch, default `0.2`
 #' @param alpha alpha parameter for shading, default `0.2`
 #' @param clade_label_level max level of taxa used to label the clade, other
@@ -56,7 +57,6 @@ lefse_cladogram <- function(mm,
   ps <- phyloseq(mm@otu_table, mm@tax_table)
   tree <- get_treedata_phyloseq(ps) %>%
     generate_taxa_tree(size = branch_size)
-
 
   annotation <- generate_cladogram_annotation(
     mm@marker_table,
@@ -284,14 +284,19 @@ generate_taxa_tree <- function(treedata,
 }
 
 #' generate annotaion data for cladogram plot
-#' @param lefse_out a data.frame
+#' @param marker data.frame
 #' @param color a color vector, used to highlight the clades of ggtree
 #' @param sep seprator between different of levels of taxa
 #' @noRd
-generate_cladogram_annotation <- function(lefse_out,
+generate_cladogram_annotation <- function(marker,
                                           color,
                                           sep = "|") {
-  feature <- lefse_out$feature
+  enrich_group <- marker$enrich_group
+  if (length(color) != length(unique(enrich_group))) {
+    stop("the number of colors must be equal to the number of enriched groups.")
+  }
+
+  feature <- marker$feature
   has_prefix <- check_tax_prefix(feature)
   if (!has_prefix) {
     feature <- add_tax_level(feature)
@@ -302,16 +307,24 @@ generate_cladogram_annotation <- function(lefse_out,
 
   # may be no marker are identified enriched in some groups
   # drop the levels of this groups if the enrich_group is a factor
-  enrich_group <- lefse_out$enrich_group
   if (inherits(enrich_group, "factor")) {
     enrich_group <- droplevels(enrich_group)
   }
-  color <- rep(color, times = table(enrich_group))
+
+  # named colors: set the colors based on the matched names to groups
+  if (is.vector(color) && !is.null(names(color))) {
+    if (!all(names(color) %in% enrich_group)) {
+      stop("names of `color` muste be contained in enriched groups")
+    }
+    color = color[match(enrich_group, names(color))]
+  } else {
+    color <- rep(color, times = table(enrich_group))
+  }
 
   annotation <- data.frame(
     node = label,
     color = color,
-    enrich_group = lefse_out$enrich_group,
+    enrich_group = enrich_group,
     stringsAsFactors = FALSE
   )
 

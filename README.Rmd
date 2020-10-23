@@ -131,14 +131,14 @@ library(ggplot2)
 # profiles (obtained processing the 16S reads with RDP) belonging to 10 rag2 
 # (control) and 20 truc (case) mice
 data("spontaneous_colitis")
-lefse_out <- lefse(
+mm <- lefse(
   spontaneous_colitis, 
   normalization = 1e6, 
   class = "class", 
   multicls_strat = TRUE
 )
 # lefse return a microbioMarker class inherits from phyloseq
-lefse_out
+mm
 ```
 
 The microbiome biomarker information was stored in a new data structure 
@@ -146,7 +146,7 @@ The microbiome biomarker information was stored in a new data structure
 using `marker_table()`.
 
 ```{r}
-head(marker_table(lefse_out))
+head(marker_table(mm))
 ```
 
 ### Visualization of the result of lefse analysis
@@ -154,14 +154,20 @@ head(marker_table(lefse_out))
 Bar plot for output of lefse:
 
 ```{r lefse-barplot,dpi=300}
-lefse_barplot(lefse_out, label_level = 1) +
+lefse_barplot(mm, label_level = 1) +
   scale_fill_manual(values = c("rag2" = "blue", "truc" = "red"))
 ```
 
-Cladogram plot for output of lefse
+Cladogram plot for output of lefse:
 
 ```{r lefse-cladogram,dpi=300}
-lefse_cladogram(lefse_out, color = c("blue", "red"))
+lefse_cladogram(mm, color = c("blue", "red"))
+```
+
+It's recommended to use a named vector to set the colors of enriched group:
+
+```{r lefse-cladogram-color,dpi=300}
+lefse_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
 ```
 
 ## statistical analysis (stamp)

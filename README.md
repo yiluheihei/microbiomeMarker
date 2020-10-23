@@ -137,14 +137,14 @@ library(ggplot2)
 # profiles (obtained processing the 16S reads with RDP) belonging to 10 rag2 
 # (control) and 20 truc (case) mice
 data("spontaneous_colitis")
-lefse_out <- lefse(
+mm <- lefse(
   spontaneous_colitis, 
   normalization = 1e6, 
   class = "class", 
   multicls_strat = TRUE
 )
 # lefse return a microbioMarker class inherits from phyloseq
-lefse_out
+mm
 #> microbiomeMarker-class inherited from phyloseq-class
 #> marker_table  Marker Table:      [ 29 microbiome markers with 5 variables ]
 #> otu_table()   OTU Table:         [ 132 taxa and  30 samples ]
@@ -156,7 +156,7 @@ The microbiome biomarker information was stored in a new data structure
 by using `marker_table()`.
 
 ``` r
-head(marker_table(lefse_out))
+head(marker_table(mm))
 #>                                                                                       feature
 #> 1                                                                      Bacteria|Bacteroidetes
 #> 2                                                          Bacteria|Bacteroidetes|Bacteroidia
@@ -178,19 +178,28 @@ head(marker_table(lefse_out))
 Bar plot for output of lefse:
 
 ``` r
-lefse_barplot(lefse_out, label_level = 1) +
+lefse_barplot(mm, label_level = 1) +
   scale_fill_manual(values = c("rag2" = "blue", "truc" = "red"))
 ```
 
 ![](man/figures/README-lefse-barplot-1.png)<!-- -->
 
-Cladogram plot for output of lefse
+Cladogram plot for output of lefse:
 
 ``` r
-lefse_cladogram(lefse_out, color = c("blue", "red"))
+lefse_cladogram(mm, color = c("blue", "red"))
 ```
 
 ![](man/figures/README-lefse-cladogram-1.png)<!-- -->
+
+It’s recommended to use a named vector to set the colors of enriched
+group:
+
+``` r
+lefse_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
+```
+
+![](man/figures/README-lefse-cladogram-color-1.png)<!-- -->
 
 ## statistical analysis (stamp)
 
