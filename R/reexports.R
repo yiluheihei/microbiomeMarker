@@ -31,3 +31,14 @@ phyloseq::sample_names
 #' @export
 magrittr::`%>%`
 
+#' @importFrom phyloseq import_qiime
+#' @export
+phyloseq::import_qiime
+
+#' @importFrom phyloseq import_mothur
+#' @export
+phyloseq::import_mothur
+
+#' @importFrom phyloseq import_biom
+#' @export
+phyloseq::import_biom

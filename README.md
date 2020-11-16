@@ -1,6 +1,5 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <!-- badges: start -->
 
 [![R build
@@ -116,6 +115,16 @@ ps
 #> tax_table()   Taxonomy Table:    [ 770 taxa by 7 taxonomic ranks ]
 #> phy_tree()    Phylogenetic Tree: [ 770 tips and 768 internal nodes ]
 ```
+
+### Other import functions reexport from phyloseq
+
+**microbiomeMarker** reexports three import functions from **phyloseq**,
+including `import_biom()`, `import_qiime()` and `import_mothur()`, to
+help users to import data from [biom file](http://biom-format.org/), and
+output from [qiime](http://www.qiime.org/) and
+[mothur](http://www.mothur.org/). More details on these three import
+functions can be see from
+[here](https://joey711.github.io/phyloseq/import-data.html#the_import_family_of_functions).
 
 Users can also import the external files into `phyloseq` object
 manually. For more details on how to create `phyloseq` object from
@@ -375,18 +384,18 @@ biomarker analysis. R package version 0.0.1.9000.
 
 ## Acknowledgement
 
-  - [lefse python
+-   [lefse python
     script](https://bitbucket.org/biobakery/biobakery/wiki/lefse), The
     main lefse code are translated from **lefse python script**,
-  - [microbiomeViz](https://github.com/lch14forever/microbiomeViz),
+-   [microbiomeViz](https://github.com/lch14forever/microbiomeViz),
     cladogram visualization of lefse is modified from **microbiomeViz**.
-  - [phyloseq](https://github.com/joey711/phyloseq), the main data
+-   [phyloseq](https://github.com/joey711/phyloseq), the main data
     structures used in **microbiomeMarker** are from or inherit from
     `phyloseq-class` in package **phyloseq**.
-  - [MicrobiotaProcess](https://github.com/YuLab-SMU/MicrobiotaProcess),
+-   [MicrobiotaProcess](https://github.com/YuLab-SMU/MicrobiotaProcess),
     function `import_dada2()` and `import_qiime2()` are modified from
     the `MicrobiotaProcess::import_dada2()`.
-  - [qiime2R](https://github.com/jbisanz/qiime2R), `import_qiime2()` are
+-   [qiime2R](https://github.com/jbisanz/qiime2R), `import_qiime2()` are
     refer to the functions in qiime2R.
 
 ## Question
@@ -403,14 +412,14 @@ to make a great minimal reproducible example, see
 and <https://www.tidyverse.org/help/#reprex>.
 
     Brief description of the problem
-    
+
     # insert minimal reprducible example here
 
 ## Reference
 
-<div id="refs" class="references">
+<div id="refs" class="references csl-bib-body hanging-indent">
 
-<div id="ref-Love_2014">
+<div id="ref-Love_2014" class="csl-entry">
 
 Love, Michael I, Wolfgang Huber, and Simon Anders. 2014. “Moderated
 Estimation of Fold Change and Dispersion for RNA-Seq Data with DESeq2.”
@@ -418,16 +427,16 @@ Estimation of Fold Change and Dispersion for RNA-Seq Data with DESeq2.”
 
 </div>
 
-<div id="ref-Parks_2014">
+<div id="ref-Parks_2014" class="csl-entry">
 
 Parks, Donovan H., Gene W. Tyson, Philip Hugenholtz, and Robert G.
 Beiko. 2014. “STAMP: Statistical Analysis of Taxonomic and Functional
-Profiles.” *Bioinformatics* 30 (21): 3123–4.
+Profiles.” *Bioinformatics* 30 (21): 3123–24.
 <https://doi.org/10.1093/bioinformatics/btu494>.
 
 </div>
 
-<div id="ref-Paulson_2013">
+<div id="ref-Paulson_2013" class="csl-entry">
 
 Paulson, Joseph N, O Colin Stine, H’ector Corrada Bravo, and Mihai Pop.
 2013. “Differential Abundance Analysis for Microbial Marker-Gene
@@ -436,16 +445,16 @@ Surveys.” *Nature Methods* 10 (12): 1200–1202.
 
 </div>
 
-<div id="ref-Robinson_2009">
+<div id="ref-Robinson_2009" class="csl-entry">
 
-Robinson, M. D., D. J. McCarthy, and G. K. Smyth. 2009. “edgeR: A
-Bioconductor Package for Differential Expression Analysis of Digital
-Gene Expression Data.” *Bioinformatics* 26 (1): 139–40.
-<https://doi.org/10.1093/bioinformatics/btp616>.
+Robinson, M. D., D. J. McCarthy, and G. K. Smyth. 2009. “<span
+class="nocase">edgeR</span>: A Bioconductor Package for Differential
+Expression Analysis of Digital Gene Expression Data.” *Bioinformatics*
+26 (1): 139–40. <https://doi.org/10.1093/bioinformatics/btp616>.
 
 </div>
 
-<div id="ref-Segata_2011">
+<div id="ref-Segata_2011" class="csl-entry">
 
 Segata, Nicola, Jacques Izard, Levi Waldron, Dirk Gevers, Larisa
 Miropolsky, Wendy S Garrett, and Curtis Huttenhower. 2011. “Metagenomic

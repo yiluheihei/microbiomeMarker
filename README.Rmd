@@ -112,6 +112,15 @@ ps <- import_qiime2(
 ps
 ```
 
+### Other import functions reexport from phyloseq
+
+**microbiomeMarker** reexports three import functions from **phyloseq**, 
+including `import_biom()`, `import_qiime()` and `import_mothur()`, to help users
+to import data from [biom file](http://biom-format.org/), and output from 
+[qiime](http://www.qiime.org/) and [mothur](http://www.mothur.org/). More 
+details on these three import functions can be see from
+[here](https://joey711.github.io/phyloseq/import-data.html#the_import_family_of_functions).
+
 Users can also import the external files into `phyloseq` object manually. For 
 more details on how to create `phyloseq` object from manually imported data, 
 please see 
