@@ -59,7 +59,7 @@ test_that("marker are contained in the original taxa", {
   skip_on_bioc()
 
   expect_error(
-    lefse(caporaso_phyloseq,
+    lefse(caporaso,
       normalization = 1e6,
       class = "SampleType",
       multicls_strat = TRUE,

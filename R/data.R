@@ -15,8 +15,8 @@
 #' \url{https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/treebiom.zip}
 #'
 #'
-#' @name data-caporaso_phyloseq
-#' @aliases caporaso_phyloseq
+#' @name data-caporaso
+#' @aliases caporaso
 #' @docType data
 #' @author Yang Cao
 NA
@@ -36,8 +36,8 @@ NA
 #' \url{https://academic.oup.com/cid/article/55/7/905/428203}
 #'
 #' @source \url{https://github.com/ying14/yingtools2/tree/master/data}
-#' @name data-cid.phy
-#' @aliases cid.phy
+#' @name data-cid_ying
+#' @aliases cid_ying
 #' @docType data
 #' @author Yang Cao
 NA

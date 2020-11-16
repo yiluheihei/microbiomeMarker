@@ -19,9 +19,9 @@ colnames(tax_table(ps)) <- c("Kingdom", "Phylum", "Class", "Order",
 
 sampledata <- read.delim("data-raw/caporaso/map.txt", row.names = 1) %>%
   sample_data()
-caporaso_phyloseq <- merge_phyloseq(ps, sampledata)
+caporaso <- merge_phyloseq(ps, sampledata)
 
-usethis::use_data(caporaso_phyloseq, overwrite = TRUE)
+usethis::use_data(caporaso, overwrite = TRUE)
 unlink("data-raw/cap*", recursive = TRUE)
 
 
@@ -31,7 +31,8 @@ download.file(
   "data-raw/cid.phy.rda"
 )
 load("data-raw/cid.phy.rda")
-usethis::use_data(cid.phy, overwrite = TRUE)
+cid_ying <- cid.phy
+usethis::use_data(cid_ying, overwrite = TRUE)
 unlink("data-raw/cid*")
 
 # pediatric ibd -----------------------------------------------------------
