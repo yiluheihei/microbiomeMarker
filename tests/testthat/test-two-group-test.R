@@ -16,7 +16,7 @@ test_that("ratio proportion", {
 test_that("test two group result", {
   skip_on_cran()
 
-  welch_res <- test_two_groups(enterotypes_arumugam, "Gender", "Genus")
+  welch_res <- test_two_groups(enterotypes_arumugam, "Gender")
   expect_known_output(
     welch_res,
     test_path("out/test-two-group-test-welch.txt"),
@@ -26,7 +26,6 @@ test_that("test two group result", {
   t_res <- test_two_groups(
     enterotypes_arumugam,
     "Gender",
-    "Genus",
     method = "t.test"
   )
   expect_known_output(
@@ -38,7 +37,6 @@ test_that("test two group result", {
   white_res <- test_two_groups(
     enterotypes_arumugam,
     "Gender",
-    "Genus",
     method = "white.test",
     nperm = 50
   )

@@ -2,8 +2,6 @@
 #'
 #' @param ps a [`phyloseq::phyloseq-class`] object
 #' @param group character, the variable to set the group
-#' @param rank_name character, taxonomic names of [`phyloseq::phyloseq-class`]
-#' to compare
 #' @param method test method, must be one of "anova" or "kruskal"
 #' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
@@ -16,7 +14,6 @@
 #' @export
 test_multiple_groups <- function(ps,
                                  group,
-                                 rank_name,
                                  method = c("anova", "kruskal"),
                                  p_adjust = c("none", "fdr", "bonferroni", "holm",
                                               "hochberg", "hommel", "BH", "BY"),
@@ -31,18 +28,30 @@ test_multiple_groups <- function(ps,
   method <- match.arg(method, c("anova", "kruskal"))
 
   ranks <- rank_names(ps)
-  if (!rank_name %in% ranks) {
-    stop("`rank_name` must be one of availabel taxonomic ranks of `ps`")
-  }
-  # agglomerate tax in the same rank_name
-  if (rank_name != ranks[length(ranks)]) {
-    ps <- tax_glom(ps, taxrank = rank_name)
+  diff_rank <- setdiff(ranks, availabel_ranks)
+  if (length(diff_rank)) {
+    stop(
+      "ranks of `ps` must be one of ",
+      paste(availabel_ranks, collapse = ", ")
+    )
   }
 
-  # relative abundance
-  abd <- otu_table(ps) %>%
-    t() %>%
+  # preprocess phyloseq object
+  # keep taxa in rows
+  ps <- keep_taxa_in_rows(ps)
+  # filter the taxa whose abundance is zero
+  ps <- phyloseq_qc(ps)
+  # fix duplicated tax
+  ps <- fix_duplicate_tax(ps)
+  ps <- add_prefix(ps)
+
+
+  otus <- summarize_taxa(ps)
+  feature <- taxa_names(otus)
+  abd <- t(otus) %>%
     as.data.frame()
+
+  # relative abundance
   abd_sum <- rowSums(abd)
   abd_prop <- sweep(abd, 1, abd_sum, "/")
 
@@ -52,11 +61,17 @@ test_multiple_groups <- function(ps,
   }
   groups <- sample_meta[[group]]
 
-
   if (method == "anova") {
     aov_df <- mutate(abd_prop, groups = groups)
-    features <- names(abd_prop)
-    formula_char <- paste(features, "~", "groups")
+
+    # separator "|" and some strings (such as "/", "-", "+") have a special
+    # meaning in formula
+    # replace this strings with ___(three underscores) before aov (new_feature),
+    # and reset the names as `feature`
+    names(aov_df) <- gsub("[-|+*//]", "___", names(aov_df))
+    new_features <- setdiff(names(aov_df), "groups")
+
+    formula_char <- paste(new_features, "~", "groups")
     pvalue <- purrr::map(
       formula_char,
       ~ aov(as.formula(.x), aov_df) %>% summary(.)) %>%
@@ -73,10 +88,17 @@ test_multiple_groups <- function(ps,
 
   # freq means prop
   freq_means_prop <- calc_mean_prop(abd_prop, groups)
-  row.names(freq_means_prop) <- tax_table(ps)@.Data[, rank_name]
+  row.names(freq_means_prop) <- feature
+
+  # enriched group
+  group_enriched_idx <- apply(freq_means_prop, 1, which.max)
+  groups_uniq <- unique(groups)
+  group_nms <- groups_uniq[charmatch(groups_uniq, names(freq_means_prop))]
+  group_enriched <- group_nms[group_enriched_idx]
 
   res <- bind_cols(
     data.frame(
+      enrich_group = group_enriched,
       pvalue = pvalue,
       pvalue_corrected = pvalue_corrected,
       effect_size = ef
@@ -85,10 +107,9 @@ test_multiple_groups <- function(ps,
   )
 
   # append feature
-  feature <- tax_table(ps)[, rank_name] %>% unclass()
-  res <- mutate(res,feature = feature[, 1]) %>%
-    select(.data$feature, everything())
-  row.names(res) <- row.names(feature)[match(res$feature, feature)]
+  res <- mutate(res,feature = feature) %>%
+    select(.data$feature, .data$enrich_group, everything())
+  row.names(res) <- feature[match(res$feature, feature)]
 
   # filter: pvalue and effect size
   res_filtered <- filter(res, .data$pvalue_corrected <= p_value_cutoff)
@@ -100,18 +121,23 @@ test_multiple_groups <- function(ps,
     )
   }
 
+  # summarized tax table
+  tax <- matrix(feature) %>%
+    tax_table()
+  row.names(tax) <- feature
+
   if (nrow(res_filtered) == 0) {
     warning("No significant features were found, return all the features")
     marker <- microbiomeMarker(
       marker_table(res),
       otu_table(t(abd), taxa_are_rows = TRUE),
-      tax_table(ps)
+      tax
     )
   } else {
     marker <- microbiomeMarker(
       marker_table(res_filtered),
       otu_table(t(abd), taxa_are_rows = TRUE),
-      tax_table(ps)
+      tax
     )
   }
 

@@ -513,39 +513,18 @@ check_tax_prefix <- function(taxa_nms) {
   any(has_prefix)
 }
 
-# add ranks prefix, e.g k__, p__
-add_prefix <- function(ps) {
-  tax <- as(tax_table(ps), "matrix") %>%
-    as.data.frame()
-  lvl <- colnames(tax)
-
-  diff_lvl <- setdiff(lvl, availabel_ranks)
-  if (diff_lvl != 0) {
-    stop("rank names of `ps` must be one of Kingdom, Phylum, Class, Order, Family, Genus, Species")
-  }
-
-  prefix <- substr(lvl, 1, 1) %>%
-    tolower() %>%
-    paste("__", sep = "")
-  tax_new <- mapply(function(x, y) paste0(x, y), prefix, tax, SIMPLIFY = FALSE)
-  tax_new <- do.call(cbind, tax_new)
-  colnames(tax_new) <- lvl
-  tax_table(ps) <- tax_table(tax_new)
-
-  ps
-}
-
-# add tax level prefix
-add_tax_level <- function(taxa_nms, sep = "|") {
-  prefixes <- paste0(c("k", "p", "c", "o", "f", "g", "s"), "__")
-  taxa_split <- strsplit(taxa_nms,,split = sep, fixed = TRUE)
-  nms <- purrr::map_chr(
-    taxa_split,
-    ~ paste0(prefixes[1:length(.x)], .x) %>% paste(collapse = sep)
-  )
-
-  nms
-}
+# # add tax level prefix
+# add_tax_level <- function(taxa_nms, sep = "|") {
+#   # prefixes <- paste0(c("k", "p", "c", "o", "f", "g", "s"), "__")
+#   prefixes <-
+#   taxa_split <- strsplit(taxa_nms,,split = sep, fixed = TRUE)
+#   nms <- purrr::map_chr(
+#     taxa_split,
+#     ~ paste0(prefixes[1:length(.x)], .x) %>% paste(collapse = sep)
+#   )
+#
+#   nms
+# }
 
 #' check whether tax abundance table is summarized or not
 #' @noRd
@@ -601,3 +580,15 @@ fix_na_tax <- function(ps) {
 
   ps
 }
+
+#' replace string `-` with `_` (tax contain character `-`). Since `-` will be
+#' pharsed as mathematical minus sign in formula used for modeling (such as
+#' aov in test_multiple_groups)
+#' @keywords internal
+# fix_hyphen_tax <- function(ps) {
+#   tax <- tax_table(ps)
+#   tax_fixed <- apply(tax, 2, function(x) gsub("-", "_", x, fixed = TRUE))
+#   tax_table(ps) <- tax_fixed
+#
+#   ps
+# }

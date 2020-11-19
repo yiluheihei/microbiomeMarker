@@ -4,18 +4,17 @@
 #' each sample.
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object.
-#' @param level taxonomic level to summarize, default `Kingdom`.
+#' @param level taxonomic level to summarize, default the top level rank of the
+#'  `ps`.
 #' @param absolute logical, whether return the absolute abundance or
 #'   relative abundance, default `FALSE`
 #' FALSE.
 #' @param sep a character string to separate the taxonomic levels.
-#'
-#' @return a data frame, each row represents a taxa, where each col represents
-#' the taxa abundance of each sample.
+#' @return a [`phyloseq::otu_table-class`] object, where each row represents a
+#'   taxa, and each col represents the taxa abundance of each sample.
 #' @export
-
 summarize_taxa <- function(ps,
-                           level = "Kingdom",
+                           level = rank_names(ps)[1],
                            absolute = TRUE,
                            sep = "|") {
   ps_ranks <- rank_names(ps)

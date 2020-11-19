@@ -1,10 +1,10 @@
-##  codes for lefse cladogram plot are modified from microbiomeViz
+##  codes for cladogram plot are modified from microbiomeViz
 ##  https://github.com/lch14forever/microbiomeViz
 
-#' @title plot cladogram of lefse results
+#' @title plot cladogram of micobiomeMaker results
 #'
 #' @param mm a [microbiomeMarker-class] object
-#' @param color a color vector, used to highlight the clades of micribome
+#' @param color a color vector, used to highlight the clades of microbiome
 #'   biomarker. The values will be matched in order (usually alphabetical) with
 #'   the groups. If this is a named vector, then the colors will be matched
 #'   based on the names instead.
@@ -32,8 +32,7 @@
 #' @export
 #' @references This function is modified from `clada.anno` from microbiomeViz.
 #' \url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}
-#' @description annotate a ggtree plot to highlight certain clades
-lefse_cladogram <- function(mm,
+plot_cladogram <- function(mm,
                             color,
                             branch_size = 0.2,
                             alpha = 0.2,
@@ -85,7 +84,10 @@ lefse_cladogram <- function(mm,
   tree <- purrr::reduce(hilights_g, `+`, .init = tree)
 
   # hilight legend
-  hilights_df <- dplyr::distinct(annotation_info, .data$enrich_group, .data$color)
+  # default: colors were matched for in alphabetical of groups, which requires
+  # arrange hilights_df according to enrich_group
+  hilights_df <- dplyr::distinct(annotation_info, .data$enrich_group, .data$color) %>%
+    arrange(.data$enrich_group)
   hilights_df$x <- 0
   hilights_df$y <- 1
   group_legend_param <- c(
@@ -206,10 +208,14 @@ get_treedata_phyloseq <- function(ps, sep = "|") {
   }
 
   taxa_nms <- row.names(feature)
-  has_prefix <- check_tax_prefix(taxa_nms)
-  if (!has_prefix) {
-    taxa_nms <- add_tax_level(taxa_nms, sep = sep)
-  }
+
+  ## prefix of level ("p__") have been added while performing microbiome marker
+  ## analysis (lefse or statistical), add_tax_level is not required here.
+  # has_prefix <- check_tax_prefix(feature)
+  # has_prefix <- check_tax_prefix(taxa_nms)
+  # if (!has_prefix) {
+  #   taxa_nms <- add_tax_level(taxa_nms, sep = sep)
+  # }
 
   tree_table <- data.frame(
     taxa = taxa_nms,
@@ -225,11 +231,17 @@ get_treedata_phyloseq <- function(ps, sep = "|") {
   # add root node
   nodes <- c("r__Root", nodes)
 
-  # levels used for extend of clade label
+  ## data may not contain all the seven ranks of the taxa, such as
+  ## enterotypes_arumugam only contains Phylum and Genus ranks
+  taxa_deepest <- taxa_split[[which.max(lengths(taxa_split))]]
+  prefix <- gsub("(.*)__.*", "\\1", taxa_deepest)
   levels <- purrr::map_chr(nodes, ~ gsub("__.*$", "", .x)) %>%
-    factor(
-    levels = rev(c("r" , "k", "p", "c", "o", "f", "g", "s"))
-  )
+    factor(levels = rev(prefix))
+  # levels used for extend of clade label
+  # levels <- purrr::map_chr(nodes, ~ gsub("__.*$", "", .x)) %>%
+  #   factor(
+  #   levels = rev(c("r" , "k", "p", "c", "o", "f", "g", "s"))
+  # )
 
   nodes_parent <- purrr::map_chr(
     taxa_split,
@@ -297,10 +309,13 @@ generate_cladogram_annotation <- function(marker,
   }
 
   feature <- marker$feature
-  has_prefix <- check_tax_prefix(feature)
-  if (!has_prefix) {
-    feature <- add_tax_level(feature)
-  }
+  ## prefix of level ("p__") have been added while performing microbiome marker
+  ## analysis (lefse or statistical), add_tax_level is not required here.
+  # has_prefix <- check_tax_prefix(feature)
+  # if (!has_prefix) {
+  #   feature <- add_tax_level(feature)
+  # }
+
   label <- strsplit(feature, split = sep, fixed = TRUE) %>%
     purrr::map_chr(utils::tail, n =1)
   label_level <- lengths(strsplit(feature, sep, fixed = TRUE))
@@ -318,7 +333,10 @@ generate_cladogram_annotation <- function(marker,
     }
     color = color[match(enrich_group, names(color))]
   } else {
-    color <- rep(color, times = table(enrich_group))
+    # colors will be matched in order (usually alphabetical) with the groups
+    names(color) <- sort(unique(enrich_group))
+    color <- color[match(enrich_group, names(color))]
+    # color <- rep(color, times = table(enrich_group))
   }
 
   annotation <- data.frame(

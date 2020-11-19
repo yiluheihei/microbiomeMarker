@@ -1,75 +1,87 @@
-                feature  pvalue pvalue_corrected effect_size
-1           Bacteroides 0.00011          0.00011     0.76337
-2            Bartonella 0.01141          0.01141     0.28620
-3              Brucella 0.01141          0.01141     0.21368
-4         Granulibacter 0.01141          0.01141     0.25672
-5        Rhodospirillum 0.00085          0.00085     0.37119
-6  Escherichia/Shigella 0.00697          0.00697     0.11446
-7         Clostridiales 0.00521          0.00521     0.16873
-8           Akkermansia 0.00174          0.00174     0.16795
-9    Methanobrevibacter 0.03529          0.03529     0.10523
-10      Ruminococcaceae 0.04499          0.04499     0.16864
-11      Subdoligranulum 0.03470          0.03470     0.21594
-12         Ruminococcus 0.00584          0.00584     0.20991
-13         Alkaliphilus 0.04676          0.04676     0.12573
-14            Catonella 0.02403          0.02403     0.24008
-15       Marvinbryantia 0.03329          0.03329     0.11915
-16      Catenibacterium 0.03901          0.03901     0.19960
-17           Holdemania 0.00773          0.00773     0.22081
-18      Parabacteroides 0.03863          0.03863     0.25826
-19           Prevotella 0.00109          0.00109     0.72123
-20            Alistipes 0.01661          0.01661     0.20015
-21      Bifidobacterium 0.02038          0.02038     0.14771
-22        Gordonibacter 0.04669          0.04669     0.10956
-23              Slackia 0.00991          0.00991     0.15685
-24         Unclassified 0.00037          0.00037     0.44973
-   Enterotype 1:mean_rel_freq_percent Enterotype 2:mean_rel_freq_percent
-1                            34.95871                            6.81923
-2                             0.00000                            0.00120
-3                             0.00000                            0.00070
-4                             0.00000                            0.00080
-5                             0.00000                            0.00107
-6                             0.18567                            0.01390
-7                             0.28204                            0.06897
-8                             0.58205                            0.00616
-9                             0.00042                            0.15527
-10                            0.62334                            0.39411
-11                            0.28973                            0.28775
-12                            0.33682                            0.58734
-13                            0.00000                            0.00025
-14                            0.01896                            0.00580
-15                            0.00975                            0.01253
-16                            0.00781                            0.20685
-17                            0.12643                            0.03563
-18                            1.94901                            0.81116
-19                            0.32852                           22.03184
-20                            1.33913                            1.05758
-21                            3.76251                            1.09421
-22                            0.02431                            0.03107
-23                            0.00062                            0.00524
-24                           33.07300                           50.03951
-   Enterotype 3:mean_rel_freq_percent
-1                             8.91324
-2                             0.00000
-3                             0.00000
-4                             0.00000
-5                             0.00007
-6                             0.61773
-7                             0.19144
-8                             2.02851
-9                             0.33118
-10                            0.88646
-11                            0.47737
-12                            1.90955
-13                            0.00109
-14                            0.01089
-15                            0.02091
-16                            0.05549
-17                            0.11275
-18                            0.88033
-19                            1.14791
-20                            3.13613
-21                            5.41696
-22                            0.06912
-23                            0.00494
-24                           53.61500
+                                     feature enrich_group  pvalue
+1                           p__Bacteroidetes Enterotype 1 0.00036
+2                           p__Euryarchaeota Enterotype 3 0.02381
+3                            p__Unclassified Enterotype 3 0.00037
+4                         p__Verrucomicrobia Enterotype 3 0.00228
+5       p__Actinobacteria|g__Bifidobacterium Enterotype 3 0.02038
+6         p__Actinobacteria|g__Gordonibacter Enterotype 3 0.04669
+7               p__Actinobacteria|g__Slackia Enterotype 2 0.00991
+8              p__Bacteroidetes|g__Alistipes Enterotype 3 0.01661
+9            p__Bacteroidetes|g__Bacteroides Enterotype 1 0.00011
+10       p__Bacteroidetes|g__Parabacteroides Enterotype 1 0.03863
+11            p__Bacteroidetes|g__Prevotella Enterotype 2 0.00109
+12    p__Euryarchaeota|g__Methanobrevibacter Enterotype 3 0.03529
+13             p__Firmicutes|g__Alkaliphilus Enterotype 3 0.04676
+14          p__Firmicutes|g__Catenibacterium Enterotype 2 0.03901
+15                p__Firmicutes|g__Catonella Enterotype 1 0.02403
+16            p__Firmicutes|g__Clostridiales Enterotype 1 0.00521
+17               p__Firmicutes|g__Holdemania Enterotype 1 0.00773
+18           p__Firmicutes|g__Marvinbryantia Enterotype 3 0.03329
+19          p__Firmicutes|g__Ruminococcaceae Enterotype 3 0.04499
+20             p__Firmicutes|g__Ruminococcus Enterotype 3 0.00584
+21          p__Firmicutes|g__Subdoligranulum Enterotype 3 0.03470
+22           p__Proteobacteria|g__Bartonella Enterotype 2 0.01141
+23             p__Proteobacteria|g__Brucella Enterotype 2 0.01141
+24 p__Proteobacteria|g__Escherichia/Shigella Enterotype 3 0.00697
+25        p__Proteobacteria|g__Granulibacter Enterotype 2 0.01141
+26       p__Proteobacteria|g__Rhodospirillum Enterotype 2 0.00085
+27           p__Unclassified|g__Unclassified Enterotype 3 0.00037
+28         p__Verrucomicrobia|g__Akkermansia Enterotype 3 0.00174
+   pvalue_corrected effect_size Enterotype 1:mean_rel_freq_percent
+1           0.00036     0.58216                           19.30734
+2           0.02381     0.11047                            0.00021
+3           0.00037     0.44973                           16.53650
+4           0.00228     0.16794                            0.29102
+5           0.02038     0.14771                            1.88125
+6           0.04669     0.10956                            0.01215
+7           0.00991     0.15685                            0.00031
+8           0.01661     0.20015                            0.66957
+9           0.00011     0.76337                           17.47935
+10          0.03863     0.25826                            0.97450
+11          0.00109     0.72123                            0.16426
+12          0.03529     0.10523                            0.00021
+13          0.04676     0.12573                            0.00000
+14          0.03901     0.19960                            0.00390
+15          0.02403     0.24008                            0.00948
+16          0.00521     0.16873                            0.14102
+17          0.00773     0.22081                            0.06322
+18          0.03329     0.11915                            0.00487
+19          0.04499     0.16864                            0.31167
+20          0.00584     0.20991                            0.16841
+21          0.03470     0.21594                            0.14486
+22          0.01141     0.28620                            0.00000
+23          0.01141     0.21368                            0.00000
+24          0.00697     0.11446                            0.09283
+25          0.01141     0.25672                            0.00000
+26          0.00085     0.37119                            0.00000
+27          0.00037     0.44973                           16.53650
+28          0.00174     0.16795                            0.29102
+   Enterotype 2:mean_rel_freq_percent Enterotype 3:mean_rel_freq_percent
+1                            15.37237                            7.04605
+2                             0.07869                            0.17427
+3                            25.01976                           26.80750
+4                             0.00314                            1.01426
+5                             0.54711                            2.70848
+6                             0.01553                            0.03456
+7                             0.00262                            0.00247
+8                             0.52879                            1.56806
+9                             3.40961                            4.45662
+10                            0.40558                            0.44016
+11                           11.01592                            0.57395
+12                            0.07763                            0.16559
+13                            0.00013                            0.00055
+14                            0.10343                            0.02774
+15                            0.00290                            0.00544
+16                            0.03449                            0.09572
+17                            0.01781                            0.05637
+18                            0.00626                            0.01046
+19                            0.19705                            0.44323
+20                            0.29367                            0.95478
+21                            0.14387                            0.23869
+22                            0.00060                            0.00000
+23                            0.00035                            0.00000
+24                            0.00695                            0.30886
+25                            0.00040                            0.00000
+26                            0.00054                            0.00004
+27                           25.01976                           26.80750
+28                            0.00308                            1.01426

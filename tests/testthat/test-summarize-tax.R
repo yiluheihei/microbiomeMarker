@@ -13,5 +13,8 @@ test_that("check the summarize_taxa", {
   expect_true(any(grepl(sep, row.names(taxa), fixed = TRUE)))
   expect_equal(nrow(taxa), 828L)
 
-  expect_error(summarize_taxa(enterotypes_arumugam), "`level` must in the ranks")
+  expect_error(
+    summarize_taxa(enterotypes_arumugam, level = "abc"),
+    "`level` must in the ranks"
+  )
 })

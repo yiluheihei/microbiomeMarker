@@ -31,7 +31,7 @@ test_that("test multiple groups result", {
 
   # error group
   expect_error(
-    test_multiple_groups(ps, "Entertype", rank_name = "Genus"),
+    test_multiple_groups(ps, "Entertype"),
     regexp = "`group` must in the field of sample meta data",
     fixed = TRUE
   )
@@ -39,7 +39,6 @@ test_that("test multiple groups result", {
   res_anova <- test_multiple_groups(
     ps,
     "Enterotype",
-    rank_name = "Genus",
     effect_size_cutoff = 0.7
   )
   expect_known_output(
@@ -51,7 +50,6 @@ test_that("test multiple groups result", {
   res_kruk <- test_multiple_groups(
     ps,
     "Enterotype",
-    rank_name = "Genus",
     method = "kruskal"
   )
   expect_known_output(

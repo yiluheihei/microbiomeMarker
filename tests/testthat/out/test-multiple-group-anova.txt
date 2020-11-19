@@ -1,9 +1,9 @@
-      feature     pvalue pvalue_corrected effect_size
-1 Bacteroides 8.3968e-10       8.3968e-10     0.76337
-2  Prevotella 9.0364e-09       9.0364e-09     0.72123
-  Enterotype 1:mean_rel_freq_percent Enterotype 2:mean_rel_freq_percent
-1                           34.95871                            6.81923
-2                            0.32852                           22.03184
-  Enterotype 3:mean_rel_freq_percent
-1                            8.91324
-2                            1.14791
+                          feature enrich_group     pvalue pvalue_corrected
+1 p__Bacteroidetes|g__Bacteroides Enterotype 1 8.3968e-10       8.3968e-10
+2  p__Bacteroidetes|g__Prevotella Enterotype 2 9.0364e-09       9.0364e-09
+  effect_size Enterotype 1:mean_rel_freq_percent
+1     0.76337                           17.47935
+2     0.72123                            0.16426
+  Enterotype 2:mean_rel_freq_percent Enterotype 3:mean_rel_freq_percent
+1                            3.40961                            4.45662
+2                           11.01592                            0.57395

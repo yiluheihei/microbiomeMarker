@@ -26,10 +26,10 @@ methods developed specifically for microbial community, such as linear
 discriminant analysis (LDA) effect size (LEfSe) (Segata et al. 2011),
 metagenomeSeq (Paulson et al. 2013); and some methods developed
 specifically for RNA-Seq data, such as DESeq2 (Love, Huber, and Anders
-2014) and edgeR (Robinson, McCarthy, and Smyth 2009), have been proposed
-for microbiome biomarker discovery. We usually use several methods for
-microbiome biomarker discovery and compare the results, which requires
-multiple tools developed in different programming, even in different OS.
+2014) and edgeR \[@{Robinson\_2009\], have been proposed for microbiome
+biomarker discovery. We usually use several methods for microbiome
+biomarker discovery and compare the results, which requires multiple
+tools developed in different programming, even in different OS.
 
 **microbiomeMarker** take the `phyloseq-class` object in package
 [phyloseq](https://github.com/joey711/phyloseq) as input, since
@@ -65,8 +65,7 @@ a feature table of amplicon sequence variants (an ASV table): A matrix
 with rows corresponding to samples and columns to ASVs, in which the
 value of each entry is the number of times that ASV was observed in that
 sample. This table is analogous to the traditional OTU table.
-Conveniently, taxa names are saved as ASV1, ASV2, …, in the returned
-`phyloseq` object.
+Conveniently, taxa names are saved as
 
 ``` r
 library(microbiomeMarker)
@@ -146,6 +145,11 @@ library(ggplot2)
 # profiles (obtained processing the 16S reads with RDP) belonging to 10 rag2 
 # (control) and 20 truc (case) mice
 data("spontaneous_colitis")
+# add prefix of ranks
+spontaneous_colitis <- microbiomeMarker:::add_prefix_summarized(
+  spontaneous_colitis,
+  c("k", "p", "c", "o", "f", "g")
+)
 mm <- lefse(
   spontaneous_colitis, 
   normalization = 1e6, 
@@ -166,13 +170,13 @@ by using `marker_table()`.
 
 ``` r
 head(marker_table(mm))
-#>                                                                                       feature
-#> 1                                                                      Bacteria|Bacteroidetes
-#> 2                                                          Bacteria|Bacteroidetes|Bacteroidia
-#> 3                                            Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales
-#> 4 Bacteria|Actinobacteria|Actinobacteria|Bifidobacteriales|Bifidobacteriaceae|Bifidobacterium
-#> 5                         Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Porphyromonadaceae
-#> 6                 Bacteria|Actinobacteria|Actinobacteria|Bifidobacteriales|Bifidobacteriaceae
+#>                                                                                                         feature
+#> 1                                                                                  k__Bacteria|p__Bacteroidetes
+#> 2                                                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia
+#> 3                                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales
+#> 4 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+#> 5                            k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae
+#> 6                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
 #>   enrich_group log_max_mean      lda      p_value
 #> 1         rag2     5.451241 5.178600 0.0155342816
 #> 2         rag2     5.433686 5.178501 0.0137522075
@@ -193,27 +197,10 @@ lefse_barplot(mm, label_level = 1) +
 
 ![](man/figures/README-lefse-barplot-1.png)<!-- -->
 
-Cladogram plot for output of lefse:
-
-``` r
-lefse_cladogram(mm, color = c("blue", "red"))
-```
-
-![](man/figures/README-lefse-cladogram-1.png)<!-- -->
-
-It’s recommended to use a named vector to set the colors of enriched
-group:
-
-``` r
-lefse_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
-```
-
-![](man/figures/README-lefse-cladogram-color-1.png)<!-- -->
-
 ## statistical analysis (stamp)
 
 STAMP (Parks et al. 2014) is a widely-used graphical software package
-that provides “best pratices” in choose appropriate statistical methods
+that provides “best pratices” in choose appropriate statisticalmethods
 for microbial taxonomic and functional analysis. Users can tests for
 both two groups or multiple groups, and effect sizes and confidence
 intervals are supported that allows critical assessment of the
@@ -233,30 +220,37 @@ data("enterotypes_arumugam")
 two_group_welch <- test_two_groups(
   enterotypes_arumugam, 
   group = "Gender", 
-  rank_name = "Genus", 
   method = "welch.test"
 )
 
 # three significantly differential genera (marker)
 two_group_welch
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 3 microbiome markers with 9 variables ]
-#> otu_table()   OTU Table:         [ 248 taxa and  39 samples ]
-#> tax_table()   Taxonomy Table:    [ 248 taxa by 2 taxonomic ranks ]
+#> marker_table  Marker Table:      [ 3 microbiome markers with 10 variables ]
+#> otu_table()   OTU Table:         [ 244 taxa and  39 samples ]
+#> tax_table()   Taxonomy Table:    [ 244 taxa by 1 taxonomic ranks ]
 # details of result of the three markers
 head(marker_table(two_group_welch))
-#>                  feature     pvalue F_mean_rel_freq M_mean_rel_freq
-#> sp167         Parvimonas 0.03281399    0.0003822353     0.001722092
-#> sp174 Peptostreptococcus 0.01714937    0.0039598236     0.010654869
-#> sp175     Heliobacterium 0.02940341    0.0002076471     0.001061864
-#>           diff_mean     ci_lower      ci_upper ratio_proportion
-#> sp167 -0.0013398567 -0.002560839 -1.188741e-04        0.2219599
-#> sp174 -0.0066950454 -0.012106408 -1.283683e-03        0.3716445
-#> sp175 -0.0008542172 -0.001616006 -9.242875e-05        0.1955495
-#>       pvalue_corrected
-#> sp167       0.03281399
-#> sp174       0.01714937
-#> sp175       0.02940341
+#>                                                                 feature
+#> p__Firmicutes|g__Heliobacterium         p__Firmicutes|g__Heliobacterium
+#> p__Firmicutes|g__Parvimonas                 p__Firmicutes|g__Parvimonas
+#> p__Firmicutes|g__Peptostreptococcus p__Firmicutes|g__Peptostreptococcus
+#>                                     enrich_group     pvalue F_mean_rel_freq
+#> p__Firmicutes|g__Heliobacterium                M 0.02940341    0.0001038235
+#> p__Firmicutes|g__Parvimonas                    M 0.03281399    0.0001911176
+#> p__Firmicutes|g__Peptostreptococcus            M 0.01714937    0.0019799118
+#>                                     M_mean_rel_freq     diff_mean      ci_lower
+#> p__Firmicutes|g__Heliobacterium        0.0005309321 -0.0004271086 -0.0008080028
+#> p__Firmicutes|g__Parvimonas            0.0008610460 -0.0006699283 -0.0012804196
+#> p__Firmicutes|g__Peptostreptococcus    0.0053274345 -0.0033475227 -0.0060532040
+#>                                          ci_upper ratio_proportion
+#> p__Firmicutes|g__Heliobacterium     -4.621437e-05        0.1955495
+#> p__Firmicutes|g__Parvimonas         -5.943705e-05        0.2219599
+#> p__Firmicutes|g__Peptostreptococcus -6.418413e-04        0.3716445
+#>                                     pvalue_corrected
+#> p__Firmicutes|g__Heliobacterium           0.02940341
+#> p__Firmicutes|g__Parvimonas               0.03281399
+#> p__Firmicutes|g__Peptostreptococcus       0.01714937
 ```
 
 ### Statistical analysis multiple groups
@@ -273,40 +267,60 @@ ps <- phyloseq::subset_samples(
 )
 
 multiple_group_anova <-  test_multiple_groups(
-  ps, 
+  ps,
   group = "Enterotype", 
-  rank_name = "Genus",
   method = "anova"
 )
 
 # 22 markers (significantly differential genera)
 multiple_group_anova
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 22 microbiome markers with 7 variables ]
-#> otu_table()   OTU Table:         [ 248 taxa and  32 samples ]
-#> tax_table()   Taxonomy Table:    [ 248 taxa by 2 taxonomic ranks ]
+#> marker_table  Marker Table:      [ 24 microbiome markers with 8 variables ]
+#> otu_table()   OTU Table:         [ 238 taxa and  32 samples ]
+#> tax_table()   Taxonomy Table:    [ 238 taxa by 1 taxonomic ranks ]
 head(marker_table(multiple_group_anova))
-#>             feature       pvalue pvalue_corrected effect_size
-#> sp1     Bacteroides 8.396825e-10     8.396825e-10   0.7633661
-#> sp12     Bartonella 7.531192e-03     7.531192e-03   0.2861996
-#> sp15       Brucella 3.063042e-02     3.063042e-02   0.2136846
-#> sp22  Granulibacter 1.354378e-02     1.354378e-02   0.2567165
-#> sp25    Macrococcus 1.522491e-02     1.522491e-02   0.2506944
-#> sp27 Rhodospirillum 1.198159e-03     1.198159e-03   0.3711917
-#>      Enterotype 1:mean_rel_freq_percent Enterotype 2:mean_rel_freq_percent
-#> sp1                            34.95871                       6.8192256518
-#> sp12                            0.00000                       0.0012021667
-#> sp15                            0.00000                       0.0007033333
-#> sp22                            0.00000                       0.0008008333
-#> sp25                            0.00000                       0.0006470000
-#> sp27                            0.00000                       0.0010731667
-#>      Enterotype 3:mean_rel_freq_percent
-#> sp1                        8.913236e+00
-#> sp12                       0.000000e+00
-#> sp15                       0.000000e+00
-#> sp22                       0.000000e+00
-#> sp25                       2.072222e-05
-#> sp27                       7.238889e-05
+#>                                                                 feature
+#> p__Bacteroidetes                                       p__Bacteroidetes
+#> p__Unclassified                                         p__Unclassified
+#> p__Actinobacteria|g__Scardovia           p__Actinobacteria|g__Scardovia
+#> p__Bacteroidetes|g__Alistipes             p__Bacteroidetes|g__Alistipes
+#> p__Bacteroidetes|g__Bacteroides         p__Bacteroidetes|g__Bacteroides
+#> p__Bacteroidetes|g__Parabacteroides p__Bacteroidetes|g__Parabacteroides
+#>                                     enrich_group       pvalue pvalue_corrected
+#> p__Bacteroidetes                    Enterotype 1 3.196070e-06     3.196070e-06
+#> p__Unclassified                     Enterotype 3 1.731342e-04     1.731342e-04
+#> p__Actinobacteria|g__Scardovia      Enterotype 2 2.742042e-02     2.742042e-02
+#> p__Bacteroidetes|g__Alistipes       Enterotype 3 3.922758e-02     3.922758e-02
+#> p__Bacteroidetes|g__Bacteroides     Enterotype 1 8.396825e-10     8.396825e-10
+#> p__Bacteroidetes|g__Parabacteroides Enterotype 1 1.314233e-02     1.314233e-02
+#>                                     effect_size
+#> p__Bacteroidetes                      0.5821619
+#> p__Unclassified                       0.4497271
+#> p__Actinobacteria|g__Scardovia        0.2196652
+#> p__Bacteroidetes|g__Alistipes         0.2001541
+#> p__Bacteroidetes|g__Bacteroides       0.7633661
+#> p__Bacteroidetes|g__Parabacteroides   0.2582573
+#>                                     Enterotype 1:mean_rel_freq_percent
+#> p__Bacteroidetes                                            19.3073387
+#> p__Unclassified                                             16.5364988
+#> p__Actinobacteria|g__Scardovia                               0.0000000
+#> p__Bacteroidetes|g__Alistipes                                0.6695668
+#> p__Bacteroidetes|g__Bacteroides                             17.4793538
+#> p__Bacteroidetes|g__Parabacteroides                          0.9745028
+#>                                     Enterotype 2:mean_rel_freq_percent
+#> p__Bacteroidetes                                          15.372374444
+#> p__Unclassified                                           25.019756042
+#> p__Actinobacteria|g__Scardovia                             0.001860083
+#> p__Bacteroidetes|g__Alistipes                              0.528789506
+#> p__Bacteroidetes|g__Bacteroides                            3.409612826
+#> p__Bacteroidetes|g__Parabacteroides                        0.405579500
+#>                                     Enterotype 3:mean_rel_freq_percent
+#> p__Bacteroidetes                                          7.046051e+00
+#> p__Unclassified                                           2.680750e+01
+#> p__Actinobacteria|g__Scardovia                            8.436111e-05
+#> p__Bacteroidetes|g__Alistipes                             1.568063e+00
+#> p__Bacteroidetes|g__Bacteroides                           4.456618e+00
+#> p__Bacteroidetes|g__Parabacteroides                       4.401643e-01
 ```
 
 The result of multiple group statistic specified whether the means of
@@ -328,22 +342,30 @@ pht
 # 22 significantly differential genera
 markers <- marker_table(multiple_group_anova)$feature
 markers
-#>                  sp1                 sp12                 sp15 
-#>        "Bacteroides"         "Bartonella"           "Brucella" 
-#>                 sp22                 sp25                 sp27 
-#>      "Granulibacter"        "Macrococcus"     "Rhodospirillum" 
-#>                 sp93                sp113                sp124 
-#>      "Lactobacillus"      "Streptococcus"   "Stenotrophomonas" 
-#>                sp149                sp153                sp157 
-#>        "Selenomonas"    "Subdoligranulum"       "Ruminococcus" 
-#>                sp174                sp180                sp196 
-#> "Peptostreptococcus"          "Catonella"          "Bulleidia" 
-#>                sp197                sp200                sp203 
-#>    "Catenibacterium"         "Holdemania"    "Parabacteroides" 
-#>                sp205                sp206                sp241 
-#>         "Prevotella"          "Alistipes"          "Scardovia" 
-#>                sp248 
-#>       "Unclassified"
+#>  [1] "p__Bacteroidetes"                     
+#>  [2] "p__Unclassified"                      
+#>  [3] "p__Actinobacteria|g__Scardovia"       
+#>  [4] "p__Bacteroidetes|g__Alistipes"        
+#>  [5] "p__Bacteroidetes|g__Bacteroides"      
+#>  [6] "p__Bacteroidetes|g__Parabacteroides"  
+#>  [7] "p__Bacteroidetes|g__Prevotella"       
+#>  [8] "p__Firmicutes|g__Bulleidia"           
+#>  [9] "p__Firmicutes|g__Catenibacterium"     
+#> [10] "p__Firmicutes|g__Catonella"           
+#> [11] "p__Firmicutes|g__Holdemania"          
+#> [12] "p__Firmicutes|g__Lactobacillus"       
+#> [13] "p__Firmicutes|g__Macrococcus"         
+#> [14] "p__Firmicutes|g__Peptostreptococcus"  
+#> [15] "p__Firmicutes|g__Ruminococcus"        
+#> [16] "p__Firmicutes|g__Selenomonas"         
+#> [17] "p__Firmicutes|g__Streptococcus"       
+#> [18] "p__Firmicutes|g__Subdoligranulum"     
+#> [19] "p__Proteobacteria|g__Bartonella"      
+#> [20] "p__Proteobacteria|g__Brucella"        
+#> [21] "p__Proteobacteria|g__Granulibacter"   
+#> [22] "p__Proteobacteria|g__Rhodospirillum"  
+#> [23] "p__Proteobacteria|g__Stenotrophomonas"
+#> [24] "p__Unclassified|g__Unclassified"
 # take a marker Bacteroides for example, we will show Bacteroides differ from 
 # between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
 pht@result$Bacteroides
@@ -368,6 +390,25 @@ plot_postHocTest(pht, feature = "Bacteroides")
 ```
 
 ![](man/figures/README-plot-posthoctest-1.png)<!-- -->
+
+## Visulatiton
+
+### Cladogram plot
+
+``` r
+plot_cladogram(mm, color = c("blue", "red"))
+```
+
+![](man/figures/README-lefse-cladogram-1.png)<!-- -->
+
+It’s recommended to use a named vector to set the colors of enriched
+group:
+
+``` r
+plot_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
+```
+
+![](man/figures/README-lefse-cladogram-color-1.png)<!-- -->
 
 ## Welcome
 
@@ -442,15 +483,6 @@ Paulson, Joseph N, O Colin Stine, H’ector Corrada Bravo, and Mihai Pop.
 2013. “Differential Abundance Analysis for Microbial Marker-Gene
 Surveys.” *Nature Methods* 10 (12): 1200–1202.
 <https://doi.org/10.1038/nmeth.2658>.
-
-</div>
-
-<div id="ref-Robinson_2009" class="csl-entry">
-
-Robinson, M. D., D. J. McCarthy, and G. K. Smyth. 2009. “<span
-class="nocase">edgeR</span>: A Bioconductor Package for Differential
-Expression Analysis of Digital Gene Expression Data.” *Bioinformatics*
-26 (1): 139–40. <https://doi.org/10.1093/bioinformatics/btp616>.
 
 </div>
 

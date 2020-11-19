@@ -4,12 +4,13 @@
 \alias{summarize_taxa}
 \title{Summarize taxa into a taxonomic level within each sample}
 \usage{
-summarize_taxa(ps, level = "Kingdom", absolute = TRUE, sep = "|")
+summarize_taxa(ps, level = rank_names(ps)[1], absolute = TRUE, sep = "|")
 }
 \arguments{
 \item{ps}{a \code{\link[phyloseq]{phyloseq-class}} object.}
 
-\item{level}{taxonomic level to summarize, default \code{Kingdom}.}
+\item{level}{taxonomic level to summarize, default the top level rank of the
+\code{ps}.}
 
 \item{absolute}{logical, whether return the absolute abundance or
 relative abundance, default \code{FALSE}
@@ -18,8 +19,8 @@ FALSE.}
 \item{sep}{a character string to separate the taxonomic levels.}
 }
 \value{
-a data frame, each row represents a taxa, where each col represents
-the taxa abundance of each sample.
+a \code{\link[phyloseq:otu_table-class]{phyloseq::otu_table}} object, where each row represents a
+taxa, and each col represents the taxa abundance of each sample.
 }
 \description{
 Provides summary information of the representation of a taxonomic levels within

@@ -100,12 +100,15 @@ lefse <- function(ps,
   correct <- as.numeric(correct)
 
   ranks <- rank_names(ps)
-  diff_rank <- setdiff(ranks, availabel_ranks)
-  if (length(diff_rank)) {
-    stop(
-      "ranks of `ps` must be one of ",
-      paste(availabel_ranks, collapse = ", ")
-    )
+
+  if (summarize) {
+    diff_rank <- setdiff(ranks, availabel_ranks)
+    if (length(diff_rank)) {
+      stop(
+        "ranks of `ps` must be one of ",
+        paste(availabel_ranks, collapse = ", ")
+      )
+    }
   }
 
   # keep taxa in rows
@@ -114,6 +117,10 @@ lefse <- function(ps,
   ps <- phyloseq_qc(ps)
   # fix duplicated tax
   ps <- fix_duplicate_tax(ps)
+  # add prefix of ranks, e.g. p__
+  if (summarize) {
+    ps <- add_prefix(ps)
+  }
   # normalization
   ps <- normalize(ps, norm_method, ...)
 
@@ -210,6 +217,9 @@ lefse <- function(ps,
       tax <- matrix(row.names(otus)) %>%
         tax_table()
       row.names(tax) <- row.names(otus)
+
+      # save collapsed ranks as colnames of summarized taxa
+
     } else {
       tax <- tax_table(ps)
     }

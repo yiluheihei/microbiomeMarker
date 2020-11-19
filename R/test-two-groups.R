@@ -2,13 +2,11 @@
 #'
 #' @param ps a [`phyloseq::phyloseq-class`] object
 #' @param group character, the variable to set the group
-#' @param rank_name character, taxonomic names of [`phyloseq::phyloseq-class`]
-#' to compare
 #' @param method test method, must be one of "welch.test", "t.test" or
 #' "white.test"
 #' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
-#' @param p_value_cutoff numeric, p value cutoff, default 0.05
+#' @param pvalue_cutoff numeric, p value cutoff, default 0.05
 #' @param diff_mean_cutoff,ratio_proportion_cutoff cutoff of different mean
 #' proportions and ratio proportions, default `NULL` which means no effect size
 #' filter.
@@ -20,18 +18,18 @@
 #' @importFrom dplyr select everything filter
 #' @export
 #' @author Yang Cao
+#' @return a [`microbiomeMarker-class`] object.
 test_two_groups <- function(ps,
-                           group,
-                           rank_name,
-                           method = c("welch.test", "t.test", "white.test"),
-                           p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                        "hochberg", "hommel", "BH", "BY"),
-                           p_value_cutoff = 0.05,
-                           diff_mean_cutoff = NULL,
-                           ratio_proportion_cutoff = NULL,
-                           conf_level = 0.95,
-                           nperm = 1000,
-                           ...) {
+                            group,
+                            method = c("welch.test", "t.test", "white.test"),
+                            p_adjust = c("none", "fdr", "bonferroni", "holm",
+                                          "hochberg", "hommel", "BH", "BY"),
+                            pvalue_cutoff = 0.05,
+                            diff_mean_cutoff = NULL,
+                            ratio_proportion_cutoff = NULL,
+                            conf_level = 0.95,
+                            nperm = 1000,
+                            ...) {
   stopifnot(inherits(ps, "phyloseq"))
 
   p_adjust <- match.arg(
@@ -40,17 +38,28 @@ test_two_groups <- function(ps,
   )
   method <- match.arg(method, c("welch.test", "t.test", "white.test"))
 
+  # ensure rank names are correct
   ranks <- rank_names(ps)
-  if (!rank_name %in% ranks) {
-    stop("`rank_name` must be one of availabel taxonomic ranks of `ps`")
+  diff_rank <- setdiff(ranks, availabel_ranks)
+  if (length(diff_rank)) {
+    stop(
+      "ranks of `ps` must be one of ",
+      paste(availabel_ranks, collapse = ", ")
+    )
   }
 
-  # agglomerate tax in the same rank_name
-  if (rank_name != ranks[length(ranks)]) {
-    ps <- tax_glom(ps, taxrank = rank_name)
-  }
-  abd <- otu_table(ps) %>%
-    t() %>%
+  # preprocess phyloseq object
+  # keep taxa in rows
+  ps <- keep_taxa_in_rows(ps)
+  # filter the taxa whose abundance is zero
+  ps <- phyloseq_qc(ps)
+  # fix duplicated tax
+  ps <- fix_duplicate_tax(ps)
+  # add prefix, e.g. p__
+  ps <- add_prefix(ps)
+
+  otus <- summarize_taxa(ps)
+  abd <- t(otus) %>%
     as.data.frame()
 
   # relative abundance
@@ -84,8 +93,8 @@ test_two_groups <- function(ps,
     )
   }
 
-  feature <- tax_table(ps)[, rank_name] %>% unclass()
-  test_res$feature <- feature[, 1]
+  feature <- taxa_names(otus)
+  test_res[["feature"]] <- feature
 
   # ratio proportion
   rp <- purrr::pmap_dbl(abd_prop_group, ~ calc_ratio_proportion(.x, .y))
@@ -96,14 +105,14 @@ test_two_groups <- function(ps,
     test_res,
     ci_lower = ifelse(.data$pvalue == 1, 0, .data$ci_lower),
     ci_upper = ifelse(.data$pvalue == 1, 0, .data$ci_upper)) %>%
-    select(.data$feature, everything())
+    select(.data$feature, .data$enrich_group, everything())
 
   # p value correction for multiple comparisons
   test_res$pvalue_corrected <- p.adjust(test_res$pvalue, method = p_adjust)
-  row.names(test_res) <- row.names(feature)[match(test_res$feature, feature)]
+  row.names(test_res) <- feature[match(test_res$feature, feature)]
 
   # p <= 0.05
-  test_filtered <-  filter(test_res, .data$pvalue_corrected <= p_value_cutoff)
+  test_filtered <-  filter(test_res, .data$pvalue_corrected <= pvalue_cutoff)
   # abs(diff_mean) >= cutoff
   if (!is.null(diff_mean_cutoff)) {
     test_filtered <- filter(
@@ -119,18 +128,23 @@ test_two_groups <- function(ps,
     )
   }
 
+  # summarized tax table
+  tax <- matrix(feature) %>%
+    tax_table()
+  row.names(tax) <- feature
+
   if (nrow(test_filtered) == 0) {
     warning("No significant features were found, return all the features")
     marker <- microbiomeMarker(
       marker_table(test_res),
       otu_table(t(abd), taxa_are_rows = TRUE),
-      tax_table(ps)
+      tax
     )
   } else {
     marker <- microbiomeMarker(
       marker_table(test_filtered),
       otu_table(t(abd), taxa_are_rows = TRUE),
-      tax_table(ps)
+      tax
     )
   }
 
@@ -189,6 +203,11 @@ run_t_test <- function(abd_group, conf_level = 0.95, var_equal = FALSE, ...) {
     ci_upper*100
   )
   names(res) <- c("pvalue", mean_names, "diff_mean", "ci_lower", "ci_upper")
+
+  # enrich_group
+  means_df <- data.frame(mean_g1, mean_g2)
+  group_enriched <- group_names[apply(means_df, 1, which.max)]
+  res$enrich_group <- group_enriched
 
   res
 }
@@ -274,6 +293,11 @@ run_white_test <- function(prop_group1,
     ci_upper*100
   )
   names(res) <- c("pvalue", mean_names, "diff_mean", "ci_lower", "ci_upper")
+
+  # enrich_group
+  means_df <- data.frame(mean_g1, mean_g2)
+  group_enriched <- group_names[apply(means_df, 1, which.max)]
+  res$enrich_group <- group_enriched
 
   res
 }

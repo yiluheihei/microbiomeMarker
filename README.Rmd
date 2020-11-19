@@ -14,9 +14,9 @@ knitr::opts_chunk$set(
 )
 
 # knitciations
-library(knitcitations)
-cleanbib()
-options("citation_format" = "pandoc")
+# library(knitcitations)
+# cleanbib()
+# options("citation_format" = "pandoc")
 ```
 
 <!-- badges: start -->
@@ -36,13 +36,12 @@ biomarker discovery by integrating various existing methods.**
 Many statistical methods have been proposed to discovery the microbiome biomaker
 by compare the taxon abundance between different classes. Some methods developed 
 specifically for microbial community, such as  linear discriminant analysis 
-(LDA) effect size (LEfSe) `r citep("10.1186/gb-2011-12-6-r60")`, metagenomeSeq 
-`r citep("10.1038/nmeth.2658")`; and some methods developed specifically for 
-RNA-Seq data, such as DESeq2 `r citep("10.1186/s13059-014-0550-8")` and 
-edgeR `r citep("10.1093/bioinformatics/btp616")`, have been proposed for 
-microbiome biomarker discovery. We usually use several methods for microbiome 
-biomarker discovery and compare the results, which requires multiple tools 
-developed in different programming, even in different OS.
+(LDA) effect size (LEfSe) [@Segata_2011], metagenomeSeq [@Paulson_2013]; and 
+some methods developed specifically for RNA-Seq data, such as DESeq2 
+[@Love_2014] and edgeR [@{Robinson_2009], have been proposed for microbiome 
+biomarker discovery. We usually use several methods for microbiome biomarker 
+discovery and compare the results, which requires multiple tools developed in 
+different programming, even in different OS.
 
 **microbiomeMarker** take the `phyloseq-class` object in package 
 [phyloseq](https://github.com/joey711/phyloseq) as input, since **phyloseq** is 
@@ -75,7 +74,7 @@ The output of the [dada2](https://benjjneb.github.io/dada2) pipeline is a
 feature table of amplicon sequence variants (an ASV table): A matrix with rows 
 corresponding to samples and columns to ASVs, in which the value of each entry 
 is the number of times that ASV was observed in that sample. This table is 
-analogous to the traditional OTU table. Conveniently, taxa names are saved as ASV1, ASV2, ..., in the returned `phyloseq` object.
+analogous to the traditional OTU table. Conveniently, taxa names are saved as 
 
 ```{r import-dada2}
 library(microbiomeMarker)
@@ -140,6 +139,11 @@ library(ggplot2)
 # profiles (obtained processing the 16S reads with RDP) belonging to 10 rag2 
 # (control) and 20 truc (case) mice
 data("spontaneous_colitis")
+# add prefix of ranks
+spontaneous_colitis <- microbiomeMarker:::add_prefix_summarized(
+  spontaneous_colitis,
+  c("k", "p", "c", "o", "f", "g")
+)
 mm <- lefse(
   spontaneous_colitis, 
   normalization = 1e6, 
@@ -167,27 +171,15 @@ lefse_barplot(mm, label_level = 1) +
   scale_fill_manual(values = c("rag2" = "blue", "truc" = "red"))
 ```
 
-Cladogram plot for output of lefse:
-
-```{r lefse-cladogram,dpi=300}
-lefse_cladogram(mm, color = c("blue", "red"))
-```
-
-It's recommended to use a named vector to set the colors of enriched group:
-
-```{r lefse-cladogram-color,dpi=300}
-lefse_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
-```
-
 ## statistical analysis (stamp)
 
-STAMP `r citep("10.1093/bioinformatics/btu494")` is a widely-used graphical 
-software package that provides "best pratices" in choose appropriate statistical
-methods for microbial taxonomic and functional analysis. Users can tests for 
-both two groups or multiple groups, and effect sizes and confidence intervals are
-supported that allows critical assessment of the biological relevancy of test 
-results. Here, **microbiomeMarker** also integrates the statistical methods used
-in STAMP for microbial comparison analysis between two-groups and multiple-groups.
+STAMP [@Parks_2014] is a widely-used graphical software package that provides 
+"best pratices" in choose appropriate statisticalmethods for microbial taxonomic 
+and functional analysis. Users can tests for both two groups or multiple groups, 
+and effect sizes and confidence intervals are supported that allows critical 
+assessment of the biological relevancy of test results. Here, 
+**microbiomeMarker** also integrates the statistical methods used in STAMP for 
+microbial comparison analysis between two-groups and multiple-groups.
 
 ### Statitical analysis between two groups
 
@@ -200,7 +192,6 @@ data("enterotypes_arumugam")
 two_group_welch <- test_two_groups(
   enterotypes_arumugam, 
   group = "Gender", 
-  rank_name = "Genus", 
   method = "welch.test"
 )
 
@@ -223,9 +214,8 @@ ps <- phyloseq::subset_samples(
 )
 
 multiple_group_anova <-  test_multiple_groups(
-  ps, 
+  ps,
   group = "Enterotype", 
-  rank_name = "Genus",
   method = "anova"
 )
 
@@ -257,8 +247,19 @@ Visualization of post test result of a given feature.
 plot_postHocTest(pht, feature = "Bacteroides")
 ```
 
+## Visulatiton
 
+### Cladogram plot
 
+```{r lefse-cladogram,dpi=300}
+plot_cladogram(mm, color = c("blue", "red"))
+```
+
+It's recommended to use a named vector to set the colors of enriched group:
+
+```{r lefse-cladogram-color,dpi=300}
+plot_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
+```
 
 ## Welcome
 
@@ -306,7 +307,5 @@ Brief description of the problem
 
 ## Reference
 
-```{r reference, echo=FALSE, message=FALSE}
-knitcitations::write.bibtex(file = "references.bib")
-```
+<div id="refs"></div>
 
