@@ -15,6 +15,7 @@ NULL
 setMethod("otu_table<-", c("microbiomeMarker", "otu_table"), function(x, value) {
   microbiomeMarker(
     x@marker_table,
+    x@tax_table_orig,
     value,
     x@sam_data,
     x@phy_tree,
@@ -28,6 +29,7 @@ setMethod("otu_table<-", c("microbiomeMarker", "otu_table"), function(x, value) 
 setMethod("otu_table<-", c("microbiomeMarker", "phyloseq"), function(x, value) {
   microbiomeMarker(
     x@marker_table,
+    x@tax_table_orig,
     otu_table(value),
     x@sam_data,
     x@phy_tree,
@@ -41,6 +43,7 @@ setMethod("otu_table<-", c("microbiomeMarker", "phyloseq"), function(x, value) {
 setMethod("otu_table<-", c("microbiomeMarker", "microbiomeMarker"), function(x, value) {
   microbiomeMarker(
     x@marker_table,
+    x@tax_table_orig,
     otu_table(value),
     x@sam_data,
     x@phy_tree,

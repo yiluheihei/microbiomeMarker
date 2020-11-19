@@ -221,12 +221,13 @@ lefse <- function(ps,
       # save collapsed ranks as colnames of summarized taxa
 
     } else {
-      tax <- tax_table(ps)
+      taxa <- tax_table(ps)
     }
   }
 
   mm <- microbiomeMarker(
-    lefse_out,
+    marker_table = lefse_out,
+    tax_table_orig = tax_table(ps),
     otu_table(otus, taxa_are_rows = TRUE),
     tax
   )

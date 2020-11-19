@@ -4,11 +4,13 @@
 \alias{microbiomeMarker}
 \title{Build microbiomeMarker-class objects}
 \usage{
-microbiomeMarker(marker_table, ...)
+microbiomeMarker(marker_table, tax_table_orig, ...)
 }
 \arguments{
-\item{marker_table}{a \linkS4class{marker_table} object
+\item{marker_table}{a \code{\linkS4class{marker_table}} object
 differtial analysis}
+
+\item{tax_table_orig}{a character vector, representing the summarized taxa}
 
 \item{...}{arguments passed to \code{\link[phyloseq:phyloseq]{phyloseq::phyloseq()}}}
 }

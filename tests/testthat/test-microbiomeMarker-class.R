@@ -36,20 +36,20 @@ test_that("microbiomeMarker constructor", {
     "The number of different feature must be smaller than the",
     " total number of feature"
   )
-  msg3 <- "marker in marker_table must be contained in tax_table"
+  msg3 <- "marker in marker_table must be contained in `taxa_names`"
 
   expect_microbiomeMarker_error(msg1, marker1)
   expect_microbiomeMarker_error(msg1, marker1, otu1)
   expect_microbiomeMarker_error(msg1, marker1, tax1)
-  expect_microbiomeMarker_error(msg2, marker1, otu2, tax2)
-  expect_microbiomeMarker_error(msg3, marker2, otu1, tax1)
+  expect_microbiomeMarker_error(msg2, marker1, tax2, otu2, tax2)
+  expect_microbiomeMarker_error(msg3, marker2, tax2, otu1, tax1)
 
   # not reaise error, since the phyloseq does not requires otu_table
   # and tax_table have the same row
   # expect_error(microbiomeMarker(diff_feature, otu1, tax1[1:8, ]))
 
   expect_equal(
-    is(microbiomeMarker(marker1, otu1, tax1)),
+    is(microbiomeMarker(marker1, tax2, otu1, tax1)),
     c("microbiomeMarker", "phyloseq")
   )
 })
@@ -63,7 +63,7 @@ test_that("marker are contained in the original taxa", {
       normalization = 1e6,
       class = "SampleType",
       multicls_strat = TRUE,
-      summarize = FALSE
+      summarize = TRUE
     ),
     NA
   )

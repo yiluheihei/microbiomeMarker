@@ -129,13 +129,15 @@ test_multiple_groups <- function(ps,
   if (nrow(res_filtered) == 0) {
     warning("No significant features were found, return all the features")
     marker <- microbiomeMarker(
-      marker_table(res),
+      marker_table = marker_table(res),
+      tax_table_orig = tax_table(ps),
       otu_table(t(abd), taxa_are_rows = TRUE),
       tax
     )
   } else {
     marker <- microbiomeMarker(
-      marker_table(res_filtered),
+      marker_table = marker_table(res_filtered),
+      tax_table_orig = tax_table(ps),
       otu_table(t(abd), taxa_are_rows = TRUE),
       tax
     )

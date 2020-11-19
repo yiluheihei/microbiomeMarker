@@ -399,7 +399,7 @@ plot_postHocTest(pht, feature = "Bacteroides")
 plot_cladogram(mm, color = c("blue", "red"))
 ```
 
-![](man/figures/README-lefse-cladogram-1.png)<!-- -->
+![](man/figures/README-cladogram-1.png)<!-- -->
 
 It’s recommended to use a named vector to set the colors of enriched
 group:
@@ -408,7 +408,7 @@ group:
 plot_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
 ```
 
-![](man/figures/README-lefse-cladogram-color-1.png)<!-- -->
+![](man/figures/README-cladogram-color-1.png)<!-- -->
 
 ## Welcome
 

@@ -21,10 +21,12 @@ document of \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}.
 \section{Slots}{
 
 \describe{
-\item{\code{marker_table}}{a data.frame, the result of microbiome
-differential analysis}
+\item{\code{marker_table}}{a data.frame, a \code{\linkS4class{marker_table}} object}
+
+\item{\code{tax_table_orig}}{a \code{\link[phyloseq:taxonomyTable-class]{phyloseq::taxonomyTable}} object, representing the
+original unsummarized \code{tax_table}.}
 }}
 
 \seealso{
-\code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}
+\code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}, \code{\linkS4class{marker_table}}, \code{\link[=summarize_taxa]{summarize_taxa()}}
 }

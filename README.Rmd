@@ -251,13 +251,13 @@ plot_postHocTest(pht, feature = "Bacteroides")
 
 ### Cladogram plot
 
-```{r lefse-cladogram,dpi=300}
+```{r cladogram,dpi=300,fig.width=14}
 plot_cladogram(mm, color = c("blue", "red"))
 ```
 
 It's recommended to use a named vector to set the colors of enriched group:
 
-```{r lefse-cladogram-color,dpi=300}
+```{r cladogram-color,dpi=300,fig.width=14}
 plot_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
 ```
 

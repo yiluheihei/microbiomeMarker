@@ -51,30 +51,36 @@ setValidity("marker_table", validity_marker_table)
 #' @name microbiomeMarker-class
 #' @aliases microbiomeMarker-class
 #' @importClassesFrom phyloseq phyloseq
-#' @slot marker_table a data.frame, the result of microbiome
-#'  differential analysis
-#' @seealso [`phyloseq::phyloseq-class`]
+#' @slot marker_table a data.frame, a [`marker_table-class`] object
+#' @slot tax_table_orig a [`phyloseq::taxonomyTable-class`] object, representing the
+#'   original unsummarized `tax_table`.
+#' @seealso [`phyloseq::phyloseq-class`], [`marker_table-class`], [summarize_taxa()]
 #' @exportClass microbiomeMarker
 `microbiomeMarker-class` <- setClass("microbiomeMarker",
   slots = c(
-    marker_table = "marker_table"
+    marker_table = "marker_table",
+    tax_table_orig = "taxonomyTable"
   ),
   contains = "phyloseq",
-  prototype = list(marker_table = NULL)
+  prototype = list(
+    marker_table = NULL,
+    tax_table_orig = NULL
+  )
 )
 
 #' Build microbiomeMarker-class objects
 #'
 #' This the constructor to build the [`microbiomeMarker-class`] object, don't use
 #' the `new()` constructor.
-#' @param marker_table a [marker_table-class] object
-#' differtial analysis
+#' @param marker_table a [`marker_table-class`] object
+#'   differtial analysis
+#' @param tax_table_orig a character vector, representing the summarized taxa
 #' @param ... arguments passed to [phyloseq::phyloseq()]
 #' @seealso [phyloseq::phyloseq()],
 #' @references [Is it bad practice to access S4 objects slots directly using @?](https://stackoverflow.com/questions/9900134/is-it-bad-practice-to-access-s4-objects-slots-directly-using/9900822#9900822)
 #' @name microbiomeMarker
 #' @export
-microbiomeMarker <- function(marker_table, ...) {
+microbiomeMarker <- function(marker_table, tax_table_orig, ...) {
   ps_slots <- list(...)
   msg <- "slot `otu_table` and `tax_table` are required"
   if (!length(ps_slots)) {
@@ -86,7 +92,11 @@ microbiomeMarker <- function(marker_table, ...) {
     stop(msg)
   }
 
-  `microbiomeMarker-class`(marker_table = marker_table, ps)
+  `microbiomeMarker-class`(
+    marker_table = marker_table,
+    tax_table_orig = tax_table_orig,
+    ps
+  )
 }
 
 # validity for microbiomeMarker, at least contains two slots: otu_table,
@@ -100,25 +110,33 @@ validity_microbiomeMarker <- function(object) {
   otu <- object@otu_table
   tax <- object@tax_table
   marker <- object@marker_table
+  tax_orig <- object@tax_table_orig
+
+  if (!inherits(tax_orig, "taxonomyTable")) {
+    msg <- c(msg, "`otu_table_orig` must be a otu_table object")
+  }
 
   # marker in marker_table must be contained in tax_table
   if (!all(row.names(marker) %in% taxa_names(object)) &&
       !all(marker$feature %in% taxa_names(object))) {
-    msg <- c(msg, "marker in marker_table must be contained in tax_table")
+    msg <- c(msg, "marker in marker_table must be contained in `taxa_names`")
   }
 
   if (is.null(otu)) {
     msg <- c(msg, "slot `otu_table` is required")
   }
+
   if (is.null(tax)) {
     msg <- c(msg, "slot `tax_table` is required")
   }
+
   if (nrow(otu) != nrow(tax)) {
     msg <- c(
       msg,
-      "nrow of `otu_table` should be equal to the nrow of `tax_table`"
+      "nrow of `otu_table` must be equal to the length of `tax_table()`"
     )
   }
+
   if (nrow(marker) > nrow(otu)) {
     msg <- c(
       msg,
