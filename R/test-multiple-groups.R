@@ -28,11 +28,11 @@ test_multiple_groups <- function(ps,
   method <- match.arg(method, c("anova", "kruskal"))
 
   ranks <- rank_names(ps)
-  diff_rank <- setdiff(ranks, availabel_ranks)
+  diff_rank <- setdiff(ranks, available_ranks)
   if (length(diff_rank)) {
     stop(
       "ranks of `ps` must be one of ",
-      paste(availabel_ranks, collapse = ", ")
+      paste(available_ranks, collapse = ", ")
     )
   }
 
@@ -43,8 +43,6 @@ test_multiple_groups <- function(ps,
   ps <- phyloseq_qc(ps)
   # fix duplicated tax
   ps <- fix_duplicate_tax(ps)
-  ps <- add_prefix(ps)
-
 
   otus <- summarize_taxa(ps)
   feature <- taxa_names(otus)
@@ -228,7 +226,7 @@ posthoc_test <- function(ps,
 
   ranks <- rank_names(ps)
   if (!rank_name %in% ranks) {
-    stop("`rank_name` must be one of availabel taxonomic ranks of `ps`")
+    stop("`rank_name` must be one of available taxonomic ranks of `ps`")
   }
   # agglomerate tax in the same rank_name
   if (rank_name != ranks[length(ranks)]) {

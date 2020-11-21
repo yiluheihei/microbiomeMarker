@@ -17,12 +17,22 @@ summarize_taxa <- function(ps,
                            level = rank_names(ps)[1],
                            absolute = TRUE,
                            sep = "|") {
+
+  # return ps if it has been summarized
+  summarized <- check_tax_summarize(ps)
+  if (summarized) {
+    otu_summarized <- otu_table(ps) %>%
+      add_missing_levels()
+    return(otu_summarized)
+  }
+  ps <- add_prefix(ps)
+
   ps_ranks <- rank_names(ps)
   if (!level %in% ps_ranks) {
     stop("`level` must in the ranks of `ps` (rank_names(ps))")
   }
 
-  # ranks <- setdiff(availabel_ranks, "Summarize")
+  # ranks <- setdiff(available_ranks, "Summarize")
   # level <- match(level, ranks)
 
   ind <- match(level, ps_ranks)
@@ -65,7 +75,7 @@ summarize_taxa <- function(ps,
   taxas <- tax_table(ps)@.Data %>%
     tibble::as_tibble()
 
-  ranks <- setdiff(availabel_ranks, "Summarize")
+  ranks <- setdiff(available_ranks, "Summarize")
   rank_level <- match(rank_name, ranks)
   select_ranks <- intersect(ranks[1:rank_level], rank_names(ps))
 
@@ -98,6 +108,29 @@ summarize_taxa <- function(ps,
   row.names(res) <- consensus
 
   return(res)
+}
+
+# add ranks prefix, e.g k__, p__, only worked for unsummarized data
+add_prefix <- function(ps) {
+  tax <- as(tax_table(ps), "matrix") %>%
+    as.data.frame()
+  lvl <- colnames(tax)
+
+  diff_lvl <- setdiff(lvl, available_ranks)
+  if (length(diff_lvl) != 0) {
+    stop("rank names of `ps` must be one of Kingdom, Phylum, Class, Order, Family, Genus, Species")
+  }
+
+  prefix <- substr(lvl, 1, 1) %>%
+    tolower() %>%
+    paste("__", sep = "")
+  tax_new <- mapply(function(x, y) paste0(x, y), prefix, tax, SIMPLIFY = FALSE)
+  tax_new <- do.call(cbind, tax_new)
+  row.names(tax_new) <- row.names(tax)
+  colnames(tax_new) <- lvl
+  tax_table(ps) <- tax_new
+
+  ps
 }
 
 # suppress the checking notes “no visible binding for global variable", which is

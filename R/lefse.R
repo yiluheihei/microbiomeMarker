@@ -28,8 +28,6 @@
 #'   * "CSS": cumulative sum scaling, calculates scaling factors as the
 #'     cumulative sum of gene abundances up to a data-derived threshold.
 #'   * "CLR": centered log-ratio normalization.
-#' @param summarize logical, whether summarize the
-#'   taxa (`TRUE` or `FALSE`), default `TRUE`
 #' @param lda_cutoff numeric, lda score cutoff, default 2
 #' @param bootstrap_n integer, the number of bootstrap iteration for LDA,
 #'   default 30
@@ -68,7 +66,6 @@ lefse <- function(ps,
                   class,
                   subclass = NULL,
                   norm_method = 1000000,
-                  summarize = TRUE,
                   kw_cutoff = 0.05,
                   lda_cutoff = 2,
                   bootstrap_n = 30,
@@ -84,29 +81,25 @@ lefse <- function(ps,
     stop("`ps` must be phyloseq object", call. = FALSE)
   }
 
+  # import input from the original lefse python script or galaxy
   summarized <- check_tax_summarize(ps)
   if (summarized && !is.numeric(norm_method)) {
-    stop("`norm_method` must be a numeric or 'none' while the `ps` has been summarized")
-  }
-  if (summarize == "lefse") {
-    summarize <- TRUE
-  }
-  if (summarized && summarize) {
-    warning("`ps` has been summarized, argument `summarize` is not working, set `summarize = FALSE`")
-    summarize <- FALSE
+    stop(
+      '`norm_method` must be a numeric or "none" while `ps` has been summarized',
+      call. = FALSE
+    )
   }
 
   correct <- match.arg(correct, c("0", "1", "2"))
   correct <- as.numeric(correct)
 
   ranks <- rank_names(ps)
-
-  if (summarize) {
-    diff_rank <- setdiff(ranks, availabel_ranks)
+  if (!summarized) {
+    diff_rank <- setdiff(ranks, available_ranks)
     if (length(diff_rank)) {
       stop(
         "ranks of `ps` must be one of ",
-        paste(availabel_ranks, collapse = ", ")
+        paste(available_ranks, collapse = ", ")
       )
     }
   }
@@ -117,10 +110,6 @@ lefse <- function(ps,
   ps <- phyloseq_qc(ps)
   # fix duplicated tax
   ps <- fix_duplicate_tax(ps)
-  # add prefix of ranks, e.g. p__
-  if (summarize) {
-    ps <- add_prefix(ps)
-  }
   # normalization
   ps <- normalize(ps, norm_method, ...)
 
@@ -130,19 +119,7 @@ lefse <- function(ps,
   subcls <- cls_info$subcls
   cls_hie <- cls_info$cls_hie
 
-  # check whether the taxa is summarized first
-  # e.g. phyloseq object is construct from lefse python script
-  # just for experiment, and may be dropped in the future
-  if (summarized) {
-    otus <- otu_table(ps) %>%
-      add_missing_levels()
-  } else {
-    if (!summarize) {
-      otus <- otu_table(ps)
-    } else {
-      otus <- summarize_taxa(ps)
-    }
-  }
+  otus <- summarize_taxa(ps)
   # otus_norm <- normalize_feature(otus, normalization = normalization)
   # transform it for test
   otus_test <- as.data.frame(t(otus), stringsAsFactors = FALSE)
@@ -208,22 +185,10 @@ lefse <- function(ps,
   # }
   # row.names(tax) <- row.names(otus)
 
-  if (summarized) {
-    tax <- matrix(row.names(otus)) %>%
+
+  tax <- matrix(row.names(otus)) %>%
       tax_table()
-    row.names(tax) <- row.names(otus)
-  } else {
-    if (summarize) {
-      tax <- matrix(row.names(otus)) %>%
-        tax_table()
-      row.names(tax) <- row.names(otus)
-
-      # save collapsed ranks as colnames of summarized taxa
-
-    } else {
-      taxa <- tax_table(ps)
-    }
-  }
+  row.names(tax) <- row.names(otus)
 
   mm <- microbiomeMarker(
     marker_table = lefse_out,

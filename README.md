@@ -115,6 +115,43 @@ ps
 #> phy_tree()    Phylogenetic Tree: [ 770 tips and 768 internal nodes ]
 ```
 
+### Import from tab-delimited input file of biobakery lefse
+
+For [biobakey lefse](https://huttenhower.sph.harvard.edu/lefse/) (a
+[Galaxy module](http://huttenhower.sph.harvard.edu/galaxy), a Conda
+formula, a Docker image, and included in bioBakery (VM and cloud).), the
+input file must be a tab-delimited text, consists of a list of numerical
+features, the class vector and optionally the subclass and subject
+vectors. The features can be read counts directly or abundance
+floating-point values more generally, and the first field is the name of
+the feature. Class, subclass and subject vectors have a name (the first
+field) and a list of non-numerical strings. [biobakery
+lefse](https://huttenhower.sph.harvard.edu/lefse/). User can import the
+input file suitable for [biobakery
+lefse](https://huttenhower.sph.harvard.edu/lefse/) to `phyloseq` object
+using `import_biobakery_lefse_in()`
+
+``` r
+file <- system.file(
+  "extdata",
+  "hmp_small_aerobiosis.txt",
+  package = "microbiomeMarker"
+)
+# six level of taxonomic ranks,
+# meta data: row 1 represents class (oxygen_availability),
+# row 2 represents subclass (body_site), row 3 represents subject (subject_id)
+hmp_oxygen <- import_biobakery_lefse_in(
+  file,
+  ranks_prefix = c("k", "p", "c", "o", "f", "g"),
+  meta_rows = 1:3,
+)
+hmp_oxygen
+#> phyloseq-class experiment-level object
+#> otu_table()   OTU Table:         [ 928 taxa and 55 samples ]
+#> sample_data() Sample Data:       [ 55 samples by 3 sample variables ]
+#> tax_table()   Taxonomy Table:    [ 928 taxa by 1 taxonomic ranks ]
+```
+
 ### Other import functions reexport from phyloseq
 
 **microbiomeMarker** reexports three import functions from **phyloseq**,
@@ -146,10 +183,6 @@ library(ggplot2)
 # (control) and 20 truc (case) mice
 data("spontaneous_colitis")
 # add prefix of ranks
-spontaneous_colitis <- microbiomeMarker:::add_prefix_summarized(
-  spontaneous_colitis,
-  c("k", "p", "c", "o", "f", "g")
-)
 mm <- lefse(
   spontaneous_colitis, 
   normalization = 1e6, 

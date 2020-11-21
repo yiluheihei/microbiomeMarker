@@ -1,9 +1,9 @@
-# availabel taxonomic ranks, Summarize represents summarized tax
-availabel_ranks <- c("Summarize", "Kingdom", "Phylum", "Class", "Order",
+# available taxonomic ranks, Summarize represents summarized tax
+available_ranks <- c("Kingdom", "Phylum", "Class", "Order",
   "Family", "Genus", "Species")
-availabel_ranks <- factor(
-  availabel_ranks,
-  levels = availabel_ranks
+available_ranks <- factor(
+  available_ranks,
+  levels = available_ranks
 )
 
-usethis::use_data(availabel_ranks, internal = TRUE)
+usethis::use_data(available_ranks, internal = TRUE, overwrite = TRUE)

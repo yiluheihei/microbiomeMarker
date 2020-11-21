@@ -40,11 +40,11 @@ test_two_groups <- function(ps,
 
   # ensure rank names are correct
   ranks <- rank_names(ps)
-  diff_rank <- setdiff(ranks, availabel_ranks)
+  diff_rank <- setdiff(ranks, available_ranks)
   if (length(diff_rank)) {
     stop(
       "ranks of `ps` must be one of ",
-      paste(availabel_ranks, collapse = ", ")
+      paste(available_ranks, collapse = ", ")
     )
   }
 
@@ -55,8 +55,6 @@ test_two_groups <- function(ps,
   ps <- phyloseq_qc(ps)
   # fix duplicated tax
   ps <- fix_duplicate_tax(ps)
-  # add prefix, e.g. p__
-  ps <- add_prefix(ps)
 
   otus <- summarize_taxa(ps)
   abd <- t(otus) %>%

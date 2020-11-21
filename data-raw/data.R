@@ -65,67 +65,80 @@ unlink("data-raw/pediatric_idb.zip")
 # a small subset of the HMP 16S dataset for finding biomarkers characterizing
 # different level of oxygen availability in different bodysites
 
-oxygen_dat <- readr::read_tsv(
-  "https://raw.githubusercontent.com/biobakery/biobakery/master/demos/biobakery_demos/data/lefse/input/hmp_small_aerobiosis.txt",
-  col_names = FALSE
+# oxygen_dat <- readr::read_tsv(
+#   "https://raw.githubusercontent.com/biobakery/biobakery/master/demos/biobakery_demos/data/lefse/input/hmp_small_aerobiosis.txt",
+#   col_names = FALSE
+# )
+
+# sample_meta <- data.frame(
+#   oxygen_availability	= c(oxygen_dat[1, ][-1], recursive = TRUE),
+#   body_site = c(oxygen_dat[2, ][-1], recursive = TRUE),
+#   subject_id = c(oxygen_dat[3, ][-1], recursive = TRUE)
+# )
+#   # tibble::rownames_to_column() %>%
+#   # tidyr::pivot_longer(-rowname) %>%
+#   #tidyr::pivot_wider(names_from = "rowname", values_from = "value") %>%
+#   #tibble::column_to_rownames("name")
+# tax_dat <- oxygen_dat$X1[-(1:3)]
+#
+# sample_abd <- dplyr::slice(oxygen_dat, -(1:3)) %>%
+#   dplyr::select(-1) %>%
+#   purrr::map_df(as.numeric)
+# row.names(sample_abd) <- tax_dat
+#
+# tax_mat <- as.matrix(tax_dat)
+# row.names(tax_mat) <- tax_dat
+# colnames(tax_mat) <-  "Summarize"
+#
+# oxygen <- phyloseq(
+#   otu_table(sample_abd, taxa_are_rows = TRUE),
+#   tax_table(tax_mat),
+#   sample_data(sample_meta)
+# )
+#
+download.file("https://raw.githubusercontent.com/biobakery/biobakery/master/demos/biobakery_demos/data/lefse/input/hmp_small_aerobiosis.txt", "data-raw/oxygen.txt")
+oxygen <- import_biobakery_lefse_in(
+  "data-raw/oxygen.txt",
+  ranks_prefix = c("k", "p", "c", "o", "f", "g"),
+  meta_rows = 1:3,
 )
-
-sample_meta <- data.frame(
-  oxygen_availability	= c(oxygen_dat[1, ][-1], recursive = TRUE),
-  body_site = c(oxygen_dat[2, ][-1], recursive = TRUE),
-  subject_id = c(oxygen_dat[3, ][-1], recursive = TRUE)
-)
-  # tibble::rownames_to_column() %>%
-  # tidyr::pivot_longer(-rowname) %>%
-  #tidyr::pivot_wider(names_from = "rowname", values_from = "value") %>%
-  #tibble::column_to_rownames("name")
-tax_dat <- oxygen_dat$X1[-(1:3)]
-
-sample_abd <- dplyr::slice(oxygen_dat, -(1:3)) %>%
-  dplyr::select(-1) %>%
-  purrr::map_df(as.numeric)
-row.names(sample_abd) <- tax_dat
-
-tax_mat <- as.matrix(tax_dat)
-row.names(tax_mat) <- tax_dat
-colnames(tax_mat) <-  "Summarize"
-
-oxygen <- phyloseq(
-  otu_table(sample_abd, taxa_are_rows = TRUE),
-  tax_table(tax_mat),
-  sample_data(sample_meta)
-)
-
+unlink("data-raw/oxygen.txt")
 usethis::use_data(oxygen, overwrite = TRUE)
 
 # data from lefse galaxy --------------------------------------------------
 # Fecal microbiota in a mouse model of spontaneous colitis. The dataset contains
 # 30 abundance profiles (obtained processing the 16S reads with RDP) belonging
 # to 10 rag2 (control) and 20 truc (case) mice
-spontaneous_colitis <- readr::read_tsv(
-  "https://raw.githubusercontent.com/biobakery/galaxy_lefse/master/test-data/lefse_input",
-  col_names = FALSE
+# spontaneous_colitis <- readr::read_tsv(
+#   "https://raw.githubusercontent.com/biobakery/galaxy_lefse/master/test-data/lefse_input",
+#   col_names = FALSE
+# )
+# class <- spontaneous_colitis[1, ]
+# taxas <- spontaneous_colitis[, 1]
+#
+# sample_meta <- data.frame(
+#   class = unlist(class[-1]),
+#   stringsAsFactors = FALSE
+# )
+# tax_dat <- as.matrix(taxas[-1, ])
+# row.names(tax_dat) <- tax_dat
+# colnames(tax_dat) <- "Summarize"
+# tax_abd <- spontaneous_colitis[-1, -1] %>%
+#   purrr::map_df(as.numeric)
+# row.names(tax_abd) <- tax_dat[,1]
+#
+# spontaneous_colitis <- phyloseq(
+#   otu_table(tax_abd, taxa_are_rows = TRUE),
+#   tax_table(tax_dat),
+#   sample_data(sample_meta)
+# )
+download.file("https://raw.githubusercontent.com/biobakery/galaxy_lefse/master/test-data/lefse_input", "data-raw/lefse_in")
+spontaneous_colitis <- import_biobakery_lefse_in(
+  "data-raw/lefse_in",
+  ranks_prefix = c("k", "p", "c", "o", "f", "g"),
+  meta_rows = 1,
 )
-class <- spontaneous_colitis[1, ]
-taxas <- spontaneous_colitis[, 1]
-
-sample_meta <- data.frame(
-  class = unlist(class[-1]),
-  stringsAsFactors = FALSE
-)
-tax_dat <- as.matrix(taxas[-1, ])
-row.names(tax_dat) <- tax_dat
-colnames(tax_dat) <- "Summarize"
-tax_abd <- spontaneous_colitis[-1, -1] %>%
-  purrr::map_df(as.numeric)
-row.names(tax_abd) <- tax_dat[,1]
-
-spontaneous_colitis <- phyloseq(
-  otu_table(tax_abd, taxa_are_rows = TRUE),
-  tax_table(tax_dat),
-  sample_data(sample_meta)
-)
-
+unlink("data-raw/lefse_in")
 usethis::use_data(spontaneous_colitis, overwrite = TRUE)
 
 # Enterotypes data from Arumugam's paper from stamp -----------------------

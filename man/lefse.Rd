@@ -9,7 +9,6 @@ lefse(
   class,
   subclass = NULL,
   norm_method = 1e+06,
-  summarize = TRUE,
   kw_cutoff = 0.05,
   lda_cutoff = 2,
   bootstrap_n = 30,
@@ -53,9 +52,6 @@ gene counts ratios between the samples and the reference.
 cumulative sum of gene abundances up to a data-derived threshold.
 \item "CLR": centered log-ratio normalization.
 }}
-
-\item{summarize}{logical, whether summarize the
-taxa (\code{TRUE} or \code{FALSE}), default \code{TRUE}}
 
 \item{kw_cutoff}{numeric, p value cutoff of kw test, default 0.05}
 

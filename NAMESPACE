@@ -2,6 +2,7 @@
 
 export("%>%")
 export(abundances)
+export(import_biobakery_lefse_in)
 export(import_biom)
 export(import_dada2)
 export(import_mothur)
