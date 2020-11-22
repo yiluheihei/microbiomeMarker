@@ -1,7 +1,7 @@
-          xmin         xmax y_position annotation          feature
-1 Enterotype 2 Enterotype 1     54.668        ***      Bacteroides
-2 Enterotype 3 Enterotype 1     61.035        ***      Bacteroides
-3 Enterotype 3 Enterotype 2     30.558        NS.      Bacteroides
-4 Enterotype 2 Enterotype 1          0        NS. Prosthecochloris
-5 Enterotype 3 Enterotype 1  0.0033768        NS. Prosthecochloris
-6 Enterotype 3 Enterotype 2  0.0037386        NS. Prosthecochloris
+          xmin         xmax y_position annotation           feature
+1 Enterotype 2 Enterotype 1     13.116        NS. p__Actinobacteria
+2 Enterotype 3 Enterotype 1      26.94        NS. p__Actinobacteria
+3 Enterotype 3 Enterotype 2     29.804        NS. p__Actinobacteria
+4 Enterotype 2 Enterotype 1     57.527        NS.  p__Bacteroidetes
+5 Enterotype 3 Enterotype 1     63.693        ***  p__Bacteroidetes
+6 Enterotype 3 Enterotype 2     56.712         **  p__Bacteroidetes

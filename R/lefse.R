@@ -90,6 +90,13 @@ lefse <- function(ps,
     stop("`ps` must be phyloseq object", call. = FALSE)
   }
 
+  if (!check_rank_names(ps)) {
+    stop(
+      "ranks of `ps` must be one of ",
+      paste(available_ranks, collapse = ", ")
+    )
+  }
+
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
   correct <- match.arg(correct, c("0", "1", "2"))
   correct <- as.numeric(correct)
@@ -101,17 +108,6 @@ lefse <- function(ps,
       '`norm` must be a numeric or "none" while `ps` has been summarized',
       call. = FALSE
     )
-  }
-
-  ranks <- rank_names(ps)
-  if (!summarized) {
-    diff_rank <- setdiff(ranks, available_ranks)
-    if (length(diff_rank)) {
-      stop(
-        "ranks of `ps` must be one of ",
-        paste(available_ranks, collapse = ", ")
-      )
-    }
   }
 
   # pre-processing, including: keep taxa in rows, filter taxa whose abundance is
@@ -128,10 +124,13 @@ lefse <- function(ps,
   subcls <- cls_info$subcls
   cls_hie <- cls_info$cls_hie
 
-  otus <- summarize_taxa(ps)
+  ps_summarized <- summarize_taxa(ps)
+  otus <- otu_table(ps_summarized)
   # otus_norm <- normalize_feature(otus, normalization = normalization)
   # transform it for test
   otus_test <- as.data.frame(t(otus), stringsAsFactors = FALSE)
+  feature <- tax_table(ps_summarized)@.Data[, 1]
+  names(otus_test) <- feature
 
   # kw rank sum test among classes
   kw_p <- purrr::map_dbl(otus_test, ~ kruskal.test(.x, cls)$p.value)
@@ -195,7 +194,7 @@ lefse <- function(ps,
   # row.names(tax) <- row.names(otus)
 
 
-  tax <- matrix(row.names(otus)) %>%
+  tax <- matrix(feature) %>%
       tax_table()
   row.names(tax) <- row.names(otus)
 

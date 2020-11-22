@@ -32,6 +32,7 @@ download.file(
 )
 load("data-raw/cid.phy.rda")
 cid_ying <- cid.phy
+tax_table(cid_ying) <- tax_table(cid.phy)[, -7]
 usethis::use_data(cid_ying, overwrite = TRUE)
 unlink("data-raw/cid*")
 

@@ -1,7 +1,7 @@
 #' Summarize taxa into a taxonomic level within each sample
 #'
-#' Provides summary information of the representation of a taxonomic levels within
-#' each sample.
+#' Provides summary information of the representation of a taxonomic levels
+#' within each sample.
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object.
 #' @param level taxonomic level to summarize, default the top level rank of the
@@ -10,7 +10,7 @@
 #'   relative abundance, default `FALSE`
 #' FALSE.
 #' @param sep a character string to separate the taxonomic levels.
-#' @return a [`phyloseq::otu_table-class`] object, where each row represents a
+#' @return a [`phyloseq::phyloseq-class`] object, where each row represents a
 #'   taxa, and each col represents the taxa abundance of each sample.
 #' @export
 summarize_taxa <- function(ps,
@@ -23,7 +23,11 @@ summarize_taxa <- function(ps,
   if (summarized) {
     otu_summarized <- otu_table(ps) %>%
       add_missing_levels()
-    return(otu_summarized)
+    tax_summarized <- row.names(otu_summarized) %>%
+      matrix() %>%
+      tax_table()
+    row.names(otu_summarized) <- row.names(tax_summarized)
+    return(phyloseq(otu_summarized, tax_summarized, sample_data(ps)))
   }
   ps <- add_prefix(ps)
 
@@ -50,7 +54,28 @@ summarize_taxa <- function(ps,
   res <- bind_rows(res)
   row.names(res) <- tax_nms
 
-  otu_table(res, taxa_are_rows = TRUE)
+  otu_summarized <- otu_table(res, taxa_are_rows = TRUE)
+  tax_summarized <- row.names(otu_summarized) %>%
+    matrix() %>%
+    tax_table()
+  row.names(tax_summarized) <- row.names(otu_summarized)
+  row.names(otu_summarized) <- row.names(tax_summarized)
+
+  # set the colnames of tax_table in the form of k|p|c|o
+  rank_prefix <- extract_prefix(ps_ranks)
+  colnames(tax_summarized) <- paste0(rank_prefix, collapse = sep)
+
+  return(phyloseq(otu_summarized, tax_summarized, sample_data(ps)))
+}
+
+#' extract prefix of names of the taxonomic ranks
+#' @noRd
+extract_prefix <- function(ranks) {
+  if (inherits(ranks, "phyloseq")) {
+    ranks <- rank_names(ranks)
+  }
+
+  tolower(substr(ranks, 1, 1))
 }
 
 #' Summarize the taxa for the specific rank

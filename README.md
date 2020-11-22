@@ -297,7 +297,7 @@ multiple_group_anova <-  test_multiple_groups(
   method = "anova"
 )
 
-# 22 markers (significantly differential genera)
+# 24 markers
 multiple_group_anova
 #> microbiomeMarker-class inherited from phyloseq-class
 #> marker_table  Marker Table:      [ 24 microbiome markers with 8 variables ]
@@ -332,10 +332,10 @@ all groups is equal or not. To identify which pairs of groups may differ
 from each other, post-hoc test must be performed.
 
 ``` r
-pht <- posthoc_test(ps, group = "Enterotype" , rank_name = "Genus")
+pht <- posthoc_test(ps, group = "Enterotype")
 pht
 #> postHocTest-class object
-#> Pairwise test result of 248  features,  DataFrameList object, each DataFrame has five variables:
+#> Pairwise test result of 238  features,  DataFrameList object, each DataFrame has five variables:
 #>         comparions    : pair groups to test which separated by '-'
 #>         diff_mean_prop: difference in mean proportions
 #>         pvalue        : post hoc test p values
@@ -343,36 +343,37 @@ pht
 #>         ci_upper_prop : upper confidence interval
 #> Posthoc multiple comparisons of means  using  tukey  method
 
-# 22 significantly differential genera
+# 24 significantly differential genera
 markers <- marker_table(multiple_group_anova)$feature
 markers
-#>  [1] "p__Bacteroidetes"                     
-#>  [2] "p__Unclassified"                      
-#>  [3] "p__Actinobacteria|g__Scardovia"       
-#>  [4] "p__Bacteroidetes|g__Alistipes"        
-#>  [5] "p__Bacteroidetes|g__Bacteroides"      
-#>  [6] "p__Bacteroidetes|g__Parabacteroides"  
-#>  [7] "p__Bacteroidetes|g__Prevotella"       
-#>  [8] "p__Firmicutes|g__Bulleidia"           
-#>  [9] "p__Firmicutes|g__Catenibacterium"     
-#> [10] "p__Firmicutes|g__Catonella"           
-#> [11] "p__Firmicutes|g__Holdemania"          
-#> [12] "p__Firmicutes|g__Lactobacillus"       
-#> [13] "p__Firmicutes|g__Macrococcus"         
-#> [14] "p__Firmicutes|g__Peptostreptococcus"  
-#> [15] "p__Firmicutes|g__Ruminococcus"        
-#> [16] "p__Firmicutes|g__Selenomonas"         
-#> [17] "p__Firmicutes|g__Streptococcus"       
-#> [18] "p__Firmicutes|g__Subdoligranulum"     
-#> [19] "p__Proteobacteria|g__Bartonella"      
-#> [20] "p__Proteobacteria|g__Brucella"        
-#> [21] "p__Proteobacteria|g__Granulibacter"   
-#> [22] "p__Proteobacteria|g__Rhodospirillum"  
-#> [23] "p__Proteobacteria|g__Stenotrophomonas"
-#> [24] "p__Unclassified|g__Unclassified"
-# take a marker Bacteroides for example, we will show Bacteroides differ from 
+#>                        p__Bacteroidetes                         p__Unclassified 
+#>                      "p__Bacteroidetes"                       "p__Unclassified" 
+#>          p__Actinobacteria|g__Scardovia           p__Bacteroidetes|g__Alistipes 
+#>        "p__Actinobacteria|g__Scardovia"         "p__Bacteroidetes|g__Alistipes" 
+#>         p__Bacteroidetes|g__Bacteroides     p__Bacteroidetes|g__Parabacteroides 
+#>       "p__Bacteroidetes|g__Bacteroides"   "p__Bacteroidetes|g__Parabacteroides" 
+#>          p__Bacteroidetes|g__Prevotella              p__Firmicutes|g__Bulleidia 
+#>        "p__Bacteroidetes|g__Prevotella"            "p__Firmicutes|g__Bulleidia" 
+#>        p__Firmicutes|g__Catenibacterium              p__Firmicutes|g__Catonella 
+#>      "p__Firmicutes|g__Catenibacterium"            "p__Firmicutes|g__Catonella" 
+#>             p__Firmicutes|g__Holdemania          p__Firmicutes|g__Lactobacillus 
+#>           "p__Firmicutes|g__Holdemania"        "p__Firmicutes|g__Lactobacillus" 
+#>            p__Firmicutes|g__Macrococcus     p__Firmicutes|g__Peptostreptococcus 
+#>          "p__Firmicutes|g__Macrococcus"   "p__Firmicutes|g__Peptostreptococcus" 
+#>           p__Firmicutes|g__Ruminococcus            p__Firmicutes|g__Selenomonas 
+#>         "p__Firmicutes|g__Ruminococcus"          "p__Firmicutes|g__Selenomonas" 
+#>          p__Firmicutes|g__Streptococcus        p__Firmicutes|g__Subdoligranulum 
+#>        "p__Firmicutes|g__Streptococcus"      "p__Firmicutes|g__Subdoligranulum" 
+#>         p__Proteobacteria|g__Bartonella           p__Proteobacteria|g__Brucella 
+#>       "p__Proteobacteria|g__Bartonella"         "p__Proteobacteria|g__Brucella" 
+#>      p__Proteobacteria|g__Granulibacter     p__Proteobacteria|g__Rhodospirillum 
+#>    "p__Proteobacteria|g__Granulibacter"   "p__Proteobacteria|g__Rhodospirillum" 
+#>   p__Proteobacteria|g__Stenotrophomonas         p__Unclassified|g__Unclassified 
+#> "p__Proteobacteria|g__Stenotrophomonas"       "p__Unclassified|g__Unclassified"
+# take a marker "p__Bacteroidetes|g__Bacteroides"  
+# for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from 
 # between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
-pht@result$Bacteroides
+pht@result$"p__Bacteroidetes|g__Bacteroides"
 #> DataFrame with 3 rows and 5 columns
 #>                  comparions diff_mean_prop      pvalue ci_lower_prop
 #>                 <character>      <numeric>   <numeric>     <numeric>
@@ -390,7 +391,7 @@ Visualization of post test result of a given feature.
 
 ``` r
 # visualize the post hoc test result of Bacteroides
-plot_postHocTest(pht, feature = "Bacteroides")
+plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
 ```
 
 ![](man/figures/README-plot-posthoctest-1.png)<!-- -->

@@ -44,15 +44,6 @@ plot_cladogram <- function(mm,
                             group_legend_param = list(),
                             marker_legend_param = list()
                             ) {
-  # can not plot cladogram if taxas are not summarized
-  summarized <- check_tax_summarize(mm)
-  if (!summarized) {
-    stop(
-      paste("can not plot cladogram if taxas are not summarized.\n",
-         "set para `summarize = TRUE` is recommended in lefse analysis.")
-    )
-
-  }
   ps <- phyloseq(mm@otu_table, mm@tax_table)
   tree <- get_treedata_phyloseq(ps) %>%
     generate_taxa_tree(size = branch_size)
@@ -197,17 +188,18 @@ get_treedata_phyloseq <- function(ps, sep = "|") {
   }
 
   taxa <- tax_table(ps)
-  feature <- otu_table(ps)
+  otu <- otu_table(ps)
+  row.names(otu) <- taxa@.Data[, 1]
 
-  is_summarized <- check_tax_summarize(ps)
-  if (is_summarized) {
-    row.names(feature) <- taxa@.Data[, 1]
-    feature <- add_missing_levels(feature)
-  } else {
-    feature <- summarize_taxa(ps, sep = sep)
-  }
+  # is_summarized <- check_tax_summarize(ps)
+  # if (is_summarized) {
+  #   row.names(feature) <- taxa@.Data[, 1]
+  #   feature <- add_missing_levels(feature)
+  # } else {
+  #   feature <- summarize_taxa(ps, sep = sep)
+  # }
 
-  taxa_nms <- row.names(feature)
+  taxa_nms <- row.names(otu)
 
   ## prefix of level ("p__") have been added while performing microbiome marker
   ## analysis (lefse or statistical), add_tax_level is not required here.
@@ -219,7 +211,7 @@ get_treedata_phyloseq <- function(ps, sep = "|") {
 
   tree_table <- data.frame(
     taxa = taxa_nms,
-    abd = rowMeans(feature),
+    abd = rowMeans(otu),
     stringsAsFactors = FALSE) %>%
     mutate(
       taxa =  paste("r__Root", .data$taxa, sep = "|"),

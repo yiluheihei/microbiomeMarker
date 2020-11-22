@@ -65,27 +65,25 @@ test_two_groups <- function(ps,
                             ...) {
   stopifnot(inherits(ps, "phyloseq"))
 
-  p_adjust <- match.arg(
-    p_adjust,
-    c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY")
-  )
-  method <- match.arg(method, c("welch.test", "t.test", "white.test"))
-
-  # ensure rank names are correct
-  ranks <- rank_names(ps)
-  diff_rank <- setdiff(ranks, available_ranks)
-  if (length(diff_rank)) {
+  if (!check_rank_names(ps)) {
     stop(
       "ranks of `ps` must be one of ",
       paste(available_ranks, collapse = ", ")
     )
   }
 
+  p_adjust <- match.arg(
+    p_adjust,
+    c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY")
+  )
+  method <- match.arg(method, c("welch.test", "t.test", "white.test"))
+
   # preprocess phyloseq object
   ps <- preprocess_ps(ps)
   ps <- transform_abundances(ps, transform = transform)
 
-  otus <- summarize_taxa(ps)
+  ps_summarized <- summarize_taxa(ps)
+  otus <- otu_table(ps_summarized)
   # normalize
   norm_para <- c(norm_para, method = norm, object = list(otus))
   otus_norm <- do.call(normalize, norm_para)
@@ -93,7 +91,7 @@ test_two_groups <- function(ps,
   abd <- transpose_and_2df(otus)
   abd_norm <- transpose_and_2df(otus_norm)
 
-  sample_meta <- sample_data(ps)
+  sample_meta <- sample_data(ps_summarized)
   if (!group %in% names(sample_meta)) {
     stop("`group` must in the field of sample meta data")
   }
@@ -120,7 +118,7 @@ test_two_groups <- function(ps,
     )
   }
 
-  feature <- taxa_names(otus)
+  feature <- tax_table(ps_summarized)@.Data[, 1]
   test_res[["feature"]] <- feature
 
   # ratio proportion
@@ -159,7 +157,7 @@ test_two_groups <- function(ps,
   # summarized tax table
   tax <- matrix(feature) %>%
     tax_table()
-  row.names(tax) <- feature
+  row.names(tax) <- row.names(otus)
 
   if (nrow(test_filtered) == 0) {
     warning("No significant features were found, return all the features")

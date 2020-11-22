@@ -6,3 +6,8 @@ test_that("check upper first letter", {
     c("Abc", "Abc", "Abc")
   )
 })
+
+test_that(" check whether all names of taxonomic ranks include in available_ranks", {
+  expect_true(check_rank_names(oxygen))
+  expect_true(check_rank_names(caporaso))
+})

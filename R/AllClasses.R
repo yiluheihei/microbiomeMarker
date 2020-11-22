@@ -117,8 +117,7 @@ validity_microbiomeMarker <- function(object) {
   }
 
   # marker in marker_table must be contained in tax_table
-  if (!all(row.names(marker) %in% taxa_names(object)) &&
-      !all(marker$feature %in% taxa_names(object))) {
+  if (!all(marker$feature %in% tax@.Data[, 1])) {
     msg <- c(msg, "marker in marker_table must be contained in `taxa_names`")
   }
 

@@ -1,4 +1,34 @@
-# only first letter in lower case
+#' check whether tax abundance table is summarized or not
+#' @noRd
+check_tax_summarize <- function(ps) {
+  taxa <- row.names(otu_table(ps))
+  # taxa2 <- tax_table(ps)@.Data[, 1]
+
+  # whether taxa is separated by `|`,
+  # may be required to add extra separate strings in the future
+  has_separate <- any(grepl("[|]", taxa))
+
+  has_separate
+}
+
+#' check whether all names of taxonomic ranks include in available_ranks
+#' @noRd
+check_rank_names <- function(ps) {
+  summarized <- check_tax_summarize(ps)
+  if (summarized) {
+    return(TRUE)
+  }
+
+  ps_ranks <- rank_names(ps)
+  if (!all(ps_ranks %in% available_ranks)) {
+    return(FALSE)
+  } else {
+    return(TRUE)
+  }
+}
+
+#' only first letter in lower case
+#' @noRd
 upper_firstletter <- function(x){
   paste(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(x))), sep = "")
 }

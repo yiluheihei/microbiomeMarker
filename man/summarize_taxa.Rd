@@ -19,10 +19,10 @@ FALSE.}
 \item{sep}{a character string to separate the taxonomic levels.}
 }
 \value{
-a \code{\link[phyloseq:otu_table-class]{phyloseq::otu_table}} object, where each row represents a
+a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object, where each row represents a
 taxa, and each col represents the taxa abundance of each sample.
 }
 \description{
-Provides summary information of the representation of a taxonomic levels within
-each sample.
+Provides summary information of the representation of a taxonomic levels
+within each sample.
 }

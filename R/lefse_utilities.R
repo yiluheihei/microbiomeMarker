@@ -526,19 +526,6 @@ check_tax_prefix <- function(taxa_nms) {
 #   nms
 # }
 
-#' check whether tax abundance table is summarized or not
-#' @noRd
-check_tax_summarize <- function(ps) {
-  taxa <- row.names(otu_table(ps))
-
-  # whether taxa is separated by `|`,
-  # may be required to add extra separate strings in the future
-  has_separate <- any(grepl("[|]", taxa))
-
-  has_separate
-}
-
-
 #' replace string `-` with `_` (tax contain character `-`). Since `-` will be
 #' pharsed as mathematical minus sign in formula used for modeling (such as
 #' aov in test_multiple_groups)

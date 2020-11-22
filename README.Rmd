@@ -247,7 +247,7 @@ multiple_group_anova <-  test_multiple_groups(
   method = "anova"
 )
 
-# 22 markers (significantly differential genera)
+# 24 markers
 multiple_group_anova
 head(marker_table(multiple_group_anova))
 ```
@@ -257,22 +257,23 @@ is equal or not. To identify which pairs of groups may differ from each other,
 post-hoc test must be performed.
 
 ```{r post-hoc-test}
-pht <- posthoc_test(ps, group = "Enterotype" , rank_name = "Genus")
+pht <- posthoc_test(ps, group = "Enterotype")
 pht
 
-# 22 significantly differential genera
+# 24 significantly differential genera
 markers <- marker_table(multiple_group_anova)$feature
 markers
-# take a marker Bacteroides for example, we will show Bacteroides differ from 
+# take a marker "p__Bacteroidetes|g__Bacteroides"  
+# for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from 
 # between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
-pht@result$Bacteroides
+pht@result$"p__Bacteroidetes|g__Bacteroides"
 ```
 
 Visualization of post test result of a given feature.
 
 ```{r plot-posthoctest}
 # visualize the post hoc test result of Bacteroides
-plot_postHocTest(pht, feature = "Bacteroides")
+plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
 ```
 
 ## Visulatiton

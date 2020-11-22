@@ -1,104 +1,104 @@
-                                                                                                           feature
-1                                                                  k__Bacteria|p__Actinobacteria|c__Actinobacteria
-2                                                                                    k__Bacteria|p__Actinobacteria
-3                                               k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales
-4                       k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Propionibacteriaceae
-5  k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Propionibacteriaceae|g__Propionibacterium
-6                         k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Corynebacteriaceae
-7      k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Corynebacteriaceae|g__Corynebacterium
-8                                                               k__Bacteria|p__Firmicutes|c__Bacilli|o__Bacillales
-9                                          k__Bacteria|p__Firmicutes|c__Bacilli|o__Bacillales|f__Staphylococcaceae
-10                       k__Bacteria|p__Firmicutes|c__Bacilli|o__Bacillales|f__Staphylococcaceae|g__Staphylococcus
-11                                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XI
-12                                         k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales
-13                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XI|g__Anaerococcus
-14                                                    k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales
-15                                                                     k__Bacteria|p__Bacteroidetes|c__Bacteroidia
-16                                                                                    k__Bacteria|p__Bacteroidetes
-17                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides
-18                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae
-19                                                                         k__Bacteria|p__Firmicutes|c__Clostridia
-20                                                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales
-21                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae
-22                              k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae
-23           k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae|g__Parabacteroides
-24                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae
-25                      k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae|g__Alistipes
-26                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae
-27                 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium
-28                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus
-29                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Oscillibacter
-30                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia
-31            k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Veillonellaceae|g__Phascolarctobacterium
-32                        k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Alcaligenaceae
-33                                          k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales
-34      k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Alcaligenaceae|g__Parasutterella
-35                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Coprococcus
-36                                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XIV
-37                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XIV|g__Blautia
-38                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Subdoligranulum
-39                            k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Dorea
-40                       k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae
-41                                              k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales
-42                                                                    k__Bacteria|p__Firmicutes|c__Erysipelotrichi
-43                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Sporobacter
-44      k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae|g__Coprobacillus
-45                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Butyricicoccus
-46                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Anaerotruncus
-47                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Anaerostipes
-48                                                                            k__Bacteria|p__Firmicutes|c__Bacilli
-49                                                         k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales
-50                                                                                       k__Bacteria|p__Firmicutes
-51                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Actinomycetaceae
-   enrich_group log_max_mean      lda      p_value
-1       High_O2     5.826871 5.669551 4.148229e-09
-2       High_O2     5.826871 5.669551 4.148229e-09
-3       High_O2     5.826098 5.669066 3.841252e-09
-4       High_O2     5.697159 5.548289 9.483488e-10
-5       High_O2     5.697012 5.548192 1.034228e-09
-6       High_O2     5.199465 5.018350 1.944852e-06
-7       High_O2     5.199327 5.018248 1.944852e-06
-8       High_O2     5.116681 4.899913 1.741430e-08
-9       High_O2     5.106588 4.888617 1.761561e-08
-10      High_O2     5.099907 4.879389 1.610971e-09
-11      High_O2     4.236100 4.062673 1.610005e-05
-12      High_O2     4.195811 3.871723 1.077385e-06
-13      High_O2     3.871264 3.682904 3.657370e-06
-14       Low_O2     5.833647 5.632934 8.733111e-07
-15       Low_O2     5.833647 5.632934 8.733111e-07
-16       Low_O2     5.834569 5.631386 7.288825e-07
-17       Low_O2     5.613864 5.449001 3.034294e-07
-18       Low_O2     5.613864 5.449001 3.034294e-07
-19       Low_O2     5.396355 5.152372 2.115882e-06
-20       Low_O2     5.390940 5.146662 2.115882e-06
-21       Low_O2     5.092303 4.907507 2.913047e-07
-22       Low_O2     5.039551 4.846827 3.983134e-06
-23       Low_O2     4.857461 4.691358 1.187822e-07
-24       Low_O2     4.874114 4.681487 6.002321e-05
-25       Low_O2     4.838131 4.644222 7.352228e-05
-26       Low_O2     4.695129 4.507201 1.863285e-05
-27       Low_O2     4.720486 4.463657 5.514502e-07
-28       Low_O2     4.285777 4.208160 4.263458e-04
-29       Low_O2     4.332069 4.166478 2.777856e-06
-30       Low_O2     4.190769 4.039868 8.358699e-06
-31       Low_O2     4.010553 3.812621 5.299913e-03
-32       Low_O2     3.952942 3.784887 3.283892e-05
-33       Low_O2     3.998597 3.727620 2.068278e-03
-34       Low_O2     3.859846 3.687883 4.807036e-04
-35       Low_O2     3.776655 3.600098 6.427852e-06
-36       Low_O2     3.643864 3.481093 7.016768e-06
-37       Low_O2     3.635053 3.477832 4.311237e-06
-38       Low_O2     3.613441 3.429366 1.103024e-05
-39       Low_O2     3.251928 3.096252 2.366086e-05
-40       Low_O2     3.208271 3.031053 1.362102e-05
-41       Low_O2     3.208271 3.031053 1.362102e-05
-42       Low_O2     3.208271 3.031053 1.362102e-05
-43       Low_O2     2.540135 2.760417 3.121784e-03
-44       Low_O2     2.772477 2.743853 5.666003e-05
-45       Low_O2     2.790992 2.700904 7.555993e-05
-46       Low_O2     2.690273 2.620589 1.178632e-05
-47       Low_O2     2.518433 2.546095 1.606911e-03
-48       Mid_O2     5.663007 5.501961 4.631292e-07
-49       Mid_O2     5.655507 5.492031 5.889748e-08
-50       Mid_O2     5.756251 5.407578 2.549901e-04
-51       Mid_O2     4.470417 4.205563 4.095437e-05
+                                                                                                                 feature
+marker1                                                                  k__Bacteria|p__Actinobacteria|c__Actinobacteria
+marker2                                                                                    k__Bacteria|p__Actinobacteria
+marker3                                               k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales
+marker4                       k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Propionibacteriaceae
+marker5  k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Propionibacteriaceae|g__Propionibacterium
+marker6                         k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Corynebacteriaceae
+marker7      k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Corynebacteriaceae|g__Corynebacterium
+marker8                                                               k__Bacteria|p__Firmicutes|c__Bacilli|o__Bacillales
+marker9                                          k__Bacteria|p__Firmicutes|c__Bacilli|o__Bacillales|f__Staphylococcaceae
+marker10                       k__Bacteria|p__Firmicutes|c__Bacilli|o__Bacillales|f__Staphylococcaceae|g__Staphylococcus
+marker11                                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XI
+marker12                                         k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales
+marker13                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XI|g__Anaerococcus
+marker14                                                    k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales
+marker15                                                                     k__Bacteria|p__Bacteroidetes|c__Bacteroidia
+marker16                                                                                    k__Bacteria|p__Bacteroidetes
+marker17                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides
+marker18                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae
+marker19                                                                         k__Bacteria|p__Firmicutes|c__Clostridia
+marker20                                                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales
+marker21                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae
+marker22                              k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae
+marker23           k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae|g__Parabacteroides
+marker24                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae
+marker25                      k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae|g__Alistipes
+marker26                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae
+marker27                 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium
+marker28                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus
+marker29                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Oscillibacter
+marker30                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia
+marker31            k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Veillonellaceae|g__Phascolarctobacterium
+marker32                        k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Alcaligenaceae
+marker33                                          k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales
+marker34      k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Alcaligenaceae|g__Parasutterella
+marker35                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Coprococcus
+marker36                                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XIV
+marker37                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XIV|g__Blautia
+marker38                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Subdoligranulum
+marker39                            k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Dorea
+marker40                       k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae
+marker41                                              k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales
+marker42                                                                    k__Bacteria|p__Firmicutes|c__Erysipelotrichi
+marker43                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Sporobacter
+marker44      k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae|g__Coprobacillus
+marker45                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Butyricicoccus
+marker46                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Anaerotruncus
+marker47                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Anaerostipes
+marker48                                                                            k__Bacteria|p__Firmicutes|c__Bacilli
+marker49                                                         k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales
+marker50                                                                                       k__Bacteria|p__Firmicutes
+marker51                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Actinomycetaceae
+         enrich_group log_max_mean      lda      p_value
+marker1       High_O2     5.826871 5.669551 4.148229e-09
+marker2       High_O2     5.826871 5.669551 4.148229e-09
+marker3       High_O2     5.826098 5.669066 3.841252e-09
+marker4       High_O2     5.697159 5.548289 9.483488e-10
+marker5       High_O2     5.697012 5.548192 1.034228e-09
+marker6       High_O2     5.199465 5.018350 1.944852e-06
+marker7       High_O2     5.199327 5.018248 1.944852e-06
+marker8       High_O2     5.116681 4.899913 1.741430e-08
+marker9       High_O2     5.106588 4.888617 1.761561e-08
+marker10      High_O2     5.099907 4.879389 1.610971e-09
+marker11      High_O2     4.236100 4.062673 1.610005e-05
+marker12      High_O2     4.195811 3.871723 1.077385e-06
+marker13      High_O2     3.871264 3.682904 3.657370e-06
+marker14       Low_O2     5.833647 5.632934 8.733111e-07
+marker15       Low_O2     5.833647 5.632934 8.733111e-07
+marker16       Low_O2     5.834569 5.631386 7.288825e-07
+marker17       Low_O2     5.613864 5.449001 3.034294e-07
+marker18       Low_O2     5.613864 5.449001 3.034294e-07
+marker19       Low_O2     5.396355 5.152372 2.115882e-06
+marker20       Low_O2     5.390940 5.146662 2.115882e-06
+marker21       Low_O2     5.092303 4.907507 2.913047e-07
+marker22       Low_O2     5.039551 4.846827 3.983134e-06
+marker23       Low_O2     4.857461 4.691358 1.187822e-07
+marker24       Low_O2     4.874114 4.681487 6.002321e-05
+marker25       Low_O2     4.838131 4.644222 7.352228e-05
+marker26       Low_O2     4.695129 4.507201 1.863285e-05
+marker27       Low_O2     4.720486 4.463657 5.514502e-07
+marker28       Low_O2     4.285777 4.208160 4.263458e-04
+marker29       Low_O2     4.332069 4.166478 2.777856e-06
+marker30       Low_O2     4.190769 4.039868 8.358699e-06
+marker31       Low_O2     4.010553 3.812621 5.299913e-03
+marker32       Low_O2     3.952942 3.784887 3.283892e-05
+marker33       Low_O2     3.998597 3.727620 2.068278e-03
+marker34       Low_O2     3.859846 3.687883 4.807036e-04
+marker35       Low_O2     3.776655 3.600098 6.427852e-06
+marker36       Low_O2     3.643864 3.481093 7.016768e-06
+marker37       Low_O2     3.635053 3.477832 4.311237e-06
+marker38       Low_O2     3.613441 3.429366 1.103024e-05
+marker39       Low_O2     3.251928 3.096252 2.366086e-05
+marker40       Low_O2     3.208271 3.031053 1.362102e-05
+marker41       Low_O2     3.208271 3.031053 1.362102e-05
+marker42       Low_O2     3.208271 3.031053 1.362102e-05
+marker43       Low_O2     2.540135 2.760417 3.121784e-03
+marker44       Low_O2     2.772477 2.743853 5.666003e-05
+marker45       Low_O2     2.790992 2.700904 7.555993e-05
+marker46       Low_O2     2.690273 2.620589 1.178632e-05
+marker47       Low_O2     2.518433 2.546095 1.606911e-03
+marker48       Mid_O2     5.663007 5.501961 4.631292e-07
+marker49       Mid_O2     5.655507 5.492031 5.889748e-08
+marker50       Mid_O2     5.756251 5.407578 2.549901e-04
+marker51       Mid_O2     4.470417 4.205563 4.095437e-05
