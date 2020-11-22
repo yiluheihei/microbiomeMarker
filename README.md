@@ -203,20 +203,20 @@ by using `marker_table()`.
 
 ``` r
 head(marker_table(mm))
-#>                                                                                                         feature
-#> 1                                                                                  k__Bacteria|p__Bacteroidetes
-#> 2                                                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia
-#> 3                                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales
-#> 4 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
-#> 5                            k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae
-#> 6                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
-#>   enrich_group log_max_mean      lda      p_value
-#> 1         rag2     5.451241 5.178600 0.0155342816
-#> 2         rag2     5.433686 5.178501 0.0137522075
-#> 3         rag2     5.433686 5.178501 0.0137522075
-#> 4         rag2     5.082944 5.044767 0.0001217981
-#> 5         rag2     4.987349 4.886991 0.0013201097
-#> 6         rag2     4.789752 4.750839 0.0001217981
+#>                                                                                                               feature
+#> marker1                                                                                  k__Bacteria|p__Bacteroidetes
+#> marker2                                                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia
+#> marker3                                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales
+#> marker4 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+#> marker5                            k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae
+#> marker6                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
+#>         enrich_group log_max_mean      lda      p_value
+#> marker1         rag2     5.451241 5.178600 0.0155342816
+#> marker2         rag2     5.433686 5.178501 0.0137522075
+#> marker3         rag2     5.433686 5.178501 0.0137522075
+#> marker4         rag2     5.082944 5.044767 0.0001217981
+#> marker5         rag2     4.987349 4.886991 0.0013201097
+#> marker6         rag2     4.789752 4.750839 0.0001217981
 ```
 
 ### Visualization of the result of lefse analysis
@@ -264,26 +264,18 @@ two_group_welch
 #> tax_table()   Taxonomy Table:    [ 244 taxa by 1 taxonomic ranks ]
 # details of result of the three markers
 head(marker_table(two_group_welch))
-#>                                                                 feature
-#> p__Firmicutes|g__Heliobacterium         p__Firmicutes|g__Heliobacterium
-#> p__Firmicutes|g__Parvimonas                 p__Firmicutes|g__Parvimonas
-#> p__Firmicutes|g__Peptostreptococcus p__Firmicutes|g__Peptostreptococcus
-#>                                     enrich_group     pvalue F_mean_rel_freq
-#> p__Firmicutes|g__Heliobacterium                M 0.02940341    0.0001038235
-#> p__Firmicutes|g__Parvimonas                    M 0.03281399    0.0001911176
-#> p__Firmicutes|g__Peptostreptococcus            M 0.01714937    0.0019799118
-#>                                     M_mean_rel_freq     diff_mean      ci_lower
-#> p__Firmicutes|g__Heliobacterium        0.0005309321 -0.0004271086 -0.0008080028
-#> p__Firmicutes|g__Parvimonas            0.0008610460 -0.0006699283 -0.0012804196
-#> p__Firmicutes|g__Peptostreptococcus    0.0053274345 -0.0033475227 -0.0060532040
-#>                                          ci_upper ratio_proportion
-#> p__Firmicutes|g__Heliobacterium     -4.621437e-05        0.1955495
-#> p__Firmicutes|g__Parvimonas         -5.943705e-05        0.2219599
-#> p__Firmicutes|g__Peptostreptococcus -6.418413e-04        0.3716445
-#>                                     pvalue_corrected
-#> p__Firmicutes|g__Heliobacterium           0.02940341
-#> p__Firmicutes|g__Parvimonas               0.03281399
-#> p__Firmicutes|g__Peptostreptococcus       0.01714937
+#>                                     feature enrich_group     pvalue
+#> marker1     p__Firmicutes|g__Heliobacterium            M 0.02940341
+#> marker2         p__Firmicutes|g__Parvimonas            M 0.03281399
+#> marker3 p__Firmicutes|g__Peptostreptococcus            M 0.01714937
+#>         F_mean_rel_freq M_mean_rel_freq     diff_mean      ci_lower
+#> marker1    0.0001038235    0.0005309321 -0.0004271086 -0.0008080028
+#> marker2    0.0001911176    0.0008610460 -0.0006699283 -0.0012804196
+#> marker3    0.0019799118    0.0053274345 -0.0033475227 -0.0060532040
+#>              ci_upper ratio_proportion pvalue_corrected
+#> marker1 -4.621437e-05        0.1955495       0.02940341
+#> marker2 -5.943705e-05        0.2219599       0.03281399
+#> marker3 -6.418413e-04        0.3716445       0.01714937
 ```
 
 ### Statistical analysis multiple groups
@@ -312,48 +304,27 @@ multiple_group_anova
 #> otu_table()   OTU Table:         [ 238 taxa and  32 samples ]
 #> tax_table()   Taxonomy Table:    [ 238 taxa by 1 taxonomic ranks ]
 head(marker_table(multiple_group_anova))
-#>                                                                 feature
-#> p__Bacteroidetes                                       p__Bacteroidetes
-#> p__Unclassified                                         p__Unclassified
-#> p__Actinobacteria|g__Scardovia           p__Actinobacteria|g__Scardovia
-#> p__Bacteroidetes|g__Alistipes             p__Bacteroidetes|g__Alistipes
-#> p__Bacteroidetes|g__Bacteroides         p__Bacteroidetes|g__Bacteroides
-#> p__Bacteroidetes|g__Parabacteroides p__Bacteroidetes|g__Parabacteroides
-#>                                     enrich_group       pvalue pvalue_corrected
-#> p__Bacteroidetes                    Enterotype 1 3.196070e-06     3.196070e-06
-#> p__Unclassified                     Enterotype 3 1.731342e-04     1.731342e-04
-#> p__Actinobacteria|g__Scardovia      Enterotype 2 2.742042e-02     2.742042e-02
-#> p__Bacteroidetes|g__Alistipes       Enterotype 3 3.922758e-02     3.922758e-02
-#> p__Bacteroidetes|g__Bacteroides     Enterotype 1 8.396825e-10     8.396825e-10
-#> p__Bacteroidetes|g__Parabacteroides Enterotype 1 1.314233e-02     1.314233e-02
-#>                                     effect_size
-#> p__Bacteroidetes                      0.5821619
-#> p__Unclassified                       0.4497271
-#> p__Actinobacteria|g__Scardovia        0.2196652
-#> p__Bacteroidetes|g__Alistipes         0.2001541
-#> p__Bacteroidetes|g__Bacteroides       0.7633661
-#> p__Bacteroidetes|g__Parabacteroides   0.2582573
-#>                                     Enterotype 1:mean_rel_freq_percent
-#> p__Bacteroidetes                                            19.3073387
-#> p__Unclassified                                             16.5364988
-#> p__Actinobacteria|g__Scardovia                               0.0000000
-#> p__Bacteroidetes|g__Alistipes                                0.6695668
-#> p__Bacteroidetes|g__Bacteroides                             17.4793538
-#> p__Bacteroidetes|g__Parabacteroides                          0.9745028
-#>                                     Enterotype 2:mean_rel_freq_percent
-#> p__Bacteroidetes                                          15.372374444
-#> p__Unclassified                                           25.019756042
-#> p__Actinobacteria|g__Scardovia                             0.001860083
-#> p__Bacteroidetes|g__Alistipes                              0.528789506
-#> p__Bacteroidetes|g__Bacteroides                            3.409612826
-#> p__Bacteroidetes|g__Parabacteroides                        0.405579500
-#>                                     Enterotype 3:mean_rel_freq_percent
-#> p__Bacteroidetes                                          7.046051e+00
-#> p__Unclassified                                           2.680750e+01
-#> p__Actinobacteria|g__Scardovia                            8.436111e-05
-#> p__Bacteroidetes|g__Alistipes                             1.568063e+00
-#> p__Bacteroidetes|g__Bacteroides                           4.456618e+00
-#> p__Bacteroidetes|g__Parabacteroides                       4.401643e-01
+#>                                     feature enrich_group       pvalue
+#> marker1                    p__Bacteroidetes Enterotype 1 3.196070e-06
+#> marker2                     p__Unclassified Enterotype 3 1.731342e-04
+#> marker3      p__Actinobacteria|g__Scardovia Enterotype 2 2.742042e-02
+#> marker4       p__Bacteroidetes|g__Alistipes Enterotype 3 3.922758e-02
+#> marker5     p__Bacteroidetes|g__Bacteroides Enterotype 1 8.396825e-10
+#> marker6 p__Bacteroidetes|g__Parabacteroides Enterotype 1 1.314233e-02
+#>         pvalue_corrected effect_size Enterotype 1:mean_rel_freq_percent
+#> marker1     3.196070e-06   0.5821619                         19.3073387
+#> marker2     1.731342e-04   0.4497271                         16.5364988
+#> marker3     2.742042e-02   0.2196652                          0.0000000
+#> marker4     3.922758e-02   0.2001541                          0.6695668
+#> marker5     8.396825e-10   0.7633661                         17.4793538
+#> marker6     1.314233e-02   0.2582573                          0.9745028
+#>         Enterotype 2:mean_rel_freq_percent Enterotype 3:mean_rel_freq_percent
+#> marker1                       15.372374444                       7.046051e+00
+#> marker2                       25.019756042                       2.680750e+01
+#> marker3                        0.001860083                       8.436111e-05
+#> marker4                        0.528789506                       1.568063e+00
+#> marker5                        3.409612826                       4.456618e+00
+#> marker6                        0.405579500                       4.401643e-01
 ```
 
 The result of multiple group statistic specified whether the means of

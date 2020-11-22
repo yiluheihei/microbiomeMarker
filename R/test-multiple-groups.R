@@ -135,7 +135,8 @@ test_multiple_groups <- function(ps,
   # append feature
   res <- mutate(res,feature = feature) %>%
     select(.data$feature, .data$enrich_group, everything())
-  row.names(res) <- feature[match(res$feature, feature)]
+  # row.names(res) <- feature[match(res$feature, feature)]
+  row.names(res) <- paste0("feature", seq_len(nrow(res)))
 
   # filter: pvalue and effect size
   res_filtered <- filter(res, .data$pvalue_corrected <= p_value_cutoff)
@@ -161,6 +162,7 @@ test_multiple_groups <- function(ps,
       tax
     )
   } else {
+    row.names(res_filtered) <- paste0("marker", seq_len(nrow(res_filtered)))
     marker <- microbiomeMarker(
       marker_table = marker_table(res_filtered),
       tax_table_orig = tax_table(ps),

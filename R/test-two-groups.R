@@ -136,7 +136,8 @@ test_two_groups <- function(ps,
 
   # p value correction for multiple comparisons
   test_res$pvalue_corrected <- p.adjust(test_res$pvalue, method = p_adjust)
-  row.names(test_res) <- feature[match(test_res$feature, feature)]
+  # row.names(test_res) <- feature[match(test_res$feature, feature)]
+  row.names(test_res) <- paste0("feature", seq_len(nrow(test_res)))
 
   # p <= 0.05
   test_filtered <-  filter(test_res, .data$pvalue_corrected <= pvalue_cutoff)
@@ -169,6 +170,7 @@ test_two_groups <- function(ps,
       tax
     )
   } else {
+    row.names(test_filtered) <- paste0("marker", seq_len(nrow(test_filtered)))
     marker <- microbiomeMarker(
       marker_table = marker_table(test_filtered),
       tax_table_orig = tax_table(ps),
