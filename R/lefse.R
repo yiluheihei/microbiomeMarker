@@ -4,13 +4,19 @@
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object
 #' @param class character, the column name to set the class
-#' @param subclass character, the varibale name to set the subclass
-#' @param kw_cutoff numeric, p value cutoff of kw test, default 0.05
-#' @param wilcoxon_cutoff numeric, p value cutoff of wilcoxon test, default 0.05
-#' @param norm_method the methods used to normalize the microbial abundance data.
-#'   Options includes:
-#'   * a integer, e.g. 1e6, indicating pre-sample normalization of the sum of
-#'     the values to 1e6.
+#' @param subclass character, the column name to set the subclass
+#' @param transform character, the methods used to transform the microbial
+#'   abundance. See [`transform_abundances()`] for more details. The
+#'   options include:
+#'   * "identity", return the original data without any transformation (default).
+#'   * "log10", the transformation is `log10(object)`, and if the data contains
+#'     zeros the transformation is `log10(1 + object)`.
+#'   * "log10p", the transformation is `log10(1 + object)`.
+#' @param norm the methods used to normalize the microbial abundance data. See
+#'   [`normalize()`] for more details.
+#'   Options include:
+#'   * a integer, e.g. 1e6 (default), indicating pre-sample normalization of
+#'     the sum of the values to 1e6.
 #'   * "none": do not normalize.
 #'   * "rarefy": random subsampling counts to the smallest library size in the
 #'     data set.
@@ -28,6 +34,8 @@
 #'   * "CSS": cumulative sum scaling, calculates scaling factors as the
 #'     cumulative sum of gene abundances up to a data-derived threshold.
 #'   * "CLR": centered log-ratio normalization.
+#' @param kw_cutoff numeric, p value cutoff of kw test, default 0.05
+#' @param wilcoxon_cutoff numeric, p value cutoff of wilcoxon test, default 0.05
 #' @param lda_cutoff numeric, lda score cutoff, default 2
 #' @param bootstrap_n integer, the number of bootstrap iteration for LDA,
 #'   default 30
@@ -65,7 +73,8 @@
 lefse <- function(ps,
                   class,
                   subclass = NULL,
-                  norm_method = 1000000,
+                  transform = c("identity", "log10", "log10p"),
+                  norm = 1000000,
                   kw_cutoff = 0.05,
                   lda_cutoff = 2,
                   bootstrap_n = 30,
@@ -81,17 +90,18 @@ lefse <- function(ps,
     stop("`ps` must be phyloseq object", call. = FALSE)
   }
 
+  transform <- match.arg(transform, c("identity", "log10", "log10p"))
+  correct <- match.arg(correct, c("0", "1", "2"))
+  correct <- as.numeric(correct)
+
   # import input from the original lefse python script or galaxy
   summarized <- check_tax_summarize(ps)
-  if (summarized && !is.numeric(norm_method)) {
+  if (summarized && !is.numeric(norm)) {
     stop(
-      '`norm_method` must be a numeric or "none" while `ps` has been summarized',
+      '`norm` must be a numeric or "none" while `ps` has been summarized',
       call. = FALSE
     )
   }
-
-  correct <- match.arg(correct, c("0", "1", "2"))
-  correct <- as.numeric(correct)
 
   ranks <- rank_names(ps)
   if (!summarized) {
@@ -104,14 +114,13 @@ lefse <- function(ps,
     }
   }
 
-  # keep taxa in rows
-  ps <- keep_taxa_in_rows(ps)
-  # filter the taxa whose abundance is zero
-  ps <- phyloseq_qc(ps)
-  # fix duplicated tax
-  ps <- fix_duplicate_tax(ps)
+  # pre-processing, including: keep taxa in rows, filter taxa whose abundance is
+  # zero, fix duplicated tax, transformation and normalization
+  ps <- preprocess_ps(ps)
+  # transformation
+  ps <- transform_abundances(ps, transform = transform)
   # normalization
-  ps <- normalize(ps, norm_method, ...)
+  ps <- normalize(ps, norm, ...)
 
   sample_meta <- sample_data(ps)
   cls_info <- lefse_format_class(sample_meta, class, subcls = subclass)

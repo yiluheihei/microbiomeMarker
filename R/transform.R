@@ -23,8 +23,8 @@
 #' head(otu_table(x3), 10)
 #' }
 transform_abundances <- function(object,
-  transform = c("identity", "log10", "log10p")) {
-  transform <- match.arg(transform)
+                                 transform = c("identity", "log10", "log10p")) {
+  transform <- match.arg(transform, c("identity", "log10", "log10p"))
   otu <- as(otu_table(object), "matrix")
 
   if (transform == "identity") {

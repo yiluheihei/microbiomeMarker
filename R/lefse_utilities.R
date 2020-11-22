@@ -538,48 +538,6 @@ check_tax_summarize <- function(ps) {
   has_separate
 }
 
-#' Duplicated taxa: e.g. maybe multiple species (s__uncultured)
-#' belong to different genera. append the upper level taxa to the taxa to
-#' distinguish this duplicated taxa
-#' @param ps [phyloseq::phyloseq-class] object or [phyloseq::taxonomyTable-class]
-#'   object
-#' @importFrom phyloseq tax_table<-
-#' @keywords internal
-#' @references https://github.com/lch14forever/microbiomeViz/blob/94cbfe452a735aadf88733b27b8221a03f450a55/R/utils.R#L68-L86
-fix_duplicate_tax <-  function(ps) {
-  # convert na to Unkown first
-  ps <- fix_na_tax(ps)
-
-  tax <- tax_table(ps)
-  if (ncol(tax) == 1) {
-    return(ps)
-  }
-
-  for(i in 2:ncol(tax)) {
-    tax_uniq <-  unique(tax[, i])
-    for(j in 1:length(tax_uniq)) {
-      if(is.na(tax_uniq[j])) next
-      ind <-  which(tax[, i] == as.character(tax_uniq[j]))
-      if(length(unique(tax[ind, i - 1])) > 1) {
-        tax[ind,i] <- paste(tax[ind, i - 1], tax[ind, i], sep = "_")
-      }
-    }
-  }
-
-  tax_table(ps) <- tax
-
-  ps
-}
-
-#' set NA (missing) tax to "Unkown"
-#' @keywords internal
-fix_na_tax <- function(ps) {
-  tax <- tax_table(ps)
-  tax_fixed <- apply(tax, 2, function(x) ifelse(is.na(x), "Unkown", x))
-  tax_table(ps) <- tax_fixed
-
-  ps
-}
 
 #' replace string `-` with `_` (tax contain character `-`). Since `-` will be
 #' pharsed as mathematical minus sign in formula used for modeling (such as

@@ -8,7 +8,8 @@ lefse(
   ps,
   class,
   subclass = NULL,
-  norm_method = 1e+06,
+  transform = c("identity", "log10", "log10p"),
+  norm = 1e+06,
   kw_cutoff = 0.05,
   lda_cutoff = 2,
   bootstrap_n = 30,
@@ -27,13 +28,24 @@ lefse(
 
 \item{class}{character, the column name to set the class}
 
-\item{subclass}{character, the varibale name to set the subclass}
+\item{subclass}{character, the column name to set the subclass}
 
-\item{norm_method}{the methods used to normalize the microbial abundance data.
-Options includes:
+\item{transform}{character, the methods used to transform the microbial
+abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
+options include:
 \itemize{
-\item a integer, e.g. 1e6, indicating pre-sample normalization of the sum of
-the values to 1e6.
+\item "identity", return the original data without any transformation (default).
+\item "log10", the transformation is \code{log10(object)}, and if the data contains
+zeros the transformation is \code{log10(1 + object)}.
+\item "log10p", the transformation is \code{log10(1 + object)}.
+}}
+
+\item{norm}{the methods used to normalize the microbial abundance data. See
+\code{\link[=normalize]{normalize()}} for more details.
+Options include:
+\itemize{
+\item a integer, e.g. 1e6 (default), indicating pre-sample normalization of
+the sum of the values to 1e6.
 \item "none": do not normalize.
 \item "rarefy": random subsampling counts to the smallest library size in the
 data set.

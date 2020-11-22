@@ -1,26 +1,7 @@
-#' phyloseq quality control, remove otu/asv of which abundance is zero
-#' @noRd
-phyloseq_qc <- function(ps) {
-  prune_taxa(taxa_sums(ps) > 0, ps)
-}
-
 # only first letter in lower case
 upper_firstletter <- function(x){
   paste(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(x))), sep = "")
 }
-
-#' Transpose the phyloseq object to ensure taxa are in rows
-#' @param ps a [phyloseq::phyloseq-class] object
-#' @importMethodsFrom phyloseq t
-#' @keywords internal
-keep_taxa_in_rows <- function(ps) {
-  if (!taxa_are_rows(ps)) {
-    ps <- t(ps)
-  }
-
-  ps
-}
-
 
 #' add prefix of taxonomic ranks for summarized data construct from original
 #' lefse (galaxy lefse or python app) input, p__, k__
@@ -75,4 +56,84 @@ keep_prefix_desc <- function(ranks_prefix, type = c("ranks", "ranks_prefix")) {
   } else {
     return(available_prefix[idx_desc])
   }
+}
+
+################################################################################
+## preprocessing ps object
+################################################################################
+
+# preprocess of phyloseq object, including keep taxa in rows,
+# filter taxa whose abundance is zero, fix duplicated tax
+preprocess_ps <- function(ps) {
+  # keep taxa in rows
+  ps <- keep_taxa_in_rows(ps)
+  # filter the taxa whose abundance is zero
+  ps <- phyloseq_qc(ps)
+  # fix duplicated tax
+  ps <- fix_duplicate_tax(ps)
+
+  ps
+}
+
+#' phyloseq quality control, remove otu/asv of which abundance is zero
+#' @noRd
+phyloseq_qc <- function(ps) {
+  prune_taxa(taxa_sums(ps) > 0, ps)
+}
+
+#' Transpose the phyloseq object to ensure taxa are in rows
+#' @param ps a [phyloseq::phyloseq-class] object
+#' @importMethodsFrom phyloseq t
+#' @keywords internal
+keep_taxa_in_rows <- function(ps) {
+  if (!taxa_are_rows(ps)) {
+    ps <- t(ps)
+  }
+
+  ps
+}
+
+#' Duplicated taxa: e.g. maybe multiple species (s__uncultured)
+#' belong to different genera. append the upper level taxa to the taxa to
+#' distinguish this duplicated taxa
+#' @param ps [phyloseq::phyloseq-class] object or [phyloseq::taxonomyTable-class]
+#'   object
+#' @importFrom phyloseq tax_table<-
+#' @keywords internal
+#' @noRd
+#' @references https://github.com/lch14forever/microbiomeViz/blob/94cbfe452a735aadf88733b27b8221a03f450a55/R/utils.R#L68-L86
+fix_duplicate_tax <-  function(ps) {
+  # convert na to Unkown first
+  ps <- fix_na_tax(ps)
+
+  tax <- tax_table(ps)
+  if (ncol(tax) == 1) {
+    return(ps)
+  }
+
+  for(i in 2:ncol(tax)) {
+    tax_uniq <-  unique(tax[, i])
+    for(j in 1:length(tax_uniq)) {
+      if(is.na(tax_uniq[j])) next
+      ind <-  which(tax[, i] == as.character(tax_uniq[j]))
+      if(length(unique(tax[ind, i - 1])) > 1) {
+        tax[ind,i] <- paste(tax[ind, i - 1], tax[ind, i], sep = "_")
+      }
+    }
+  }
+
+  tax_table(ps) <- tax
+
+  ps
+}
+
+#' set NA (missing) tax to "Unkown"
+#' @keywords internal
+#' @noRd
+fix_na_tax <- function(ps) {
+  tax <- tax_table(ps)
+  tax_fixed <- apply(tax, 2, function(x) ifelse(is.na(x), "Unkown", x))
+  tax_table(ps) <- tax_fixed
+
+  ps
 }

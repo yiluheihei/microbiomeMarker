@@ -4,20 +4,27 @@
 \alias{normalize,phyloseq-method}
 \alias{normalize,otu_table-method}
 \alias{normalize}
+\alias{normalize,data.frame-method}
+\alias{normalize,matrix-method}
 \title{Normalize the microbial abundance data}
 \usage{
 \S4method{normalize}{phyloseq}(object, method = "TSS", ...)
 
 \S4method{normalize}{otu_table}(object, method = "TSS", ...)
+
+\S4method{normalize}{data.frame}(object, method = "TSS", ...)
+
+\S4method{normalize}{matrix}(object, method = "TSS", ...)
 }
 \arguments{
-\item{object}{a \link[phyloseq:phyloseq-class]{phyloseq::phyloseq} or \link[phyloseq:otu_table-class]{phyloseq::otu_table}
-object}
+\item{object}{a matrix, data.frame, \link[phyloseq:phyloseq-class]{phyloseq::phyloseq} or
+\link[phyloseq:otu_table-class]{phyloseq::otu_table} object}
 
 \item{method}{the methods used to normalize the microbial abundance data.
 Options includes:
 \itemize{
-\item a integer, e.g. 1e6, indicating pre-sample normalization of the sum of the      values to 1e6.
+\item a integer, e.g. 1e6, indicating pre-sample normalization of the sum of
+the values to 1e6.
 \item "none": do not normalize.
 \item "rarefy": random subsampling counts to the smallest library size in the
 data set.

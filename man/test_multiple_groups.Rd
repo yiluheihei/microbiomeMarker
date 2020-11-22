@@ -7,6 +7,9 @@
 test_multiple_groups(
   ps,
   group,
+  transform = c("identity", "log10", "log10p"),
+  norm = "TSS",
+  norm_para = list(),
   method = c("anova", "kruskal"),
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
   p_value_cutoff = 0.05,
@@ -17,6 +20,43 @@ test_multiple_groups(
 \item{ps}{a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object}
 
 \item{group}{character, the variable to set the group}
+
+\item{transform}{character, the methods used to transform the microbial
+abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
+options include:
+\itemize{
+\item "identity", return the original data without any transformation (default).
+\item "log10", the transformation is \code{log10(object)}, and if the data contains
+zeros the transformation is \code{log10(1 + object)}.
+\item "log10p", the transformation is \code{log10(1 + object)}.
+}}
+
+\item{norm}{the methods used to normalize the microbial abundance data. See
+\code{\link[=normalize]{normalize()}} for more details.
+Options include:
+\itemize{
+\item a integer, e.g. 1e6 (default), indicating pre-sample normalization of
+the sum of the values to 1e6.
+\item "none": do not normalize.
+\item "rarefy": random subsampling counts to the smallest library size in the
+data set.
+\item "TSS": total sum scaling, also referred to as "relative abundance", the
+abundances were normalized by dividing the corresponding sample library
+size.
+\item "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
+The scaling factor is then derived using a weighted trimmed mean over the
+differences of the log-transformed gene-count fold-change between the
+sample and the reference.
+\item "RLE", relative log expression, RLE uses a pseudo-reference calculated
+using the geometric mean of the gene-specific abundances over all
+samples. The scaling factors are then calculated as the median of the
+gene counts ratios between the samples and the reference.
+\item "CSS": cumulative sum scaling, calculates scaling factors as the
+cumulative sum of gene abundances up to a data-derived threshold.
+\item "CLR": centered log-ratio normalization.
+}}
+
+\item{norm_para}{arguments passed to specific normalization methods}
 
 \item{method}{test method, must be one of "anova" or "kruskal"}
 

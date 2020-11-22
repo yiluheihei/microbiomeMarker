@@ -2,6 +2,36 @@
 #'
 #' @param ps a [`phyloseq::phyloseq-class`] object
 #' @param group character, the variable to set the group
+#' @param transform character, the methods used to transform the microbial
+#'   abundance. See [`transform_abundances()`] for more details. The
+#'   options include:
+#'   * "identity", return the original data without any transformation (default).
+#'   * "log10", the transformation is `log10(object)`, and if the data contains
+#'     zeros the transformation is `log10(1 + object)`.
+#'   * "log10p", the transformation is `log10(1 + object)`.
+#' @param norm the methods used to normalize the microbial abundance data. See
+#'   [`normalize()`] for more details.
+#'   Options include:
+#'   * a integer, e.g. 1e6 (default), indicating pre-sample normalization of
+#'     the sum of the values to 1e6.
+#'   * "none": do not normalize.
+#'   * "rarefy": random subsampling counts to the smallest library size in the
+#'     data set.
+#'   * "TSS": total sum scaling, also referred to as "relative abundance", the
+#'     abundances were normalized by dividing the corresponding sample library
+#'     size.
+#'   * "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
+#'     The scaling factor is then derived using a weighted trimmed mean over the
+#'     differences of the log-transformed gene-count fold-change between the
+#'     sample and the reference.
+#'   * "RLE", relative log expression, RLE uses a pseudo-reference calculated
+#'     using the geometric mean of the gene-specific abundances over all
+#'     samples. The scaling factors are then calculated as the median of the
+#'     gene counts ratios between the samples and the reference.
+#'   * "CSS": cumulative sum scaling, calculates scaling factors as the
+#'     cumulative sum of gene abundances up to a data-derived threshold.
+#'   * "CLR": centered log-ratio normalization.
+#' @param norm_para arguments passed to specific normalization methods
 #' @param method test method, must be one of "welch.test", "t.test" or
 #' "white.test"
 #' @param p_adjust method for multiple test correction, default `none`,
@@ -10,7 +40,7 @@
 #' @param diff_mean_cutoff,ratio_proportion_cutoff cutoff of different mean
 #' proportions and ratio proportions, default `NULL` which means no effect size
 #' filter.
-#' @param conf_level numeric, confidence level of interval,
+#' @param conf_level numeric, confidence level of interval.
 #' @param nperm interger, number of permutations for white non parametric t test
 #'  estimation
 #' @param ... extra arguments passed to [t.test()] or [fisher.test()]
@@ -21,6 +51,9 @@
 #' @return a [`microbiomeMarker-class`] object.
 test_two_groups <- function(ps,
                             group,
+                            transform = c("identity", "log10", "log10p"),
+                            norm = "TSS",
+                            norm_para = list(),
                             method = c("welch.test", "t.test", "white.test"),
                             p_adjust = c("none", "fdr", "bonferroni", "holm",
                                           "hochberg", "hommel", "BH", "BY"),
@@ -49,42 +82,38 @@ test_two_groups <- function(ps,
   }
 
   # preprocess phyloseq object
-  # keep taxa in rows
-  ps <- keep_taxa_in_rows(ps)
-  # filter the taxa whose abundance is zero
-  ps <- phyloseq_qc(ps)
-  # fix duplicated tax
-  ps <- fix_duplicate_tax(ps)
+  ps <- preprocess_ps(ps)
+  ps <- transform_abundances(ps, transform = transform)
 
   otus <- summarize_taxa(ps)
-  abd <- t(otus) %>%
-    as.data.frame()
+  # normalize
+  norm_para <- c(norm_para, method = norm, object = list(otus))
+  otus_norm <- do.call(normalize, norm_para)
 
-  # relative abundance
-  abd_sum <- rowSums(abd)
-  abd_prop <- sweep(abd, 1, abd_sum, "/")
+  abd <- transpose_and_2df(otus)
+  abd_norm <- transpose_and_2df(otus_norm)
 
   sample_meta <- sample_data(ps)
   if (!group %in% names(sample_meta)) {
     stop("`group` must in the field of sample meta data")
   }
   groups <- sample_meta[[group]]
-  abd_prop_group <- split(abd_prop, groups)
+  abd_norm_group <- split(abd_norm, groups)
 
   # used for permute statistic in white's non parametric t test method
   orig_abd_group <- split(abd, groups)
 
   if (method == "welch.test") {
-    test_res <- run_t_test(abd_prop_group, conf_level = conf_level, ...)
+    test_res <- run_t_test(abd_norm_group, conf_level = conf_level, ...)
   } else if (method == "t.test") {
-    test_res <- run_t_test(abd_prop_group, conf_level, var_equal = TRUE, ...)
+    test_res <- run_t_test(abd_norm_group, conf_level, var_equal = TRUE, ...)
   } else if (method == "white.test") {
     test_res <- run_white_test(
-      abd_prop_group[[1]],
-      abd_prop_group[[2]],
+      abd_norm_group[[1]],
+      abd_norm_group[[2]],
       orig_abd_group[[1]],
       orig_abd_group[[2]],
-      group_names = names(abd_prop_group),
+      group_names = names(abd_norm_group),
       conf_level = conf_level,
       nperm = nperm,
       ...
@@ -95,7 +124,7 @@ test_two_groups <- function(ps,
   test_res[["feature"]] <- feature
 
   # ratio proportion
-  rp <- purrr::pmap_dbl(abd_prop_group, ~ calc_ratio_proportion(.x, .y))
+  rp <- purrr::pmap_dbl(abd_norm_group, ~ calc_ratio_proportion(.x, .y))
   test_res$ratio_proportion <- rp
 
   # set the ci and ratio proportion to 0, if both of the mean is 0

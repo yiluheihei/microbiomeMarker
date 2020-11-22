@@ -1,10 +1,11 @@
 #' Normalize the microbial abundance data
 #'
-#' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class]
-#'   object
+#' @param object a matrix, data.frame, [phyloseq::phyloseq-class] or
+#'   [phyloseq::otu_table-class] object
 #' @param method the methods used to normalize the microbial abundance data.
 #'   Options includes:
-#'   * a integer, e.g. 1e6, indicating pre-sample normalization of the sum of the      values to 1e6.
+#'   * a integer, e.g. 1e6, indicating pre-sample normalization of the sum of
+#'     the values to 1e6.
 #'   * "none": do not normalize.
 #'   * "rarefy": random subsampling counts to the smallest library size in the
 #'     data set.
@@ -35,7 +36,7 @@ setMethod("normalize", "phyloseq",
     otu <- otu_table(object)
 
     otu_table(object) <- otu_table(
-      normalize(otu, method = method),
+      normalize(otu, method = method, ...),
       taxa_are_rows = taxa_are_rows(object)
     )
 
@@ -48,12 +49,12 @@ setMethod("normalize", "phyloseq",
 #' @rdname normalize-methods
 setMethod("normalize", "otu_table",
   function(object,
-    method = "TSS",
-    ...) {
+           method = "TSS",
+           ...) {
     if (method %in% c("none", "rarefy", "TSS", "TMM", "RLE", "CSS", "CLR")) {
       object_normed <- switch (method,
         none = object,
-        rafefy = norm_rarefy(object, ...),
+        rarefy = norm_rarefy(object, ...),
         TSS = norm_tss(object),
         TMM = norm_tmm(object, ...),
         RLE = norm_rle(object, ...),
@@ -69,8 +70,33 @@ setMethod("normalize", "otu_table",
     object_normed
   })
 
+#' @importMethodsFrom BiocGenerics normalize
+#' @aliases normalize,data.frame-method normalize
+#' @rdname normalize-methods
+setMethod("normalize", "data.frame",
+  function(object,
+           method = "TSS",
+           ...) {
+    otu <- otu_table(object, taxa_are_rows = TRUE)
+    otu_norm <- normalize(otu, method, ...)
 
+    as.data.frame(otu_norm)
+  }
+)
 
+#' @importMethodsFrom BiocGenerics normalize
+#' @aliases normalize,matrix-method normalize
+#' @rdname normalize-methods
+setMethod("normalize", "matrix",
+  function(object,
+           method = "TSS",
+           ...) {
+    otu <- as.data.frame(object)
+    otu_norm <- normalize(otu, method, ...)
+
+    as.matrix(otu_norm)
+  }
+)
 
 #' rarefying
 #' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class] object

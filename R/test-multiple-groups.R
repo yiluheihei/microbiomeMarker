@@ -2,6 +2,36 @@
 #'
 #' @param ps a [`phyloseq::phyloseq-class`] object
 #' @param group character, the variable to set the group
+#' @param transform character, the methods used to transform the microbial
+#'   abundance. See [`transform_abundances()`] for more details. The
+#'   options include:
+#'   * "identity", return the original data without any transformation (default).
+#'   * "log10", the transformation is `log10(object)`, and if the data contains
+#'     zeros the transformation is `log10(1 + object)`.
+#'   * "log10p", the transformation is `log10(1 + object)`.
+#' @param norm the methods used to normalize the microbial abundance data. See
+#'   [`normalize()`] for more details.
+#'   Options include:
+#'   * a integer, e.g. 1e6 (default), indicating pre-sample normalization of
+#'     the sum of the values to 1e6.
+#'   * "none": do not normalize.
+#'   * "rarefy": random subsampling counts to the smallest library size in the
+#'     data set.
+#'   * "TSS": total sum scaling, also referred to as "relative abundance", the
+#'     abundances were normalized by dividing the corresponding sample library
+#'     size.
+#'   * "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
+#'     The scaling factor is then derived using a weighted trimmed mean over the
+#'     differences of the log-transformed gene-count fold-change between the
+#'     sample and the reference.
+#'   * "RLE", relative log expression, RLE uses a pseudo-reference calculated
+#'     using the geometric mean of the gene-specific abundances over all
+#'     samples. The scaling factors are then calculated as the median of the
+#'     gene counts ratios between the samples and the reference.
+#'   * "CSS": cumulative sum scaling, calculates scaling factors as the
+#'     cumulative sum of gene abundances up to a data-derived threshold.
+#'   * "CLR": centered log-ratio normalization.
+#' @param norm_para arguments passed to specific normalization methods
 #' @param method test method, must be one of "anova" or "kruskal"
 #' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
@@ -14,6 +44,9 @@
 #' @export
 test_multiple_groups <- function(ps,
                                  group,
+                                 transform = c("identity", "log10", "log10p"),
+                                 norm = "TSS",
+                                 norm_para = list(),
                                  method = c("anova", "kruskal"),
                                  p_adjust = c("none", "fdr", "bonferroni", "holm",
                                               "hochberg", "hommel", "BH", "BY"),
@@ -37,21 +70,16 @@ test_multiple_groups <- function(ps,
   }
 
   # preprocess phyloseq object
-  # keep taxa in rows
-  ps <- keep_taxa_in_rows(ps)
-  # filter the taxa whose abundance is zero
-  ps <- phyloseq_qc(ps)
-  # fix duplicated tax
-  ps <- fix_duplicate_tax(ps)
+  ps <- preprocess_ps(ps)
 
   otus <- summarize_taxa(ps)
-  feature <- taxa_names(otus)
-  abd <- t(otus) %>%
-    as.data.frame()
+  # normalize
+  norm_para <- c(norm_para, method = norm, object = list(otus))
+  otus_norm <- do.call(normalize, norm_para)
 
-  # relative abundance
-  abd_sum <- rowSums(abd)
-  abd_prop <- sweep(abd, 1, abd_sum, "/")
+  feature <- taxa_names(otus)
+  abd <- transpose_and_2df(otus)
+  abd_norm <- transpose_and_2df(otus_norm)
 
   sample_meta <- sample_data(ps)
   if (!group %in% names(sample_meta)) {
@@ -60,7 +88,7 @@ test_multiple_groups <- function(ps,
   groups <- sample_meta[[group]]
 
   if (method == "anova") {
-    aov_df <- mutate(abd_prop, groups = groups)
+    aov_df <- mutate(abd_norm, groups = groups)
 
     # separator "|" and some strings (such as "/", "-", "+") have a special
     # meaning in formula
@@ -75,17 +103,17 @@ test_multiple_groups <- function(ps,
       ~ aov(as.formula(.x), aov_df) %>% summary(.)) %>%
       purrr::map_dbl(~.x[[1]][["Pr(>F)"]][1])
   } else {
-    pvalue <- purrr::map_dbl(abd_prop, ~ kruskal.test(.x, groups)$p.value)
+    pvalue <- purrr::map_dbl(abd_norm, ~ kruskal.test(.x, groups)$p.value)
   }
   pvalue[is.na(pvalue)] <- 1
 
   # p value correction for multiple comparisons
   pvalue_corrected <- p.adjust(pvalue, method = p_adjust)
 
-  ef <- purrr::map_dbl(abd_prop, calc_etasq, groups)
+  ef <- purrr::map_dbl(abd_norm, calc_etasq, groups)
 
   # freq means prop
-  freq_means_prop <- calc_mean_prop(abd_prop, groups)
+  freq_means_prop <- calc_mean_prop(abd_norm, groups)
   row.names(freq_means_prop) <- feature
 
   # enriched group
@@ -147,14 +175,14 @@ test_multiple_groups <- function(ps,
 # calculate mean proportion of each feature in each group
 #' @importFrom dplyr bind_cols
 #' @noRd
-calc_mean_prop <- function(abd_prop, groups) {
-  abd_prop_groups <- split(abd_prop, groups)
-  freq_means_prop <- purrr::map(abd_prop_groups, ~ colMeans(.x)*100) %>%
+calc_mean_prop <- function(abd_norm, groups) {
+  abd_norm_groups <- split(abd_norm, groups)
+  freq_means_prop <- purrr::map(abd_norm_groups, ~ colMeans(.x)*100) %>%
     bind_cols() %>%
     as.data.frame()
-  row.names(freq_means_prop) <- names(abd_prop)
+  row.names(freq_means_prop) <- names(abd_norm)
   names(freq_means_prop) <- paste(
-    names(abd_prop_groups),
+    names(abd_norm_groups),
     "mean_rel_freq_percent",
     sep = ":"
   )
@@ -238,32 +266,32 @@ posthoc_test <- function(ps,
     t() %>%
     as.data.frame()
   abd_sum <- rowSums(abd)
-  abd_prop <- sweep(abd, 1, abd_sum, "/")
-  names(abd_prop) <- tax_table(ps)@.Data[, rank_name]
+  abd_norm <- sweep(abd, 1, abd_sum, "/")
+  names(abd_norm) <- tax_table(ps)@.Data[, rank_name]
 
   groups <- sample_data(ps)[[group]]
 
   # mean proportion of each feature in each group
-  # freq_means_prop <- calc_mean_prop(abd_prop, groups)
+  # freq_means_prop <- calc_mean_prop(abd_norm, groups)
   # row.names(freq_means_prop) <- tax_table(ps)@.Data[, rank_name]
 
   result = switch(method,
-    tukey = purrr::map(abd_prop,
+    tukey = purrr::map(abd_norm,
       calc_tukey_test,
       groups,
       conf_level
     ),
-    games_howell = purrr::map(abd_prop,
+    games_howell = purrr::map(abd_norm,
       calc_games_howell_test,
       groups,
       conf_level
     ),
-    scheffe = purrr::map(abd_prop,
+    scheffe = purrr::map(abd_norm,
       calc_scheffe_test,
       groups,
       conf_level
     ),
-    welch_uncorrected = purrr::map(abd_prop,
+    welch_uncorrected = purrr::map(abd_norm,
       calc_welch_uncorrected_test,
       groups, conf_level
     )
@@ -280,7 +308,7 @@ posthoc_test <- function(ps,
     .keep = "none"
   ))
 
-  abundance_proportion <- abd_prop*100
+  abundance_proportion <- abd_norm*100
   abundance_proportion$group <- groups
   postHocTest(
     result = DataFrameList(result),
