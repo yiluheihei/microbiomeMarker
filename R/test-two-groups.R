@@ -37,11 +37,11 @@
 #' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
 #' @param pvalue_cutoff numeric, p value cutoff, default 0.05
-#' @param diff_mean_cutoff,ratio_proportion_cutoff cutoff of different mean
-#' proportions and ratio proportions, default `NULL` which means no effect size
+#' @param diff_mean_cutoff,ratio_cutoff cutoff of different means and ratios,
+#'   default `NULL` which means no effect size
 #' filter.
 #' @param conf_level numeric, confidence level of interval.
-#' @param nperm interger, number of permutations for white non parametric t test
+#' @param nperm integer, number of permutations for white non parametric t test
 #'  estimation
 #' @param ... extra arguments passed to [t.test()] or [fisher.test()]
 #' @importFrom phyloseq rank_names tax_glom
@@ -59,7 +59,7 @@ test_two_groups <- function(ps,
                                           "hochberg", "hommel", "BH", "BY"),
                             pvalue_cutoff = 0.05,
                             diff_mean_cutoff = NULL,
-                            ratio_proportion_cutoff = NULL,
+                            ratio_cutoff = NULL,
                             conf_level = 0.95,
                             nperm = 1000,
                             ...) {
@@ -121,11 +121,11 @@ test_two_groups <- function(ps,
   feature <- tax_table(ps_summarized)@.Data[, 1]
   test_res[["feature"]] <- feature
 
-  # ratio proportion
-  rp <- purrr::pmap_dbl(abd_norm_group, ~ calc_ratio_proportion(.x, .y))
-  test_res$ratio_proportion <- rp
+  # ratio
+  ratio <- purrr::pmap_dbl(abd_norm_group, ~ calc_ratio(.x, .y))
+  test_res$ratio <- ratio
 
-  # set the ci and ratio proportion to 0, if both of the mean is 0
+  # set the ci and ratio to 0, if both of the mean is 0
   test_res <- mutate(
     test_res,
     ci_lower = ifelse(.data$pvalue == 1, 0, .data$ci_lower),
@@ -146,11 +146,11 @@ test_two_groups <- function(ps,
       abs(.data$diff_mean) >= diff_mean_cutoff
     )
   }
-  # ratio proportion >= cutoff or <= 1/cutoff
-  if (!is.null(ratio_proportion_cutoff)) {
+  # ratio >= cutoff or <= 1/cutoff
+  if (!is.null(ratio_cutoff)) {
     test_filtered <- filter(
       test_filtered,
-      .data$ratio_proportion >= ratio_proportion_cutoff | .data$ratio_proportion <= 1/ratio_proportion_cutoff
+      .data$ratio >= ratio_cutoff | .data$ratio <= 1/ratio_cutoff
     )
   }
 
@@ -209,7 +209,7 @@ run_t_test <- function(abd_group, conf_level = 0.95, var_equal = FALSE, ...) {
   # set the p value to 1 is the result is NA
   p[is.na(p)] <- 1
 
-  # mean proportion of each group
+  # means each group
   # different between means
   t_estimate <- purrr::map(t_res, ~ .x$estimate)
   mean_g1 <- purrr::map_dbl(t_estimate, ~ .x[1])
@@ -222,14 +222,14 @@ run_t_test <- function(abd_group, conf_level = 0.95, var_equal = FALSE, ...) {
   ci_upper <- purrr::map_dbl(ci, ~ .x[2])
 
   group_names <- names(abd_group)
-  mean_names <- paste(group_names, "mean_rel_freq", sep = "_")
+  mean_names <- paste(group_names, "mean", sep = "_")
   res <- data.frame(
     p,
-    mean_g1*100,
-    mean_g2*100,
-    diff_means*100,
-    ci_lower*100,
-    ci_upper*100
+    mean_g1,
+    mean_g2,
+    diff_means,
+    ci_lower,
+    ci_upper
   )
   names(res) <- c("pvalue", mean_names, "diff_mean", "ci_lower", "ci_upper")
 
@@ -244,17 +244,17 @@ run_t_test <- function(abd_group, conf_level = 0.95, var_equal = FALSE, ...) {
 # white's non parametric t test -------------------------------------------
 
 #' White's non-parametric t-test
-#' @param prop_group1,prop_group2 a `data.frame`, relative abundance of group 1
+#' @param norm_group1,norm_group2 a `data.frame`, normalized abundance of group 1
 #' and group 2
-#' @param orig_group1,orig_group2 a `data.frame`, absolute abudnace of group 1
+#' @param orig_group1,orig_group2 a `data.frame`, absolute abundance of group 1
 #' and group 2
 #' @param group_names character vector, group names
 #' @param conf_level numeric, confidence level of the interval, default 0.95
 #' @param nperm number of permutations, default 1000
 #' @param ... extra arguments passed to [t.test()]
 #' @noRd
-run_white_test <- function(prop_group1,
-                           prop_group2,
+run_white_test <- function(norm_group1,
+                           norm_group2,
                            orig_group1,
                            orig_group2,
                            group_names,
@@ -262,12 +262,12 @@ run_white_test <- function(prop_group1,
                            nperm = 1000,
                            ...) {
 
-  two_sample_ts <- calc_twosample_ts(prop_group1, prop_group2)
+  two_sample_ts <- calc_twosample_ts(norm_group1, norm_group2)
   t_statistic <- purrr::map_dbl(two_sample_ts, ~ .x["t_static"])
   diff_means <- purrr::map_dbl(two_sample_ts, ~ .x["diff_means"])
 
   permute_p <- calc_permute_p(
-    prop_group1, prop_group2,
+    norm_group1, norm_group2,
     orig_group1, orig_group2,
     t_statistic,
     conf_level = conf_level,
@@ -275,8 +275,8 @@ run_white_test <- function(prop_group1,
   )
 
   bootstrap_ci <- calc_bootstrap_ci(
-    prop_group1,
-    prop_group2,
+    norm_group1,
+    norm_group2,
     conf_level = conf_level,
     replicates = nperm
   )
@@ -294,7 +294,7 @@ run_white_test <- function(prop_group1,
   # set the p value to 1 is the result is NA
   sparse_p[is.na(sparse_p)] <- 1
 
-  # mean proportion of each group
+  # means of each group
   sparse_diff_means <- calc_sparse_diff_mean(orig_group1, orig_group2, sparse_index)
 
   # confidence interval
@@ -309,17 +309,17 @@ run_white_test <- function(prop_group1,
   ci_upper <- bootstrap_ci$ci_upper
   ci_upper[sparse_index] <- sparse_ci_upper
 
-  mean_g1 <- colMeans(prop_group1)
-  mean_g2 <- colMeans(prop_group2)
+  mean_g1 <- colMeans(norm_group1)
+  mean_g2 <- colMeans(norm_group2)
 
-  mean_names <- paste(group_names, "mean_rel_freq", sep = "_")
+  mean_names <- paste(group_names, "mean", sep = "_")
   res <- data.frame(
     permute_p$pvalue_two_side,
-    mean_g1*100,
-    mean_g2*100,
-    diff_means*100,
-    ci_lower*100,
-    ci_upper*100
+    mean_g1,
+    mean_g2,
+    diff_means,
+    ci_lower,
+    ci_upper
   )
   names(res) <- c("pvalue", mean_names, "diff_mean", "ci_lower", "ci_upper")
 
@@ -335,21 +335,21 @@ run_white_test <- function(prop_group1,
 #'
 #' @param t_statistic white non parametric t statistic
 #' @noRd
-calc_permute_p <- function(prop_group1,
-                           prop_group2,
+calc_permute_p <- function(norm_group1,
+                           norm_group2,
                            orig_group1,
                            orig_group2,
                            t_statistic,
                            conf_level = 0.95,
                            nperm = 1000) {
-  n1 <- nrow(prop_group1)
-  n2 <- nrow(prop_group2)
+  n1 <- nrow(norm_group1)
+  n2 <- nrow(norm_group2)
   smaples_n <- n1 + n2
-  features_n <- length(prop_group1)
+  features_n <- length(norm_group1)
 
 
   # calculate p value -------------------------------------------------------
-  permuted_res <- purrr::rerun(nperm, calc_permute_ts(prop_group1, prop_group2))
+  permuted_res <- purrr::rerun(nperm, calc_permute_ts(norm_group1, norm_group2))
   permuted_ts <- purrr::map_df(
     permuted_res,
     ~ .x %>% purrr::map(~ .x["t_static"])
@@ -441,13 +441,13 @@ calc_p_large_sample <- function(permuted_ts, t_statistic) {
 }
 
 # bootstrap confidence interval
-calc_bootstrap_ci <- function(prop_group1,
-                              prop_group2,
+calc_bootstrap_ci <- function(norm_group1,
+                              norm_group2,
                               conf_level = 0.95,
                               replicates = 1000) {
   diff_means <- purrr::map2_df(
-    prop_group1,
-    prop_group2,
+    norm_group1,
+    norm_group2,
     bootstrap_diff_mean_prop_single
   )
 
@@ -466,7 +466,7 @@ calc_bootstrap_ci <- function(prop_group1,
   return(data.frame(ci_lower = ci_lower, ci_upper = ci_upper))
 }
 
-# bootstrap one time, difference mean proportion of an single feature
+# bootstrap one time, difference mean of an single feature
 bootstrap_diff_mean_prop_single <- function(group1, group2, replicates = 1000) {
   bootstrap_one <- function(group1, group2) {
     n1 <- length(group1)
@@ -489,15 +489,15 @@ bootstrap_diff_mean_prop_single <- function(group1, group2, replicates = 1000) {
   return(sort(diff_means))
 }
 
-calc_permute_ts <- function(prop_group1, prop_group2) {
-   n1 <- nrow(prop_group1)
-   n2 <- nrow(prop_group2)
+calc_permute_ts <- function(norm_group1, norm_group2) {
+   n1 <- nrow(norm_group1)
+   n2 <- nrow(norm_group2)
    samples_n <- n1 + n2
    perm <- sample.int(samples_n, samples_n)
-   features_n <- length(prop_group1)
+   features_n <- length(norm_group1)
 
    # permute the rows
-   prop_group <- dplyr::bind_rows(prop_group1, prop_group2)
+   prop_group <- dplyr::bind_rows(norm_group1, norm_group2)
    prop_group_permute <- prop_group[perm, ]
 
    calc_twosample_ts(
@@ -507,10 +507,10 @@ calc_permute_ts <- function(prop_group1, prop_group2) {
 }
 
 # Calculate two sample t statistic of all features
-calc_twosample_ts <- function(prop_group1, prop_group2) {
+calc_twosample_ts <- function(norm_group1, norm_group2) {
   ts <- purrr::map2(
-    prop_group1,
-    prop_group2,
+    norm_group1,
+    norm_group2,
     calc_twosample_ts_single_feature
   )
 
@@ -521,16 +521,16 @@ calc_twosample_ts <- function(prop_group1, prop_group2) {
 #' two sample t static and difference means (effect size)
 #' @importFrom stats var
 #' @noRd
-calc_twosample_ts_single_feature <- function(prop_group1, prop_group2) {
-  n1 <- length(prop_group1)
-  n2 <- length(prop_group2)
+calc_twosample_ts_single_feature <- function(norm_group1, norm_group2) {
+  n1 <- length(norm_group1)
+  n2 <- length(norm_group2)
 
-  mean_g1 <- sum(prop_group1)/n1
-  var_g1 <- var(prop_group1)
+  mean_g1 <- sum(norm_group1)/n1
+  var_g1 <- var(norm_group1)
   stderr_g1 <- var_g1/n1
 
-  mean_g2 <- sum(prop_group2)/n2
-  var_g2 <- var(prop_group2)
+  mean_g2 <- sum(norm_group2)/n2
+  var_g2 <- var(norm_group2)
   stderr_g2 <- var_g2/n2
 
   diff_means <- mean_g1 - mean_g2
@@ -596,17 +596,17 @@ calc_sparse_diff_mean <- function(orig_group1, orig_group2, sparse_index) {
 }
 
 
-# ratio proportion --------------------------------------------------------
+# ratio ------------------------------------------------------------------------
 
-#' ratio proportion used for effect size
+#' ratio used for effect size
 #'
 #' @param abd1,abd2 numeric vector, abundance of a given feature of the group1
 #' and group2
 #' @param pseducount numeric, pseducount for unobserved data
 #'
-#' @return numeric ratio proportion for a feature
+#' @return numeric ratio for a feature
 #' @noRd
-calc_ratio_proportion <- function(abd1, abd2, pseudocount = 0.5) {
+calc_ratio <- function(abd1, abd2, pseudocount = 0.5) {
   n1 <- length(abd1)
   n2 <- length(abd2)
 

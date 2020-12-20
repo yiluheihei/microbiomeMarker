@@ -14,7 +14,7 @@ test_two_groups(
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
   pvalue_cutoff = 0.05,
   diff_mean_cutoff = NULL,
-  ratio_proportion_cutoff = NULL,
+  ratio_cutoff = NULL,
   conf_level = 0.95,
   nperm = 1000,
   ...
@@ -70,13 +70,13 @@ for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 
 \item{pvalue_cutoff}{numeric, p value cutoff, default 0.05}
 
-\item{diff_mean_cutoff, ratio_proportion_cutoff}{cutoff of different mean
-proportions and ratio proportions, default \code{NULL} which means no effect size
+\item{diff_mean_cutoff, ratio_cutoff}{cutoff of different means and ratios,
+default \code{NULL} which means no effect size
 filter.}
 
 \item{conf_level}{numeric, confidence level of interval.}
 
-\item{nperm}{interger, number of permutations for white non parametric t test
+\item{nperm}{integer, number of permutations for white non parametric t test
 estimation}
 
 \item{...}{extra arguments passed to \code{\link[=t.test]{t.test()}} or \code{\link[=fisher.test]{fisher.test()}}}

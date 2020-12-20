@@ -112,14 +112,14 @@ test_multiple_groups <- function(ps,
 
   ef <- purrr::map_dbl(abd_norm, calc_etasq, groups)
 
-  # freq means prop
-  freq_means_prop <- calc_mean_prop(abd_norm, groups)
-  row.names(freq_means_prop) <- feature
+  # mean abundances
+  abd_means <- calc_mean(abd_norm, groups)
+  row.names(abd_means) <- feature
 
   # enriched group
-  group_enriched_idx <- apply(freq_means_prop, 1, which.max)
+  group_enriched_idx <- apply(abd_means, 1, which.max)
   groups_uniq <- unique(groups)
-  group_nms <- groups_uniq[charmatch(groups_uniq, names(freq_means_prop))]
+  group_nms <- groups_uniq[charmatch(groups_uniq, names(abd_means))]
   group_enriched <- group_nms[group_enriched_idx]
 
   res <- bind_cols(
@@ -129,7 +129,7 @@ test_multiple_groups <- function(ps,
       pvalue_corrected = pvalue_corrected,
       effect_size = ef
     ),
-    freq_means_prop
+    abd_means
   )
 
   # append feature
@@ -174,27 +174,27 @@ test_multiple_groups <- function(ps,
   marker
 }
 
-# calculate mean proportion of each feature in each group
+# calculate mean abundance of each feature in each group
 #' @importFrom dplyr bind_cols
 #' @noRd
-calc_mean_prop <- function(abd_norm, groups) {
+calc_mean <- function(abd_norm, groups) {
   abd_norm_groups <- split(abd_norm, groups)
-  freq_means_prop <- purrr::map(abd_norm_groups, ~ colMeans(.x)*100) %>%
+  abd_means <- purrr::map(abd_norm_groups, ~ colMeans(.x)) %>%
     bind_cols() %>%
     as.data.frame()
-  row.names(freq_means_prop) <- names(abd_norm)
-  names(freq_means_prop) <- paste(
+  row.names(abd_means) <- names(abd_norm)
+  names(abd_means) <- paste(
     names(abd_norm_groups),
-    "mean_rel_freq_percent",
+    "mean_abundance",
     sep = ":"
   )
 
-  freq_means_prop
+  abd_means
 }
 
 #' calculate eta-squared measurement of effect size commonly used in multiple
 #' group statistical analysis
-#' @param feature numeric vector, relative of abundance of a given feature
+#' @param feature numeric vector, abundance of a given feature
 #' @param group vector in the same length with argument `feature`, groups of the
 #' feature
 #' @noRd

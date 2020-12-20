@@ -1,4 +1,4 @@
-                 comparions diff_mean_prop  pvalue ci_lower_prop ci_upper_prop
-1 Enterotype 2-Enterotype 1      -28.13900 0.00004      -37.6470     -18.63200
-2 Enterotype 3-Enterotype 1      -26.04500 0.00009      -34.6550     -17.43600
-3 Enterotype 3-Enterotype 2        2.09401 0.46419       -4.2495       8.43748
+                 comparions diff_mean  pvalue  ci_lower ci_upper
+1 Enterotype 2-Enterotype 1  -0.28139 0.00004 -0.376470 -0.18632
+2 Enterotype 3-Enterotype 1  -0.26045 0.00009 -0.346550 -0.17436
+3 Enterotype 3-Enterotype 2   0.02094 0.46419 -0.042495  0.08437

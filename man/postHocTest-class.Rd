@@ -26,13 +26,13 @@ five variables:
 \itemize{
 \item \code{comparisons}: character, specify which two groups to test (the group names
 are separated by "_)
-\item \code{diff_mean_prop}: numeric, difference in mean proportions
+\item \code{diff_mean}: numeric, difference in mean abundances
 \item \code{pvalue}: numeric, p values
-\item \code{ci_lower_prop} and \code{ci_upper_prop}: numeric, lower and upper confidence
-interval of difference in mean proportions
+\item \code{ci_lower} and \code{ci_upper}: numeric, lower and upper confidence interval of
+difference in mean abundances
 }}
 
-\item{\code{abundance_proportion}}{abundance proportion of each feature in each group}
+\item{\code{abundance}}{abundance of each feature in each group}
 
 \item{\code{conf_level}}{confidence level}
 

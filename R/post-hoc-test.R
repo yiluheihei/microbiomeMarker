@@ -53,7 +53,8 @@ posthoc_test <- function(ps,
                          norm = "TSS",
                          norm_para = list(),
                          conf_level = 0.95,
-                         method = c("tukey", "games_howell", "scheffe", "welch_uncorrected")) {
+                         method = c("tukey", "games_howell",
+                                    "scheffe", "welch_uncorrected")) {
   stopifnot(inherits(ps, "phyloseq"))
 
   if (!check_rank_names(ps)) {
@@ -94,10 +95,6 @@ posthoc_test <- function(ps,
 
   groups <- sample_data(ps_summarized)[[group]]
 
-  # mean proportion of each feature in each group
-  # freq_means_prop <- calc_mean_prop(abd_norm, groups)
-  # row.names(freq_means_prop) <- tax_table(ps)@.Data[, rank_name]
-
   result = switch(
     method,
     tukey = purrr::map(
@@ -126,22 +123,22 @@ posthoc_test <- function(ps,
     )
   )
 
-  # convert to mean proportion
+  # diff_means to diff_mean
   result <- purrr::map(result, ~ mutate(
     .x,
     comparions = .data$comparisons,
-    diff_mean_prop = .data$diff_means * 100,
+    diff_mean = .data$diff_means,
     pvalue = .data$pvalue,
-    ci_lower_prop = .data$ci_lower * 100,
-    ci_upper_prop = .data$ci_upper * 100,
+    ci_lower = .data$ci_lower,
+    ci_upper = .data$ci_upper,
     .keep = "none"
   ))
 
-  abundance_proportion <- abd_norm*100
-  abundance_proportion$group <- groups
+  abundance <- abd_norm
+  abundance$group <- groups
   postHocTest(
     result = DataFrameList(result),
-    abundance_proportion = abundance_proportion,
+    abundance = abundance,
     conf_level = conf_level,
     method = method,
     method_str = paste("Posthoc multiple comparisons of means:", method)

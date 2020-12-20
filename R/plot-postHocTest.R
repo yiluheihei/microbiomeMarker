@@ -15,7 +15,7 @@ plot_postHocTest <- function(pht,
                              feature,
                              step_increase = 0.12
                              ) {
-  abd_long <- pht@abundance_proportion %>%
+  abd_long <- pht@abundance %>%
     tidyr::pivot_longer(-.data$group, names_to = "feat")
 
   if (!is.null(feature)) {
@@ -34,16 +34,16 @@ plot_postHocTest <- function(pht,
         ),
         manual = TRUE, textsize = 3, vjust = 0.2
       ) +
-      labs(x = NULL, y = "Abundance proportion")
+      labs(x = NULL, y = "Abundance")
   )
 
   test_res <- as.data.frame(pht@result[[feature]])
   p_test <- ggplot(test_res, aes(x = .data$comparions)) +
     geom_errorbar(
-      aes(ymin = .data$ci_lower_prop, ymax = .data$ci_upper_prop),
+      aes(ymin = .data$ci_lower, ymax = .data$ci_upper),
       width = 0.2
     ) +
-    geom_point(aes(y = .data$diff_mean_prop)) +
+    geom_point(aes(y = .data$diff_mean)) +
     labs(x = NULL, y = "95% confidence intervals")
 
   patchwork::wrap_plots(p_box + p_test)
@@ -57,17 +57,18 @@ plot_postHocTest <- function(pht,
 #' height for every additional comparison to minimize overlap, default `0.12`.
 #' @noRd
 get_sig_annotation <- function(pht, step_increase = 0.12) {
-  abd <- pht@abundance_proportion
-  abd_prop <- dplyr::mutate(abd, group = NULL)
+  abd <- pht@abundance
+  group <- abd$group
+  abd <- dplyr::mutate(abd, group = NULL)
   pht_res <- pht@result
 
 
   sig_annotation <- purrr::map2_df(
-    abd_prop, as.list(pht_res),
-    ~ get_sig_annotation_single(.x, .y, group = abd$group,
+    abd, as.list(pht_res),
+    ~ get_sig_annotation_single(.x, .y, group = group,
         step_increase = step_increase)
   )
-  sig_annotation$feature <- rep(names(abd_prop), each = nrow(pht_res[[1]]))
+  sig_annotation$feature <- rep(names(abd), each = nrow(pht_res[[1]]))
 
   sig_annotation
 }

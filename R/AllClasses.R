@@ -164,11 +164,11 @@ setValidity("microbiomeMarker", validity_microbiomeMarker)
 #' five variables:
 #' * `comparisons`: character, specify which two groups to test (the group names
 #'   are separated by "_)
-#' * `diff_mean_prop`: numeric, difference in mean proportions
+#' * `diff_mean`: numeric, difference in mean abundances
 #' * `pvalue`: numeric, p values
-#' * `ci_lower_prop` and `ci_upper_prop`: numeric, lower and upper confidence
-#' interval of difference in mean proportions
-#' @slot abundance_proportion abundance proportion of each feature in each group
+#' * `ci_lower` and `ci_upper`: numeric, lower and upper confidence interval of
+#'   difference in mean abundances
+#' @slot abundance abundance of each feature in each group
 #' @slot conf_level confidence level
 #' @slot method method used for post-hoc test
 #' @slot method_str method illustration
@@ -180,7 +180,7 @@ setValidity("microbiomeMarker", validity_microbiomeMarker)
 setClass("postHocTest",
   slots = c(
     result = "DataFrameList",
-    abundance_proportion = "data.frame",
+    abundance = "data.frame",
     conf_level = "numeric",
     method = "character",
     method_str = "character"
@@ -238,14 +238,18 @@ setValidity("postHocTest", validity_postHocTest)
 #' Build postHocTest
 #' @noRd
 postHocTest <- function(result,
-                        abundance_proportion,
+                        abundance,
                         conf_level = 0.95,
                         method = "tukey",
-                        method_str = paste("Posthoc multiple comparisons of means: ", method)) {
+                        method_str =
+                          paste("Posthoc multiple comparisons of means: ",
+                                method
+                          )
+                        ) {
   new(
     "postHocTest",
     result = result,
-    abundance_proportion = abundance_proportion,
+    abundance = abundance,
     conf_level = conf_level,
     method = method,
     method_str = method_str

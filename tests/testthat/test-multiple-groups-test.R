@@ -102,7 +102,7 @@ test_that("test visualization of post hoc test, p value significance level ", {
 
 test_that("test visualization of post hoc test, data of signicance level annotation", {
   # single feature
-  abd <- tukey_res@abundance_proportion
+  abd <- tukey_res@abundance
   group <- abd$group
   pht_df <- as.data.frame(tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]])
   annotation_single <- get_sig_annotation_single(
