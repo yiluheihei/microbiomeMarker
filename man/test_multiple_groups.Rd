@@ -63,7 +63,7 @@ cumulative sum of gene abundances up to a data-derived threshold.
 \item{p_adjust}{method for multiple test correction, default \code{none},
 for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 
-\item{p_value_cutoff}{numeric, p value cutoff, default 0.05}
+\item{p_value_cutoff}{numeric, p value cutoff, default 0.05.}
 
 \item{effect_size_cutoff}{numeric, cutoff of effect size default \code{NULL}
 which means no effect size filter}

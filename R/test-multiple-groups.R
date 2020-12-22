@@ -35,7 +35,7 @@
 #' @param method test method, must be one of "anova" or "kruskal"
 #' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
-#' @param p_value_cutoff numeric, p value cutoff, default 0.05
+#' @param p_value_cutoff numeric, p value cutoff, default 0.05.
 #' @param effect_size_cutoff numeric, cutoff of effect size default `NULL`
 #' which means no effect size filter
 #' @importFrom dplyr mutate bind_cols filter select

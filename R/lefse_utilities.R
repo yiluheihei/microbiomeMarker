@@ -1,6 +1,6 @@
 # enrich group of the feature ---------------------------------------------
 
-#' get the means abundance of each class for each feature
+#' get the mean abundances of each class for each feature
 #' @noRd
 get_feature_enrich_group <- function(class, feature) {
   feature$class <- class
