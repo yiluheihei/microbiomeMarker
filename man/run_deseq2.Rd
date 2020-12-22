@@ -13,6 +13,10 @@ run_deseq2(
   test = c("Wald", "LRT"),
   fitType = c("parametric", "local", "mean", "glmGamPoi"),
   sfType = "poscounts",
+  betaPrior = FALSE,
+  modelMatrixType,
+  useT = FALSE,
+  minmu = if (fitType == "glmGamPoi") 1e-06 else 0.5,
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
   p_value_cutoff = 0.05,
   ...
@@ -36,7 +40,8 @@ zeros the transformation is \code{log10(1 + object)}.
 \item "log10p", the transformation is \code{log10(1 + object)}.
 }}
 
-\item{test, fitType, sfType}{these three parameters are inherited form  \verb{ [}DESeq2::DESeq()`].
+\item{test, fitType, sfType, betaPrior, modelMatrixType, useT, minmu}{these seven
+parameters are inherited form \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}.
 \itemize{
 \item \code{test}, should be either "Wald" or "LRT", which will
 then use either Wald significance tests, or the likelihood ratio test on
@@ -45,14 +50,24 @@ the difference in deviance between a full and reduced model formula.
 type of fitting of dispersions to the mean intensity.
 \item \code{sfType}, either "ratio", "poscounts", or "iterate" for the type of size
 factor estimation.
-}}
+\item \code{betaPrior}, whether or not to put a zero-mean normal prior on the
+non-intercept coefficients.
+\item \code{modelMatrixType}, either "standard" or "expanded", which describe how
+the model matrix,
+\item \code{useT}, logical, where Wald statistics are assumed to follow a standard
+Normal.
+\item \code{minmu}, lower bound on the estimated count for fitting gene-wise
+dispersion.
+}
+
+For more details, see \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}.}
 
 \item{p_adjust}{method for multiple test correction, default \code{none}, for
 more details see \link[stats:p.adjust]{stats::p.adjust}.}
 
 \item{p_value_cutoff}{p_value_cutoff numeric, p value cutoff, default 0.05.}
 
-\item{...}{extra parameters passed to \code{\link[DESeq2:results]{DESeq2::results()}}.}
+\item{...}{extra parameters passed to \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}.}
 }
 \value{
 a \code{\linkS4class{microbiomeMarker}} object.

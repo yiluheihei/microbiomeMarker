@@ -10,7 +10,7 @@
 # as input.
 #
 # reference source code:
-# https://github.com/biocore/qiime/blob/76d633c0389671e93febbe1338b5ded658eba31f/qiime/support_files/R/DESeq2_nbinom.r
+# https://github.com/biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
 
 #' Perform DESeq analysis
 #'
@@ -28,8 +28,8 @@
 #'   * "log10", the transformation is `log10(object)`, and if the data contains
 #'     zeros the transformation is `log10(1 + object)`.
 #'   * "log10p", the transformation is `log10(1 + object)`.
-#' @param test,fitType,sfType these three parameters are inherited form  `
-#'   [`DESeq2::DESeq()`].
+#' @param test,fitType,sfType,betaPrior,modelMatrixType,useT,minmu these seven
+#'   parameters are inherited form [`DESeq2::DESeq()`].
 #'   - `test`, should be either "Wald" or "LRT", which will
 #'     then use either Wald significance tests, or the likelihood ratio test on
 #'     the difference in deviance between a full and reduced model formula.
@@ -37,14 +37,27 @@
 #'     type of fitting of dispersions to the mean intensity.
 #'   - `sfType`, either "ratio", "poscounts", or "iterate" for the type of size
 #'     factor estimation.
+#'   - `betaPrior`, whether or not to put a zero-mean normal prior on the
+#'     non-intercept coefficients.
+#'   - `modelMatrixType`, either "standard" or "expanded", which describe how
+#'     the model matrix,
+#'   - `useT`, logical, where Wald statistics are assumed to follow a standard
+#'     Normal.
+#'   - `minmu`, lower bound on the estimated count for fitting gene-wise
+#'     dispersion.
+#'
+#'   For more details, see [`DESeq2::DESeq()`].
+#'
 #' @param p_adjust method for multiple test correction, default `none`, for
 #'   more details see [stats::p.adjust].
 #' @param p_value_cutoff p_value_cutoff numeric, p value cutoff, default 0.05.
-#' @param ... extra parameters passed to [`DESeq2::results()`].
+#' @param ... extra parameters passed to [`DESeq2::DESeq()`].
 #' @export
 #' @return a [`microbiomeMarker-class`] object.
 #' @seealso [`DESeq2::results()`],[`DESeq2::DESeq()`]
 #' @importFrom stats formula
+#' @importFrom DESeq2 dispersions<-
+#' @importMethodsFrom S4Vectors mcols
 run_deseq2 <- function(ps,
                       group_var,
                       subgroup1,
@@ -53,6 +66,10 @@ run_deseq2 <- function(ps,
                       test = c("Wald", "LRT"),
                       fitType = c("parametric", "local", "mean", "glmGamPoi"),
                       sfType = "poscounts",
+                      betaPrior =FALSE,
+                      modelMatrixType,
+                      useT = FALSE,
+                      minmu = if (fitType == "glmGamPoi") 1e-06 else 0.5,
                       p_adjust = c("none", "fdr", "bonferroni", "holm",
                                    "hochberg", "hommel", "BH", "BY"),
                       p_value_cutoff = 0.05,
@@ -91,18 +108,89 @@ run_deseq2 <- function(ps,
   # summarize data
   ps_summarized <- summarize_taxa(ps)
 
-  design <- formula(paste("~ ", group_var))
-  dds <- suppressWarnings(
-    phyloseq::phyloseq_to_deseq2(ps_summarized, design = design)
+  dsg <- formula(paste("~ ", group_var))
+  suppressWarnings(
+    dds <- phyloseq::phyloseq_to_deseq2(ps_summarized, design = dsg)
   )
 
-  dds <- DESeq2::DESeq(
-    dds,
-    test = test,
-    fitType = fitType,
-    sfType = sfType,
-    ...
+  # error: all gene-wise dispersion estimates are within 2 orders of magnitude
+  # from the minimum value, which indicates that the count are not overdispersed
+  #
+  # If dispersion values are less than 1e-6  (minimal value is 1e-8),
+  # it would be problematic to fit a dispersion trend in DESeq2.
+  # The reason for a minimal value, is that for a given row of the count matrix,
+  # the maximum likelihood estimate can tend to 0 (and so we have a rule to stop
+  # after 1e-8)
+  # https://support.bioconductor.org/p/63845/
+  # https://support.bioconductor.org/p/122757/
+  # https://github.com/biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
+
+  res_deseq <- try(
+    DESeq2::DESeq(
+      dds,
+      test = test,
+      fitType = fitType,
+      sfType = sfType,
+      quiet = TRUE,
+      betaPrior = betaPrior,
+      modelMatrixType = modelMatrixType,
+      useT = useT,
+      minmu = minmu,
+      ...),
+    silent = TRUE
   )
+
+  if (inherits(res_deseq, "try-error") && fitType != "local") {
+    warning("data is not overdispered, try `fitType = 'local'`")
+    res_deseq <- try(
+      DESeq2::DESeq(
+        dds,
+        test = test,
+        fitType = "local",
+        sfType = sfType,
+        quiet = TRUE,
+        betaPrior = betaPrior,
+        modelMatrixType = modelMatrixType,
+        useT = useT,
+        minmu = minmu,
+        ...),
+      silent = TRUE
+    )
+  }
+  if (inherits(res_deseq, "try-error") && fitType != "mean") {
+    warning("data is not overdispered, try `fitType = 'mean'`")
+    res_deseq <- try(
+      DESeq2::DESeq(
+        dds,
+        test = test,
+        fitType = "mean",
+        sfType = sfType,
+        quiet = TRUE,
+        betaPrior = betaPrior,
+        modelMatrixType = modelMatrixType,
+        useT = useT,
+        minmu = minmu,
+        ...),
+      silent = TRUE
+    )
+  }
+  if (inherits(res_deseq, "try-error")) {
+    warning("data is not overdispered, use gene-wise estimates as final estimates")
+    dds <- DESeq2::estimateSizeFactors(dds)
+    dds <- DESeq2::estimateDispersionsGeneEst(dds)
+    DESeq2::dispersions(dds) <- mcols(dds)$dispGeneEst
+
+    dds <- DESeq2::nbinomWaldTest(
+      dds,
+      betaPrior = betaPrior,
+      quiet = TRUE,
+      modelMatrixType = modelMatrixType,
+      useT = useT,
+      minmu = minmu
+    )
+  } else {
+    dds <- res_deseq
+  }
 
   # By default, independent filtering is performed to select a set of genes
   # for multiple test correction which maximizes the number of adjusted p-values
@@ -154,3 +242,136 @@ run_deseq2 <- function(ps,
 
   marker
 }
+
+
+#' # used if data is not overdispered
+#' # this function is modified from the DESeq2::DESeq()
+#' # https://github.com/mikelove/DESeq2/blob/master/R/core.R#L271
+#' #
+#' #' @importMethodsFrom DESeq2 design
+#' deseq2 <- function(object,
+#'                    test = c("Wald", "LRT"),
+#'                    sfType = "poscounts",
+#'                    type = c("DESeq2", "glmGamPoi"),
+#'                    betaPrior =FALSE,
+#'                    full,
+#'                    reduced,
+#'                    minReplicatesForReplace = 7,
+#'                    modelMatrixType,
+#'                    useT = FALSE,
+#'                    minmu = if (fitType == "glmGamPoi") 1e-06 else 0.5) {
+#'   stopifnot(is(object, "DESeqDataSet"))
+#'   stopifnot(is.logical(betaPrior))
+#'   test <- match.arg(test, choices=c("Wald","LRT"))
+#'
+#'   sfType <- match.arg(sfType, choices=c("ratio","poscounts","iterate"))
+#'
+#'   stopifnot(is.numeric(minReplicatesForReplace))
+#'   modelAsFormula <- !is.matrix(full) & is(design(object), "formula")
+#'
+#'   if (test == "LRT") {
+#'     if (missing(reduced)) {
+#'       stop("likelihood ratio test requires a 'reduced' design, see ?DESeq")
+#'     }
+#'     if (betaPrior) {
+#'       stop(
+#'         paste(
+#'           "test = 'LRT' does not support use of LFC shrinkage,",
+#'           "use betaPrior=FALSE"
+#'         )
+#'       )
+#'     }
+#'     if (!missing(modelMatrixType) && modelMatrixType == "expanded") {
+#'       stop("test='LRT' does not support use of expanded model matrix")
+#'     }
+#'     if (is.matrix(full) | is.matrix(reduced)) {
+#'       if (!(is.matrix(full) & is.matrix(reduced))) {
+#'         stop(
+#'           paste(
+#'             "if one of 'full' and 'reduced' is a matrix,",
+#'             "the other must be also a matrix")
+#'         )
+#'       }
+#'     }
+#'
+#'     if (modelAsFormula) {
+#'       DESeq2:::checkLRT(full, reduced)
+#'     } else {
+#'       DESeq2:::checkFullRank(full)
+#'       DESeq2:::checkFullRank(reduced)
+#'       if (ncol(full) <= ncol(reduced)) {
+#'         stop(
+#'           paste("the number of columns of 'full' should be more than",
+#'                 "the number of columns of 'reduced'")
+#'         )
+#'       }
+#'     }
+#'   }
+#'
+#'   if (test == "Wald" & !missing(reduced)) {
+#'     warning("'reduced' ignored when test='Wald'")
+#'   }
+#'
+#'   if (modelAsFormula) {
+#'     # run some tests common to DESeq, nbinomWaldTest, nbinomLRT
+#'     DESeq2:::designAndArgChecker(object, betaPrior)
+#'
+#'     if (design(object) == formula(~1)) {
+#'       warning("the design is ~ 1 (just an intercept). is this intended?")
+#'     }
+#'
+#'     if (full != design(object)) {
+#'       stop("'full' specified as formula should equal design(object)")
+#'     }
+#'     modelMatrix <- NULL
+#'   } else {
+#'     # model not as formula, so DESeq() is using supplied model matrix
+#'     if (!quiet) message("using supplied model matrix")
+#'     if (betaPrior == TRUE) {
+#'       stop("betaPrior=TRUE is not supported for user-provided model matrices")
+#'     }
+#'     DESeq2:::checkFullRank(full)
+#'     # this will be used for dispersion estimation and testing
+#'     modelMatrix <- full
+#'   }
+#'
+#'   attr(object, "betaPrior") <- betaPrior
+#'
+#'   if (test == "Wald") {
+#'     object <- DESeq2::nbinomWaldTest(
+#'       object,
+#'       betaPrior=betaPrior,
+#'       quiet = TRUE,
+#'       modelMatrix = modelMatrix,
+#'       modelMatrixType = modelMatrixType,
+#'       useT=useT,
+#'       minmu=minmu
+#'     )
+#'   } else if (test == "LRT") {
+#'     object <- DESeq2::nbinomLRT(
+#'       object,
+#'       full = full,
+#'       reduced = reduced,
+#'       quiet = TRUE,
+#'       minmu = minmu,
+#'       type = type
+#'     )
+#'   }
+#'
+#'   sufficientReps <- any(DESeq2:::nOrMoreInCell(
+#'     attr(object,"modelMatrix"),minReplicatesForReplace)
+#'   )
+#'   if (sufficientReps) {
+#'     object <- DESeq2:::refitWithoutOutliers(
+#'       object,
+#'       test = test,
+#'       betaPrior = betaPrior,
+#'       full = full, reduced = reduced, quiet = TRUE,
+#'       minReplicatesForReplace = minReplicatesForReplace,
+#'       modelMatrix = modelMatrix,
+#'       modelMatrixType = modelMatrixType
+#'     )
+#'   }
+#'
+#'   object
+#' }

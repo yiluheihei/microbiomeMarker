@@ -26,7 +26,7 @@ summarize_taxa <- function(ps,
     tax_summarized <- row.names(otu_summarized) %>%
       matrix() %>%
       tax_table()
-    row.names(otu_summarized) <- row.names(tax_summarized)
+    row.names(tax_summarized) <- row.names(otu_summarized)
     return(phyloseq(otu_summarized, tax_summarized, sample_data(ps)))
   }
   ps <- add_prefix(ps)
