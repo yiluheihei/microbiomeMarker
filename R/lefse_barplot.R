@@ -23,7 +23,7 @@ lefse_barplot <- function(mm,
   if (!nms_check) {
     stop("`lefse_out` must contains variable `feature`, `lda` and `enrich_group`")
   }
-  direction <- match.arg(direction)
+  direction <- match.arg(direction, c("h", "v"))
 
   p <-
     ggplot(
@@ -37,23 +37,31 @@ lefse_barplot <- function(mm,
   if (direction == "h") {
      p <- p +
        scale_y_discrete(
-         labels = function(x)
-           purrr::map_chr(x, ~ get_feature_label(.x, label_level, max_label_len))
+         labels = function(x) {
+           get_features_labels(x, label_level, max_label_len)
+         }
        )
   } else {
     p <- p +
       scale_y_discrete(
-        labels = function(x)
-          purrr::map_chr(x, ~ get_feature_label(.x, label_level, max_label_len)),
+        labels = function(x) {
+          get_features_labels(x, label_level, max_label_len)
+        },
         guide = guide_axis(angle = -90)
       ) +
       coord_flip()
-
   }
+
   p
 }
 
-#' get the feature label
+#' get the labels of markers which will be used in the barplot
+#' @noRd
+get_features_labels <- function(features, label_level, max_label_len) {
+  purrr::map_chr(features, ~ get_feature_label(.x, label_level, max_label_len))
+}
+
+#' get the label of a single feature
 #' @noRd
 get_feature_label <- function(feature,
                               label_level = 1,
@@ -89,7 +97,25 @@ get_feature_label <- function(feature,
       sep = ""
     )
   }
+  # replace "Unknown" label in the species level as "sp."
+  feature <- replace_unknown_species(feature)
 
   feature
 }
 
+# replace "Unknown" label in the species level as "sp."
+replace_unknown_species <- function(feature, sep = "|") {
+  species_hased <- grepl("s__", feature, fixed = TRUE)
+  if (!species_hased) {
+    return(feature)
+  }
+
+  taxa_lvl <- strsplit(feature, sep, fixed = TRUE)
+  n_lvl <- length(taxa_lvl)
+  sp <- taxa_lvl[[n_lvl]]
+  sp <- gsub("Unknown", "sp.", feature, fixed = TRUE)
+  taxa_lvl[[n_lvl]] <- sp
+  feature <- paste(taxa_lvl, collapse = sep)
+
+  feature
+}

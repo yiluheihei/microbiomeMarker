@@ -133,7 +133,7 @@ keep_taxa_in_rows <- function(ps) {
 #' @noRd
 #' @references https://github.com/lch14forever/microbiomeViz/blob/94cbfe452a735aadf88733b27b8221a03f450a55/R/utils.R#L68-L86
 fix_duplicate_tax <-  function(ps) {
-  # convert na to Unkown first
+  # convert na to Unknown first
   ps <- fix_na_tax(ps)
 
   tax <- tax_table(ps)
@@ -157,12 +157,12 @@ fix_duplicate_tax <-  function(ps) {
   ps
 }
 
-#' set NA (missing) tax to "Unkown"
+#' set NA (missing) tax to "Unknown"
 #' @keywords internal
 #' @noRd
 fix_na_tax <- function(ps) {
   tax <- tax_table(ps)
-  tax_fixed <- apply(tax, 2, function(x) ifelse(is.na(x), "Unkown", x))
+  tax_fixed <- apply(tax, 2, function(x) ifelse(is.na(x), "Unknown", x))
   tax_table(ps) <- tax_fixed
 
   ps
