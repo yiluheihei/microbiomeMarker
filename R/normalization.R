@@ -31,8 +31,8 @@
 #' @rdname normalize-methods
 setMethod("normalize", "phyloseq",
   function(object,
-    method = "TSS",
-    ...) {
+           method = "TSS",
+           ...) {
     otu <- otu_table(object)
 
     otu_table(object) <- otu_table(
@@ -105,12 +105,11 @@ setMethod("normalize", "matrix",
 #' @keywords internal
 #' @importFrom phyloseq rarefy_even_depth sample_sums
 norm_rarefy <- function(object,
-  size = min(sample_sums(object)),
-  rng_seed = FALSE,
-  replace = TRUE,
-  trim_otus = TRUE,
-  verbose = TRUE) {
-
+                        size = min(sample_sums(object)),
+                        rng_seed = FALSE,
+                        replace = TRUE,
+                        trim_otus = TRUE,
+                        verbose = TRUE) {
   object_normed <- rarefy_even_depth(
     object,
     sample.size = size,
@@ -143,8 +142,6 @@ norm_tss <- function(object) {
 #' css normalization (metagenomeSeq)
 #' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class]
 #'   object
-#' @param p The pth quantile, numeric or a function, if `p` is a function, it
-#'   will be used to calculate the pth quantile, see[metagenomeSeq::cumNorm()].
 #' @param log logical, whether or not to log2 transfrom scale,
 #'   see [metagenomeSeq::MRcounts()].
 #' @param sl The value to scale, see [metagenomeSeq::MRcounts()]
@@ -153,23 +150,33 @@ norm_tss <- function(object) {
 #' @importFrom metagenomeSeq newMRexperiment cumNorm cumNormStatFast MRcounts
 #' @seealso [metagenomeSeq::cumNorm()], [metagenomeSeq::MRcounts()]
 norm_css <- function(object,
-  p = metagenomeSeq::cumNormStatFast,
-  log = FALSE,
-  sl = 1000) {
+                     log = FALSE,
+                     sl = 1000) {
   if (inherits(object, "phyloseq")) {
+    # return a normalized MRexperiment object directly
     object_mgs <- phyloseq_to_metagenomeSeq(object)
   } else if (inherits(object, "otu_table")) {
     # keep in accordance with the phyloseq::phyloseq_to_metagenomeSeq
     count <- round(as(object, "matrix"), digits = 0)
     object_mgs <- newMRexperiment(counts = count)
+
+    # cumNormStatFast requires counts of all samples at least have two
+    # non zero features
+    if (sum(colSums(count > 0) > 1) < ncol(count)) {
+      p = suppressMessages(metagenomeSeq::cumNormStat(object_mgs))
+    }
+    else {
+      p = suppressMessages(metagenomeSeq::cumNormStatFast(object_mgs))
+    }
+    object_mgs <- metagenomeSeq::cumNorm(object_mgs, p = p)
   }
 
-  p <- ifelse(is.function(p), p(object_mgs), p)
-  mgs_normed <- cumNorm(object_mgs, p = p)
-  feature_normed <- MRcounts(mgs_normed, norm = TRUE, log = log, sl = sl)
+  # p <- ifelse(is.function(p), p(object_mgs), p)
+  # mgs_normed <- cumNorm(object_mgs, p = p)
+  count_normed <- MRcounts(object_mgs, norm = TRUE, log = log, sl = sl)
 
   otu_table(object) <- otu_table(
-    feature_normed,
+    count_normed,
     taxa_are_rows = taxa_are_rows(object)
   )
 
@@ -190,9 +197,9 @@ norm_css <- function(object,
 #' @seealso [DESeq2::estimateSizeFactorsForMatrix()]
 #' @keywords internal
 norm_rle <- function(object,
-  locfunc = stats::median,
-  geo_means = NULL,
-  control_genes = NULL) {
+                     locfunc = stats::median,
+                     geo_means = NULL,
+                     control_genes = NULL) {
   otu <- as(otu_table(object), "matrix")
 
   geo_means <- ifelse(is.null(geo_means), substitute(), geo_means)
@@ -223,11 +230,11 @@ norm_rle <- function(object,
 #' @keywords internal
 #' @references https://github.com/biobakery/Maaslin2/blob/master/R/utility_scripts.R
 norm_tmm <- function(object,
-  ref_column = NULL,
-  logratio_trim = 0.3,
-  sum_trim = 0.05,
-  do_weighting = TRUE,
-  Acutoff = -1e10) {
+                     ref_column = NULL,
+                     logratio_trim = 0.3,
+                     sum_trim = 0.05,
+                     do_weighting = TRUE,
+                     Acutoff = -1e10) {
   otu <- as(otu_table(object), "matrix")
   nf <- edgeR::calcNormFactors(
     otu,

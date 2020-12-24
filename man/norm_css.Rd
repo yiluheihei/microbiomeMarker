@@ -4,14 +4,11 @@
 \alias{norm_css}
 \title{css normalization (metagenomeSeq)}
 \usage{
-norm_css(object, p = metagenomeSeq::cumNormStatFast, log = FALSE, sl = 1000)
+norm_css(object, log = FALSE, sl = 1000)
 }
 \arguments{
 \item{object}{a \link[phyloseq:phyloseq-class]{phyloseq::phyloseq} or \link[phyloseq:otu_table-class]{phyloseq::otu_table}
 object}
-
-\item{p}{The pth quantile, numeric or a function, if \code{p} is a function, it
-will be used to calculate the pth quantile, see\code{\link[metagenomeSeq:cumNorm]{metagenomeSeq::cumNorm()}}.}
 
 \item{log}{logical, whether or not to log2 transfrom scale,
 see \code{\link[metagenomeSeq:MRcounts]{metagenomeSeq::MRcounts()}}.}
