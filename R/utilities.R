@@ -157,13 +157,34 @@ fix_duplicate_tax <-  function(ps) {
   ps
 }
 
-#' set NA (missing) tax to "Unknown"
+#' set NA (missing) tax to its prefix, e.g. s__ (or s__unknown?)
 #' @keywords internal
 #' @noRd
 fix_na_tax <- function(ps) {
-  tax <- tax_table(ps)
-  tax_fixed <- apply(tax, 2, function(x) ifelse(is.na(x), "Unknown", x))
+  tax <- as.data.frame(tax_table(ps))
+
+  tax_fixed <- purrr::imap_dfc(
+    tax,
+    ~ ifelse(is.na(.x), get_prefix(.y), .x)) %>%
+    as.matrix()
+  row.names(tax_fixed) <- taxa_names(ps)
   tax_table(ps) <- tax_fixed
 
   ps
+}
+
+# extract the prefix of taxonomic ranks
+get_prefix <- function(ranks) {
+  diff_ranks <- setdiff(ranks, available_ranks)
+  if (length(diff_ranks) != 0) {
+    stop(paste0(
+      "ranks must be one of Kingdom, Phylum,",
+      "Class, Order, Family, Genus, Species"
+    ))
+  }
+  prefix <- substr(ranks, 1, 1) %>%
+    tolower() %>%
+    paste("__", sep = "")
+
+  prefix
 }

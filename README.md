@@ -268,14 +268,14 @@ head(marker_table(two_group_welch))
 #> marker1     p__Firmicutes|g__Heliobacterium            M 0.02940341
 #> marker2         p__Firmicutes|g__Parvimonas            M 0.03281399
 #> marker3 p__Firmicutes|g__Peptostreptococcus            M 0.01714937
-#>         F_mean_rel_freq M_mean_rel_freq     diff_mean      ci_lower
-#> marker1    0.0001038235    0.0005309321 -0.0004271086 -0.0008080028
-#> marker2    0.0001911176    0.0008610460 -0.0006699283 -0.0012804196
-#> marker3    0.0019799118    0.0053274345 -0.0033475227 -0.0060532040
-#>              ci_upper ratio_proportion pvalue_corrected
-#> marker1 -4.621437e-05        0.1955495       0.02940341
-#> marker2 -5.943705e-05        0.2219599       0.03281399
-#> marker3 -6.418413e-04        0.3716445       0.01714937
+#>               F_mean       M_mean     diff_mean      ci_lower      ci_upper
+#> marker1 1.038235e-06 5.309321e-06 -4.271086e-06 -8.080028e-06 -4.621437e-07
+#> marker2 1.911176e-06 8.610460e-06 -6.699283e-06 -1.280420e-05 -5.943705e-07
+#> marker3 1.979912e-05 5.327434e-05 -3.347523e-05 -6.053204e-05 -6.418413e-06
+#>             ratio pvalue_corrected
+#> marker1 0.1955495       0.02940341
+#> marker2 0.2219599       0.03281399
+#> marker3 0.3716445       0.01714937
 ```
 
 ### Statistical analysis multiple groups
@@ -311,20 +311,20 @@ head(marker_table(multiple_group_anova))
 #> marker4       p__Bacteroidetes|g__Alistipes Enterotype 3 3.922758e-02
 #> marker5     p__Bacteroidetes|g__Bacteroides Enterotype 1 8.396825e-10
 #> marker6 p__Bacteroidetes|g__Parabacteroides Enterotype 1 1.314233e-02
-#>         pvalue_corrected effect_size Enterotype 1:mean_rel_freq_percent
-#> marker1     3.196070e-06   0.5821619                         19.3073387
-#> marker2     1.731342e-04   0.4497271                         16.5364988
-#> marker3     2.742042e-02   0.2196652                          0.0000000
-#> marker4     3.922758e-02   0.2001541                          0.6695668
-#> marker5     8.396825e-10   0.7633661                         17.4793538
-#> marker6     1.314233e-02   0.2582573                          0.9745028
-#>         Enterotype 2:mean_rel_freq_percent Enterotype 3:mean_rel_freq_percent
-#> marker1                       15.372374444                       7.046051e+00
-#> marker2                       25.019756042                       2.680750e+01
-#> marker3                        0.001860083                       8.436111e-05
-#> marker4                        0.528789506                       1.568063e+00
-#> marker5                        3.409612826                       4.456618e+00
-#> marker6                        0.405579500                       4.401643e-01
+#>         pvalue_corrected effect_size Enterotype 1:mean_abundance
+#> marker1     3.196070e-06   0.5821619                 0.193073387
+#> marker2     1.731342e-04   0.4497271                 0.165364988
+#> marker3     2.742042e-02   0.2196652                 0.000000000
+#> marker4     3.922758e-02   0.2001541                 0.006695668
+#> marker5     8.396825e-10   0.7633661                 0.174793538
+#> marker6     1.314233e-02   0.2582573                 0.009745028
+#>         Enterotype 2:mean_abundance Enterotype 3:mean_abundance
+#> marker1                1.537237e-01                7.046051e-02
+#> marker2                2.501976e-01                2.680750e-01
+#> marker3                1.860083e-05                8.436111e-07
+#> marker4                5.287895e-03                1.568063e-02
+#> marker5                3.409613e-02                4.456618e-02
+#> marker6                4.055795e-03                4.401643e-03
 ```
 
 The result of multiple group statistic specified whether the means of
@@ -337,10 +337,10 @@ pht
 #> postHocTest-class object
 #> Pairwise test result of 238  features,  DataFrameList object, each DataFrame has five variables:
 #>         comparions    : pair groups to test which separated by '-'
-#>         diff_mean_prop: difference in mean proportions
+#>         diff_mean: difference in mean proportions
 #>         pvalue        : post hoc test p values
-#>         ci_lower_prop : lower confidence interval
-#>         ci_upper_prop : upper confidence interval
+#>         ci_lower : lower confidence interval
+#>         ci_upper : upper confidence interval
 #> Posthoc multiple comparisons of means  using  tukey  method
 
 # 24 significantly differential genera
@@ -375,16 +375,11 @@ markers
 # between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
 pht@result$"p__Bacteroidetes|g__Bacteroides"
 #> DataFrame with 3 rows and 5 columns
-#>                  comparions diff_mean_prop      pvalue ci_lower_prop
-#>                 <character>      <numeric>   <numeric>     <numeric>
-#> 1 Enterotype 2-Enterotype 1      -28.13948 4.77015e-08     -37.13469
-#> 2 Enterotype 3-Enterotype 1      -26.04547 1.63635e-09     -33.12286
-#> 3 Enterotype 3-Enterotype 2        2.09401 7.88993e-01      -5.75765
-#>   ci_upper_prop
-#>       <numeric>
-#> 1     -19.14428
-#> 2     -18.96808
-#> 3       9.94567
+#>               comparions  diff_mean      pvalue   ci_lower   ci_upper
+#>              <character>  <numeric>   <numeric>  <numeric>  <numeric>
+#> 1 Enterotype 2-Enterot.. -0.2813948 4.77015e-08 -0.3713469 -0.1914428
+#> 2 Enterotype 3-Enterot.. -0.2604547 1.63635e-09 -0.3312286 -0.1896808
+#> 3 Enterotype 3-Enterot..  0.0209401 7.88993e-01 -0.0575765  0.0994567
 ```
 
 Visualization of post test result of a given feature.
@@ -395,6 +390,45 @@ plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
 ```
 
 ![](man/figures/README-plot-posthoctest-1.png)<!-- -->
+
+## metagenomeSeq
+
+``` r
+mm_mgs <- run_metagenomeseq(
+  pediatric_ibd, 
+  norm = "CSS",
+  "Class", 
+  "Control", 
+  "CD", 
+  p_value_cutoff = 0.1, 
+  p_adjust = "fdr"
+)
+#> Default value being used.
+mm_mgs
+#> microbiomeMarker-class inherited from phyloseq-class
+#> marker_table  Marker Table:      [ 11 microbiome markers with 15 variables ]
+#> otu_table()   OTU Table:         [ 786 taxa and  43 samples ]
+#> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
+```
+
+## DESeq2
+
+``` r
+mm_des <- run_deseq2(
+  pediatric_ibd, 
+  "Class", 
+  "Control", 
+  "CD", 
+  p_value_cutoff = 0.05, 
+  p_adjust = "fdr"
+)
+#> converting counts to integer mode
+mm_des
+#> microbiomeMarker-class inherited from phyloseq-class
+#> marker_table  Marker Table:      [ 36 microbiome markers with 8 variables ]
+#> otu_table()   OTU Table:         [ 786 taxa and  43 samples ]
+#> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
+```
 
 ## Visulatiton
 

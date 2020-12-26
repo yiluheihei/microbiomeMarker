@@ -11,3 +11,7 @@ test_that(" check whether all names of taxonomic ranks include in available_rank
   expect_true(check_rank_names(oxygen))
   expect_true(check_rank_names(caporaso))
 })
+
+test_that("taxa prefix",
+  expect_identical(get_prefix(c("Phylum", "Genus")), c("p__", "g__"))
+)

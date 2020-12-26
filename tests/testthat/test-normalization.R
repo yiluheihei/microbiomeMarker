@@ -29,11 +29,12 @@ test_that("ensure the results are the same for phylosq, otu_table, data.frame, m
   # css
   css_ps <- norm_css(enterotypes_arumugam)
   css_ot <- norm_css(ot)
+  attr(css_ot, "metagenomeSeq_norm_factor") <- NULL
   css_df <- normalize(df, "CSS")
   css_mat <- normalize(mat, "CSS")
-  expect_equal(otu_table(css_ps), css_ot)
-  expect_equal(as.data.frame(css_ot), css_df)
-  expect_equal(as.matrix(css_df), css_mat)
+  expect_identical(otu_table(css_ps), css_ot)
+  expect_identical(as.data.frame(css_ot), css_df)
+  expect_identical(as.matrix(css_df), css_mat)
 
   # rle
   rle_ps <- norm_rle(enterotypes_arumugam)

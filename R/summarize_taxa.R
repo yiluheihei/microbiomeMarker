@@ -29,7 +29,10 @@ summarize_taxa <- function(ps,
     row.names(tax_summarized) <- row.names(otu_summarized)
     return(phyloseq(otu_summarized, tax_summarized, sample_data(ps)))
   }
-  ps <- add_prefix(ps)
+
+  if (!has_prefix(ps)) {
+    ps <- add_prefix(ps)
+  }
 
   ps_ranks <- rank_names(ps)
   if (!level %in% ps_ranks) {
@@ -135,20 +138,23 @@ extract_prefix <- function(ranks) {
   return(res)
 }
 
+# check whether taxa has prefix or not
+has_prefix <- function(ps) {
+  sample_tax <- tax_table(ps)[1, 1]
+  if (substr(sample_tax, 2, 3) == "__") {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+
 # add ranks prefix, e.g k__, p__, only worked for unsummarized data
 add_prefix <- function(ps) {
   tax <- as(tax_table(ps), "matrix") %>%
     as.data.frame()
   lvl <- colnames(tax)
+  prefix <- get_prefix(lvl)
 
-  diff_lvl <- setdiff(lvl, available_ranks)
-  if (length(diff_lvl) != 0) {
-    stop("rank names of `ps` must be one of Kingdom, Phylum, Class, Order, Family, Genus, Species")
-  }
-
-  prefix <- substr(lvl, 1, 1) %>%
-    tolower() %>%
-    paste("__", sep = "")
   tax_new <- mapply(function(x, y) paste0(x, y), prefix, tax, SIMPLIFY = FALSE)
   tax_new <- do.call(cbind, tax_new)
   row.names(tax_new) <- row.names(tax)

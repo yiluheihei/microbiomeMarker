@@ -276,6 +276,35 @@ Visualization of post test result of a given feature.
 plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
 ```
 
+## metagenomeSeq
+
+```{r metagenomeSeq,warning=FALSE}
+mm_mgs <- run_metagenomeseq(
+  pediatric_ibd, 
+  norm = "CSS",
+  "Class", 
+  "Control", 
+  "CD", 
+  p_value_cutoff = 0.1, 
+  p_adjust = "fdr"
+)
+mm_mgs
+```
+
+## DESeq2
+
+```{r deseq,warning=FALSE}
+mm_des <- run_deseq2(
+  pediatric_ibd, 
+  "Class", 
+  "Control", 
+  "CD", 
+  p_value_cutoff = 0.05, 
+  p_adjust = "fdr"
+)
+mm_des
+```
+
 ## Visulatiton
 
 ### Cladogram plot

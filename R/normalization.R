@@ -27,6 +27,7 @@
 #' @seealso [edgeR::calcNormFactors()],[DESeq2::estimateSizeFactorsForMatrix()],
 #' [metagenomeSeq::cumNorm()]
 #' @importMethodsFrom BiocGenerics normalize
+#' @importFrom phyloseq sample_data<-
 #' @aliases normalize,phyloseq-method
 #' @rdname normalize-methods
 setMethod("normalize", "phyloseq",
@@ -34,9 +35,22 @@ setMethod("normalize", "phyloseq",
            method = "TSS",
            ...) {
     otu <- otu_table(object)
+    otu_normed <- normalize(otu, method = method, ...)
+
+    # extract norm_factor attributes and prepend to the sample_data
+    attrs <- attributes(otu_normed)
+    nf_idx <- grepl("norm_factor", names(attrs))
+    if (any(nf_idx)) {
+      nf_name <- names(attrs)[nf_idx]
+      nf <- attrs[[nf_name]]
+      sample_data(object) <- cbind(
+        sample_data(object),
+        nf_name = attr(otu_normed, nf_name, exact = TRUE)
+      )
+    }
 
     otu_table(object) <- otu_table(
-      normalize(otu, method = method, ...),
+      otu_normed,
       taxa_are_rows = taxa_are_rows(object)
     )
 
@@ -146,39 +160,48 @@ norm_tss <- function(object) {
 #'   see [metagenomeSeq::MRcounts()].
 #' @param sl The value to scale, see [metagenomeSeq::MRcounts()]
 #' @keywords internal
-#' @importFrom phyloseq phyloseq_to_metagenomeSeq
+#' @importFrom phyloseq sample_data<-
 #' @importFrom metagenomeSeq newMRexperiment cumNorm cumNormStatFast MRcounts
 #' @seealso [metagenomeSeq::cumNorm()], [metagenomeSeq::MRcounts()]
 norm_css <- function(object,
                      log = FALSE,
                      sl = 1000) {
   if (inherits(object, "phyloseq")) {
-    # return a normalized MRexperiment object directly
-    object_mgs <- phyloseq_to_metagenomeSeq(object)
+    object_mgs <- phyloseq2metagenomeSeq(object)
   } else if (inherits(object, "otu_table")) {
     # keep in accordance with the phyloseq::phyloseq_to_metagenomeSeq
-    count <- round(as(object, "matrix"), digits = 0)
-    object_mgs <- newMRexperiment(counts = count)
-
-    # cumNormStatFast requires counts of all samples at least have two
-    # non zero features
-    if (sum(colSums(count > 0) > 1) < ncol(count)) {
-      p = suppressMessages(metagenomeSeq::cumNormStat(object_mgs))
-    }
-    else {
-      p = suppressMessages(metagenomeSeq::cumNormStatFast(object_mgs))
-    }
-    object_mgs <- metagenomeSeq::cumNorm(object_mgs, p = p)
+    # count <- round(as(object, "matrix"), digits = 0)
+    object_mgs <- otu_table2metagenomeSeq(object)
   }
 
-  # p <- ifelse(is.function(p), p(object_mgs), p)
-  # mgs_normed <- cumNorm(object_mgs, p = p)
-  count_normed <- MRcounts(object_mgs, norm = TRUE, log = log, sl = sl)
+  # cumNormStatFast requires counts of all samples at least have two
+  # non zero features
+  count <- as(otu_table(object), "matrix")
+  if (sum(colSums(count > 0) > 1) < ncol(count)) {
+    p <- suppressMessages(metagenomeSeq::cumNormStat(object_mgs))
+  }
+  else {
+    p <- suppressMessages(metagenomeSeq::cumNormStatFast(object_mgs))
+  }
+  object_mgs <- metagenomeSeq::cumNorm(object_mgs, p = p)
 
+  count_normed <- MRcounts(object_mgs, norm = TRUE, log = log, sl = sl)
   otu_table(object) <- otu_table(
     count_normed,
     taxa_are_rows = taxa_are_rows(object)
   )
+
+  # append normFactor to sample_data for model fitting if object is phyloseq
+  # set the metagenomeSeq_norm_factor attributes if object is otu_table
+  nf <- metagenomeSeq::normFactors(object_mgs)
+  if (inherits(object, "phyloseq")) {
+    sample_data(object) <- cbind(
+      sample_data(object),
+     metagenomeSeq_norm_factor = nf
+    )
+  } else {
+    attr(object, "metagenomeSeq_norm_factor") <- nf
+  }
 
   object
 }

@@ -226,7 +226,17 @@ get_treedata_phyloseq <- function(ps, sep = "|") {
   ## data may not contain all the seven ranks of the taxa, such as
   ## enterotypes_arumugam only contains Phylum and Genus ranks
   taxa_deepest <- taxa_split[[which.max(lengths(taxa_split))]]
-  prefix <- gsub("(.*)__.*", "\\1", taxa_deepest)
+  prefix <- vector("character", length(taxa_deepest))
+  for (i in seq_along(taxa_deepest)) {
+    if (!grepl("__$", taxa_deepest[i])) {
+      prefix[i] <- gsub("(.*)__.*", "\\1", taxa_deepest[i])
+    } else {
+      pos <- nchar(taxa_deepest[i]) - 2
+      prefix[i] <- substr(taxa_deepest[i], pos, pos)
+    }
+  }
+
+  # prefix <- ifelse(!grepl("__$", taxa_deepest), gsub("(.*)__.*", "\\1", taxa_deepest), substr()
   levels <- purrr::map_chr(nodes, ~ gsub("__.*$", "", .x)) %>%
     factor(levels = rev(prefix))
   # levels used for extend of clade label
