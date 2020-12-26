@@ -7,21 +7,12 @@ marker5                                              k__Bacteria|p__Actinobacter
 marker6                                                                                   k__Bacteria|p__Actinobacteria
 marker7                      k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Propionibacteriaceae
 marker8 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Propionibacteriaceae|g__Propionibacterium
-        enrich_group  baseMean log2FoldChange     lfcSE      stat       pvalue
-marker1      High_O2 0.2000000      -2.346514 0.5889776 -3.984047 6.775151e-05
-marker2      High_O2 0.2000000      -2.346514 0.5889776 -3.984047 6.775151e-05
-marker3      High_O2 0.2000000      -2.346514 0.5889776 -3.984047 6.775151e-05
-marker4       Low_O2 0.4181818       2.059365 0.7118761  2.892870 3.817389e-03
-marker5       Low_O2 0.4181818       2.059365 0.7118761  2.892870 3.817389e-03
-marker6       Low_O2 0.4181818       2.059365 0.7118761  2.892870 3.817389e-03
-marker7       Low_O2 0.2909091       1.535804 0.7391608  2.077766 3.773088e-02
-marker8       Low_O2 0.2909091       1.535804 0.7391608  2.077766 3.773088e-02
-                padj
-marker1 6.775151e-05
-marker2 6.775151e-05
-marker3 6.775151e-05
-marker4 3.817389e-03
-marker5 3.817389e-03
-marker6 3.817389e-03
-marker7 3.773088e-02
-marker8 3.773088e-02
+        enrich_group baseMean log2FoldChange   lfcSE     stat  pvalue    padj
+marker1      High_O2  0.20000       -2.34650 0.58898 -3.98400 0.00007 0.00007
+marker2      High_O2  0.20000       -2.34650 0.58898 -3.98400 0.00007 0.00007
+marker3      High_O2  0.20000       -2.34650 0.58898 -3.98400 0.00007 0.00007
+marker4       Low_O2  0.41818        2.05937 0.71188  2.89287 0.00382 0.00382
+marker5       Low_O2  0.41818        2.05937 0.71188  2.89287 0.00382 0.00382
+marker6       Low_O2  0.41818        2.05937 0.71188  2.89287 0.00382 0.00382
+marker7       Low_O2  0.29091        1.53580 0.73916  2.07777 0.03773 0.03773
+marker8       Low_O2  0.29091        1.53580 0.73916  2.07777 0.03773 0.03773

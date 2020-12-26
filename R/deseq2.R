@@ -228,6 +228,7 @@ run_deseq2 <- function(ps,
   # reorder columns: feature, enrich_group, other columns
   other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
   sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
+  row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
 
   # normalized counts
   # https://bioinformatics.stackexchange.com/questions/193/how-can-i-extract-normalized-read-count-values-from-deseq2-results

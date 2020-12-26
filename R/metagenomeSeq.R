@@ -176,6 +176,7 @@ run_metagenomeseq <- function(ps,
   # first two columns: feature enrich_group (write a function)
   other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
   sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
+  row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),

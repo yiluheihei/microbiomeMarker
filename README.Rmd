@@ -305,6 +305,19 @@ mm_des <- run_deseq2(
 mm_des
 ```
 
+## edgeR
+
+```{r edger,warning=FALSE}
+mm_edger <- run_edger(
+  pediatric_ibd, 
+  "Class", "Control", "CD", 
+  p_value_cutoff = 0.1,
+  p_adjust = "fdr"
+)
+mm_edger
+```
+
+
 ## Visulatiton
 
 ### Cladogram plot

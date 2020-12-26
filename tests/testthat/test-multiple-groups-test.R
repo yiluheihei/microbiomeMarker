@@ -7,18 +7,18 @@ ps <- phyloseq::subset_samples(
 
 tukey_res <- posthoc_test(ps, "Enterotype", method = "tukey")
 
-round_DF <- function(DF) {
-  round2 <- function(x) {
-    ifelse(
-      x <= 1e-5,
-      as.numeric(formatC(x, format = "g", digits = 5)),
-      as.numeric(formatC(x, format = "f", digits = 5))
-    )
-  }
-  purrr::map_if(as.data.frame(DF), is.numeric, round2) %>%
-    dplyr::bind_cols() %>%
-    as.data.frame()
-}
+# round_DF <- function(DF) {
+#   round2 <- function(x) {
+#     ifelse(
+#       x <= 1e-5,
+#       as.numeric(formatC(x, format = "g", digits = 5)),
+#       as.numeric(formatC(x, format = "f", digits = 5))
+#     )
+#   }
+#   purrr::map_if(as.data.frame(DF), is.numeric, round2) %>%
+#     dplyr::bind_cols() %>%
+#     as.data.frame()
+# }
 
 test_that("etaseq effect size", {
   etasq <- calc_etasq(c(1, 2, 1.2, 3, 4, 1.4), c("a", "b", "c", "a", "b", "c"))

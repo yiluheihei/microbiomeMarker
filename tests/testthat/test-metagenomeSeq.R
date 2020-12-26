@@ -12,7 +12,7 @@ test_that("check the norm factors in metagenomeSeq", {
   # convert to metagenomeSeq, convert to metagenomeSeq and setting the norm
   # factors
   mgs2 <- phyloseq2metagenomeSeq(ps)
-  nf <-calcNormFactors(mgs2)
+  nf <- metagenomeSeq::calcNormFactors(mgs2)
   ps_summarized2 <- summarize_taxa(ps)
   mgs_summarized <- phyloseq2metagenomeSeq(ps_summarized2)
   pData(mgs_summarized@expSummary$expSummary)$normFactors <- nf
@@ -22,15 +22,17 @@ test_that("check the norm factors in metagenomeSeq", {
   expect_equal(abd1, abd2)
 })
 
-res <- run_deseq2(
-  pediatric_ibd,
-  "Class",
-  "Control", "CD",
-  p_adjust = "fdr"
-)
+test_that("result of metagenomeSeq", {
+  res <- run_deseq2(
+    pediatric_ibd,
+    "Class",
+    "Control", "CD",
+    p_adjust = "fdr"
+  )
 
-expect_output_file(
-  marker_table(res),
-  test_path("out/test-metagenomeSeq.txt"),
-  print = TRUE
-)
+  expect_output_file(
+    round_DF(marker_table(res)),
+    test_path("out/test-metagenomeSeq.txt"),
+    print = TRUE
+  )
+})

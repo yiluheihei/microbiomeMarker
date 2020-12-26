@@ -9,7 +9,7 @@ test_that("deseq2 algorithm", {
   )
 
   expect_output_file(
-    marker_table(res),
+    round_DF(marker_table(res)),
     test_path("out/test-deseq2.txt"),
     print = TRUE
   )

@@ -430,6 +430,22 @@ mm_des
 #> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
 ```
 
+## edgeR
+
+``` r
+mm_edger <- run_edger(
+  pediatric_ibd, 
+  "Class", "Control", "CD", 
+  p_value_cutoff = 0.1,
+  p_adjust = "fdr"
+)
+mm_edger
+#> microbiomeMarker-class inherited from phyloseq-class
+#> marker_table  Marker Table:      [ 34 microbiome markers with 8 variables ]
+#> otu_table()   OTU Table:         [ 786 taxa and  43 samples ]
+#> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
+```
+
 ## Visulatiton
 
 ### Cladogram plot

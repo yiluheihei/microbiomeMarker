@@ -1,0 +1,140 @@
+                                                                                                                                                  feature
+marker1                                                                                              k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria
+marker2                                                                         k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales
+marker3                                                   k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae
+marker4                                     k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae|g__Klebsiella
+marker5                   k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae|g__Klebsiella|g__Klebsiella_s__
+marker6                                    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae|g__Escherichia
+marker7                            k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae|g__Escherichia|s__coli
+marker8                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium|s__adolescentis
+marker9                                            k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__[Paraprevotellaceae]|g__Paraprevotella
+marker10                     k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__[Paraprevotellaceae]|g__Paraprevotella|g__Paraprevotella_s__
+marker11                                                                                                                    k__Bacteria|p__Proteobacteria
+marker12                                                         k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia
+marker13                                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia|g__Roseburia_s__
+marker14 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Clostridiaceae|f__Clostridiaceae_g__Clostridium|f__Clostridiaceae_g__Clostridium_s__
+marker15                                                                                                           k__Bacteria|p__Cyanobacteria|c__4C0d-2
+marker16                                                                                                    k__Bacteria|p__Cyanobacteria|c__4C0d-2|o__YS2
+marker17                                                                                         k__Bacteria|p__Cyanobacteria|c__4C0d-2|o__YS2|o__YS2_f__
+marker18                                                                          k__Bacteria|p__Cyanobacteria|c__4C0d-2|o__YS2|o__YS2_f__|o__YS2_f___g__
+marker19                                                       k__Bacteria|p__Cyanobacteria|c__4C0d-2|o__YS2|o__YS2_f__|o__YS2_f___g__|o__YS2_f___g___s__
+marker20                                                            k__Bacteria|p__Proteobacteria|c__Alphaproteobacteria|o__Rickettsiales|f__mitochondria
+marker21                                        k__Bacteria|p__Proteobacteria|c__Alphaproteobacteria|o__Rickettsiales|f__mitochondria|f__mitochondria_g__
+marker22                k__Bacteria|p__Proteobacteria|c__Alphaproteobacteria|o__Rickettsiales|f__mitochondria|f__mitochondria_g__|f__mitochondria_g___s__
+marker23                                                                            k__Bacteria|p__Proteobacteria|c__Alphaproteobacteria|o__Rickettsiales
+marker24                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella|g__Prevotella_s__
+marker25                                                                                             k__Bacteria|p__Proteobacteria|c__Alphaproteobacteria
+marker26                                                                             k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
+marker27                                                       k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
+marker28                                                                               k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales
+marker29                                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+marker30                                                            k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Nocardioidaceae
+marker31                                                             k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__[Paraprevotellaceae]
+marker32                                                                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae
+marker33                                       k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae|g__Coprobacillus
+marker34                  k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae|g__Coprobacillus|g__Coprobacillus_s__
+         enrich_group
+marker1       Control
+marker2       Control
+marker3       Control
+marker4       Control
+marker5       Control
+marker6       Control
+marker7       Control
+marker8            CD
+marker9            CD
+marker10           CD
+marker11      Control
+marker12           CD
+marker13           CD
+marker14           CD
+marker15           CD
+marker16           CD
+marker17           CD
+marker18           CD
+marker19           CD
+marker20      Control
+marker21      Control
+marker22      Control
+marker23      Control
+marker24      Control
+marker25      Control
+marker26           CD
+marker27           CD
+marker28      Control
+marker29           CD
+marker30      Control
+marker31           CD
+marker32           CD
+marker33           CD
+marker34           CD
+                                                                                                                                            k.p.c.o.f.g.s
+marker1                                                                                              k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria
+marker2                                                                         k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales
+marker3                                                   k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae
+marker4                                     k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae|g__Klebsiella
+marker5                   k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae|g__Klebsiella|g__Klebsiella_s__
+marker6                                    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae|g__Escherichia
+marker7                            k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae|g__Escherichia|s__coli
+marker8                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium|s__adolescentis
+marker9                                            k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__[Paraprevotellaceae]|g__Paraprevotella
+marker10                     k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__[Paraprevotellaceae]|g__Paraprevotella|g__Paraprevotella_s__
+marker11                                                                                                                    k__Bacteria|p__Proteobacteria
+marker12                                                         k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia
+marker13                                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia|g__Roseburia_s__
+marker14 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Clostridiaceae|f__Clostridiaceae_g__Clostridium|f__Clostridiaceae_g__Clostridium_s__
+marker15                                                                                                           k__Bacteria|p__Cyanobacteria|c__4C0d-2
+marker16                                                                                                    k__Bacteria|p__Cyanobacteria|c__4C0d-2|o__YS2
+marker17                                                                                         k__Bacteria|p__Cyanobacteria|c__4C0d-2|o__YS2|o__YS2_f__
+marker18                                                                          k__Bacteria|p__Cyanobacteria|c__4C0d-2|o__YS2|o__YS2_f__|o__YS2_f___g__
+marker19                                                       k__Bacteria|p__Cyanobacteria|c__4C0d-2|o__YS2|o__YS2_f__|o__YS2_f___g__|o__YS2_f___g___s__
+marker20                                                            k__Bacteria|p__Proteobacteria|c__Alphaproteobacteria|o__Rickettsiales|f__mitochondria
+marker21                                        k__Bacteria|p__Proteobacteria|c__Alphaproteobacteria|o__Rickettsiales|f__mitochondria|f__mitochondria_g__
+marker22                k__Bacteria|p__Proteobacteria|c__Alphaproteobacteria|o__Rickettsiales|f__mitochondria|f__mitochondria_g__|f__mitochondria_g___s__
+marker23                                                                            k__Bacteria|p__Proteobacteria|c__Alphaproteobacteria|o__Rickettsiales
+marker24                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella|g__Prevotella_s__
+marker25                                                                                             k__Bacteria|p__Proteobacteria|c__Alphaproteobacteria
+marker26                                                                             k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
+marker27                                                       k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
+marker28                                                                               k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales
+marker29                                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+marker30                                                            k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Nocardioidaceae
+marker31                                                             k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__[Paraprevotellaceae]
+marker32                                                                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae
+marker33                                       k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae|g__Coprobacillus
+marker34                  k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae|g__Coprobacillus|g__Coprobacillus_s__
+            logFC   logCPM       LR     pvalue    padj
+marker1  -4.79380 15.21184 22.88205 1.7225e-06 0.00081
+marker2  -5.21830 15.15836 21.76482 3.0820e-06 0.00081
+marker3  -5.21830 15.15836 21.76482 3.0820e-06 0.00081
+marker4  -9.54690  7.47976 20.57867 5.7230e-06 0.00090
+marker5  -9.54690  7.47976 20.57867 5.7230e-06 0.00090
+marker6  -5.21560 15.15102 19.67960 9.1574e-06 0.00103
+marker7  -5.21560 15.15102 19.67960 9.1574e-06 0.00103
+marker8   8.08637  9.35821 18.18530 2.0000e-05 0.00197
+marker9   9.00243  6.77132 17.44912 3.0000e-05 0.00227
+marker10  9.00243  6.77132 17.44912 3.0000e-05 0.00227
+marker11 -3.44480 15.67701 17.31006 3.0000e-05 0.00227
+marker12  3.21584 11.36627 14.59075 1.3000e-04 0.00875
+marker13  3.13777 11.25774 13.81548 2.0000e-04 0.01219
+marker14  5.09675  6.65175 13.29404 2.7000e-04 0.01458
+marker15  8.37729  6.19508 12.62993 3.8000e-04 0.01458
+marker16  8.37729  6.19508 12.62993 3.8000e-04 0.01458
+marker17  8.37729  6.19508 12.62993 3.8000e-04 0.01458
+marker18  8.37729  6.19508 12.62993 3.8000e-04 0.01458
+marker19  8.37729  6.19508 12.62993 3.8000e-04 0.01458
+marker20 -3.72580 12.59993 12.49655 4.1000e-04 0.01458
+marker21 -3.72560 12.59972 12.49521 4.1000e-04 0.01458
+marker22 -3.72560 12.59972 12.49521 4.1000e-04 0.01458
+marker23 -3.69590 12.60179 12.32332 4.5000e-04 0.01529
+marker24 -6.58720  9.90657 11.83356 5.8000e-04 0.01879
+marker25 -3.49670 12.95857 11.78281 6.0000e-04 0.01879
+marker26  3.01313  9.83363 10.92178 9.5000e-04 0.02767
+marker27  3.01313  9.83363 10.92178 9.5000e-04 0.02767
+marker28 -3.77150  8.35797 10.64691 1.1000e-03 0.03043
+marker29  3.01796  9.83304 10.61346 1.1200e-03 0.03043
+marker30 -8.24420  6.22922  9.44267 2.1200e-03 0.05554
+marker31  6.55724  6.80053  8.90093 2.8500e-03 0.07227
+marker32  5.47338  3.96471  8.38420 3.7800e-03 0.08919
+marker33  5.40444  3.92651  8.34951 3.8600e-03 0.08919
+marker34  5.40444  3.92651  8.34951 3.8600e-03 0.08919
