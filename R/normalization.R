@@ -211,6 +211,7 @@ norm_css <- function(object,
 #'   object
 #' @param logcfunc a function to compute a location for a sample. By default,
 #'   the median is used.
+#' @param type method for estimation: either "ratio"or "poscounts" (recommend).
 #' @param geo_means default `NULL`, which means the geometric means of the
 #'   counts are used. A vector of geometric means from another count matrix can
 #'   be provided for a "frozen" size factor calculation.
@@ -221,20 +222,27 @@ norm_css <- function(object,
 #' @keywords internal
 norm_rle <- function(object,
                      locfunc = stats::median,
+                     type = c("poscounts", "ratio"),
                      geo_means = NULL,
-                     control_genes = NULL) {
-  otu <- as(otu_table(object), "matrix")
+                     control_genes = NULL
+                     ) {
+  stopifnot(class(object) %in% c("phyloseq", "otu_table"))
+  type <- match.arg(type, c("poscounts", "ratio"))
 
+  # use substitute() to create missing argument
   geo_means <- ifelse(is.null(geo_means), substitute(), geo_means)
   control_genes <- ifelse(is.null(control_genes), substitute(), control_genes)
 
-  sf <- DESeq2::estimateSizeFactorsForMatrix(
+  otu <- as(otu_table(object), "matrix")
+  nf <- estimateSizeFactorsForMatrix(
     otu,
     locfunc = locfunc,
     geoMeans = geo_means,
-    controlGenes = control_genes
+    controlGenes = control_genes,
+    type = type
   )
-  otu <- sweep(otu, 2, sf, FUN = "/")
+
+  otu <- sweep(otu, 2, nf, FUN = "/")
   otu_table(object) <- otu_table(otu, taxa_are_rows = taxa_are_rows(object))
 
   object

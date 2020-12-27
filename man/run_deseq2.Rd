@@ -9,6 +9,8 @@ run_deseq2(
   group_var,
   subgroup1,
   subgroup2,
+  norm = "RLE",
+  norm_para = list(),
   transform = c("identity", "log10", "log10p"),
   test = c("Wald", "LRT"),
   fitType = c("parametric", "local", "mean", "glmGamPoi"),
@@ -30,6 +32,34 @@ the var of the sample metadata}
 
 \item{subgroup1, subgroup2}{character, subgroups to be compared.}
 
+\item{norm}{the methods used to normalize the microbial abundance data. See
+\code{\link[=normalize]{normalize()}} for more details.
+Options include:
+\itemize{
+\item a integer, e.g. 1e6 (default), indicating pre-sample normalization of
+the sum of the values to 1e6.
+\item "none": do not normalize.
+\item "rarefy": random subsampling counts to the smallest library size in the
+data set.
+\item "TSS": total sum scaling, also referred to as "relative abundance", the
+abundances were normalized by dividing the corresponding sample library
+size.
+\item "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
+The scaling factor is then derived using a weighted trimmed mean over the
+differences of the log-transformed gene-count fold-change between the
+sample and the reference.
+\item "RLE", relative log expression, RLE uses a pseudo-reference calculated
+using the geometric mean of the gene-specific abundances over all
+samples. The scaling factors are then calculated as the median of the
+gene counts ratios between the samples and the reference.
+\item "CSS": cumulative sum scaling, calculates scaling factors as the
+cumulative sum of gene abundances up to a data-derived threshold.
+\item "CLR": centered log-ratio normalization.
+}}
+
+\item{norm_para}{arguments passed to specific normalization methods. Most
+users will not need to pass any additional arguments here.}
+
 \item{transform}{character, the methods used to transform the microbial
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
 options include:
@@ -49,7 +79,7 @@ the difference in deviance between a full and reduced model formula.
 \item \code{fitType}, either "parametric", "local", "mean", or "glmGamPoi" for the
 type of fitting of dispersions to the mean intensity.
 \item \code{sfType}, either "ratio", "poscounts", or "iterate" for the type of size
-factor estimation.
+factor estimation. We recommend to use "poscounts".
 \item \code{betaPrior}, whether or not to put a zero-mean normal prior on the
 non-intercept coefficients.
 \item \code{modelMatrixType}, either "standard" or "expanded", which describe how
@@ -60,7 +90,8 @@ Normal.
 dispersion.
 }
 
-For more details, see \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}.}
+For more details, see \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}.  Most users will not need to
+set this arguments (just use the deaults).}
 
 \item{p_adjust}{method for multiple test correction, default \code{none}, for
 more details see \link[stats:p.adjust]{stats::p.adjust}.}

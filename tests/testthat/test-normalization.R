@@ -1,5 +1,11 @@
 context("taxa abundance normalization")
 
+ct <- as(otu_table(pediatric_ibd), "matrix")
+gm_mean <- function(x, na.rm = TRUE) {
+  exp(sum(log(x[x >0]), na.rm = na.rm) /length(x))
+}
+geoMeans <- apply(ct, 1, gm_mean)
+
 test_that("ensure the results are the same for phylosq, otu_table, data.frame, matrix object ", {
   ot <- otu_table(enterotypes_arumugam)
   df <- as.data.frame(ot)
@@ -73,3 +79,33 @@ test_that("ensure the results are the same for phylosq, otu_table, data.frame, m
   expect_equal(as.data.frame(value_ot), value_df)
   expect_equal(as.matrix(value_df), value_mat)
 })
+
+
+test_that(paste0("`geoMeans` and `type = 'poscounts'` in ",
+                "`estimateSizeFactorsForMatrix` are equal"), {
+  ct <- as(otu_table(pediatric_ibd), "matrix")
+  gm_mean <- function(x, na.rm = TRUE) {
+    exp(sum(log(x[x >0]), na.rm = na.rm) /length(x))
+  }
+  geoMeans <- apply(ct, 1, gm_mean)
+  expect_equal(
+    estimateSizeFactorsForMatrix(ct, geoMeans = geoMeans),
+    estimateSizeFactorsForMatrix(ct, type = "poscounts")
+  )
+})
+
+test_that(paste0("the size factors from `estimateSizeFactorForMatrix()` ",
+                 "and `DESeq2::estimateSizeFactors` are equal"), {
+  suppressWarnings(dds <-  phyloseq2DESeq2(pediatric_ibd, ~Class))
+  sf1 <- DESeq2::estimateSizeFactors(dds, type = "poscounts") %>%
+    DESeq2::sizeFactors()
+  sf2 <- DESeq2::estimateSizeFactors(dds, geoMeans = geoMeans) %>%
+    DESeq2::sizeFactors()
+  sf3 <- estimateSizeFactorsForMatrix(ct, geoMeans = geoMeans)
+  sf4 <- estimateSizeFactorsForMatrix(ct, type = "poscounts")
+
+  expect_identical(sf1, sf2)
+  expect_equal(sf3, sf4)
+  expect_equal(sf1, sf3)
+})
+

@@ -28,6 +28,30 @@
 #'   * "log10", the transformation is `log10(object)`, and if the data contains
 #'     zeros the transformation is `log10(1 + object)`.
 #'   * "log10p", the transformation is `log10(1 + object)`.
+#' @param norm the methods used to normalize the microbial abundance data. See
+#'   [`normalize()`] for more details.
+#'   Options include:
+#'   * a integer, e.g. 1e6 (default), indicating pre-sample normalization of
+#'     the sum of the values to 1e6.
+#'   * "none": do not normalize.
+#'   * "rarefy": random subsampling counts to the smallest library size in the
+#'     data set.
+#'   * "TSS": total sum scaling, also referred to as "relative abundance", the
+#'     abundances were normalized by dividing the corresponding sample library
+#'     size.
+#'   * "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
+#'     The scaling factor is then derived using a weighted trimmed mean over the
+#'     differences of the log-transformed gene-count fold-change between the
+#'     sample and the reference.
+#'   * "RLE", relative log expression, RLE uses a pseudo-reference calculated
+#'     using the geometric mean of the gene-specific abundances over all
+#'     samples. The scaling factors are then calculated as the median of the
+#'     gene counts ratios between the samples and the reference.
+#'   * "CSS": cumulative sum scaling, calculates scaling factors as the
+#'     cumulative sum of gene abundances up to a data-derived threshold.
+#'   * "CLR": centered log-ratio normalization.
+#' @param norm_para arguments passed to specific normalization methods. Most
+#'   users will not need to pass any additional arguments here.
 #' @param test,fitType,sfType,betaPrior,modelMatrixType,useT,minmu these seven
 #'   parameters are inherited form [`DESeq2::DESeq()`].
 #'   - `test`, should be either "Wald" or "LRT", which will
@@ -36,7 +60,7 @@
 #'   - `fitType`, either "parametric", "local", "mean", or "glmGamPoi" for the
 #'     type of fitting of dispersions to the mean intensity.
 #'   - `sfType`, either "ratio", "poscounts", or "iterate" for the type of size
-#'     factor estimation.
+#'     factor estimation. We recommend to use "poscounts".
 #'   - `betaPrior`, whether or not to put a zero-mean normal prior on the
 #'     non-intercept coefficients.
 #'   - `modelMatrixType`, either "standard" or "expanded", which describe how
@@ -46,7 +70,8 @@
 #'   - `minmu`, lower bound on the estimated count for fitting gene-wise
 #'     dispersion.
 #'
-#'   For more details, see [`DESeq2::DESeq()`].
+#'   For more details, see [`DESeq2::DESeq()`].  Most users will not need to
+#'   set this arguments (just use the deaults).
 #'
 #' @param p_adjust method for multiple test correction, default `none`, for
 #'   more details see [stats::p.adjust].
@@ -58,15 +83,18 @@
 #' @importFrom stats formula
 #' @importFrom DESeq2 dispersions<-
 #' @importMethodsFrom S4Vectors mcols
+#' @importMethodsFrom BiocGenerics sizeFactors<- counts
 run_deseq2 <- function(ps,
                       group_var,
                       subgroup1,
                       subgroup2,
+                      norm = "RLE",
+                      norm_para = list(),
                       transform = c("identity", "log10", "log10p"),
                       test = c("Wald", "LRT"),
                       fitType = c("parametric", "local", "mean", "glmGamPoi"),
                       sfType = "poscounts",
-                      betaPrior =FALSE,
+                      betaPrior = FALSE,
                       modelMatrixType,
                       useT = FALSE,
                       minmu = if (fitType == "glmGamPoi") 1e-06 else 0.5,
@@ -102,16 +130,32 @@ run_deseq2 <- function(ps,
     stop("`sfType` muste be one of poscounts, ratio, or iterate")
   }
 
+  # filter the samples in subgroup1 or subgroup2
+  groups <- sample_data(ps)[[group_var]]
+  levels(groups) <- c(subgroup1, subgroup2)
+  ps <- phyloseq::prune_samples(groups %in% c(subgroup1, subgroup2), ps)
+
   # preprocess phyloseq object
   ps <- preprocess_ps(ps)
   ps <- transform_abundances(ps, transform = transform)
+
+  # prenormalize the data
+  if (norm != "RLE") {
+    norm_para <- c(norm_para, method = norm, object = list(ps))
+    ps <- do.call(normalize, norm_para)
+  }
+
+  # norm factors of RLE method
+  dsg <- formula(paste("~ ", group_var))
+  suppressWarnings(dds <- phyloseq2DESeq2(ps, design = dsg))
+  norm_para <- c(norm_para, type = sfType, counts = list(counts(dds)))
+  nf <- do.call(estimateSizeFactorsForMatrix, norm_para)
+
   # summarize data
   ps_summarized <- summarize_taxa(ps)
+  suppressWarnings(dds_summarized <- phyloseq2DESeq2(ps_summarized, design = dsg))
+  sizeFactors(dds_summarized) <- nf
 
-  dsg <- formula(paste("~ ", group_var))
-  suppressWarnings(
-    dds <- phyloseq::phyloseq_to_deseq2(ps_summarized, design = dsg)
-  )
 
   # error: all gene-wise dispersion estimates are within 2 orders of magnitude
   # from the minimum value, which indicates that the count are not overdispersed
@@ -127,7 +171,7 @@ run_deseq2 <- function(ps,
 
   res_deseq <- try(
     DESeq2::DESeq(
-      dds,
+      dds_summarized,
       test = test,
       fitType = fitType,
       sfType = sfType,
@@ -144,7 +188,7 @@ run_deseq2 <- function(ps,
     warning("data is not overdispered, try `fitType = 'local'`")
     res_deseq <- try(
       DESeq2::DESeq(
-        dds,
+        dds_summarized,
         test = test,
         fitType = "local",
         sfType = sfType,
@@ -161,7 +205,7 @@ run_deseq2 <- function(ps,
     warning("data is not overdispered, try `fitType = 'mean'`")
     res_deseq <- try(
       DESeq2::DESeq(
-        dds,
+        dds_summarized,
         test = test,
         fitType = "mean",
         sfType = sfType,
@@ -176,12 +220,12 @@ run_deseq2 <- function(ps,
   }
   if (inherits(res_deseq, "try-error")) {
     warning("data is not overdispered, use gene-wise estimates as final estimates")
-    dds <- DESeq2::estimateSizeFactors(dds)
-    dds <- DESeq2::estimateDispersionsGeneEst(dds)
-    DESeq2::dispersions(dds) <- mcols(dds)$dispGeneEst
+    # dds_summarized <- DESeq2::estimateSizeFactors(dds_summarized)
+    dds_summarized <- DESeq2::estimateDispersionsGeneEst(dds_summarized)
+    DESeq2::dispersions(dds_summarized) <- mcols(dds_summarized)$dispGeneEst
 
-    dds <- DESeq2::nbinomWaldTest(
-      dds,
+    dds_summarized <- DESeq2::nbinomWaldTest(
+      dds_summarized,
       betaPrior = betaPrior,
       quiet = TRUE,
       modelMatrixType = modelMatrixType,
@@ -189,7 +233,7 @@ run_deseq2 <- function(ps,
       minmu = minmu
     )
   } else {
-    dds <- res_deseq
+    dds_summarized <- res_deseq
   }
 
   # By default, independent filtering is performed to select a set of genes
@@ -200,7 +244,7 @@ run_deseq2 <- function(ps,
   # By default, results assigns a p-value of NA to genes containing count
   # outliers, as identified using Cook's distance.
   res <- DESeq2::results(
-    object = dds,
+    object = dds_summarized,
     contrast = c(group_var, subgroup1, subgroup2),
     alpha = p_value_cutoff,
     pAdjustMethod = p_adjust
@@ -232,7 +276,7 @@ run_deseq2 <- function(ps,
 
   # normalized counts
   # https://bioinformatics.stackexchange.com/questions/193/how-can-i-extract-normalized-read-count-values-from-deseq2-results
-  counts_normalized <- DESeq2::counts(dds, normalized = TRUE)
+  counts_normalized <- DESeq2::counts(dds_summarized, normalized = TRUE)
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),
@@ -244,6 +288,105 @@ run_deseq2 <- function(ps,
   marker
 }
 
+#' Convert `phyloseq-class` object to `DESeqDataSet-class` object
+#'
+#' This function convert [phyloseq::phyloseq-class`] to
+#' [`DESeq2::DESeqDataSet-class`], which can then be tested using
+#' [`DESeq2::DESeq()`].
+#'
+#' @param ps the [phyloseq::phyloseq-class`] object to convert, which must have
+#'   a [`phyloseq::sample_data()`] component.
+#' @param design a `formula` or `matrix`, the formula expresses how the counts
+#'   for each gene depend on the variables in colData. Many R formula are valid,
+#'   including designs with multiple variables, e.g., `~ group + condition`.
+#'   This argument is passed to [`DESeq2::DESeqDataSetFromMatrix()`].
+#' @param ... additional arguments passed to [`DESeq2::DESeqDataSetFromMatrix()`],
+#'   Most users will not need to pass any additional arguments here.
+#' @export
+#' @return a [`DESeq2::DESeqDataSet-class`] object.
+#' @seealso [`DESeq2::DESeqDataSetFromMatrix()`],[`DESeq2::DESeq()`]
+phyloseq2DESeq2 <- function(ps, design, ...) {
+  stopifnot(inherits(ps, "phyloseq"))
+  ps <- keep_taxa_in_rows(ps)
+
+  # sample data
+  samp <- sample_data(ps, errorIfNULL = FALSE)
+  if (is.null(samp)) {
+    stop(paste0(
+      "`sample_data` of `ps` is required,",
+      "for specifying experimental design."
+    ))
+  }
+  # count data
+  ct <- as(otu_table(ps), "matrix")
+
+ dds <- DESeq2::DESeqDataSetFromMatrix(
+    countData = ct,
+    colData = data.frame(samp),
+    design = design,
+    ...
+  )
+
+ dds
+}
+
+# Modified from `DESeq2::estimateFactorsForMatrix()` directly
+# for `estimateSizeFactors`:
+# `sizeFactors(estimateSizeFactors(dds, type = "poscounts"))` is identical to
+# `sizeFactors(estimateSizeFactors(dds, geoMeans = geoMeans))`
+#
+# The original function of `DESeq2::estimateFactorsForMatrix()` does not
+# stabilize size factors to have geometric mean of 1 while `type = "poscounts"`.
+# This modified function is to make
+# `estimateSizeFactorsForMatrix(counts(diagdds2),geoMeans = geoMeans)` is equal
+# to `estimateSizeFactorsForMatrix(counts(diagdds2), type = "poscounts")` by
+# stabilize size factors if `type = "poscounts"`.
+estimateSizeFactorsForMatrix <- function(counts,
+                                         locfunc = stats::median,
+                                         geoMeans,
+                                         controlGenes,
+                                         type = c("ratio","poscounts")) {
+  type <- match.arg(type, c("ratio","poscounts"))
+  if (missing(geoMeans)) {
+    incomingGeoMeans <- FALSE
+    if (type == "ratio") {
+      loggeomeans <- rowMeans(log(counts))
+    } else if (type == "poscounts") {
+      lc <- log(counts)
+      lc[!is.finite(lc)] <- 0
+      loggeomeans <- rowMeans(lc)
+      allZero <- rowSums(counts) == 0
+      loggeomeans[allZero] <- -Inf
+    }
+  } else {
+    incomingGeoMeans <- TRUE
+    if (length(geoMeans) != nrow(counts)) {
+      stop("geoMeans should be as long as the number of rows of counts")
+    }
+    loggeomeans <- log(geoMeans)
+  }
+  if (all(is.infinite(loggeomeans))) {
+    stop("every gene contains at least one zero, cannot compute log geometric means")
+  }
+  sf <- if (missing(controlGenes)) {
+    apply(counts, 2, function(cnts) {
+      exp(locfunc((log(cnts) - loggeomeans)[is.finite(loggeomeans) & cnts > 0]))
+    })
+  } else {
+    if ( !( is.numeric(controlGenes) | is.logical(controlGenes) ) ) {
+      stop("controlGenes should be either a numeric or logical vector")
+    }
+    loggeomeansSub <- loggeomeans[controlGenes]
+    apply(counts[controlGenes,,drop=FALSE], 2, function(cnts) {
+      exp(locfunc((log(cnts) - loggeomeansSub)[is.finite(loggeomeansSub) & cnts > 0]))
+    })
+  }
+  if (incomingGeoMeans | type == "poscounts") {
+    # stabilize size factors to have geometric mean of 1
+    sf <- sf/exp(mean(log(sf)))
+  }
+  sf
+}
 
 #' # used if data is not overdispered
 #' # this function is modified from the DESeq2::DESeq()

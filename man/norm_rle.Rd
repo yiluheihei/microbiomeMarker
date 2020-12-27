@@ -7,6 +7,7 @@
 norm_rle(
   object,
   locfunc = stats::median,
+  type = c("poscounts", "ratio"),
   geo_means = NULL,
   control_genes = NULL
 )
@@ -14,6 +15,8 @@ norm_rle(
 \arguments{
 \item{object}{a \link[phyloseq:phyloseq-class]{phyloseq::phyloseq} or \link[phyloseq:otu_table-class]{phyloseq::otu_table}
 object}
+
+\item{type}{method for estimation: either "ratio"or "poscounts" (recommend).}
 
 \item{geo_means}{default \code{NULL}, which means the geometric means of the
 counts are used. A vector of geometric means from another count matrix can

@@ -1,15 +1,18 @@
 context("deseq2 algorithm")
 
 test_that("deseq2 algorithm", {
-  res <- run_deseq2(
-    oxygen,
-    "oxygen_availability",
-    "High_O2", "Low_O2",
-    p_adjust = "none"
+  skip_on_bioc()
+  mm_des <- run_deseq2(
+    pediatric_ibd,
+    "Class",
+    "Control",
+    "CD",
+    p_value_cutoff = 0.05,
+    p_adjust = "fdr"
   )
 
   expect_output_file(
-    round_DF(marker_table(res)),
+    round_DF(marker_table(mm_des)),
     test_path("out/test-deseq2.txt"),
     print = TRUE
   )

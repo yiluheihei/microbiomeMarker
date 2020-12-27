@@ -1,111 +1,48 @@
                                                                                                                                                   feature
-marker1                       k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pasteurellales|f__Pasteurellaceae|g__Haemophilus|g__Haemophilus_s__
-marker2                                                                              k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
-marker3                                                        k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
-marker4                                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
-marker5  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Clostridiaceae|f__Clostridiaceae_g__Clostridium|f__Clostridiaceae_g__Clostridium_s__
-marker6                                                                    k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae
-marker7                                                      k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella
-marker8                                                          k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia
-marker9                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium|s__adolescentis
-marker10                                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia|g__Roseburia_s__
-marker11                                                                                                                    k__Bacteria|p__Proteobacteria
-marker12                                                                                             k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria
-marker13                                                                                               k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae
-marker14                                                                               k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales
-marker15                                                                        k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales
-marker16                                                                         k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae|o__Verrucomicrobiales
-marker17                                                  k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae
-marker18                                                  k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae|o__Verrucomicrobiales|f__Verrucomicrobiaceae
-marker19                                   k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae|o__Verrucomicrobiales|f__Verrucomicrobiaceae|g__Akkermansia
-marker20                                            k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella|s__copri
-marker21                    k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae|o__Verrucomicrobiales|f__Verrucomicrobiaceae|g__Akkermansia|s__muciniphila
-marker22                                                                                                                   k__Bacteria|p__Verrucomicrobia
-marker23                                        k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__fragilis
-marker24                                                                                                                      k__Bacteria|p__Fusobacteria
-marker25                                                                                                  k__Bacteria|p__Actinobacteria|c__Actinobacteria
-marker26                                                                                                     k__Bacteria|p__Fusobacteria|c__Fusobacteriia
-marker27                                                                                  k__Bacteria|p__Fusobacteria|c__Fusobacteriia|o__Fusobacteriales
-marker28                                                              k__Bacteria|p__Fusobacteria|c__Fusobacteriia|o__Fusobacteriales|f__Fusobacteriaceae
-marker29                                                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Veillonellaceae|g__Megasphaera
-marker30                                             k__Bacteria|p__Fusobacteria|c__Fusobacteriia|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium
-marker31                                   k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae|g__Escherichia
-marker32                                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Coprococcus|g__Coprococcus_s__
-marker33                                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|g__Ruminococcus_s__
-marker34                                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Veillonellaceae|g__Megasphaera|g__Megasphaera_s__
-marker35                        k__Bacteria|p__Fusobacteria|c__Fusobacteriia|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium|g__Fusobacterium_s__
-marker36                           k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae|g__Escherichia|s__coli
-         enrich_group   baseMean log2FoldChange   lfcSE     stat     pvalue
-marker1       Control   12.88213      -23.35300 2.38130 -9.80670 1.0536e-22
-marker2            CD  114.50215        3.43206 0.64773  5.29857 1.1671e-07
-marker3            CD  114.50215        3.43206 0.64773  5.29857 1.1671e-07
-marker4            CD  114.41283        3.44356 0.67322  5.11506 3.1364e-07
-marker5            CD   21.94584        4.67496 1.06073  4.40729 1.0000e-05
-marker6            CD   40.34920        4.53615 1.06673  4.25241 2.0000e-05
-marker7            CD   40.34920        4.53615 1.06673  4.25241 2.0000e-05
-marker8            CD  721.15530        2.84490 0.72059  3.94804 8.0000e-05
-marker9            CD   19.78935        8.54752 2.20247  3.88089 1.0000e-04
-marker10           CD  666.64621        2.74971 0.72718  3.78133 1.6000e-04
-marker11      Control 3597.20288       -1.38650 0.42704 -3.24690 1.1700e-03
-marker12      Control 1819.29351       -2.20630 0.68177 -3.23620 1.2100e-03
-marker13           CD    9.99758        4.04424 1.31535  3.07465 2.1100e-03
-marker14      Control   32.93517       -2.61130 0.84597 -3.08680 2.0200e-03
-marker15      Control 1539.24783       -2.55440 0.83361 -3.06430 2.1800e-03
-marker16           CD    9.99758        4.04424 1.31535  3.07465 2.1100e-03
-marker17      Control 1539.24783       -2.55440 0.83361 -3.06430 2.1800e-03
-marker18           CD    9.99758        4.04424 1.31535  3.07465 2.1100e-03
-marker19           CD    9.99758        4.04424 1.31535  3.07465 2.1100e-03
-marker20           CD   36.09674        5.33894 1.67040  3.19621 1.3900e-03
-marker21           CD    9.99758        4.04424 1.31535  3.07465 2.1100e-03
-marker22           CD   10.04224        3.94531 1.32059  2.98754 2.8100e-03
-marker23      Control 2066.22736       -3.33070 1.16966 -2.84760 4.4100e-03
-marker24      Control  187.43150       -3.00190 1.09958 -2.73000 6.3300e-03
-marker25           CD  149.75752        1.58546 0.58176  2.72527 6.4200e-03
-marker26      Control  187.43150       -3.00190 1.09958 -2.73000 6.3300e-03
-marker27      Control  187.43150       -3.00190 1.09958 -2.73000 6.3300e-03
-marker28      Control  186.41544       -3.05490 1.10293 -2.76980 5.6100e-03
-marker29           CD   22.81210        4.38453 1.62720  2.69452 7.0500e-03
-marker30      Control  186.41544       -3.05490 1.10293 -2.76980 5.6100e-03
-marker31      Control 1482.36097       -2.49580 0.92462 -2.69930 6.9500e-03
-marker32           CD 1165.22413        1.85598 0.68138  2.72384 6.4500e-03
-marker33           CD  160.07617        1.91882 0.71051  2.70061 6.9200e-03
-marker34           CD   22.81210        4.38453 1.62720  2.69452 7.0500e-03
-marker35      Control  186.41544       -3.05490 1.10293 -2.76980 5.6100e-03
-marker36      Control 1482.36097       -2.49580 0.92462 -2.69930 6.9500e-03
-               padj
-marker1  2.6866e-20
-marker2  9.9204e-06
-marker3  9.9204e-06
-marker4  2.0000e-05
-marker5  5.3000e-04
-marker6  7.7000e-04
-marker7  7.7000e-04
-marker8  2.5100e-03
-marker9  2.9500e-03
-marker10 3.9800e-03
-marker11 2.5740e-02
-marker12 2.5740e-02
-marker13 2.6500e-02
-marker14 2.6500e-02
-marker15 2.6500e-02
-marker16 2.6500e-02
-marker17 2.6500e-02
-marker18 2.6500e-02
-marker19 2.6500e-02
-marker20 2.6500e-02
-marker21 2.6500e-02
-marker22 3.2600e-02
-marker23 4.8840e-02
-marker24 4.9930e-02
-marker25 4.9930e-02
-marker26 4.9930e-02
-marker27 4.9930e-02
-marker28 4.9930e-02
-marker29 4.9930e-02
-marker30 4.9930e-02
-marker31 4.9930e-02
-marker32 4.9930e-02
-marker33 4.9930e-02
-marker34 4.9930e-02
-marker35 4.9930e-02
-marker36 4.9930e-02
+marker1                                                          k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia
+marker2                                         k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia|g__Roseburia_s__
+marker3  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Clostridiaceae|f__Clostridiaceae_g__Clostridium|f__Clostridiaceae_g__Clostridium_s__
+marker4                                         k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__fragilis
+marker5                                                              k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__[Paraprevotellaceae]
+marker6                                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|g__Ruminococcus_s__
+marker7                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium|s__adolescentis
+marker8                                                                              k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
+marker9                                                        k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
+marker10                                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+marker11                                                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus
+         enrich_group +samples in group 0 +samples in group 1 counts in group 0
+marker1            CD                  18                  18              4355
+marker2            CD                  18                  18              4206
+marker3            CD                   6                  15                42
+marker4       Control                  17                  14             67231
+marker5            CD                   3                   4                16
+marker6            CD                  18                  20              1767
+marker7            CD                   1                   8                 4
+marker8            CD                  18                  20              1820
+marker9            CD                  18                  20              1820
+marker10           CD                  17                  20              1814
+marker11           CD                  18                  20              2493
+         counts in group 1 oddsRatio   lower   upper fisherP fisherAdjP
+marker1              26934   0.40828 0.03458 2.90548 0.42046    1.00000
+marker2              24639   0.40828 0.03458 2.90548 0.42046    1.00000
+marker3               1065   0.12490 0.02353 0.55167 0.00216    0.16942
+marker4               6308   1.20879 0.25801 5.68603 1.00000    1.00000
+marker5               1121   0.60724 0.07743 4.16851 0.68673    1.00000
+marker6               5947   0.00000 0.00000 1.14963 0.05106    0.72973
+marker7               7650   0.07249 0.00148 0.64532 0.00688    0.28481
+marker8               9499   0.00000 0.00000 1.14963 0.05106    0.72973
+marker9               9499   0.00000 0.00000 1.14963 0.05106    0.72973
+marker10              9499   0.00000 0.00000 0.85804 0.02292    0.54582
+marker11              8328   0.00000 0.00000 1.14963 0.05106    0.72973
+            logFC      se     pvalue       padj
+marker1   1.86779 0.31285 2.3698e-09 1.8627e-06
+marker2   1.79860 0.32227 2.3899e-08 9.3924e-06
+marker3   2.50558 0.67243 1.9000e-04 3.9370e-02
+marker4  -2.30400 0.63114 2.6000e-04 3.9370e-02
+marker5   3.72001 1.04011 3.5000e-04 3.9370e-02
+marker6   1.47787 0.41379 3.5000e-04 3.9370e-02
+marker7   2.19004 0.61475 3.7000e-04 3.9370e-02
+marker8   1.65394 0.47142 4.5000e-04 3.9370e-02
+marker9   1.65394 0.47142 4.5000e-04 3.9370e-02
+marker10  1.61363 0.47871 7.5000e-04 5.8920e-02
+marker11  1.49855 0.44945 8.6000e-04 6.1130e-02
