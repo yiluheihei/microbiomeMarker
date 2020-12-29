@@ -10,11 +10,11 @@
 \alias{abundances,microbiomeMarker-method}
 \title{Extract taxa abundances}
 \usage{
-abundances(object, transform = c("identity", "log10", "log10p"))
+abundances(object, transform = c("identity", "log10", "log10p"), norm = FALSE)
 
-\S4method{abundances}{otu_table}(object, transform = c("identity", "log10", "log10p"))
+\S4method{abundances}{otu_table}(object, transform = c("identity", "log10", "log10p"), norm = FALSE)
 
-\S4method{abundances}{phyloseq}(object, transform = c("identity", "log10", "log10p"))
+\S4method{abundances}{phyloseq}(object, transform = c("identity", "log10", "log10p"), norm = FALSE)
 
 \S4method{abundances}{microbiomeMarker}(object, transform = c("identity", "log10", "log10p"))
 }
@@ -28,6 +28,9 @@ abundances(object, transform = c("identity", "log10", "log10p"))
 zeros the transformation is \code{log10(1 + object)}.
 \item "log10p", the transformation is \code{log10(1 + object)}.
 }}
+
+\item{norm}{logical, indicating whether or not to return the normalized
+taxa abundances.}
 }
 \value{
 abundance matrix with taxa in rows and samples in columns.

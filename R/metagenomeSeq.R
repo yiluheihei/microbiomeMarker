@@ -96,27 +96,18 @@ run_metagenomeseq <- function(ps,
 
   # normalization, write a function here
   # fitZig fitFeatureModel
-  # if norm == CSS, do not normalize the data using `normalize`
-  # since we will compute the norm factors manually in the following
-  # metagenomeSeq requires the original absolute abundance
-  if (norm != "CSS") {
-    norm_para <- c(norm_para, method = norm, object = list(ps))
-    ps <- do.call(normalize, norm_para)
-  }
-
-  # norm factors
-  mgs <- phyloseq2metagenomeSeq(ps)
-  if ("p" %in% names(norm_para)) {
-    p <-  norm_para[["p"]]
-  } else {
-    p <- metagenomeSeq::cumNormStatFast(mgs)
-  }
-  nf <- metagenomeSeq::calcNormFactors(mgs, p)
+  norm_para <- c(norm_para, method = norm, object = list(ps))
+  ps_normed <- do.call(normalize, norm_para)
 
   # summarize data
-  ps_summarized <- summarize_taxa(ps)
+  ps_summarized <- summarize_taxa(ps_normed)
   mgs_summarized <- phyloseq2metagenomeSeq(ps_summarized)
-  pData(mgs_summarized@expSummary$expSummary)$normFactors <- nf
+
+  # extract norm factors and set the norm factors of MRexperiment
+  nf <- get_norm_factors(ps_normed)
+  if (!is.null(nf)) {
+    pData(mgs_summarized@expSummary$expSummary)$normFactors <- nf
+  }
 
   mod <- model.matrix(~groups)
 
@@ -180,7 +171,7 @@ run_metagenomeseq <- function(ps,
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),
-    tax_table_orig = tax_table(ps),
+    tax_table_orig = tax_table(ps_normed),
     otu_table(ps_summarized),
     tax_table(ps_summarized)
   )

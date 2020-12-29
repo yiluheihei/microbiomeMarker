@@ -10,6 +10,7 @@ lefse(
   subclass = NULL,
   transform = c("identity", "log10", "log10p"),
   norm = 1e+06,
+  norm_para = list(),
   kw_cutoff = 0.05,
   lda_cutoff = 2,
   bootstrap_n = 30,
@@ -19,8 +20,7 @@ lefse(
   correct = c("0", "1", "2"),
   sample_min = 10,
   only_same_subcls = FALSE,
-  curv = FALSE,
-  ...
+  curv = FALSE
 )
 }
 \arguments{
@@ -65,6 +65,10 @@ cumulative sum of gene abundances up to a data-derived threshold.
 \item "CLR": centered log-ratio normalization.
 }}
 
+\item{norm_para}{named \code{list}. other arguments passed to specific
+normalization methods.  Most users will not need to pass any additional
+arguments here.}
+
 \item{kw_cutoff}{numeric, p value cutoff of kw test, default 0.05}
 
 \item{lda_cutoff}{numeric, lda score cutoff, default 2}
@@ -92,8 +96,6 @@ among the subclasses with the same name, default \code{FALSE}}
 
 \item{curv}{logical, whether perform the wilcoxon test using the
 Curtis's approach, defalt \code{FALSE}}
-
-\item{...}{other arguments passed to specific normalization methods.}
 }
 \value{
 a \linkS4class{microbiomeMarker} object, in which the \code{slot} of \code{marker_table}

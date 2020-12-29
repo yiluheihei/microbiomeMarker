@@ -6,6 +6,13 @@
 \alias{normalize}
 \alias{normalize,data.frame-method}
 \alias{normalize,matrix-method}
+\alias{norm_rarefy}
+\alias{norm_tss}
+\alias{norm_css}
+\alias{norm_rle}
+\alias{norm_tmm}
+\alias{norm_clr}
+\alias{norm_value}
 \title{Normalize the microbial abundance data}
 \usage{
 \S4method{normalize}{phyloseq}(object, method = "TSS", ...)
@@ -15,10 +22,43 @@
 \S4method{normalize}{data.frame}(object, method = "TSS", ...)
 
 \S4method{normalize}{matrix}(object, method = "TSS", ...)
+
+norm_rarefy(
+  object,
+  size = min(sample_sums(object)),
+  rng_seed = FALSE,
+  replace = TRUE,
+  trim_otus = TRUE,
+  verbose = TRUE
+)
+
+norm_tss(object)
+
+norm_css(object, sl = 1000)
+
+norm_rle(
+  object,
+  locfunc = stats::median,
+  type = c("poscounts", "ratio"),
+  geo_means = NULL,
+  control_genes = NULL
+)
+
+norm_tmm(
+  object,
+  ref_column = NULL,
+  logratio_trim = 0.3,
+  sum_trim = 0.05,
+  do_weighting = TRUE,
+  Acutoff = -1e+10
+)
+
+norm_clr(object)
+
+norm_value(object, normalization)
 }
 \arguments{
-\item{object}{a matrix, data.frame, \link[phyloseq:phyloseq-class]{phyloseq::phyloseq} or
-\link[phyloseq:otu_table-class]{phyloseq::otu_table} object}
+\item{object}{a \link[phyloseq:phyloseq-class]{phyloseq::phyloseq} or \link[phyloseq:otu_table-class]{phyloseq::otu_table}}
 
 \item{method}{the methods used to normalize the microbial abundance data.
 Options includes:
@@ -32,9 +72,9 @@ data set.
 abundances were normalized by dividing the corresponding sample library
 size.
 \item "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
-The scaling factor is then derived using a weighted trimmed mean over the
-differences of the log-transformed gene-count fold-change between the
-sample and the reference.
+The scaling factor is then derived using a weighted trimmed mean over
+the differences of the log-transformed gene-count fold-change between
+the sample and the reference.
 \item "RLE", relative log expression, RLE uses a pseudo-reference calculated
 using the geometric mean of the gene-specific abundances over all
 samples. The scaling factors are then calculated as the median of the
@@ -44,12 +84,85 @@ cumulative sum of gene abundances up to a data-derived threshold.
 \item "CLR": centered log-ratio normalization.
 }}
 
-\item{...}{other arguments passed to the corresponding normalization methods.}
+\item{...}{other arguments passed to the corresponding normalization
+methods.}
+
+\item{size, rng_seed, replace, trim_otus, verbose}{extra arguments passed to
+\code{\link[phyloseq:rarefy_even_depth]{phyloseq::rarefy_even_depth()}}.}
+
+\item{sl}{The value to scale.}
+
+\item{locfunc}{a function to compute a location for a sample. By default,
+the median is used.}
+
+\item{type}{method for estimation: either "ratio"or "poscounts" (recommend).}
+
+\item{geo_means}{default \code{NULL}, which means the geometric means of the
+counts are used. A vector of geometric means from another count matrix can
+be provided for a "frozen" size factor calculation.}
+
+\item{control_genes}{default \code{NULL}, which means all taxa are used for size
+factor estimation, numeric or logical index vector specifying the taxa
+used for size factor estimation (e.g. core taxa).}
+
+\item{ref_column}{column to use as reference}
+
+\item{logratio_trim}{amount of trim to use on log-ratios}
+
+\item{sum_trim}{amount of trim to use on the combined absolute levels
+("A" values)}
+
+\item{do_weighting}{whether to compute the weights or not}
+
+\item{Acutoff}{cutoff on "A" values to use before trimming}
+
+\item{normalization}{a numeric, set the normalization value, return the
+feature itself if not supported.}
 }
 \description{
-Normalize the microbial abundance data
+It is critical to normalize the feature table to eliminate any bias due to
+differences in the sampling sequencing depth.This function implements six
+widely-used normalization methods for microbial compositional data.
+
+For rarefying, reads in the different samples are randomly removed until
+the same predefined number has been reached, to assure all samples have the
+same library size. Rarefying normalization method is the standard in
+microbial ecology. Please note that the authors of phyloseq do not advocate
+using this rarefying a normalization procedure, despite its recent
+popularity
+
+TSS simply transforms the feature table into relative abundance by dividing
+the number of total reads of each sample.
+
+CSS is based on the assumption that the count distributions in each sample
+are equivalent for low abundant genes up to a certain threshold.  Only the
+segment of each sample’s count distribution that is relatively invariant
+across samples is scaled by CSS
+
+RLE assumes most features are not differential and uses the relative
+abundances to calculate the normalization factor.
+
+TMM calculates the normalization factor using a robust statistics based on
+the assumption that most features are not differential and should, in
+average, be equal between the samples. The TMM scaling factor is  calculated
+as the weighted mean of log-ratios between each pair of samples, after
+excluding the highest count OTUs and OTUs with the largest log-fold change.
+
+In CLR, the log-ratios are computed relative to the geometric mean of all
+features.
+
+\code{norm_value}: This normalization method is from the original LEfSe algorithm,
+recommended when very low values are present (as shown in the LEfSe galaxy).
 }
 \seealso{
 \code{\link[edgeR:calcNormFactors]{edgeR::calcNormFactors()}},\code{\link[DESeq2:estimateSizeFactorsForMatrix]{DESeq2::estimateSizeFactorsForMatrix()}},
 \code{\link[metagenomeSeq:cumNorm]{metagenomeSeq::cumNorm()}}
+
+\code{\link[phyloseq:rarefy_even_depth]{phyloseq::rarefy_even_depth()}}
+
+\code{\link[metagenomeSeq:calcNormFactors]{metagenomeSeq::calcNormFactors()}}
+
+\code{\link[DESeq2:estimateSizeFactorsForMatrix]{DESeq2::estimateSizeFactorsForMatrix()}}
+
+\code{\link[edgeR:calcNormFactors]{edgeR::calcNormFactors()}}
 }

@@ -140,21 +140,25 @@ run_deseq2 <- function(ps,
   ps <- transform_abundances(ps, transform = transform)
 
   # prenormalize the data
-  if (norm != "RLE") {
-    norm_para <- c(norm_para, method = norm, object = list(ps))
-    ps <- do.call(normalize, norm_para)
-  }
+  norm_para <- c(norm_para, method = norm, object = list(ps))
+  ps_normed <- do.call(normalize, norm_para)
 
-  # norm factors of RLE method
-  dsg <- formula(paste("~ ", group_var))
-  suppressWarnings(dds <- phyloseq2DESeq2(ps, design = dsg))
-  norm_para <- c(norm_para, type = sfType, counts = list(counts(dds)))
-  nf <- do.call(estimateSizeFactorsForMatrix, norm_para)
+  # # norm factors of RLE method
+  # suppressWarnings(dds <- phyloseq2DESeq2(ps, design = dsg))
+  # norm_para <- c(norm_para, type = sfType, counts = list(counts(dds)))
+  # nf <- do.call(estimateSizeFactorsForMatrix, norm_para)
 
   # summarize data
-  ps_summarized <- summarize_taxa(ps)
-  suppressWarnings(dds_summarized <- phyloseq2DESeq2(ps_summarized, design = dsg))
-  sizeFactors(dds_summarized) <- nf
+  ps_summarized <- summarize_taxa(ps_normed)
+  dsg <- formula(paste("~ ", group_var))
+  suppressWarnings(dds_summarized <- phyloseq2DESeq2(
+    ps_summarized,
+    design = dsg
+  ))
+  nf <- get_norm_factors(ps_normed)
+  if (!is.null(nf)) {
+    sizeFactors(dds_summarized) <- nf
+  }
 
 
   # error: all gene-wise dispersion estimates are within 2 orders of magnitude
@@ -312,10 +316,11 @@ phyloseq2DESeq2 <- function(ps, design, ...) {
   # sample data
   samp <- sample_data(ps, errorIfNULL = FALSE)
   if (is.null(samp)) {
-    stop(paste0(
+    stop(
       "`sample_data` of `ps` is required,",
-      "for specifying experimental design."
-    ))
+      " for specifying experimental design.",
+      call. = FALSE
+    )
   }
   # count data
   ct <- as(otu_table(ps), "matrix")

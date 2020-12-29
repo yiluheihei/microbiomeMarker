@@ -177,10 +177,11 @@ fix_na_tax <- function(ps) {
 get_prefix <- function(ranks) {
   diff_ranks <- setdiff(ranks, available_ranks)
   if (length(diff_ranks) != 0) {
-    stop(paste0(
+    stop(
       "ranks must be one of Kingdom, Phylum,",
-      "Class, Order, Family, Genus, Species"
-    ))
+      " Class, Order, Family, Genus, Species",
+      call. = FALSE
+    )
   }
   prefix <- substr(ranks, 1, 1) %>%
     tolower() %>%

@@ -5,7 +5,7 @@ Authors@R:
     person(given = "Yang",
            family = "Cao",
            role = c("aut", "cre"),
-           email = "yiluheihei@gmail.com")
+           email = "caoyang.name@gmail.com")
 biocViews: Metagenomics, Microbiome, Sequencing, Software, DifferentialExpression
 Description: microbiome biomarker analysis.
 License: GPL-3

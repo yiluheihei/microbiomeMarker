@@ -1,8 +1,8 @@
 lefse_out <- lefse(
   oxygen,
-  normalization = 1e6,
+  norm = 1e6,
   bootstrap_n = 5,
-  summarize = FALSE,
+  # summarize = FALSE,
   class = "oxygen_availability",
   subclass = "body_site"
 )
@@ -25,3 +25,9 @@ round_DF <- function(DF) {
   df_rounded
 }
 
+
+# a small phyloseq object for test
+sample_ps <- phyloseq::subset_taxa(
+  pediatric_ibd,
+  Genus %in% c("g__Akkermansia", "g__Lactobacillus")
+)

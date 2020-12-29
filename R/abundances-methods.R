@@ -10,6 +10,8 @@
 #' * "log10", the transformation is `log10(object)`, and if the data contains
 #'   zeros the transformation is `log10(1 + object)`.
 #' * "log10p", the transformation is `log10(1 + object)`.
+#' @param norm logical, indicating whether or not to return the normalized
+#'   taxa abundances.
 #' @return abundance matrix with taxa in rows and samples in columns.
 #' @seealso [`otu_table-class`], [`phyloseq-class`], [`microbiomeMarker-class`],
 #' [`transform_abundances`]
@@ -22,7 +24,9 @@
 #' abundances(oxygen)
 #' }
 setGeneric("abundances",
-  function(object, transform = c("identity", "log10", "log10p")) {
+  function(object,
+           transform = c("identity", "log10", "log10p"),
+           norm = FALSE) {
     standardGeneric("abundances")
   }
 )
@@ -31,11 +35,23 @@ setGeneric("abundances",
 #' @aliases abundances, otu_table-method
 #' @rdname abundances-methods
 setMethod(abundances, "otu_table",
-  function(object, transform = c("identity", "log10", "log10p")) {
-    transform <- match.arg(transform)
-    new_obj <- transform_abundances(object, transform = transform)
+  function(object,
+           transform = c("identity", "log10", "log10p"),
+           norm = FALSE) {
+    transform <- match.arg(transform, c("identity", "log10", "log10p"))
+    obj_transed <- transform_abundances(object, transform = transform)
+    abd <- as(otu_table(obj_transed), "matrix")
 
-    as(otu_table(new_obj), "matrix")
+    if (norm) {
+      nf <- get_norm_factors(object)
+      if (is.null(nf)) {
+        # warning("return the original feature table.", call. = FALSE)
+      } else {
+        abd <- sweep(abd, 2, nf, "/")
+      }
+    }
+
+    abd
     # otu <- as(object, "matrix")
     #
     # # ensure taxa are on the rows
@@ -64,10 +80,18 @@ setMethod(abundances, "otu_table",
 #' @aliases abundances,phyloseq-method
 #' @rdname abundances-methods
 setMethod(abundances, "phyloseq",
-  function(object, transform = c("identity", "log10", "log10p")) {
-    transform <- match.arg(transform)
+  function(object,
+           transform = c("identity", "log10", "log10p"),
+           norm = FALSE) {
+    transform <- match.arg(transform, c("identity", "log10", "log10p"))
     otu <- otu_table(object)
-    otu <- abundances(otu, transform = transform)
+    if (norm) {
+      nf <- get_norm_factors(object)
+      if (!is.null(nf)) {
+        attr(otu, "norm_factor") <- nf
+      }
+    }
+    otu <- abundances(otu, transform = transform, norm = norm)
 
     otu
   }
@@ -77,10 +101,11 @@ setMethod(abundances, "phyloseq",
 #' @aliases abundances,microbiomeMarker-method
 #' @rdname abundances-methods
 setMethod(abundances, "microbiomeMarker",
-  function(object, transform = c("identity", "log10", "log10p")) {
-    transform <- match.arg(transform)
+  function(object,
+           transform = c("identity", "log10", "log10p")) {
+    transform <- match.arg(transform, c("identity", "log10", "log10p"))
     otu <- otu_table(object)
-    otu <- abundances(otu, transform = transform)
+    otu <- abundances(otu, transform = transform, norm = FALSE)
 
     otu
   }

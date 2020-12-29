@@ -72,14 +72,16 @@ test_multiple_groups <- function(ps,
   ps <- transform_abundances(ps, transform = transform)
 
   ps_summarized <- summarize_taxa(ps)
-  otus <-  otu_table(ps_summarized)
+  # otus <-  otu_table(ps_summarized)
+  otus <- abundances(ps_summarized, norm = FALSE)
   # normalize
-  norm_para <- c(norm_para, method = norm, object = list(otus))
-  otus_norm <- do.call(normalize, norm_para)
+  norm_para <- c(norm_para, method = norm, object = list(ps_summarized))
+  ps_normed <- do.call(normalize, norm_para)
 
   feature <- tax_table(ps_summarized)@.Data[, 1]
   abd <- transpose_and_2df(otus)
-  abd_norm <- transpose_and_2df(otus_norm)
+  abd_norm <- abundances(ps_normed, norm = TRUE) %>%
+    transpose_and_2df()
 
   sample_meta <- sample_data(ps_summarized)
   if (!group %in% names(sample_meta)) {

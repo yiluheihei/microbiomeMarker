@@ -1,7 +1,11 @@
 #' Normalize the microbial abundance data
 #'
+#' It is critical to normalize the feature table to eliminate any bias due to
+#' differences in the sampling sequencing depth.This function implements six
+#' widely-used normalization methods for microbial compositional data.
+#'
 #' @param object a matrix, data.frame, [phyloseq::phyloseq-class] or
-#'   [phyloseq::otu_table-class] object
+#'   [phyloseq::otu_table-class] object.
 #' @param method the methods used to normalize the microbial abundance data.
 #'   Options includes:
 #'   * a integer, e.g. 1e6, indicating pre-sample normalization of the sum of
@@ -13,9 +17,9 @@
 #'     abundances were normalized by dividing the corresponding sample library
 #'     size.
 #'   * "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
-#'     The scaling factor is then derived using a weighted trimmed mean over the
-#'     differences of the log-transformed gene-count fold-change between the
-#'     sample and the reference.
+#'     The scaling factor is then derived using a weighted trimmed mean over
+#'     the differences of the log-transformed gene-count fold-change between
+#'     the sample and the reference.
 #'   * "RLE", relative log expression, RLE uses a pseudo-reference calculated
 #'     using the geometric mean of the gene-specific abundances over all
 #'     samples. The scaling factors are then calculated as the median of the
@@ -23,7 +27,8 @@
 #'   * "CSS": cumulative sum scaling, calculates scaling factors as the
 #'     cumulative sum of gene abundances up to a data-derived threshold.
 #'   * "CLR": centered log-ratio normalization.
-#' @param ... other arguments passed to the corresponding normalization methods.
+#' @param ... other arguments passed to the corresponding normalization
+#'   methods.
 #' @seealso [edgeR::calcNormFactors()],[DESeq2::estimateSizeFactorsForMatrix()],
 #' [metagenomeSeq::cumNorm()]
 #' @importMethodsFrom BiocGenerics normalize
@@ -38,21 +43,21 @@ setMethod("normalize", "phyloseq",
     otu_normed <- normalize(otu, method = method, ...)
 
     # extract norm_factor attributes and prepend to the sample_data
-    attrs <- attributes(otu_normed)
-    nf_idx <- grepl("norm_factor", names(attrs))
-    if (any(nf_idx)) {
-      nf_name <- names(attrs)[nf_idx]
-      nf <- attrs[[nf_name]]
+    nf <- attr(otu_normed, "norm_factor")
+    if (!is.null(nf)) {
       sample_data(object) <- cbind(
         sample_data(object),
-        nf_name = attr(otu_normed, nf_name, exact = TRUE)
+        norm_factor = nf
       )
     }
 
-    otu_table(object) <- otu_table(
-      otu_normed,
-      taxa_are_rows = taxa_are_rows(object)
-    )
+    # please note otu_table<- function will drop the norm_factor attribute
+    otu_table(object) <- otu_normed
+
+    # otu_table(object) <- otu_table(
+    #   otu_normed,
+    #   taxa_are_rows = taxa_are_rows(object)
+    # )
 
     object
   }
@@ -66,7 +71,7 @@ setMethod("normalize", "otu_table",
            method = "TSS",
            ...) {
     if (method %in% c("none", "rarefy", "TSS", "TMM", "RLE", "CSS", "CLR")) {
-      object_normed <- switch (method,
+      object_normed <- switch(method,
         none = object,
         rarefy = norm_rarefy(object, ...),
         TSS = norm_tss(object),
@@ -78,7 +83,11 @@ setMethod("normalize", "otu_table",
     } else if (is.numeric(method)) {
       object_normed <- norm_value(object, normalization = method)
     } else {
-      stop("`method` must be one of none, rarefy, TSS, TMM, RLE, CSS, CLR, or an integer")
+      stop(
+        "`method` must be one of none, rarefy, TSS,",
+        " TMM, RLE, CSS, CLR, or an integer",
+        call. = FALSE
+      )
     }
 
     object_normed
@@ -93,8 +102,14 @@ setMethod("normalize", "data.frame",
            ...) {
     otu <- otu_table(object, taxa_are_rows = TRUE)
     otu_norm <- normalize(otu, method, ...)
+    nf <- attr(otu_norm, "norm_factor")
 
-    as.data.frame(otu_norm)
+    res <- as.data.frame(otu_norm)
+    if (!is.null(nf)) {
+      attr(res, "norm_factor") <- nf
+    }
+
+    res
   }
 )
 
@@ -107,24 +122,44 @@ setMethod("normalize", "matrix",
            ...) {
     otu <- as.data.frame(object)
     otu_norm <- normalize(otu, method, ...)
+    nf <- attr(otu_norm, "norm_factor")
 
-    as.matrix(otu_norm)
+    res <- as.matrix(otu_norm)
+    if (!is.null(nf)) {
+      attr(res, "norm_factor") <- nf
+    }
+
+    res
   }
 )
 
-#' rarefying
-#' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class] object
-#' @param size,rng_seed,replace,trim_otus,verbose for details see
-#'   [phyloseq::rarefy_even_depth()]
-#' @keywords internal
+
+#' Normalize feature table by rafefying such that all samples have the same
+#' number of total counts (library size).
+#'
+#' For rarefying, reads in the different samples are randomly removed until
+#' the same predefined number has been reached, to assure all samples have the
+#' same library size. Rarefying normalization method is the standard in
+#' microbial ecology. Please note that the authors of phyloseq do not advocate
+#' using this rarefying a normalization procedure, despite its recent
+#' popularity
+#'
+#' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class]
+#' object.
+#' @param size,rng_seed,replace,trim_otus,verbose extra arguments passed to
+#'   [`phyloseq::rarefy_even_depth()`].
+#' @export
+#' @rdname normalize-methods
+#' @aliases norm_rarefy
 #' @importFrom phyloseq rarefy_even_depth sample_sums
+#' @seealso [`phyloseq::rarefy_even_depth()`]
 norm_rarefy <- function(object,
                         size = min(sample_sums(object)),
                         rng_seed = FALSE,
                         replace = TRUE,
                         trim_otus = TRUE,
                         verbose = TRUE) {
-  object_normed <- rarefy_even_depth(
+  object_rarefied <- rarefy_even_depth(
     object,
     sample.size = size,
     rngseed = rng_seed,
@@ -133,13 +168,21 @@ norm_rarefy <- function(object,
     verbose = verbose
   )
 
-  object_normed
+  # do not save the norm_factor, the norm factors are calculated based on the
+  # subsequently differential analysis method, e.g. edgeR, DESeq
+  object_rarefied
 }
 
-#' TSS normalization (relative abundance)
+#' Total-Sum Scaling (TSS) method
+#'
+#' TSS simply transforms the feature table into relative abundance by dividing
+#' the number of total reads of each sample.
+#'
 #' @param object object a [phyloseq::phyloseq-class] or
 #'   [phyloseq::otu_table-class] object
-#' @keywords internal
+#' @export
+#' @rdname normalize-methods
+#' @aliases norm_tss
 #' @importFrom phyloseq otu_table<-
 norm_tss <- function(object) {
   otu <- otu_table(object)
@@ -150,32 +193,37 @@ norm_tss <- function(object) {
     taxa_are_rows = taxa_are_rows(object)
   )
 
+  # do not save the norm_factor, the norm factors are calculated based on the
+  # subsequently differential analysis method, e.g. edgeR, DESeq
   object
 }
 
-#' css normalization (metagenomeSeq)
+#' Cumulative-Sum Scaling (CSS) method
+#'
+#' CSS is based on the assumption that the count distributions in each sample
+#' are equivalent for low abundant genes up to a certain threshold.  Only the
+#' segment of each sample’s count distribution that is relatively invariant
+#' across samples is scaled by CSS
+#'
 #' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class]
-#'   object
-#' @param log logical, whether or not to log2 transfrom scale,
-#'   see [metagenomeSeq::MRcounts()].
-#' @param sl The value to scale, see [metagenomeSeq::MRcounts()]
-#' @keywords internal
+#'   object.
+#' @param sl The value to scale.
 #' @importFrom phyloseq sample_data<-
 #' @importFrom metagenomeSeq newMRexperiment cumNorm cumNormStatFast MRcounts
-#' @seealso [metagenomeSeq::cumNorm()], [metagenomeSeq::MRcounts()]
-norm_css <- function(object,
-                     log = FALSE,
-                     sl = 1000) {
+#' @seealso [metagenomeSeq::calcNormFactors()]
+#' @export
+#' @rdname normalize-methods
+#' @aliases norm_css
+norm_css <- function(object, sl = 1000) {
   if (inherits(object, "phyloseq")) {
     object_mgs <- phyloseq2metagenomeSeq(object)
   } else if (inherits(object, "otu_table")) {
-    # keep in accordance with the phyloseq::phyloseq_to_metagenomeSeq
-    # count <- round(as(object, "matrix"), digits = 0)
     object_mgs <- otu_table2metagenomeSeq(object)
   }
 
   # cumNormStatFast requires counts of all samples at least have two
-  # non zero features
+  # non zero features. Thus, if there are samples with only one non-zer
+  # features, cumNormStat is taken to compute the pth quantile.
   count <- as(otu_table(object), "matrix")
   if (sum(colSums(count > 0) > 1) < ncol(count)) {
     p <- suppressMessages(metagenomeSeq::cumNormStat(object_mgs))
@@ -183,43 +231,34 @@ norm_css <- function(object,
   else {
     p <- suppressMessages(metagenomeSeq::cumNormStatFast(object_mgs))
   }
-  object_mgs <- metagenomeSeq::cumNorm(object_mgs, p = p)
+  # object_mgs <- metagenomeSeq::cumNorm(object_mgs, p = p)
+  nf <- metagenomeSeq::calcNormFactors(object_mgs, p = p)
+  nf <- unlist(nf) / sl
+  object_nf <- set_nf(object, nf)
 
-  count_normed <- MRcounts(object_mgs, norm = TRUE, log = log, sl = sl)
-  otu_table(object) <- otu_table(
-    count_normed,
-    taxa_are_rows = taxa_are_rows(object)
-  )
-
-  # append normFactor to sample_data for model fitting if object is phyloseq
-  # set the metagenomeSeq_norm_factor attributes if object is otu_table
-  nf <- metagenomeSeq::normFactors(object_mgs)
-  if (inherits(object, "phyloseq")) {
-    sample_data(object) <- cbind(
-      sample_data(object),
-     metagenomeSeq_norm_factor = nf
-    )
-  } else {
-    attr(object, "metagenomeSeq_norm_factor") <- nf
-  }
-
-  object
+  object_nf
 }
 
 #' Relative log expression (RLE) normalization
+#'
+#' RLE assumes most features are not differential and uses the relative
+#' abundances to calculate the normalization factor.
+#'
 #' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class]
 #'   object
-#' @param logcfunc a function to compute a location for a sample. By default,
+#' @param locfunc a function to compute a location for a sample. By default,
 #'   the median is used.
 #' @param type method for estimation: either "ratio"or "poscounts" (recommend).
 #' @param geo_means default `NULL`, which means the geometric means of the
 #'   counts are used. A vector of geometric means from another count matrix can
 #'   be provided for a "frozen" size factor calculation.
-#' @param control_genes default `NULL`, which means all genes are used for size
-#'   factor estimation, numeric or logical index vector specifying the genes
-#'   used for size factor estimation (e.g. housekeeping or spike-in genes).
+#' @param control_genes default `NULL`, which means all taxa are used for size
+#'   factor estimation, numeric or logical index vector specifying the taxa
+#'   used for size factor estimation (e.g. core taxa).
 #' @seealso [DESeq2::estimateSizeFactorsForMatrix()]
-#' @keywords internal
+#' @export
+#' @rdname normalize-methods
+#' @aliases norm_rle
 norm_rle <- function(object,
                      locfunc = stats::median,
                      type = c("poscounts", "ratio"),
@@ -241,14 +280,24 @@ norm_rle <- function(object,
     controlGenes = control_genes,
     type = type
   )
+  object_nf <- set_nf(object, nf)
 
-  otu <- sweep(otu, 2, nf, FUN = "/")
-  otu_table(object) <- otu_table(otu, taxa_are_rows = taxa_are_rows(object))
+  #otu <- sweep(otu, 2, nf, FUN = "/")
+  #otu_table(object) <- otu_table(otu, taxa_are_rows = taxa_are_rows(object))
 
-  object
+  object_nf
 }
 
+# https://github.com/biobakery/Maaslin2/blob/master/R/utility_scripts.R
+#
 #' TMM (trimmed mean of m-values) normalization
+#'
+#' TMM calculates the normalization factor using a robust statistics based on
+#' the assumption that most features are not differential and should, in
+#' average, be equal between the samples. The TMM scaling factor is  calculated
+#' as the weighted mean of log-ratios between each pair of samples, after
+#' excluding the highest count OTUs and OTUs with the largest log-fold change.
+#'
 #' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class]
 #'   object
 #' @param ref_column column to use as reference
@@ -258,8 +307,9 @@ norm_rle <- function(object,
 #' @param do_weighting whether to compute the weights or not
 #' @param Acutoff cutoff on "A" values to use before trimming
 #' @seealso [edgeR::calcNormFactors()]
-#' @keywords internal
-#' @references https://github.com/biobakery/Maaslin2/blob/master/R/utility_scripts.R
+#' @export
+#' @rdname normalize-methods
+#' @aliases norm_tmm
 norm_tmm <- function(object,
                      ref_column = NULL,
                      logratio_trim = 0.3,
@@ -276,43 +326,59 @@ norm_tmm <- function(object,
     doWeighting = do_weighting,
     Acutoff = Acutoff
   )
+  # ef_nf <- colSums(otu) * nf
+  # # use the mean of the effective library size as a reference library size
+  # ref_nf <- mean(ef_nf)
+  # otu_norm <- sweep(otu, MARGIN = 2, ef_nf, "/") * ref_nf
+  object_nf <- set_nf(object, nf)
 
-  ef_nf <- colSums(otu) * nf
-
-  # use the mean of the effective library size as a reference library size
-  ref_nf <- mean(ef_nf)
-
-  otu_norm <- sweep(otu, MARGIN = 2, ef_nf, "/") * ref_nf
-
-  otu_table(object) <- otu_table(otu_norm, taxa_are_rows = taxa_are_rows(object))
-
-  object
+  object_nf
 }
 
 #' CLR (centered log-ratio) normalization
+#'
+#' In CLR, the log-ratios are computed relative to the geometric mean of all
+#' features.
+#'
 #' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class]
 #'   object
-#' @keywords internal
+#' @export
+#' @rdname normalize-methods
+#' @aliases norm_clr
 norm_clr <- function(object) {
   otu <- as(otu_table(object), "matrix")
 
+  # pos counts
   if (any(otu == 0)) {
     otu <- otu + 1
   }
 
   otu_norm <- apply(otu, 2, function(x) {log(x) - mean(log(x))})
 
-  otu_table(object) <- otu_table(otu_norm, taxa_are_rows = taxa_are_rows(object))
+  otu_table(object) <- otu_table(
+    otu_norm,
+    taxa_are_rows = taxa_are_rows(object)
+  )
 
+  # set norm factor as 1
+  # object_nf <- set_nf(object, nf = 1)
+
+  # do not save the norm_factor, the norm factors are calculated based on the
+  # subsequently differential analysis method, e.g. edgeR, DESeq
   object
-
 }
 
 #' Normalize the sum of values of each sample to a given value
+#'
+#' `norm_value`: This normalization method is from the original LEfSe algorithm,
+#' recommended when very low values are present (as shown in the LEfSe galaxy).
+#'
 #' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class]
-#' @param normalization  set the normalization value, return the feature itself
-#'   if not supported.
-#' @keywords internal
+#' @param normalization  a numeric, set the normalization value, return the
+#'   feature itself if not supported.
+#' @export
+#' @rdname normalize-methods
+#' @aliases norm_value
 #' @importFrom phyloseq transform_sample_counts
 norm_value <- function(object, normalization) {
   if (missing(normalization)) {
@@ -331,9 +397,10 @@ norm_value <- function(object, normalization) {
 
     ## keep the counts of a sample identical with `normalization`
     ## if we norm the counts in two steps:
-    ## 1. calculate scale size: norm_coef = normalization/lib_size
+    ## 1. calculate scale size: norm_coef = normalization/lib_size;
     ## 2. multiple the scale size value * norm_coef
-    ## the counts of a sample colSums(otu) may not equal to the argument normalization
+    ## the counts of a sample colSums(otu) may not equal to the argument
+    ## normalization.
     ## e.g. normalization = 1e6, colSums(otu) = 999999
     ## Finally, the kruskal test may be inaccurate,
     ## e.g. https://github.com/yiluheihei/microbiomeMarker/issues/13
@@ -384,11 +451,68 @@ norm_value <- function(object, normalization) {
   colnames(otu_normed) <- colnames(otu)
   otu_table(object) <- otu_table(otu_normed, taxa_are_rows = TRUE)
 
+  # do not save the norm_factor, the norm factors are calculated based on the
+  # subsequently differential analysis method, e.g. edgeR, DESeq
   object
+}
 
+# set the norm factors of the object, if object is in phyloseq-class, add a
+# var `norm_factor` in the sample_data to save the norm factors of each sample;
+# if object in otu_table-class, add a attributes `norm_factor` to the object
+# to save the norm factors.
+#' @importFrom phyloseq sample_data<-
+#' @noRd
+set_nf <- function(object, nf) {
+  # ensure norm factors from sample_data and attributes of otu_table are
+  # identical
+  names(nf) <- NULL
+
+  if (inherits(object, "phyloseq")) {
+    sample_data(object) <- cbind(sample_data(object), norm_factor = nf)
+    # to keep accordance with otu_table,
+    # we also add the attributes `norm_factor` to otu_table
+    ot <- otu_table(object)
+    attr(ot, "norm_factor") <- nf
+    otu_table(object) <- ot
+  } else if (inherits(object, "otu_table")) {
+    attr(object, "norm_factor") <- nf
+  } else {
+    stop("object must be a `phloseq` or `otu_table` object")
+  }
+
+  object
 }
 
 
+#' Extract the normalization factors
+#'
+#' This function will be used to extract the normalization factors. After
+#' dividing the observed feature table by normalization factors (eliminate
+#' sequencing biases), we will obtain the normalized feature table.
+#'
+#' @param object a [`phyloseq::phyloseq-class`], [phyloseq::otu_table-class]
+#'   object.
+#' @export
+#' @return a numeric vector with the length equal to the number of samples, or
+#'  `NULL` if the `object` has not been normalized.
+get_norm_factors <- function(object) {
+  if (inherits(object, "phyloseq")) {
+    nf <- sample_data(object)$norm_factor
+  } else {
+    nf <- attr(object, "norm_factor")
+  }
+
+  # if (is.null(nf)) {
+  #   warning("`object` has not been normalized.", call. = FALSE)
+  # }
+
+  nf
+}
+
+
+# Deprecated functions ----------------------------------------------------
+
+# This function is deprecated
 #' normalize the summarized feature
 #' @param feature otu table or data.frame
 #' @param normalization  set the normalization value

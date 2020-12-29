@@ -54,17 +54,16 @@ test_that("microbiomeMarker constructor", {
   )
 })
 
-test_that("marker are contained in the original taxa", {
-  skip_on_cran()
-  skip_on_bioc()
-
-  expect_error(
-    lefse(caporaso,
-      normalization = 1e6,
-      class = "SampleType",
-      multicls_strat = TRUE,
-      summarize = TRUE
-    ),
-    NA
-  )
-})
+# test_that("marker are contained in the original taxa", {
+#   skip_on_cran()
+#   skip_on_bioc()
+#
+#   expect_error(
+#     lefse(caporaso,
+#       norm = 1e6,
+#       class = "SampleType",
+#       multicls_strat = TRUE
+#     ),
+#     NA
+#   )
+# })

@@ -34,6 +34,9 @@
 #'   * "CSS": cumulative sum scaling, calculates scaling factors as the
 #'     cumulative sum of gene abundances up to a data-derived threshold.
 #'   * "CLR": centered log-ratio normalization.
+#' @param norm_para  named `list`. other arguments passed to specific
+#'   normalization methods.  Most users will not need to pass any additional
+#'   arguments here.
 #' @param kw_cutoff numeric, p value cutoff of kw test, default 0.05
 #' @param wilcoxon_cutoff numeric, p value cutoff of wilcoxon test, default 0.05
 #' @param lda_cutoff numeric, lda score cutoff, default 2
@@ -52,7 +55,6 @@
 #'   among the subclasses with the same name, default `FALSE`
 #' @param curv logical, whether perform the wilcoxon test using the
 #'   Curtis's approach, defalt `FALSE`
-#' @param ... other arguments passed to specific normalization methods.
 #' @importFrom  dplyr mutate filter arrange rowwise select
 #' @importFrom  purrr map_dbl pmap_dbl pmap_chr
 #' @importFrom stats p.adjust
@@ -75,6 +77,7 @@ lefse <- function(ps,
                   subclass = NULL,
                   transform = c("identity", "log10", "log10p"),
                   norm = 1000000,
+                  norm_para = list(),
                   kw_cutoff = 0.05,
                   lda_cutoff = 2,
                   bootstrap_n = 30,
@@ -84,8 +87,7 @@ lefse <- function(ps,
                   correct = c("0", "1", "2"),
                   sample_min = 10,
                   only_same_subcls = FALSE,
-                  curv = FALSE,
-                  ...) {
+                  curv = FALSE) {
   if (!inherits(ps, "phyloseq")) {
     stop("`ps` must be phyloseq object", call. = FALSE)
   }
@@ -101,7 +103,8 @@ lefse <- function(ps,
   correct <- match.arg(correct, c("0", "1", "2"))
   correct <- as.numeric(correct)
 
-  # import input from the original lefse python script or galaxy
+  # import input from the original lefse python script or galaxy,
+  # will be dropped in the next release version
   summarized <- check_tax_summarize(ps)
   if (summarized && !is.numeric(norm)) {
     stop(
@@ -116,16 +119,19 @@ lefse <- function(ps,
   # transformation
   ps <- transform_abundances(ps, transform = transform)
   # normalization
-  ps <- normalize(ps, norm, ...)
+  norm_para <- c(norm_para, method = norm, object = list(ps))
+  ps_normed <- do.call(normalize, norm_para)
+  # ps <- normalize(ps, norm, ...)
 
-  sample_meta <- sample_data(ps)
+  sample_meta <- sample_data(ps_normed)
   cls_info <- lefse_format_class(sample_meta, class, subcls = subclass)
   cls <- cls_info$cls
   subcls <- cls_info$subcls
   cls_hie <- cls_info$cls_hie
 
-  ps_summarized <- summarize_taxa(ps)
-  otus <- otu_table(ps_summarized)
+  ps_summarized <- summarize_taxa(ps_normed)
+  # otus <- otu_table(ps_summarized)
+  otus <- abundances(ps_summarized, norm = TRUE)
   # otus_norm <- normalize_feature(otus, normalization = normalization)
   # transform it for test
   otus_test <- as.data.frame(t(otus), stringsAsFactors = FALSE)
@@ -201,7 +207,7 @@ lefse <- function(ps,
   mm <- microbiomeMarker(
     marker_table = lefse_out,
     tax_table_orig = tax_table(ps),
-    otu_table(otus, taxa_are_rows = TRUE),
+    otu_table(otus, taxa_are_rows = TRUE), # normalized feature table
     tax
   )
 

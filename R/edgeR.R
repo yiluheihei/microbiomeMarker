@@ -78,22 +78,17 @@ run_edger <- function(ps,
   ps <- preprocess_ps(ps)
   ps <- transform_abundances(ps, transform = transform)
 
-  # prenormalize the data
-  if (! norm %in% c("RLE", "TMM")) {
-    norm_para <- c(norm_para, method = norm, object = list(ps))
-    ps <- do.call(normalize, norm_para)
-  }
-
-  # norm factors
-  dge <- phyloseq2edgeR(ps)
-  # edgeR normalize
-  norm_para <- c(norm_para, method = norm, object = list(dge$counts))
-  nf <- do.call(edgeR::calcNormFactors, norm_para)
+  norm_para <- c(norm_para, method = norm, object = list(ps))
+  ps_normed <- do.call(normalize, norm_para)
 
   # summarize data and  add norm.factors var to samples of DGEList
-  ps_summarized <- summarize_taxa(ps)
+  ps_summarized <- summarize_taxa(ps_normed)
   dge_summarized <- phyloseq2edgeR(ps_summarized)
-  dge_summarized$samples$norm.factors <- nf
+
+  nf <- get_norm_factors(ps_normed)
+  if (!is.null(nf)) {
+    dge_summarized$samples$norm.factors <- nf
+  }
 
   # estimate dispersion
   design <- stats::model.matrix(~groups)
