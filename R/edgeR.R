@@ -88,6 +88,11 @@ run_edger <- function(ps,
   nf <- get_norm_factors(ps_normed)
   if (!is.null(nf)) {
     dge_summarized$samples$norm.factors <- nf
+  } else {
+    # for TSS, CRL and rarefy (no norm factors is saved),
+    # normalized the feature table using TMM method in edgeR
+    # using the default arguments.
+    dge_summarized <- edgeR::calcNormFactors(dge_summarized, method = "TMM")
   }
 
   # estimate dispersion

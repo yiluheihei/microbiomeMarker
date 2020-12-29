@@ -107,6 +107,14 @@ run_metagenomeseq <- function(ps,
   nf <- get_norm_factors(ps_normed)
   if (!is.null(nf)) {
     pData(mgs_summarized@expSummary$expSummary)$normFactors <- nf
+  } else {
+    # for TSS, CRL and rarefy: normalized the feature table using CSS method
+    ct <- metagenomeSeq::MRcounts(mgs_summarized, norm = FALSE)
+    fun_p <- select_quantile_func(ct)
+    mgs_summarized <- metagenomeSeq::cumNorm(
+      mgs_summarized,
+      p = fun_p(mgs_summarized)
+    )
   }
 
   mod <- model.matrix(~groups)

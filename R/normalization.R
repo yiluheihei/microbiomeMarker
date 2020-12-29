@@ -225,14 +225,8 @@ norm_css <- function(object, sl = 1000) {
   # non zero features. Thus, if there are samples with only one non-zer
   # features, cumNormStat is taken to compute the pth quantile.
   count <- as(otu_table(object), "matrix")
-  if (sum(colSums(count > 0) > 1) < ncol(count)) {
-    p <- suppressMessages(metagenomeSeq::cumNormStat(object_mgs))
-  }
-  else {
-    p <- suppressMessages(metagenomeSeq::cumNormStatFast(object_mgs))
-  }
-  # object_mgs <- metagenomeSeq::cumNorm(object_mgs, p = p)
-  nf <- metagenomeSeq::calcNormFactors(object_mgs, p = p)
+  fun_p <- select_quantile_func(count)
+  nf <- metagenomeSeq::calcNormFactors(object_mgs, p = fun_p(object_mgs))
   nf <- unlist(nf) / sl
   object_nf <- set_nf(object, nf)
 

@@ -189,3 +189,20 @@ get_prefix <- function(ranks) {
 
   prefix
 }
+
+
+# `metagenomeSeq::cumNormStatFast()` requires counts of all samples at least
+# have two non zero features. Thus, if there are samples with only one non-zer
+# features, `cumNormStat()` is taken to compute the pth quantile.
+# This function was used to select the function to calculate the quantile used
+# for CSS norm factors estimation in metagenomeSeq.
+select_quantile_func <- function(counts) {
+  if (sum(colSums(counts > 0) > 1) < ncol(counts)) {
+    fun_p <- metagenomeSeq::cumNormStat
+  }
+  else {
+    fun_p <- metagenomeSeq::cumNormStatFast
+  }
+
+  fun_p
+}
