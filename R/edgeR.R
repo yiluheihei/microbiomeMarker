@@ -43,7 +43,7 @@
 #'   additional arguments here.
 #' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
-#' @param p_value_cutoff numeric, p value cutoff, default 0.05
+#' @param pvalue_cutoff numeric, p value cutoff, default 0.05
 #' @param ... extra arguments passed to the model. See [`edgeR::glmFit()`] for
 #'   more details.
 #' @return  a [`microbiomeMarker-class`] object.
@@ -60,7 +60,7 @@ run_edger <- function(ps,
                       disp_para = list(),
                       p_adjust = c("none", "fdr", "bonferroni", "holm",
                                    "hochberg", "hommel", "BH", "BY"),
-                      p_value_cutoff = 0.05,
+                      pvalue_cutoff = 0.05,
                       ...) {
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
   p_adjust <- match.arg(
@@ -130,7 +130,7 @@ run_edger <- function(ps,
     subgroup1
   )
 
-  res_filtered <- res[res$padj < p_value_cutoff & !is.na(res$padj), ]
+  res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
 
   if (nrow(res_filtered) == 0) {
     warning("No significant features were found, return all the features")
@@ -154,6 +154,11 @@ run_edger <- function(ps,
     ) *
     ref_nf
   row.names(counts_normalized) <- row.names(tax_table(ps_summarized))
+
+  # only keep five variables: feature, enrich_group, effect_size (logFC),
+  # pvalue, and padj, write a function? select_marker_var(effect_size = "")
+  sig_feature <- sig_feature[, c("feature", "enrich_group",
+                                 "logFC", "pvalue", "padj")]
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),

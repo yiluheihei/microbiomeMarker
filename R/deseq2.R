@@ -75,7 +75,7 @@
 #'
 #' @param p_adjust method for multiple test correction, default `none`, for
 #'   more details see [stats::p.adjust].
-#' @param p_value_cutoff p_value_cutoff numeric, p value cutoff, default 0.05.
+#' @param pvalue_cutoff pvalue_cutoff numeric, p value cutoff, default 0.05.
 #' @param ... extra parameters passed to [`DESeq2::DESeq()`].
 #' @export
 #' @return a [`microbiomeMarker-class`] object.
@@ -100,7 +100,7 @@ run_deseq2 <- function(ps,
                       minmu = if (fitType == "glmGamPoi") 1e-06 else 0.5,
                       p_adjust = c("none", "fdr", "bonferroni", "holm",
                                    "hochberg", "hommel", "BH", "BY"),
-                      p_value_cutoff = 0.05,
+                      pvalue_cutoff = 0.05,
                       ...) {
   # groups
   groups <- sample_data(ps)[[group_var]]
@@ -250,7 +250,7 @@ run_deseq2 <- function(ps,
   res <- DESeq2::results(
     object = dds_summarized,
     contrast = c(group_var, subgroup1, subgroup2),
-    alpha = p_value_cutoff,
+    alpha = pvalue_cutoff,
     pAdjustMethod = p_adjust
   )
 
@@ -260,7 +260,7 @@ run_deseq2 <- function(ps,
   res_ordered <- res[order(res$padj), ] %>%
     as.data.frame()
   padj <- res_ordered$padj
-  res_filtered <- res_ordered[!is.na(padj) & padj < p_value_cutoff, ]
+  res_filtered <- res_ordered[!is.na(padj) & padj < pvalue_cutoff, ]
 
   if (nrow(res_filtered) == 0) {
     warning("No significant features were found, return all the features")
@@ -284,6 +284,11 @@ run_deseq2 <- function(ps,
   # normalized counts
   # https://bioinformatics.stackexchange.com/questions/193/how-can-i-extract-normalized-read-count-values-from-deseq2-results
   counts_normalized <- DESeq2::counts(dds_summarized, normalized = TRUE)
+
+  # only keep five variables: feature, enrich_group, effect_size (logFC),
+  # pvalue, and padj
+  sig_feature <- sig_feature[, c("feature", "enrich_group",
+                                 "logFC", "pvalue", "padj")]
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),

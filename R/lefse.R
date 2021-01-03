@@ -61,13 +61,11 @@
 #' @importFrom phyloseq rank_names
 #' @export
 #' @return a [microbiomeMarker-class] object, in which the `slot` of `marker_table`
-#' contains five variables:
+#' contains four variables:
 #' * `feature`, significantly different features.
-#' * `enrich_group`, the class of the differential features enriched
-#' * `log_max_mean`, the logarithm value of the highest mean among all the
-#'   classes
-#' * `lda`, logarithmic LDA score
-#' * `p_value`, p value of kw test.
+#' * `enrich_group`, the class of the differential features enriched.
+#' * `lda`, logarithmic LDA score (effect size)
+#' * `pvalue`, p value of kw test.
 #' @author Yang Cao \email{yiluheihei@gmail.com}
 #' @seealso [normalize]
 #' @references Segata, Nicola, et al. Metagenomic biomarker discovery and
@@ -182,9 +180,9 @@ lefse <- function(ps,
   lefse_out <- data.frame(
     feature = names(sig_otus),
     enrich_group = otus_enriched_group$group,
-    log_max_mean = otus_enriched_group$log_max_mean,
+    # log_max_mean = otus_enriched_group$log_max_mean,
     lda = ldas,
-    p_value = kw_p[sig_ind][wilcoxon_p],
+    pvalue = kw_p[sig_ind][wilcoxon_p],
     stringsAsFactors = FALSE) %>%
     filter(.data$lda >= lda_cutoff) %>%
     arrange(.data$enrich_group, desc(.data$lda)) %>%

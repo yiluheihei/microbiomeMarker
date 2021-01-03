@@ -29,7 +29,7 @@ test_that("result of metagenomeSeq", {
     "Class",
     "Control",
     "CD",
-    p_value_cutoff = 0.1,
+    pvalue_cutoff = 0.1,
     p_adjust = "fdr"
   )
 

@@ -7,7 +7,7 @@ test_that("deseq2 algorithm", {
     "Class",
     "Control",
     "CD",
-    p_value_cutoff = 0.05,
+    pvalue_cutoff = 0.05,
     p_adjust = "fdr"
   )
 

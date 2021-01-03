@@ -135,12 +135,12 @@ test_two_groups <- function(ps,
     select(.data$feature, .data$enrich_group, everything())
 
   # p value correction for multiple comparisons
-  test_res$pvalue_corrected <- p.adjust(test_res$pvalue, method = p_adjust)
+  test_res$padj <- p.adjust(test_res$pvalue, method = p_adjust)
   # row.names(test_res) <- feature[match(test_res$feature, feature)]
   row.names(test_res) <- paste0("feature", seq_len(nrow(test_res)))
 
   # p <= 0.05
-  test_filtered <-  filter(test_res, .data$pvalue_corrected <= pvalue_cutoff)
+  test_filtered <-  filter(test_res, .data$padj <= pvalue_cutoff)
   # abs(diff_mean) >= cutoff
   if (!is.null(diff_mean_cutoff)) {
     test_filtered <- filter(
@@ -160,6 +160,13 @@ test_two_groups <- function(ps,
   tax <- matrix(feature) %>%
     tax_table()
   row.names(tax) <- row.names(otus)
+
+  # only keep five variables: feature, enrich_group, effect_size (diff_mean),
+  # pvalue, and padj
+  test_res <- test_res[, c("feature", "enrich_group",
+                           "diff_mean", "pvalue", "padj")]
+  test_filtered <- test_filtered[, c("feature", "enrich_group",
+                                     "diff_mean", "pvalue", "padj")]
 
   if (nrow(test_filtered) == 0) {
     warning("No significant features were found, return all the features")

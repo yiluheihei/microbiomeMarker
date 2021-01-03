@@ -54,7 +54,7 @@
 #'   said, we currently recommend using the zero-inflated log-normal model.
 #' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
-#' @param p_value_cutoff numeric, p value cutoff, default 0.05
+#' @param pvalue_cutoff numeric, p value cutoff, default 0.05
 #' @param ... extra arguments passed to the model. more details see
 #'   [`metagenomeSeq::fitFeatureModel()`] and [`metagenomeSeq::fitZig()`]
 #'   for more details.
@@ -74,7 +74,7 @@ run_metagenomeseq <- function(ps,
                               model = c("fitFeatureModel", "fitZig"),
                               p_adjust = c("none", "fdr", "bonferroni", "holm",
                                            "hochberg", "hommel", "BH", "BY"),
-                              p_value_cutoff = 0.05,
+                              pvalue_cutoff = 0.05,
                               ...) {
 
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
@@ -162,7 +162,7 @@ run_metagenomeseq <- function(ps,
   )
 
 
-  res_filtered <- res[res$padj < p_value_cutoff & !is.na(res$padj), ]
+  res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
 
   # write a function
   if (nrow(res_filtered) == 0) {
@@ -176,6 +176,11 @@ run_metagenomeseq <- function(ps,
   other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
   sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
   row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+
+  # only keep five variables: feature, enrich_group, effect_size (logFC),
+  # pvalue, and padj
+  sig_feature <- sig_feature[, c("feature", "enrich_group",
+                                 "logFC", "pvalue", "padj")]
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),

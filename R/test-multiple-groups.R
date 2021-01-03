@@ -35,7 +35,7 @@
 #' @param method test method, must be one of "anova" or "kruskal"
 #' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
-#' @param p_value_cutoff numeric, p value cutoff, default 0.05.
+#' @param pvalue_cutoff numeric, p value cutoff, default 0.05.
 #' @param effect_size_cutoff numeric, cutoff of effect size default `NULL`
 #'   which means no effect size filter. The eta squared is used to measure the
 #'   effect size for anova/kruskal test.
@@ -51,7 +51,7 @@ test_multiple_groups <- function(ps,
                                  method = c("anova", "kruskal"),
                                  p_adjust = c("none", "fdr", "bonferroni", "holm",
                                               "hochberg", "hommel", "BH", "BY"),
-                                 p_value_cutoff = 0.05,
+                                 pvalue_cutoff = 0.05,
                                  effect_size_cutoff = NULL) {
   stopifnot(inherits(ps, "phyloseq"))
 
@@ -111,7 +111,7 @@ test_multiple_groups <- function(ps,
   pvalue[is.na(pvalue)] <- 1
 
   # p value correction for multiple comparisons
-  pvalue_corrected <- p.adjust(pvalue, method = p_adjust)
+  padj <- p.adjust(pvalue, method = p_adjust)
 
   ef <- purrr::map_dbl(abd_norm, calc_etasq, groups)
 
@@ -129,7 +129,7 @@ test_multiple_groups <- function(ps,
     data.frame(
       enrich_group = group_enriched,
       pvalue = pvalue,
-      pvalue_corrected = pvalue_corrected,
+      padj= padj,
       eta_squared = ef
     ),
     abd_means
@@ -142,7 +142,7 @@ test_multiple_groups <- function(ps,
   row.names(res) <- paste0("feature", seq_len(nrow(res)))
 
   # filter: pvalue and effect size
-  res_filtered <- filter(res, .data$pvalue_corrected <= p_value_cutoff)
+  res_filtered <- filter(res, .data$padj <= pvalue_cutoff)
 
   if (!is.null(effect_size_cutoff)) {
     res_filtered <- filter(
@@ -155,6 +155,12 @@ test_multiple_groups <- function(ps,
   tax <- matrix(feature) %>%
     tax_table()
   row.names(tax) <- row.names(otus)
+
+  # only keep five variables: feature, enrich_group, effect_size (diff_mean),
+  # pvalue, and padj
+  res <- res[, c("feature", "enrich_group", "eta_squared", "pvalue", "padj")]
+  res_filtered <- res_filtered[, c("feature", "enrich_group",
+                                   "eta_squared", "pvalue", "padj")]
 
   if (nrow(res_filtered) == 0) {
     warning("No significant features were found, return all the features")

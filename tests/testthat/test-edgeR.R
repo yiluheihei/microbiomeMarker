@@ -3,7 +3,7 @@ context("edgeR")
 mm_dge <- run_edger(
   pediatric_ibd,
   "Class", "Control", "CD",
-  p_value_cutoff = 0.1,
+  pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )
 
