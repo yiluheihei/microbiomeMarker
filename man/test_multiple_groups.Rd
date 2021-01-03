@@ -66,7 +66,8 @@ for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 \item{p_value_cutoff}{numeric, p value cutoff, default 0.05.}
 
 \item{effect_size_cutoff}{numeric, cutoff of effect size default \code{NULL}
-which means no effect size filter}
+which means no effect size filter. The eta squared is used to measure the
+effect size for anova/kruskal test.}
 }
 \description{
 Statistical test for multiple groups

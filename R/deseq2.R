@@ -254,6 +254,9 @@ run_deseq2 <- function(ps,
     pAdjustMethod = p_adjust
   )
 
+  # rename log2FoldChange to logFC, use base R rather than dplyr::rename
+  names(res)[names(res) == "log2FoldChange"] <- "logFC"
+
   res_ordered <- res[order(res$padj), ] %>%
     as.data.frame()
   padj <- res_ordered$padj
@@ -268,7 +271,7 @@ run_deseq2 <- function(ps,
 
   row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
   sig_feature$enrich_group <- ifelse(
-    sig_feature$log2FoldChange > 0,
+    sig_feature$logFC > 0,
     subgroup2,
     subgroup1
   )

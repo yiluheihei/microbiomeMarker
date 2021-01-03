@@ -27,7 +27,7 @@ marker25        p__Proteobacteria|g__Granulibacter Enterotype 2 0.01141
 marker26       p__Proteobacteria|g__Rhodospirillum Enterotype 2 0.00085
 marker27           p__Unclassified|g__Unclassified Enterotype 3 0.00037
 marker28         p__Verrucomicrobia|g__Akkermansia Enterotype 3 0.00174
-         pvalue_corrected effect_size Enterotype 1:mean_abundance
+         pvalue_corrected eta_squared Enterotype 1:mean_abundance
 marker1           0.00036     0.58216                  1.9307e-01
 marker2           0.02381     0.11047                  2.1144e-06
 marker3           0.00037     0.44973                  1.6536e-01

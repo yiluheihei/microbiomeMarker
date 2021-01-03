@@ -37,7 +37,8 @@
 #' for more details see [stats::p.adjust].
 #' @param p_value_cutoff numeric, p value cutoff, default 0.05.
 #' @param effect_size_cutoff numeric, cutoff of effect size default `NULL`
-#' which means no effect size filter
+#'   which means no effect size filter. The eta squared is used to measure the
+#'   effect size for anova/kruskal test.
 #' @importFrom dplyr mutate bind_cols filter select
 #' @importFrom stats p.adjust
 #' @seealso [posthoc_test()]
@@ -129,7 +130,7 @@ test_multiple_groups <- function(ps,
       enrich_group = group_enriched,
       pvalue = pvalue,
       pvalue_corrected = pvalue_corrected,
-      effect_size = ef
+      eta_squared = ef
     ),
     abd_means
   )
@@ -146,7 +147,7 @@ test_multiple_groups <- function(ps,
   if (!is.null(effect_size_cutoff)) {
     res_filtered <- filter(
       res_filtered,
-      .data$effect_size >= effect_size_cutoff
+      .data$eta_squared >= effect_size_cutoff
     )
   }
 
