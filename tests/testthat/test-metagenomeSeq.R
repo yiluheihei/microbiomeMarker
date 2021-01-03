@@ -23,16 +23,6 @@ test_that("check the norm factors in metagenomeSeq", {
 })
 
 test_that("result of metagenomeSeq", {
-  mm_mgs <- run_metagenomeseq(
-    pediatric_ibd,
-    norm = "CSS",
-    "Class",
-    "Control",
-    "CD",
-    pvalue_cutoff = 0.1,
-    p_adjust = "fdr"
-  )
-
   expect_output_file(
     round_DF(marker_table(mm_mgs)),
     test_path("out/test-metagenomeSeq.txt"),

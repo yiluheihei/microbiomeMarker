@@ -1,8 +1,8 @@
 context("test abundance transformation")
 
-ps_t <- transform_abundances(oxygen, "log10")
-otutable_t <- transform_abundances(otu_table(oxygen), "log10")
-microbiomeMarker_t <- transform_abundances(lefse_out, "log10")
+ps_t <- transform_abundances(kostic_crc, "log10")
+otutable_t <- transform_abundances(otu_table(kostic_crc), "log10")
+microbiomeMarker_t <- transform_abundances(mm_lefse, "log10")
 
 test_that("return a object: the same class with the argument `object`", {
   expect_true(inherits(ps_t, "phyloseq"))

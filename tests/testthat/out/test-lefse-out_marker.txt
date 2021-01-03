@@ -1,104 +1,42 @@
-                                                                                                                 feature
-marker1                                                                  k__Bacteria|p__Actinobacteria|c__Actinobacteria
-marker2                                                                                    k__Bacteria|p__Actinobacteria
-marker3                                               k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales
-marker4                       k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Propionibacteriaceae
-marker5  k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Propionibacteriaceae|g__Propionibacterium
-marker6                         k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Corynebacteriaceae
-marker7      k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Corynebacteriaceae|g__Corynebacterium
-marker8                                                               k__Bacteria|p__Firmicutes|c__Bacilli|o__Bacillales
-marker9                                          k__Bacteria|p__Firmicutes|c__Bacilli|o__Bacillales|f__Staphylococcaceae
-marker10                       k__Bacteria|p__Firmicutes|c__Bacilli|o__Bacillales|f__Staphylococcaceae|g__Staphylococcus
-marker11                                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XI
-marker12                                         k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales
-marker13                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XI|g__Anaerococcus
-marker14                                                    k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales
-marker15                                                                     k__Bacteria|p__Bacteroidetes|c__Bacteroidia
-marker16                                                                                    k__Bacteria|p__Bacteroidetes
-marker17                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides
-marker18                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae
-marker19                                                                         k__Bacteria|p__Firmicutes|c__Clostridia
-marker20                                                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales
-marker21                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae
-marker22                              k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae
-marker23           k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae|g__Parabacteroides
-marker24                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae
-marker25                      k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Rikenellaceae|g__Alistipes
-marker26                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae
-marker27                 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium
-marker28                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus
-marker29                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Oscillibacter
-marker30                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia
-marker31            k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Veillonellaceae|g__Phascolarctobacterium
-marker32                        k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Alcaligenaceae
-marker33                                          k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales
-marker34      k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Alcaligenaceae|g__Parasutterella
-marker35                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Coprococcus
-marker36                                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XIV
-marker37                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Incertae_Sedis_XIV|g__Blautia
-marker38                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Subdoligranulum
-marker39                            k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Dorea
-marker40                       k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae
-marker41                                              k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales
-marker42                                                                    k__Bacteria|p__Firmicutes|c__Erysipelotrichi
-marker43                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Sporobacter
-marker44      k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae|g__Coprobacillus
-marker45                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Butyricicoccus
-marker46                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Anaerotruncus
-marker47                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Anaerostipes
-marker48                                                                            k__Bacteria|p__Firmicutes|c__Bacilli
-marker49                                                         k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales
-marker50                                                                                       k__Bacteria|p__Firmicutes
-marker51                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Actinomycetaceae
+                                                                                                                                                feature
+marker1                                                                                                         k__Bacteria|p__Firmicutes|c__Clostridia
+marker2                                                                                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales
+marker3                                                                                                                       k__Bacteria|p__Firmicutes
+marker4                                                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae
+marker5                                    k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroidaceae_Bacteroides
+marker6                                                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae
+marker7                                                 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium
+marker8                         k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium|s__Faecalibacterium_s__
+marker9                                                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae
+marker10 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroidaceae_Bacteroides|s__Bacteroidaceae_Bacteroides_s__
+marker11                                                             k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae
+marker12                                             k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Lachnospiraceae_g__
+marker13                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Lachnospiraceae_g__|s__Lachnospiraceae_g___s__
+marker14                                                                                                                    k__Bacteria|p__Fusobacteria
+marker15                                                                                            k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)
+marker16                                                                         k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales
+marker17                                                     k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae
+marker18                                    k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium
+marker19               k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium|s__Fusobacterium_s__
+marker20       k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium|s__Fusobacterium necrophorum
          enrich_group      lda       pvalue
-marker1       High_O2 5.669551 4.148229e-09
-marker2       High_O2 5.669551 4.148229e-09
-marker3       High_O2 5.669066 3.841252e-09
-marker4       High_O2 5.548289 9.483488e-10
-marker5       High_O2 5.548192 1.034228e-09
-marker6       High_O2 5.018350 1.944852e-06
-marker7       High_O2 5.018248 1.944852e-06
-marker8       High_O2 4.899913 1.741430e-08
-marker9       High_O2 4.888617 1.761561e-08
-marker10      High_O2 4.879389 1.610971e-09
-marker11      High_O2 4.062673 1.610005e-05
-marker12      High_O2 3.871723 1.077385e-06
-marker13      High_O2 3.682904 3.657370e-06
-marker14       Low_O2 5.632934 8.733111e-07
-marker15       Low_O2 5.632934 8.733111e-07
-marker16       Low_O2 5.631386 7.288825e-07
-marker17       Low_O2 5.449001 3.034294e-07
-marker18       Low_O2 5.449001 3.034294e-07
-marker19       Low_O2 5.152372 2.115882e-06
-marker20       Low_O2 5.146662 2.115882e-06
-marker21       Low_O2 4.907507 2.913047e-07
-marker22       Low_O2 4.846827 3.983134e-06
-marker23       Low_O2 4.691358 1.187822e-07
-marker24       Low_O2 4.681487 6.002321e-05
-marker25       Low_O2 4.644222 7.352228e-05
-marker26       Low_O2 4.507201 1.863285e-05
-marker27       Low_O2 4.463657 5.514502e-07
-marker28       Low_O2 4.208160 4.263458e-04
-marker29       Low_O2 4.166478 2.777856e-06
-marker30       Low_O2 4.039868 8.358699e-06
-marker31       Low_O2 3.812621 5.299913e-03
-marker32       Low_O2 3.784887 3.283892e-05
-marker33       Low_O2 3.727620 2.068278e-03
-marker34       Low_O2 3.687883 4.807036e-04
-marker35       Low_O2 3.600098 6.427852e-06
-marker36       Low_O2 3.481093 7.016768e-06
-marker37       Low_O2 3.477832 4.311237e-06
-marker38       Low_O2 3.429366 1.103024e-05
-marker39       Low_O2 3.096252 2.366086e-05
-marker40       Low_O2 3.031053 1.362102e-05
-marker41       Low_O2 3.031053 1.362102e-05
-marker42       Low_O2 3.031053 1.362102e-05
-marker43       Low_O2 2.760417 3.121784e-03
-marker44       Low_O2 2.743853 5.666003e-05
-marker45       Low_O2 2.700904 7.555993e-05
-marker46       Low_O2 2.620589 1.178632e-05
-marker47       Low_O2 2.546095 1.606911e-03
-marker48       Mid_O2 5.501961 4.631292e-07
-marker49       Mid_O2 5.492031 5.889748e-08
-marker50       Mid_O2 5.407578 2.549901e-04
-marker51       Mid_O2 4.205563 4.095437e-05
+marker1       Healthy 4.938091 2.577541e-06
+marker2       Healthy 4.938091 2.577541e-06
+marker3       Healthy 4.842391 1.425032e-04
+marker4       Healthy 4.820702 3.706059e-04
+marker5       Healthy 4.820702 3.706059e-04
+marker6       Healthy 4.727401 6.529659e-07
+marker7       Healthy 4.567419 1.472091e-06
+marker8       Healthy 4.565791 1.607569e-06
+marker9       Healthy 4.531028 5.482858e-04
+marker10      Healthy 4.460333 1.612268e-03
+marker11      Healthy 4.047894 3.822362e-03
+marker12      Healthy 4.002610 3.414996e-03
+marker13      Healthy 4.002610 3.414996e-03
+marker14        Tumor 5.044161 1.054198e-05
+marker15        Tumor 5.044161 1.054198e-05
+marker16        Tumor 5.044161 1.054198e-05
+marker17        Tumor 5.044161 1.054198e-05
+marker18        Tumor 4.965072 2.665818e-05
+marker19        Tumor 4.844333 4.070856e-05
+marker20        Tumor 4.381821 8.750207e-03

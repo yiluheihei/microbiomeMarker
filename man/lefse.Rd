@@ -99,14 +99,12 @@ Curtis's approach, defalt \code{FALSE}}
 }
 \value{
 a \linkS4class{microbiomeMarker} object, in which the \code{slot} of \code{marker_table}
-contains five variables:
+contains four variables:
 \itemize{
 \item \code{feature}, significantly different features.
-\item \code{enrich_group}, the class of the differential features enriched
-\item \code{log_max_mean}, the logarithm value of the highest mean among all the
-classes
-\item \code{lda}, logarithmic LDA score
-\item \code{p_value}, p value of kw test.
+\item \code{enrich_group}, the class of the differential features enriched.
+\item \code{lda}, logarithmic LDA score (effect size)
+\item \code{pvalue}, p value of kw test.
 }
 }
 \description{
@@ -120,5 +118,5 @@ explanation. Genome biology 12.6 (2011): R60.
 \link{normalize}
 }
 \author{
-Yang Cao \email{yiluheihei@gmail.com}
+Yang Cao
 }

@@ -20,7 +20,7 @@ run_deseq2(
   useT = FALSE,
   minmu = if (fitType == "glmGamPoi") 1e-06 else 0.5,
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
-  p_value_cutoff = 0.05,
+  pvalue_cutoff = 0.05,
   ...
 )
 }
@@ -96,7 +96,7 @@ set this arguments (just use the deaults).}
 \item{p_adjust}{method for multiple test correction, default \code{none}, for
 more details see \link[stats:p.adjust]{stats::p.adjust}.}
 
-\item{p_value_cutoff}{p_value_cutoff numeric, p value cutoff, default 0.05.}
+\item{pvalue_cutoff}{pvalue_cutoff numeric, p value cutoff, default 0.05.}
 
 \item{...}{extra parameters passed to \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}.}
 }

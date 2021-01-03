@@ -99,3 +99,23 @@ NA
 #' @docType data
 #' @author Yang Cao
 NA
+
+
+#' Data from a study on colorectal cancer (kostic 2012)
+#'
+#' The data from a study on colorectal cancer. Samples that had no `DIAGNOSIS`
+#' attribute assigned and with less than 500 reads (counts) were removed, and
+#' 191 samples remains (91 healthy and 86 Tumors).
+#'
+#' @format a [`phyloseq::phyloseq-class`] object
+#'
+#' @references
+#' Kostic et al. Genomic analysis identifies association of Fusobacterium with
+#' colorectal carcinoma. Genome research, 2012, 22(2), 292-298.
+#' \url{https://bioconductor.org/packages/devel/bioc/vignettes/phyloseq/inst/doc/phyloseq-mixture-models.html}
+#' @name data-kostic_crc
+#' @aliases kostic_crc
+#' @docType data
+#' @author Yang Cao
+NA
+

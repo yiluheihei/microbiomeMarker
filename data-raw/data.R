@@ -159,3 +159,26 @@ enterotypes_arumugam <- phyloseq(
 )
 
 usethis::use_data(enterotypes_arumugam, overwrite = TRUE)
+
+
+# kostic crc --------------------------------------------------------------
+# data from https://bioconductor.org/packages/devel/bioc/vignettes/phyloseq/inst/doc/phyloseq-mixture-models.html
+
+# A publicly available data from a study on colorectal cancer:
+# Genomic analysis identifies association of Fusobacterium with colorectal
+# carcinoma. Kostic, A. D., Gevers, D., Pedamallu, C. S., Michaud, M., Duke,
+# ., Earl, A. M., et al. (2012). Genome research, 22(2), 292-298.
+#
+filepath = system.file(
+  "extdata",
+  "study_1457_split_library_seqs_and_mapping.zip",
+  package="phyloseq"
+)
+kostic <- phyloseq::microbio_me_qiime(filepath)
+
+# remove the 5 samples that had no DIAGNOSIS attribute assigned
+kostic <- subset_samples(kostic, DIAGNOSIS != "None")
+# remove samples with less than 500 reads (counts)
+kostic_crc <- prune_samples(sample_sums(kostic) > 500, kostic)
+usethis::use_data(kostic_crc, overwrite = TRUE)
+

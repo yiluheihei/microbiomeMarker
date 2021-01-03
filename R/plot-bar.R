@@ -1,6 +1,7 @@
-# bar plot ----------------------------------------------------------------
-
-#' lefse bar plot
+#' barplot of effect size of microbiomeMarker data
+#'
+#' barplot of effect size microbiomeMarker data. This function returns a
+#' `ggplot2` object that can be saved or further customized using **ggplot2**.
 #'
 #' @param mm a [microbiomeMarker-class] object
 #' @param label_level integer, number of label levels to be displayed, default
@@ -13,25 +14,53 @@
 #' scale_y_discrete coord_flip guide_axis
 #' @return a ggplot project
 #' @export
-lefse_barplot <- function(mm,
-                          label_level = 1,
-                          max_label_len = 60,
-                          direction = c("h", "v")) {
-  lefse_out <- mm@marker_table
-  lefse_out$feature <- factor(lefse_out$feature, rev(lefse_out$feature))
-  nms_check <- any(c("feature", "lda", "enrich_group") %in% names(lefse_out))
-  if (!nms_check) {
-    stop("`lefse_out` must contains variable `feature`, `lda` and `enrich_group`")
-  }
+plot_ef_bar <- function(mm,
+                     label_level = 1,
+                     max_label_len = 60,
+                    direction = c("h", "v")) {
   direction <- match.arg(direction, c("h", "v"))
+
+  marker <- marker_table(mm)
+  # effect size names
+  orig_ef_nm <- names(marker)[3]
+  names(marker)[3] <- "effect_size"
+
+  # labels of x
+  # effect size: lda for lefse, diff_mean for classical test, logFC for
+  # metagenomeSeq, DESeq2, edgeR
+  if (orig_ef_nm == "lda") {
+    label_x <- "LDA score (log10)"
+  } else if (orig_ef_nm == "diff_mean") {
+    label_x <- "Differential means"
+  } else if (orig_ef_nm == "logFC") {
+    label_x <- "log2 Fold Change"
+  } else if (orig_ef_nm == "eta_squared") {
+    label_x <- "Eta squared"
+  } else {
+    stop(
+      "The name of third column muste be one of lda ",
+      "diff_mean, eat_squared or logFC"
+    )
+  }
+
+  # the levels of features: in increase order of effect size
+  marker <- marker[order(marker$effect_size), ]
+  feat <- marker$feature
+  marker$feature <- factor(feat, levels = feat)
+
+  nms_check <- any(c("feature", "enrich_group") %in% names(marker))
+  if (!nms_check) {
+    stop("`marker_table` must contains variable `feature` and `enrich_group`")
+
+  }
 
   p <-
     ggplot(
-      lefse_out,
-      aes(.data$lda, .data$feature, fill = .data$enrich_group)
+      marker,
+      aes(.data$effect_size, .data$feature, fill = .data$enrich_group)
     ) +
     geom_col() +
-    labs(x = "LDA score (log10)", y = NULL, fill = NULL) +
+    labs(x = label_x, y = NULL, fill = NULL) +
     scale_x_continuous(expand = c(0,0)) +
     theme_bw()
   if (direction == "h") {

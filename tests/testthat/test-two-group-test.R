@@ -16,32 +16,20 @@ test_that("ration", {
 test_that("test two group result", {
   skip_on_cran()
 
-  welch_res <- test_two_groups(enterotypes_arumugam, "Gender")
   expect_known_output(
-    welch_res,
+    mm_welch,
     test_path("out/test-two-group-test-welch.txt"),
     print = TRUE
   )
 
-  t_res <- test_two_groups(
-    enterotypes_arumugam,
-    "Gender",
-    method = "t.test"
-  )
   expect_known_output(
-    t_res,
+    mm_t,
     test_path("out/test-two-group-test-t.txt"),
     print = TRUE
   )
 
-  white_res <- test_two_groups(
-    enterotypes_arumugam,
-    "Gender",
-    method = "white.test",
-    nperm = 50
-  )
   expect_known_output(
-    white_res,
+    mm_white,
     test_path("out/test-two-group-test-white.txt"),
     print = TRUE
   )

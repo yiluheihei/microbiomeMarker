@@ -1,4 +1,4 @@
-context("lefse bar visualization")
+context("bar plot of effect size")
 
 test_that("feature label in bar plot", {
   feature <- "Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Bacteroidaceae"
@@ -34,3 +34,23 @@ test_that("feature label in bar plot", {
   )
 })
 
+p_lda <- plot_ef_bar(mm_lefse)
+
+test_that("label of x", {
+  expect_identical(p_lda$labels$x, "LDA score (log10)")
+
+  p_diff_mean <- plot_ef_bar(mm_welch)
+  expect_identical(p_diff_mean$labels$x, "Differential means")
+
+  p_eta_squared <- plot_ef_bar(mm_anova)
+  expect_identical(p_eta_squared$labels$x, "Eta squared")
+
+  p_logfc <- plot_ef_bar(mm_des)
+  expect_identical(p_logfc$labels$x, "log2 Fold Change")
+})
+
+test_that("effect size in descending order", {
+  ef <- p_lda$data$effect_size
+  expect_true(all(diff(ef) >= 0))
+
+})

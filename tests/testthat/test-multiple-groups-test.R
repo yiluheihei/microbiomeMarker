@@ -1,11 +1,6 @@
-context("test multiple groups test")
+context("test multiple group enterotype test")
 
-ps <- phyloseq::subset_samples(
-  enterotypes_arumugam,
-  Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
-)
-
-tukey_res <- posthoc_test(ps, "Enterotype", method = "tukey")
+tukey_res <- posthoc_test(enterotype, "Enterotype", method = "tukey")
 
 # round_DF <- function(DF) {
 #   round2 <- function(x) {
@@ -25,35 +20,25 @@ test_that("etaseq effect size", {
   expect_equal(signif(etasq, 3), 0.421)
 })
 
-test_that("test multiple groups result", {
+test_that("test multiple group enterotype result", {
   skip_on_cran()
   skip_on_bioc()
 
   # error group
   expect_error(
-    test_multiple_groups(ps, "Entertype"),
+    test_multiple_groups(enterotype, "Entertype"),
     regexp = "`group` must in the field of sample meta data",
     fixed = TRUE
   )
 
-  res_anova <- test_multiple_groups(
-    ps,
-    "Enterotype",
-    effect_size_cutoff = 0.7
-  )
   expect_known_output(
-    round_DF(marker_table(res_anova)),
+    round_DF(marker_table(mm_anova)),
     test_path("out/test-multiple-group-anova.txt"),
     print = TRUE
   )
 
-  res_kruk <- test_multiple_groups(
-    ps,
-    "Enterotype",
-    method = "kruskal"
-  )
   expect_known_output(
-    round_DF(marker_table(res_kruk)),
+    round_DF(marker_table(mm_kruskal)),
     test_path("out/test-multiple-group-kruk.txt"),
     print = TRUE
   )
@@ -64,28 +49,27 @@ test_that("test post hoc test result", {
   skip_on_cran()
   skip_on_bioc()
 
-  # tukey_res <- posthoc_test(ps, "Enterotype", rank_name = "Genus", method = "tukey")
   expect_known_output(
    round_DF(tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
     test_path("out/test-post-hoc-tukey.txt"),
     print = TRUE
   )
 
-  games_res <- posthoc_test(ps, "Enterotype", method = "games_howell")
+  games_res <- posthoc_test(enterotype, "Enterotype", method = "games_howell")
   expect_known_output(
     round_DF(games_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
     test_path("out/test-post-hoc-games.txt"),
     print = TRUE
   )
 
-  scheffe_res <- posthoc_test(ps, "Enterotype", method = "scheffe")
+  scheffe_res <- posthoc_test(enterotype, "Enterotype", method = "scheffe")
   expect_known_output(
     round_DF(scheffe_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
     test_path("out/test-post-hoc-scheffe.txt"),
     print = TRUE
   )
 
-  welch_res <- posthoc_test(ps, "Enterotype" , method = "welch_uncorrected")
+  welch_res <- posthoc_test(enterotype, "Enterotype" , method = "welch_uncorrected")
   expect_known_output(
     round_DF(welch_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
     test_path("out/test-post-hoc-welch.txt"),

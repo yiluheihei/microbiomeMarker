@@ -1,12 +1,5 @@
 context("edgeR")
 
-mm_dge <- run_edger(
-  pediatric_ibd,
-  "Class", "Control", "CD",
-  pvalue_cutoff = 0.1,
-  p_adjust = "fdr"
-)
-
 test_that("check the norm factors in edgeR", {
   skip_on_bioc()
   # library(edgeR)
@@ -25,7 +18,7 @@ test_that("check the norm factors in edgeR", {
 
 test_that("result of edger",{
   expect_output_file(
-    round_DF(marker_table(mm_dge)),
+    round_DF(marker_table(mm_edger)),
     test_path("out/test-edger.txt"),
     print = TRUE
   )

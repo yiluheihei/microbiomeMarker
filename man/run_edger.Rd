@@ -14,7 +14,7 @@ run_edger(
   norm_para = list(),
   disp_para = list(),
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
-  p_value_cutoff = 0.05,
+  pvalue_cutoff = 0.05,
   ...
 )
 }
@@ -71,7 +71,7 @@ additional arguments here.}
 \item{p_adjust}{method for multiple test correction, default \code{none},
 for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 
-\item{p_value_cutoff}{numeric, p value cutoff, default 0.05}
+\item{pvalue_cutoff}{numeric, p value cutoff, default 0.05}
 
 \item{...}{extra arguments passed to the model. See \code{\link[edgeR:glmfit]{edgeR::glmFit()}} for
 more details.}

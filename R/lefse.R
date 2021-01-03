@@ -66,7 +66,7 @@
 #' * `enrich_group`, the class of the differential features enriched.
 #' * `lda`, logarithmic LDA score (effect size)
 #' * `pvalue`, p value of kw test.
-#' @author Yang Cao \email{yiluheihei@gmail.com}
+#' @author Yang Cao
 #' @seealso [normalize]
 #' @references Segata, Nicola, et al. Metagenomic biomarker discovery and
 #' explanation. Genome biology 12.6 (2011): R60.
