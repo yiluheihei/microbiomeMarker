@@ -1,24 +1,48 @@
-#' barplot of effect size of microbiomeMarker data
+#' bar and dot plot of effect size of microbiomeMarker data
 #'
-#' barplot of effect size microbiomeMarker data. This function returns a
-#' `ggplot2` object that can be saved or further customized using **ggplot2**.
+#' bar and dot plot of effect size microbiomeMarker data. This function returns
+#' a `ggplot2` object that can be saved or further customized using **ggplot2**
+#' package.
 #'
 #' @param mm a [microbiomeMarker-class] object
 #' @param label_level integer, number of label levels to be displayed, default
 #'   `1`, `0` means display the full name of the feature
-#' @param max_label_len integer, maximum number of characters of feature labels,
-#' default `60`
-#' @param direction the direction of bar, horizontal (`h`) or vertical (`v`),
-#' default `h`
+#' @param max_label_len integer, maximum number of characters of feature label,
+#'   default `60`
+#' @param n  integer, number of markers to display, default `10`. If the number
+#'   of markers is less than 10, all markers will be displayed.
 #' @importFrom ggplot2 ggplot aes geom_col labs scale_x_continuous theme_bw
-#' scale_y_discrete coord_flip guide_axis
+#' scale_y_discrete guide_axis
 #' @return a ggplot project
 #' @export
+#' @rdname effect_size-plot
+#' @aliases ef-barplot,ef-dotplot
 plot_ef_bar <- function(mm,
-                     label_level = 1,
-                     max_label_len = 60,
-                    direction = c("h", "v")) {
-  direction <- match.arg(direction, c("h", "v"))
+                        label_level = 1,
+                        max_label_len = 60,
+                        n = 10) {
+  .plot_ef(mm, label_level, max_label_len, n, "bar")
+}
+
+#' @rdname effect_size-plot
+#' @export
+plot_ef_dot <- function(mm,
+                        label_level = 1,
+                        max_label_len = 60,
+                        n = 10) {
+  .plot_ef(mm, label_level, max_label_len, n, "dot")
+}
+
+
+# plot of effect size
+.plot_ef <- function(mm,
+                    label_level = 1,
+                    max_label_len = 60,
+                    n = 10,
+                    type = c("bar", "dot")) {
+
+  stopifnot(inherits(mm, c("microbiomeMarker", "marker_table")))
+  type <- match.arg(type, c("bar", "dot"))
 
   marker <- marker_table(mm)
   # effect size names
@@ -45,6 +69,10 @@ plot_ef_bar <- function(mm,
 
   # the levels of features: in increase order of effect size
   marker <- marker[order(marker$effect_size), ]
+  if (n < nrow(marker)) {
+    marker <- marker[seq_len(n), ]
+  }
+
   feat <- marker$feature
   marker$feature <- factor(feat, levels = feat)
 
@@ -54,35 +82,34 @@ plot_ef_bar <- function(mm,
 
   }
 
-  p <-
-    ggplot(
-      marker,
-      aes(.data$effect_size, .data$feature, fill = .data$enrich_group)
-    ) +
-    geom_col() +
-    labs(x = label_x, y = NULL, fill = NULL) +
-    scale_x_continuous(expand = c(0,0)) +
-    theme_bw()
-  if (direction == "h") {
-     p <- p +
-       scale_y_discrete(
-         labels = function(x) {
-           get_features_labels(x, label_level, max_label_len)
-         }
-       )
+  marker$logp <- -log10(marker$padj)
+
+  if (type == "bar") {
+    p <-
+      ggplot(
+        marker,
+        aes(.data$effect_size, .data$feature, fill = .data$enrich_group)) +
+      geom_col() +
+      labs(x = label_x, y = NULL, fill = "Enriched group") +
+      scale_x_continuous(expand = c(0,0)) +
+      scale_y_discrete(labels = function(x) {
+        get_features_labels(x, label_level, max_label_len)}) +
+      theme_bw()
   } else {
-    p <- p +
-      scale_y_discrete(
-        labels = function(x) {
-          get_features_labels(x, label_level, max_label_len)
-        },
-        guide = guide_axis(angle = -90)
-      ) +
-      coord_flip()
+    p <- ggplot(
+      marker,
+      aes(.data$effect_size, .data$feature,
+          color = .data$enrich_group, size = .data$logp)) +
+      geom_point() +
+      labs(x = label_x, y = NULL, color = "Enriched group", size = "-log10(pvalue)") +
+      scale_y_discrete(labels = function(x) {
+        get_features_labels(x, label_level, max_label_len)}) +
+      theme_bw()
   }
 
   p
 }
+
 
 #' get the labels of markers which will be used in the barplot
 #' @noRd

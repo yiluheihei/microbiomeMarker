@@ -19,24 +19,24 @@ marker17                                                     k__Bacteria|p__Fuso
 marker18                                    k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium
 marker19               k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium|s__Fusobacterium_s__
 marker20       k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium|s__Fusobacterium necrophorum
-         enrich_group      lda       pvalue
-marker1       Healthy 4.938091 2.577541e-06
-marker2       Healthy 4.938091 2.577541e-06
-marker3       Healthy 4.842391 1.425032e-04
-marker4       Healthy 4.820702 3.706059e-04
-marker5       Healthy 4.820702 3.706059e-04
-marker6       Healthy 4.727401 6.529659e-07
-marker7       Healthy 4.567419 1.472091e-06
-marker8       Healthy 4.565791 1.607569e-06
-marker9       Healthy 4.531028 5.482858e-04
-marker10      Healthy 4.460333 1.612268e-03
-marker11      Healthy 4.047894 3.822362e-03
-marker12      Healthy 4.002610 3.414996e-03
-marker13      Healthy 4.002610 3.414996e-03
-marker14        Tumor 5.044161 1.054198e-05
-marker15        Tumor 5.044161 1.054198e-05
-marker16        Tumor 5.044161 1.054198e-05
-marker17        Tumor 5.044161 1.054198e-05
-marker18        Tumor 4.965072 2.665818e-05
-marker19        Tumor 4.844333 4.070856e-05
-marker20        Tumor 4.381821 8.750207e-03
+         enrich_group      lda       pvalue         padj
+marker1       Healthy 4.938091 2.577541e-06 2.577541e-06
+marker2       Healthy 4.938091 2.577541e-06 2.577541e-06
+marker3       Healthy 4.842391 1.425032e-04 1.425032e-04
+marker4       Healthy 4.820702 3.706059e-04 3.706059e-04
+marker5       Healthy 4.820702 3.706059e-04 3.706059e-04
+marker6       Healthy 4.727401 6.529659e-07 6.529659e-07
+marker7       Healthy 4.567419 1.472091e-06 1.472091e-06
+marker8       Healthy 4.565791 1.607569e-06 1.607569e-06
+marker9       Healthy 4.531028 5.482858e-04 5.482858e-04
+marker10      Healthy 4.460333 1.612268e-03 1.612268e-03
+marker11      Healthy 4.047894 3.822362e-03 3.822362e-03
+marker12      Healthy 4.002610 3.414996e-03 3.414996e-03
+marker13      Healthy 4.002610 3.414996e-03 3.414996e-03
+marker14        Tumor 5.044161 1.054198e-05 1.054198e-05
+marker15        Tumor 5.044161 1.054198e-05 1.054198e-05
+marker16        Tumor 5.044161 1.054198e-05 1.054198e-05
+marker17        Tumor 5.044161 1.054198e-05 1.054198e-05
+marker18        Tumor 4.965072 2.665818e-05 2.665818e-05
+marker19        Tumor 4.844333 4.070856e-05 4.070856e-05
+marker20        Tumor 4.381821 8.750207e-03 8.750207e-03

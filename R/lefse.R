@@ -187,6 +187,7 @@ lefse <- function(ps,
     filter(.data$lda >= lda_cutoff) %>%
     arrange(.data$enrich_group, desc(.data$lda)) %>%
     marker_table()
+  lefse_out$padj <- lefse_out$pvalue
   row.names(lefse_out) <- paste0("marker", seq_len(nrow(lefse_out)))
 
   # if (summarize == "lefse" || summarize) {
