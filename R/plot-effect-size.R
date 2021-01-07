@@ -9,8 +9,8 @@
 #'   `1`, `0` means display the full name of the feature
 #' @param max_label_len integer, maximum number of characters of feature label,
 #'   default `60`
-#' @param n  integer, number of markers to display, default `10`. If the number
-#'   of markers is less than 10, all markers will be displayed.
+#' @param markers character vector, markers to display, default `NULL`,
+#'   indicating plot all markers.
 #' @importFrom ggplot2 ggplot aes geom_col labs scale_x_continuous theme_bw
 #' scale_y_discrete guide_axis
 #' @return a ggplot project
@@ -20,8 +20,8 @@
 plot_ef_bar <- function(mm,
                         label_level = 1,
                         max_label_len = 60,
-                        n = 10) {
-  .plot_ef(mm, label_level, max_label_len, n, "bar")
+                        markers = NULL) {
+  .plot_ef(mm, label_level, max_label_len, markers, "bar")
 }
 
 #' @rdname effect_size-plot
@@ -29,8 +29,8 @@ plot_ef_bar <- function(mm,
 plot_ef_dot <- function(mm,
                         label_level = 1,
                         max_label_len = 60,
-                        n = 10) {
-  .plot_ef(mm, label_level, max_label_len, n, "dot")
+                        markers = NULL) {
+  .plot_ef(mm, label_level, max_label_len, markers, "dot")
 }
 
 
@@ -38,13 +38,14 @@ plot_ef_dot <- function(mm,
 .plot_ef <- function(mm,
                     label_level = 1,
                     max_label_len = 60,
-                    n = 10,
+                    markers = NULL,
                     type = c("bar", "dot")) {
 
   stopifnot(inherits(mm, c("microbiomeMarker", "marker_table")))
   type <- match.arg(type, c("bar", "dot"))
 
   marker <- marker_table(mm)
+
   # effect size names
   orig_ef_nm <- names(marker)[3]
   names(marker)[3] <- "effect_size"
@@ -69,9 +70,28 @@ plot_ef_dot <- function(mm,
 
   # the levels of features: in increase order of effect size
   marker <- marker[order(marker$effect_size), ]
-  if (n < nrow(marker)) {
-    marker <- marker[seq_len(n), ]
+
+  # maker subset
+  if (!is.null(markers)) {
+    ind <- match(markers, marker$feature)
+    ind_na <- is.na(ind)
+    if (all(ind_na)) {
+      stop("all the elements of `markers` should be a contained in marker_table")
+    }
+
+    if (any(ind_na)) {
+      warning(
+        paste(marker[ind_na], collapse = " "),
+        "are not contained in the `marker_table`"
+      )
+    }
+
+    marker <- marker[ind, ]
+
+    # reorder to keep in increase order of effect size
+    marker <- marker[order(marker$effect_size), ]
   }
+
 
   feat <- marker$feature
   marker$feature <- factor(feat, levels = feat)

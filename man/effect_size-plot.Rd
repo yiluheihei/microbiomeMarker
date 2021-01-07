@@ -6,9 +6,9 @@
 \alias{plot_ef_dot}
 \title{bar and dot plot of effect size of microbiomeMarker data}
 \usage{
-plot_ef_bar(mm, label_level = 1, max_label_len = 60, n = 10)
+plot_ef_bar(mm, label_level = 1, max_label_len = 60, markers = NULL)
 
-plot_ef_dot(mm, label_level = 1, max_label_len = 60, n = 10)
+plot_ef_dot(mm, label_level = 1, max_label_len = 60, markers = NULL)
 }
 \arguments{
 \item{mm}{a \linkS4class{microbiomeMarker} object}
@@ -19,8 +19,8 @@ plot_ef_dot(mm, label_level = 1, max_label_len = 60, n = 10)
 \item{max_label_len}{integer, maximum number of characters of feature label,
 default \code{60}}
 
-\item{n}{integer, number of markers to display, default \code{10}. If the number
-of markers is less than 10, all markers will be displayed.}
+\item{markers}{character vector, markers to display, default \code{NULL},
+indicating plot all markers.}
 }
 \value{
 a ggplot project
