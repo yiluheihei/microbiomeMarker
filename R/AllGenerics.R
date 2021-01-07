@@ -29,9 +29,34 @@ setMethod("marker_table", "data.frame", function(object) {
 
 setMethod("marker_table", "microbiomeMarker", function(object) {
   object@marker_table
-
 })
 
+
+# Assign marker_table -----------------------------------------------------
+#' Assign marker_table to `object`
+#'
+#' This function replace the `marker_table` slot of `object` with `value`.
+#'
+#' @param object a [`microbiomeMarker-class`] object to modify.
+#' @param value new value to replace the `marker_table` slot of `object`.
+#'   Either a `marker_table-class`, a `data.frame` that can be coerced
+#'   into `marker_table-class`.
+#' @export
+#' @rdname assign-marker_table
+#' @aliases assign-marker_table marker_table<-
+"marker_table<-" <- function(object, value) {
+  if (!inherits(value, "marker_table")) {
+    value <- marker_table(value)
+  }
+  microbiomeMarker(
+    value,
+    object@tax_table_orig,
+    object@otu_table,
+    object@tax_table,
+    object@phy_tree,
+    object@refseq
+  )
+}
 # microbiomeMarker class ------------------------------------------------------
 
 # modified from the show method of phyloseq
