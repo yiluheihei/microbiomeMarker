@@ -174,6 +174,7 @@ test_multiple_groups <- function(ps,
     row.names(res_filtered) <- paste0("marker", seq_len(nrow(res_filtered)))
     marker <- microbiomeMarker(
       marker_table = marker_table(res_filtered),
+      sample_data(ps),
       tax_table_orig = tax_table(ps),
       otu_table(t(abd), taxa_are_rows = TRUE),
       tax

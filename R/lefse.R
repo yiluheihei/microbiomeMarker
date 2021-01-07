@@ -207,6 +207,7 @@ lefse <- function(ps,
     marker_table = lefse_out,
     tax_table_orig = tax_table(ps),
     otu_table(otus, taxa_are_rows = TRUE), # normalized feature table
+    sample_data(ps),
     tax
   )
 

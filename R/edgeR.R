@@ -162,6 +162,7 @@ run_edger <- function(ps,
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),
+    sample_data(ps),
     tax_table_orig = tax_table(ps),
     otu_table(counts_normalized, taxa_are_rows = TRUE),
     tax_table(ps_summarized)

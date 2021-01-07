@@ -51,7 +51,7 @@ setValidity("marker_table", validity_marker_table)
 #' @name microbiomeMarker-class
 #' @aliases microbiomeMarker-class
 #' @importClassesFrom phyloseq phyloseq
-#' @slot marker_table a data.frame, a [`marker_table-class`] object
+#' @slot marker_table a data.frame, a [`marker_table-class`] object.
 #' @slot tax_table_orig a [`phyloseq::taxonomyTable-class`] object, representing the
 #'   original unsummarized `tax_table`.
 #' @seealso [`phyloseq::phyloseq-class`], [`marker_table-class`], [summarize_taxa()]

@@ -184,6 +184,7 @@ run_metagenomeseq <- function(ps,
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),
+    sample_data(ps),
     tax_table_orig = tax_table(ps_normed),
     otu_table(ps_summarized),
     tax_table(ps_summarized)
