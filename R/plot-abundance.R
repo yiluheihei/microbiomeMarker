@@ -11,9 +11,6 @@ plot_abundance <- function(mm,
                            markers = NULL,
                            group_var) {
   stopifnot(inherits(mm, c("microbiomeMarker", "marker_table")))
-  if (!is.null(markers)) {
-    mm <- subset_marker(mm, feature %in% markers)
-  }
 
   sample_meta <- sample_data(mm)
   sample_meta_nms <- names(sample_meta)
