@@ -174,7 +174,7 @@ data("spontaneous_colitis")
 # add prefix of ranks
 mm <- lefse(
   spontaneous_colitis, 
-  normalization = 1e6, 
+  norm = 1e6, 
   class = "class", 
   multicls_strat = TRUE
 )
@@ -195,7 +195,7 @@ head(marker_table(mm))
 Bar plot for output of lefse:
 
 ```{r lefse-barplot,dpi=300}
-lefse_barplot(mm, label_level = 1) +
+plot_ef_bar(mm, label_level = 1) +
   scale_fill_manual(values = c("rag2" = "blue", "truc" = "red"))
 ```
 

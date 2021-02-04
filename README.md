@@ -185,7 +185,7 @@ data("spontaneous_colitis")
 # add prefix of ranks
 mm <- lefse(
   spontaneous_colitis, 
-  normalization = 1e6, 
+  norm = 1e6, 
   class = "class", 
   multicls_strat = TRUE
 )
@@ -194,6 +194,7 @@ mm
 #> microbiomeMarker-class inherited from phyloseq-class
 #> marker_table  Marker Table:      [ 29 microbiome markers with 5 variables ]
 #> otu_table()   OTU Table:         [ 132 taxa and  30 samples ]
+#> sample_data() Sample Data:       [ 30 samples by  1 sample variables ]
 #> tax_table()   Taxonomy Table:    [ 132 taxa by 1 taxonomic ranks ]
 ```
 
@@ -210,13 +211,13 @@ head(marker_table(mm))
 #> marker4 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
 #> marker5                            k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae
 #> marker6                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
-#>         enrich_group log_max_mean      lda      p_value
-#> marker1         rag2     5.451241 5.178600 0.0155342816
-#> marker2         rag2     5.433686 5.178501 0.0137522075
-#> marker3         rag2     5.433686 5.178501 0.0137522075
-#> marker4         rag2     5.082944 5.044767 0.0001217981
-#> marker5         rag2     4.987349 4.886991 0.0013201097
-#> marker6         rag2     4.789752 4.750839 0.0001217981
+#>         enrich_group      lda       pvalue         padj
+#> marker1         rag2 5.178600 0.0155342816 0.0155342816
+#> marker2         rag2 5.178501 0.0137522075 0.0137522075
+#> marker3         rag2 5.178501 0.0137522075 0.0137522075
+#> marker4         rag2 5.044767 0.0001217981 0.0001217981
+#> marker5         rag2 4.886991 0.0013201097 0.0013201097
+#> marker6         rag2 4.750839 0.0001217981 0.0001217981
 ```
 
 ### Visualization of the result of lefse analysis
@@ -224,7 +225,7 @@ head(marker_table(mm))
 Bar plot for output of lefse:
 
 ``` r
-lefse_barplot(mm, label_level = 1) +
+plot_ef_bar(mm, label_level = 1) +
   scale_fill_manual(values = c("rag2" = "blue", "truc" = "red"))
 ```
 
@@ -259,23 +260,20 @@ two_group_welch <- test_two_groups(
 # three significantly differential genera (marker)
 two_group_welch
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 3 microbiome markers with 10 variables ]
+#> marker_table  Marker Table:      [ 3 microbiome markers with 5 variables ]
 #> otu_table()   OTU Table:         [ 244 taxa and  39 samples ]
+#> sample_data() Sample Data:       [ 39 samples by  9 sample variables ]
 #> tax_table()   Taxonomy Table:    [ 244 taxa by 1 taxonomic ranks ]
 # details of result of the three markers
 head(marker_table(two_group_welch))
-#>                                     feature enrich_group     pvalue
-#> marker1     p__Firmicutes|g__Heliobacterium            M 0.02940341
-#> marker2         p__Firmicutes|g__Parvimonas            M 0.03281399
-#> marker3 p__Firmicutes|g__Peptostreptococcus            M 0.01714937
-#>               F_mean       M_mean     diff_mean      ci_lower      ci_upper
-#> marker1 1.038235e-06 5.309321e-06 -4.271086e-06 -8.080028e-06 -4.621437e-07
-#> marker2 1.911176e-06 8.610460e-06 -6.699283e-06 -1.280420e-05 -5.943705e-07
-#> marker3 1.979912e-05 5.327434e-05 -3.347523e-05 -6.053204e-05 -6.418413e-06
-#>             ratio pvalue_corrected
-#> marker1 0.1955495       0.02940341
-#> marker2 0.2219599       0.03281399
-#> marker3 0.3716445       0.01714937
+#>                                     feature enrich_group     diff_mean
+#> marker1     p__Firmicutes|g__Heliobacterium            M -4.271086e-06
+#> marker2         p__Firmicutes|g__Parvimonas            M -6.699283e-06
+#> marker3 p__Firmicutes|g__Peptostreptococcus            M -3.347523e-05
+#>             pvalue       padj
+#> marker1 0.02940341 0.02940341
+#> marker2 0.03281399 0.03281399
+#> marker3 0.01714937 0.01714937
 ```
 
 ### Statistical analysis multiple groups
@@ -300,31 +298,25 @@ multiple_group_anova <-  test_multiple_groups(
 # 24 markers
 multiple_group_anova
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 24 microbiome markers with 8 variables ]
+#> marker_table  Marker Table:      [ 24 microbiome markers with 5 variables ]
 #> otu_table()   OTU Table:         [ 238 taxa and  32 samples ]
+#> sample_data() Sample Data:       [ 32 samples by  9 sample variables ]
 #> tax_table()   Taxonomy Table:    [ 238 taxa by 1 taxonomic ranks ]
 head(marker_table(multiple_group_anova))
-#>                                     feature enrich_group       pvalue
-#> marker1                    p__Bacteroidetes Enterotype 1 3.196070e-06
-#> marker2                     p__Unclassified Enterotype 3 1.731342e-04
-#> marker3      p__Actinobacteria|g__Scardovia Enterotype 2 2.742042e-02
-#> marker4       p__Bacteroidetes|g__Alistipes Enterotype 3 3.922758e-02
-#> marker5     p__Bacteroidetes|g__Bacteroides Enterotype 1 8.396825e-10
-#> marker6 p__Bacteroidetes|g__Parabacteroides Enterotype 1 1.314233e-02
-#>         pvalue_corrected effect_size Enterotype 1:mean_abundance
-#> marker1     3.196070e-06   0.5821619                 0.193073387
-#> marker2     1.731342e-04   0.4497271                 0.165364988
-#> marker3     2.742042e-02   0.2196652                 0.000000000
-#> marker4     3.922758e-02   0.2001541                 0.006695668
-#> marker5     8.396825e-10   0.7633661                 0.174793538
-#> marker6     1.314233e-02   0.2582573                 0.009745028
-#>         Enterotype 2:mean_abundance Enterotype 3:mean_abundance
-#> marker1                1.537237e-01                7.046051e-02
-#> marker2                2.501976e-01                2.680750e-01
-#> marker3                1.860083e-05                8.436111e-07
-#> marker4                5.287895e-03                1.568063e-02
-#> marker5                3.409613e-02                4.456618e-02
-#> marker6                4.055795e-03                4.401643e-03
+#>                                     feature enrich_group eta_squared
+#> marker1                    p__Bacteroidetes Enterotype 1   0.5821619
+#> marker2                     p__Unclassified Enterotype 3   0.4497271
+#> marker3      p__Actinobacteria|g__Scardovia Enterotype 2   0.2196652
+#> marker4       p__Bacteroidetes|g__Alistipes Enterotype 3   0.2001541
+#> marker5     p__Bacteroidetes|g__Bacteroides Enterotype 1   0.7633661
+#> marker6 p__Bacteroidetes|g__Parabacteroides Enterotype 1   0.2582573
+#>               pvalue         padj
+#> marker1 3.196070e-06 3.196070e-06
+#> marker2 1.731342e-04 1.731342e-04
+#> marker3 2.742042e-02 2.742042e-02
+#> marker4 3.922758e-02 3.922758e-02
+#> marker5 8.396825e-10 8.396825e-10
+#> marker6 1.314233e-02 1.314233e-02
 ```
 
 The result of multiple group statistic specified whether the means of
@@ -400,14 +392,15 @@ mm_mgs <- run_metagenomeseq(
   "Class", 
   "Control", 
   "CD", 
-  p_value_cutoff = 0.1, 
+  pvalue_cutoff = 0.1, 
   p_adjust = "fdr"
 )
 #> Default value being used.
 mm_mgs
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 11 microbiome markers with 15 variables ]
+#> marker_table  Marker Table:      [ 11 microbiome markers with 5 variables ]
 #> otu_table()   OTU Table:         [ 786 taxa and  43 samples ]
+#> sample_data() Sample Data:       [ 43 samples by  1 sample variables ]
 #> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
 ```
 
@@ -419,14 +412,15 @@ mm_des <- run_deseq2(
   "Class", 
   "Control", 
   "CD", 
-  p_value_cutoff = 0.05, 
+  pvalue_cutoff = 0.05, 
   p_adjust = "fdr"
 )
 #> converting counts to integer mode
 mm_des
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 36 microbiome markers with 8 variables ]
+#> marker_table  Marker Table:      [ 47 microbiome markers with 5 variables ]
 #> otu_table()   OTU Table:         [ 786 taxa and  43 samples ]
+#> sample_data() Sample Data:       [ 43 samples by  1 sample variables ]
 #> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
 ```
 
@@ -436,13 +430,14 @@ mm_des
 mm_edger <- run_edger(
   pediatric_ibd, 
   "Class", "Control", "CD", 
-  p_value_cutoff = 0.1,
+  pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )
 mm_edger
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 34 microbiome markers with 8 variables ]
+#> marker_table  Marker Table:      [ 34 microbiome markers with 5 variables ]
 #> otu_table()   OTU Table:         [ 786 taxa and  43 samples ]
+#> sample_data() Sample Data:       [ 43 samples by  1 sample variables ]
 #> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
 ```
 
