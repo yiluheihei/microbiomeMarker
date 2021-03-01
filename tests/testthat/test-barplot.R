@@ -51,6 +51,9 @@ test_that("label of x", {
 
 test_that("effect size in descending order", {
   ef <- p_lda$data$effect_size
-  expect_true(all(diff(ef) >= 0))
+  ef1 <- ef[p_lda$data$enrich_group == "Healthy"]
+  ef2 <- ef[p_lda$data$enrich_group == "Tumor"]
+  expect_true(all(diff(ef1) >= 0))
+  expect_true(all(diff(ef2) >= 0))
 
 })
