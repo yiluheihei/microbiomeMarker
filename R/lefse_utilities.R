@@ -122,7 +122,7 @@ bootstap_lda_one <- function(feature_abundance,
   pairs <- utils::combn(sample_groups, 2, simplify = FALSE) %>%
     purrr::map(sort, decreasing = TRUE)
 
-  while (TRUE) {
+  for (i in seq_len(1000)) {
     # random select samples using bootstrap method
     sample_indx <- sample(sample_n, random_n, replace = TRUE)
 
@@ -135,6 +135,14 @@ bootstap_lda_one <- function(feature_abundance,
     if (is_checked) {
       break
     }
+  }
+
+  if (!is_checked) {
+    stop(
+      "Too small samples in each class",
+      " or the variance of feature abundances within a class too small (zero or near zero)",
+      call. = FALSE
+    )
   }
 
   lda <- purrr::map(
