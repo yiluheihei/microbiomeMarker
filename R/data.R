@@ -119,3 +119,24 @@ NA
 #' @author Yang Cao
 NA
 
+
+#' Data from Early Childhood Antibiotics and the Microbiome (ECAM) study
+#'
+#' The data from a subset of the Early Childhood Antibiotics and the
+#' Microbiome (ECAM) study, which tracked the microbiome composition and
+#' development of 43 infants in the United States from birth to 2 years of age,
+#' identifying microbiome associations with antibiotic exposure, delivery mode,
+#' and diet.
+#'
+#' @format a [`phyloseq::phyloseq-class`] object
+#'
+#' @references
+#' Bokulich, Nicholas A., et al. "Antibiotics, birth mode, and diet shape
+#' microbiome maturation during early life." Science translational medicine
+#' 8.343 (2016): 343ra82-343ra82.
+#'
+#' \url{https://github.com/FrederickHuangLin/ANCOM/tree/master/data}
+#' @name data-ecam
+#' @aliases ecam
+#' @docType data
+NA

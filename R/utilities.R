@@ -88,6 +88,15 @@ keep_prefix_desc <- function(ranks_prefix, type = c("ranks", "ranks_prefix")) {
   }
 }
 
+# check whether var in sample meta data, or raise an error
+check_var_in_meta <- function(var, sample_meta) {
+  stopifnot(inherits(sample_meta, "sample_data"))
+  meta_nms <- names(sample_meta)
+  if (!var %in% meta_nms) {
+    stop(var, " must be one of variable of `sample_meta`", call. = FALSE)
+  }
+}
+
 ################################################################################
 ## preprocessing ps object
 ################################################################################

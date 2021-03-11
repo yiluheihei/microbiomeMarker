@@ -182,3 +182,35 @@ kostic <- subset_samples(kostic, DIAGNOSIS != "None")
 kostic_crc <- prune_samples(sample_sums(kostic) > 500, kostic)
 usethis::use_data(kostic_crc, overwrite = TRUE)
 
+
+# ecam from ancom paper ---------------------------------------------------
+ecam_meta <- readr::read_tsv("https://raw.githubusercontent.com/FrederickHuangLin/ANCOM/master/data/ecam-sample-metadata.tsv")
+# remove var types: #q2:types
+ecam_meta <- ecam_meta[-1, ]
+ecam_feature_table <- readr::read_tsv("https://raw.githubusercontent.com/FrederickHuangLin/ANCOM/master/data/ecam-table-taxa.tsv", skip = 1)
+taxa <- ecam_feature_table$`feature-id`
+feature_table <- dplyr::select(ecam_feature_table, -`feature-id`)
+
+# taxa table
+taxa_table <- lapply(taxa, strsplit, split = ";", fixed = TRUE)
+taxa_table <- lapply(taxa_table, unlist)
+taxa_table <- do.call(rbind, taxa_table)
+taxa_table <- data.frame(taxa_table)
+names(taxa_table) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus")
+# make sure all unknown taxa as prefix__
+# set the NA|unknown|unclassified to __, and then add prefix
+prefixes <- c("k", "p", "c", "o", "f", "g")
+taxa_table <- purrr::map2_df(
+  taxa_table, prefixes,
+  ~ ifelse(.x == "__", paste0(.y, .x), .x)
+)
+ecam_meta <- phyloseq::sample_data(ecam_meta)
+row.names(ecam_meta) <- names(feature_table)
+
+
+ecam <- phyloseq::phyloseq(
+  phyloseq::otu_table(as(feature_table, "matrix"), taxa_are_rows = TRUE),
+  phyloseq::tax_table(as(taxa_table, "matrix")),
+  phyloseq::sample_data(ecam_meta)
+)
+usethis::use_data(ecam, overwrite = TRUE)
