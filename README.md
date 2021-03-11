@@ -441,6 +441,31 @@ mm_edger
 #> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
 ```
 
+## ANCOM
+
+``` r
+mm_ancom <- run_ancom(ecam, "delivery", p_adjust = "none", theta = 0.6)
+marker_table(mm_ancom)
+#>                                                                                                          feature
+#> 3                                                                                  k__Bacteria|p__Actinobacteria
+#> 4                                                                                   k__Bacteria|p__Bacteroidetes
+#> 10                                                               k__Bacteria|p__Actinobacteria|c__Actinobacteria
+#> 12                                                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia
+#> 23                                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
+#> 25                                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales
+#> 41                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
+#> 71 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+#>    enrich_group CLR_diff_mean   W
+#> 3      Cesarean     0.2903173 104
+#> 4       Vaginal     0.1561744  84
+#> 10     Cesarean     0.3047846 104
+#> 12      Vaginal     0.1561744  84
+#> 23     Cesarean     0.3759503 103
+#> 25      Vaginal     0.1561744  84
+#> 41     Cesarean     0.3759503 103
+#> 71     Cesarean     0.3759503 103
+```
+
 ## Visulatiton
 
 ### Cladogram plot

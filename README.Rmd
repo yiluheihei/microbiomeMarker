@@ -317,6 +317,12 @@ mm_edger <- run_edger(
 mm_edger
 ```
 
+## ANCOM
+
+```{r ancom, warning=FALSE}
+mm_ancom <- run_ancom(ecam, "delivery", p_adjust = "none", theta = 0.6)
+marker_table(mm_ancom)
+```
 
 ## Visulatiton
 
