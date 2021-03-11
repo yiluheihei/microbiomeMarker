@@ -343,11 +343,12 @@ norm_clr <- function(object) {
   otu <- as(otu_table(object), "matrix")
 
   # pos counts
-  if (any(otu == 0)) {
-    otu <- otu + 1
-  }
-
-  otu_norm <- apply(otu, 2, function(x) {log(x) - mean(log(x))})
+  # if (any(otu == 0)) {
+  #   otu <- otu + 1
+  # }
+  #
+  # otu_norm <- apply(otu, 2, function(x) {log(x) - mean(log(x))})
+  otu_norm <- apply(otu, 2, trans_clr)
 
   otu_table(object) <- otu_table(
     otu_norm,
@@ -360,6 +361,18 @@ norm_clr <- function(object) {
   # do not save the norm_factor, the norm factors are calculated based on the
   # subsequently differential analysis method, e.g. edgeR, DESeq
   object
+}
+
+# reference: https://github.com/joey711/shiny-phyloseq/blob/master/panels/paneldoc/Transform.md
+gm_mean <- function(x, na.rm = TRUE){
+  # The geometric mean, with some error-protection bits.
+  exp(sum(log(x[x > 0 & !is.na(x)]), na.rm = na.rm) / length(x))
+}
+
+trans_clr <- function(x, base = exp(1)) {
+  x <- log((x / gm_mean(x)), base)
+  x[!is.finite(x) | is.na(x)] <- 0.0
+  return(x)
 }
 
 #' Normalize the sum of values of each sample to a given value
