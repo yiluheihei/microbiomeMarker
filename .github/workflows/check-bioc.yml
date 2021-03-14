@@ -137,7 +137,7 @@ jobs:
           brew install libgit2
 
           ## Install X11 dependencies on MacOS
-          brew cask install xquartz
+          brew install xquartz --cask
 
       - name: Install Windows system dependencies
         if: runner.os == 'Windows'

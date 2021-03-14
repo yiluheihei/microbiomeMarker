@@ -51,22 +51,34 @@ test_that("test post hoc test result", {
   local_edition(3)
 
   expect_snapshot_output(
-   round_DF(tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]])
+   print(
+     round_DF(tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
+     row.names = FALSE
+   )
   )
 
   games_res <- posthoc_test(enterotype, "Enterotype", method = "games_howell")
   expect_snapshot_output(
-    round_DF(games_res@result[["p__Bacteroidetes|g__Bacteroides"]])
+    print(
+      round_DF(games_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
+      row.names = FALSE
+    )
   )
 
   scheffe_res <- posthoc_test(enterotype, "Enterotype", method = "scheffe")
   expect_snapshot_output(
-    round_DF(scheffe_res@result[["p__Bacteroidetes|g__Bacteroides"]])
+    print(
+      round_DF(scheffe_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
+      row.names = FALSE
+    )
   )
 
   welch_res <- posthoc_test(enterotype, "Enterotype" , method = "welch_uncorrected")
   expect_snapshot_output(
-    round_DF(welch_res@result[["p__Bacteroidetes|g__Bacteroides"]])
+    print(
+      round_DF(welch_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
+      row.names = FALSE # for github action
+    )
   )
 })
 
