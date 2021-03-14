@@ -3,7 +3,7 @@
 <!-- badges: start -->
 
 [![R build
-status](https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check/badge.svg)](https://github.com/yiluheihei/microbiomeMarker/actions)
+status](https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/yiluheihei/microbiomeMarker/actions)
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/yiluheihei/microbiomeMarker/blob/master/LICENSE.md)
 [![Codecov test
