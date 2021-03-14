@@ -35,7 +35,12 @@ test_that("identify structural zeros", {
 
 test_that("ancom result", {
   skip_on_bioc()
-  ancom_res <- run_ancom(ecam, "delivery", p_adjust = "BH", theta = 0)
+  ancom_res <- run_ancom(
+    ecam, "delivery",
+    test = "wilcox.test",
+    p_adjust = "BH",
+    theta = 0
+  )
   curr_marker <- round_DF(marker_table(ancom_res))
   expect_known_output(
     head(curr_marker),

@@ -13,8 +13,7 @@ run_ancom(
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
   alpha = 0.05,
   theta = 0.75,
-  adj_formula = NULL,
-  rand_formula = NULL,
+  test = c("aov", "wilcox.test", "kruskal.test"),
   ...
 )
 }
@@ -70,11 +69,10 @@ default 0.05.}
 
 \item{theta}{lower bound for the proportion for the W-statistic, default 0.7.}
 
-\item{adj_formula}{character string representing the formula for adjustment.}
+\item{test}{character, the test to dtermine the p value of log ratio,
+one of "aov", "wilcox.test",  "kruskal.test".}
 
-\item{rand_formula}{character string representing the formula for random effects in lme}
-
-\item{...}{additional arguments passed to the test.}
+\item{...}{additional arguments passed to the test function.}
 }
 \value{
 a \linkS4class{microbiomeMarker} object, in which the \code{slot} of \code{marker_table}
@@ -91,6 +89,17 @@ be significantly different against.
 \description{
 Perform significant test by comparing the pairwise log ratios (based on
 relative abundances) between all features.
+}
+\details{
+The developers of this method recommend the following significance tests
+if there are 2 groups, use non-parametric Wilcoxon rank sum test
+\code{\link[stats:wilcox.test]{stats::wilcox.test()}}. If there are more than 2 groups, use nonparametric
+\code{\link[stats:kruskal.test]{stats::kruskal.test()}} or one-way ANOVA \code{\link[stats:aov]{stats::aov()}}.
+}
+\references{
+Mandal et al. "Analysis of composition of microbiomes: a novel
+method for studying microbial composition", Microbial Ecology in Health
+& Disease, (2015), 26.
 }
 \author{
 Huang Lin, Yang Cao

@@ -42,9 +42,16 @@
 #' @param alpha significance level for each of the statistical tests,
 #'   default 0.05.
 #' @param theta lower bound for the proportion for the W-statistic, default 0.7.
-#' @param adj_formula character string representing the formula for adjustment.
-#' @param rand_formula character string representing the formula for random effects in lme
-#' @param ... additional arguments passed to the test.
+#' @param test character, the test to dtermine the p value of log ratio,
+#'   one of "aov", "wilcox.test",  "kruskal.test".
+#' @param ... additional arguments passed to the test function.
+#'
+#' @details
+#' The developers of this method recommend the following significance tests
+#' if there are 2 groups, use non-parametric Wilcoxon rank sum test
+#' [`stats::wilcox.test()`]. If there are more than 2 groups, use nonparametric
+#' [`stats::kruskal.test()`] or one-way ANOVA [`stats::aov()`].
+#'
 #' @return a [microbiomeMarker-class] object, in which the `slot` of `marker_table`
 #' contains four variables:
 #' * `feature`, significantly different features.
@@ -53,7 +60,13 @@
 #'   than two groups
 #' * `W`, the W-statistic, number of features that a single feature is tested to
 #'   be significantly different against.
+#'
+#' @references Mandal et al. "Analysis of composition of microbiomes: a novel
+#' method for studying microbial composition", Microbial Ecology in Health
+#' & Disease, (2015), 26.
+#'
 #' @author Huang Lin, Yang Cao
+#'
 #' @export
 run_ancom <- function(ps,
                       group_var,
@@ -61,13 +74,13 @@ run_ancom <- function(ps,
                       norm = "TSS",
                       norm_para = list(),
                       p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                   "hochberg", "hommel", "BH", "BY"),
+                                    "hochberg", "hommel", "BH", "BY"),
                       alpha = 0.05,
                       theta = 0.75,
-                      adj_formula = NULL,
-                      rand_formula = NULL,
+                      test = c("aov", "wilcox.test", "kruskal.test"),
                       ...) {
   stopifnot(inherits(ps, "phyloseq"))
+  test <- match.arg(test, c("aov", "wilcox.test", "kruskal.test"))
 
   # check whether group_var is valid, write a function
   sample_meta <- sample_data(ps)
@@ -108,17 +121,25 @@ run_ancom <- function(ps,
 
   # effect size: CLR mean_difference or aov f statistic
   feature_table_clr <- norm_clr(otu_table(feature_table, taxa_are_rows = TRUE))
-  ef <- apply(
+  # ef <- apply(
+  #   feature_table_clr,
+  #   1,
+  #   calc_ancom_ef, group = cls_full
+  # )
+  feature_table_clr <- data.frame(t(feature_table_clr))
+  ef <- vapply(
     feature_table_clr,
-    1,
-    calc_ancom_ef, group = cls_full
+    calc_ancom_ef,
+    FUN.VALUE = 0.0,
+    group = cls_full
   )
   # names(ef) <- row.names(feature_table)
   # enrich_group
-  group_enriched <- apply(
+  group_enriched <- vapply(
     feature_table_clr,
-    1,
-    get_ancom_enrich_group, group = cls_full
+    get_ancom_enrich_group,
+    FUN.VALUE = character(1),
+    group = cls_full
   )
 
   # ANCOM requires log transformation
@@ -127,113 +148,20 @@ run_ancom <- function(ps,
   taxa_id <- row.names(feature_table)
   n_samp <- ncol(feature_table)
 
-  # Determine the type of statistical test and its formula.
-  if (is.null(rand_formula) & is.null(adj_formula)) {
-    # Basic model
-    if (cls_n == 2) {
-      # Two levels: Wilcoxon rank-sum test
-      tfun <- stats::wilcox.test
-    } else{
-      # More than two levels: Kruskal-Wallis test
-      tfun <- stats::kruskal.test
-    }
-    # Formula
-    tformula <- formula(paste("x ~", group_var, sep = " "))
-  } else if (is.null(rand_formula) & !is.null(adj_formula)) {
-    # Model: ANOVA
-    tfun <- stats::aov
-    # Formula
-    tformula <- formula(paste("x ~", group_var, "+", adj_formula, sep = " "))
-  } else if (!is.null(rand_formula)) {
-    # Model: Mixed-effects model
-    tfun <- nlme::lme
-    # Formula
-    if (is.null(adj_formula)) {
-      # Random intercept model
-      tformula <- formula(paste("x ~", group_var))
-    }else {
-      # Random coefficients/slope model
-      tformula <- formula(paste("x ~", group_var, "+", adj_formula))
-    }
-  }
-
   # Calculate the p-value for each pairwise comparison of taxa.
-  p_data <- matrix(NA, nrow = n_taxa, ncol = n_taxa)
-  colnames(p_data) <-  taxa_id
-  rownames(p_data) <- taxa_id
-  for (i in 1:(n_taxa - 1)) {
-    # Loop through each taxon.
-    # For each taxon i, additive log ratio (alr) transform the OTU table using
-    # taxon i as the reference. e.g. the first alr matrix will be the log
-    # abundance data (feature_table) recursively subtracted by the log abundance
-    # of 1st taxon (1st column) column-wisely,
-    # and remove the first i columns since: the first (i - 1) columns were
-    # calculated by previous iterations, and the i^th column contains all zeros.
-    # if feature_table is m x n, alr_data is n x m
-    alr_data <- apply(feature_table, 1, function(x) x - feature_table[i, ])
-
-    # apply(...) allows crossing the data in a number of ways and avoid explicit
-    # use of loop constructs. Here, we basically want to iteratively subtract
-    # each column of the feature_table by its i^th column.
-    alr_data <- alr_data[, - (1:i), drop = FALSE]
-    n_lr <- ncol(alr_data) # number of log-ratios (lr)
-    alr_data <- cbind(alr_data, meta_data) # merge with the metadata
-
-    # P-values
-    if (is.null(rand_formula) & is.null(adj_formula)) {
-      p_data[-(1:i), i] <- apply(
-        alr_data[, 1:n_lr, drop = FALSE],
-        2,
-        function(x){
-          suppressWarnings(
-            tfun(
-              tformula,
-              data = data.frame(x, alr_data, check.names = FALSE))$p.value
-          )
-        }
-      )
-    } else if (is.null(rand_formula) & !is.null(adj_formula)) {
-      p_data[-(1:i), i] <- apply(
-        alr_data[, 1:n_lr, drop = FALSE],
-        2,
-        function(x){
-          fit = tfun(
-            tformula,
-            data = data.frame(x, alr_data, check.names = FALSE),
-            na.action = na.omit
-          )
-          summary(fit)[[1]][group_var, "Pr(>F)"]
-        }
-      )
-    } else if (!is.null(rand_formula)) {
-      p_data[-(1:i), i] <- apply(
-        alr_data[, 1:n_lr, drop = FALSE],
-        2,
-        function(x){
-          fit = tfun(
-            fixed = tformula,
-            data = data.frame(x, alr_data, check.names = FALSE),
-            random = formula(rand_formula),
-            na.action = na.omit,
-            ...
-          )
-          stats::anova(fit)[group_var, "p-value"]
-        }
-      )
-    }
-  }
-  # Complete the p-value matrix.
-  # What we got from above iterations is a lower triangle matrix of p-values.
-  p_data[upper.tri(p_data)] <- t(p_data)[upper.tri(p_data)]
-  diag(p_data) <- 1 # let p-values on diagonal equal to 1
-  p_data[is.na(p_data)] <- 1 # let p-values of NA equal to 1
+  p <- calc_ancom_pmat(feature_table, cls_full, test, ...)
 
   # Multiple comparisons correction.
-  q_data <- apply(p_data, 2, function(x) p.adjust(x, method = p_adjust))
+  p_adjusted <- vapply(
+    data.frame(p),
+    p.adjust,
+    FUN.VALUE = numeric(n_taxa),
+    method = p_adjust
+  )
 
   # Calculate the W statistic of ANCOM.
   # For each taxon, count the number of q-values < alpha.
-  W <- apply(q_data, 2, function(x) sum(x < alpha))
+  W <- apply(p_adjusted, 2, function(x) sum(x < alpha))
 
   # Organize outputs
   out_comp <- data.frame(
@@ -267,6 +195,71 @@ run_ancom <- function(ps,
   )
 
   mm
+}
+
+# https://github.com/biocore/scikit-bio/blob/master/skbio/stats/composition.py#L811
+#' Calculates pairwise pvalues between all features
+#' @param feature_table matrix-like, logged feature table.
+#' @param classes character vector, the same length with `log_ratio`.
+#' @param test  character, the test to dtermine the p value of log ratio,
+#'   one of "aov", "wilcox.test",  "kruskal.test".
+#' @param ... extra arguments passed to the test.
+#' @noRd
+calc_ancom_pmat <- function(feature_table,
+                            classes,
+                            test = c("aov", "wilcox.test", "kruskal.test"),
+                            ...) {
+  test_method <- match.arg(test, c("aov", "wilcox.test", "kruskal.test"))
+  # test <- match.fun(test_method)
+
+  taxas <- row.names(feature_table)
+  feature_table <- data.frame(t(feature_table))
+  taxa_n <- ncol(feature_table)
+  p <- matrix(NA, nrow = taxa_n, ncol = taxa_n)
+  row.names(p) <- taxas
+  colnames(p) <- taxas
+
+
+  for (i in 1:(taxa_n -1)) {
+    new_table <- -(feature_table[(i + 1):taxa_n] - feature_table[[i]])
+    p[-(1:i), i] <- vapply(
+      new_table,
+      calc_ancom_p,
+      FUN.VALUE = numeric(1),
+      classes = classes, test = test_method, ...
+    )
+  }
+
+  # Complete the p-value matrix.
+  # What we got from above iterations is a lower triangle matrix of p-values.
+  p[upper.tri(p)] <- t(p)[upper.tri(p)]
+  diag(p) <- 1 # let p-values on diagonal equal to 1
+  p[is.na(p)] <- 1 # let p-values of NA equal to 1
+
+  p
+}
+
+#' calculate the p value of a pair-wise log ratio
+#' @param log_ratio  a numeric vector, a pair-wise log ratio.
+#' @param classes character vector, the same length with `log_ratio`.
+#' @param test  character, the test to dtermine the p value of log ratio,
+#'   one of "aov", "wilcox.test",  "kruskal.test".
+#' @param ... extra arguments passed to the test.
+#' @noRd
+calc_ancom_p <- function(log_ratio, classes, test, ...) {
+  test_method <- match.arg(test, c("aov", "wilcox.test", "kruskal.test"))
+  test_fun <- match.fun(test_method)
+
+  fml <- formula(paste0("x ~ ", "class"))
+  dat <- data.frame(x = log_ratio, class = classes)
+  test_res <- test_fun(fml, data = dat, ...)
+  pvalue <- ifelse(
+    test_method == "aov",
+    summary(test_res)[[1]]["class", "Pr(>F)"],
+    test_res$p.value
+  )
+
+  pvalue
 }
 
 
