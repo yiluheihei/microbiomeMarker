@@ -87,10 +87,18 @@ be significantly different against.
 }
 }
 \description{
-Perform significant test by comparing the pairwise log ratios (based on
-relative abundances) between all features.
+Perform significant test by comparing the pairwise log ratios between all
+features.
 }
 \details{
+In an experiment with only two treatments, this tests the following
+hypothesis for feature \eqn{i}:
+
+\deqn{H_{0i}: E(log(\mu_i^1)) =  E(log(\mu_i^2))}
+
+where \eqn{\mu_i^1} and \eqn{\mu_i^2} are the mean abundances for feature
+\eqn{i} in the two groups.
+
 The developers of this method recommend the following significance tests
 if there are 2 groups, use non-parametric Wilcoxon rank sum test
 \code{\link[stats:wilcox.test]{stats::wilcox.test()}}. If there are more than 2 groups, use nonparametric
