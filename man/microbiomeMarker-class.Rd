@@ -23,8 +23,10 @@ document of \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}.
 \describe{
 \item{\code{marker_table}}{a data.frame, a \code{\linkS4class{marker_table}} object.}
 
-\item{\code{tax_table_orig}}{a \code{\link[phyloseq:taxonomyTable-class]{phyloseq::taxonomyTable}} object, representing the
-original unsummarized \code{tax_table}.}
+\item{\code{norm_method}}{character, method used to normalize the input \code{phyloseq}
+object.}
+
+\item{\code{diff_method}}{character, method used for microbiome marker identification.}
 }}
 
 \seealso{

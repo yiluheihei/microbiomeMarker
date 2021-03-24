@@ -23,3 +23,12 @@ test_that("var in sample_data", {
   )
   expect_silent(check_var_in_meta("delivery", sample_data(ecam)))
 })
+
+
+test_that("get_norm_method works well", {
+  expect_identical(
+    get_norm_method(100),
+    "per-sample normalized (sum of all taxa) to 100"
+  )
+  expect_identical(get_norm_method("a"), "a")
+})

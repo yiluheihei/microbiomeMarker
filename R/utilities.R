@@ -215,3 +215,14 @@ select_quantile_func <- function(counts) {
 
   fun_p
 }
+
+
+get_norm_method <- function(norm) {
+  new_norm <- ifelse(
+    is.numeric(norm),
+    paste("per-sample normalized (sum of all taxa) to", norm),
+    norm
+  )
+
+  new_norm
+}

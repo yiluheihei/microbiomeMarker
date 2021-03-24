@@ -292,10 +292,12 @@ run_deseq2 <- function(ps,
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),
-    sample_data(ps),
-    tax_table_orig = tax_table(ps),
-    otu_table(counts_normalized, taxa_are_rows = TRUE),
-    tax_table(ps_summarized)
+    norm_method = get_norm_method(norm),
+    diff_method = "DESeq2",
+    # summary_tax_table = tax_table(ps_summarized),
+    sam_data = sample_data(ps_normed),
+    tax_table = tax_table(ps_summarized),
+    otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE)
   )
 
   marker

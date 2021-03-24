@@ -193,10 +193,12 @@ run_ancom <- function(ps,
 
   mm <- microbiomeMarker(
     marker_table = marker,
-    tax_table_orig = tax_table(ps),
-    otu_table(feature_table, taxa_are_rows = TRUE), # normalized feature table
-    sample_data(ps),
-    tax
+    norm_method = get_norm_method(norm),
+    diff_method = "ANCOM",
+    # tax_table = tax_table(ps),
+    otu_table = otu_table(feature_table, taxa_are_rows = TRUE), # normalized feature table
+    sam_data = sample_data(ps_normed),
+    tax_table = tax
   )
 
   mm

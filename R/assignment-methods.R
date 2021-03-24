@@ -15,12 +15,13 @@ NULL
 setMethod("otu_table<-", c("microbiomeMarker", "otu_table"), function(x, value) {
   microbiomeMarker(
     x@marker_table,
-    x@tax_table_orig,
-    value,
-    x@sam_data,
-    x@phy_tree,
-    x@refseq,
-    x@tax_table
+    x@norm_method,
+    x@diff_method,
+    otu_table = value,
+    sam_data = x@sam_data,
+    phy_tree = x@phy_tree,
+    refseq = x@refseq,
+    tax_table = x@tax_table
   )
 })
 
@@ -29,12 +30,13 @@ setMethod("otu_table<-", c("microbiomeMarker", "otu_table"), function(x, value) 
 setMethod("otu_table<-", c("microbiomeMarker", "phyloseq"), function(x, value) {
   microbiomeMarker(
     x@marker_table,
-    x@tax_table_orig,
-    otu_table(value),
-    x@sam_data,
-    x@phy_tree,
-    x@refseq,
-    x@tax_table
+    x@norm_method,
+    x@diff_method,
+    otu_table = otu_table(value),
+    sam_data = x@sam_data,
+    phy_tree = x@phy_tree,
+    refseq = x@refseq,
+    tax_table = x@tax_table
   )
 })
 
@@ -43,11 +45,12 @@ setMethod("otu_table<-", c("microbiomeMarker", "phyloseq"), function(x, value) {
 setMethod("otu_table<-", c("microbiomeMarker", "microbiomeMarker"), function(x, value) {
   microbiomeMarker(
     x@marker_table,
-    x@tax_table_orig,
-    otu_table(value),
-    x@sam_data,
-    x@phy_tree,
-    x@refseq,
-    x@tax_table
+    x@norm_method,
+    x@diff_method,
+    otu_table = otu_table(value),
+    sam_data = x@sam_data,
+    phy_tree = x@phy_tree,
+    refseq = x@refseq,
+    tax_table = x@tax_table
   )
 })

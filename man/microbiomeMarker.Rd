@@ -4,13 +4,20 @@
 \alias{microbiomeMarker}
 \title{Build microbiomeMarker-class objects}
 \usage{
-microbiomeMarker(marker_table, tax_table_orig, ...)
+microbiomeMarker(
+  marker_table = NULL,
+  norm_method = NULL,
+  diff_method = NULL,
+  ...
+)
 }
 \arguments{
-\item{marker_table}{a \code{\linkS4class{marker_table}} object
-differtial analysis}
+\item{marker_table}{a \code{\linkS4class{marker_table}} object differtial analysis.}
 
-\item{tax_table_orig}{a character vector, representing the summarized taxa}
+\item{norm_method}{character, method used to normalize the input \code{phyloseq}
+object.}
+
+\item{diff_method}{character, method used for microbiome marker identification.}
 
 \item{...}{arguments passed to \code{\link[phyloseq:phyloseq]{phyloseq::phyloseq()}}}
 }

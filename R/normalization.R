@@ -133,6 +133,8 @@ setMethod("normalize", "matrix",
   }
 )
 
+##### Four normalization methods do not save the norm factor: value, rarefy,
+##### clr and tss; where three methods save the norm factor: css, rle, tmm.
 
 #' Normalize feature table by rafefying such that all samples have the same
 #' number of total counts (library size).
@@ -168,8 +170,9 @@ norm_rarefy <- function(object,
     verbose = verbose
   )
 
-  # do not save the norm_factor, the norm factors are calculated based on the
-  # subsequently differential analysis method, e.g. edgeR, DESeq
+  # do not save the norm_factor
+  # the norm factors can be calculated in the subsequently differential
+  # analysis method, e.g. edgeR, DESeq
   object_rarefied
 }
 

@@ -39,6 +39,22 @@ validity_marker_table <- function(object) {
 
 setValidity("marker_table", validity_marker_table)
 
+################################################################################
+# A class may be defined as the union of other classes; that is, as a virtual
+# class defined as a superclass of several other classes. This is a way of
+# dealing with the expected scenarios in which one or more of the slot is not
+# available, in which case NULL will be used instead.
+################################################################################
+#' @importClassesFrom phyloseq taxonomyTable
+#' @keywords internal
+setClassUnion("marker_tableOrNULL", c("marker_table", "NULL"))
+#' @keywords internal
+setClassUnion("taxonomyTableOrNULL", c("taxonomyTable", "NULL"))
+#' @keywords internal
+setClassUnion("characterOrNULL", c("character", "NULL"))
+#' @keywords internal
+setClassUnion("numericOrNULL", c("numeric", "NULL"))
+
 # microbiomeMarker class --------------------------------------------------
 
 #' The main class for microbiomeMarker data
@@ -52,19 +68,24 @@ setValidity("marker_table", validity_marker_table)
 #' @aliases microbiomeMarker-class
 #' @importClassesFrom phyloseq phyloseq
 #' @slot marker_table a data.frame, a [`marker_table-class`] object.
-#' @slot tax_table_orig a [`phyloseq::taxonomyTable-class`] object, representing the
-#'   original unsummarized `tax_table`.
+#' @slot norm_method character, method used to normalize the input `phyloseq`
+#'   object.
+#' @slot diff_method character, method used for microbiome marker identification.
 #' @seealso [`phyloseq::phyloseq-class`], [`marker_table-class`], [summarize_taxa()]
 #' @exportClass microbiomeMarker
 `microbiomeMarker-class` <- setClass("microbiomeMarker",
   slots = c(
-    marker_table = "marker_table",
-    tax_table_orig = "taxonomyTable"
+    marker_table = "marker_tableOrNULL",
+    norm_method = "characterOrNULL",
+    # norm_factor = "numericOrNULL",
+    diff_method = "characterOrNULL"
   ),
   contains = "phyloseq",
   prototype = list(
     marker_table = NULL,
-    tax_table_orig = NULL
+    norm_method = NULL,
+    # norm_factor = NULL,
+    diff_method = NULL
   )
 )
 
@@ -72,31 +93,42 @@ setValidity("marker_table", validity_marker_table)
 #'
 #' This the constructor to build the [`microbiomeMarker-class`] object, don't use
 #' the `new()` constructor.
-#' @param marker_table a [`marker_table-class`] object
-#'   differtial analysis
-#' @param tax_table_orig a character vector, representing the summarized taxa
+#' @param marker_table a [`marker_table-class`] object differtial analysis.
+#' @param norm_method character, method used to normalize the input `phyloseq`
+#'   object.
+#' @param diff_method character, method used for microbiome marker identification.
 #' @param ... arguments passed to [phyloseq::phyloseq()]
 #' @seealso [phyloseq::phyloseq()],
 #' @references [Is it bad practice to access S4 objects slots directly using @?](https://stackoverflow.com/questions/9900134/is-it-bad-practice-to-access-s4-objects-slots-directly-using/9900822#9900822)
 #' @name microbiomeMarker
 #' @export
-microbiomeMarker <- function(marker_table, tax_table_orig, ...) {
+microbiomeMarker <- function(marker_table = NULL,
+                             norm_method = NULL,
+                             # norm_factor = NULL,
+                             diff_method = NULL,
+                             ...) {
   ps_slots <- list(...)
-  msg <- "slot `otu_table` and `tax_table` are required"
-  if (!length(ps_slots)) {
-    stop(msg)
+  ps_component_cls <- vapply(ps_slots, class, character(1))
+  if (!"otu_table" %in% ps_component_cls) {
+    stop("otu_table is required")
+  }
+  if (!"taxonomyTable" %in% ps_component_cls) {
+    stop("tax_table is required")
   }
 
-  ps <- phyloseq(...)
-  if (!inherits(ps, "phyloseq")) {
-    stop(msg)
-  }
-
-  `microbiomeMarker-class`(
+  new(
+    "microbiomeMarker",
     marker_table = marker_table,
-    tax_table_orig = tax_table_orig,
-    ps
+    norm_method = norm_method,
+    diff_method = diff_method,
+    ...
   )
+  # `microbiomeMarker-class`(
+  #   marker_table = marker_table,
+  #   norm_method = norm_method,
+  #   diff_method = diff_method,
+  #   phyloseq(...)
+  # )
 }
 
 # validity for microbiomeMarker, at least contains two slots: otu_table,
@@ -110,33 +142,41 @@ validity_microbiomeMarker <- function(object) {
   otu <- object@otu_table
   tax <- object@tax_table
   marker <- object@marker_table
-  tax_orig <- object@tax_table_orig
+  norm_method <- object@norm_method
+  # norm_factor <- object@norm_factor
+  diff_method <- object@diff_method
 
-  if (!inherits(tax_orig, "taxonomyTable")) {
-    msg <- c(msg, "`otu_table_orig` must be a otu_table object")
-  }
+  # if (!is.null(summary_tax) && !inherits(summary_tax, "taxonomyTable")) {
+  #   msg <- c(msg, "`summary_tax_table` must be a `taxonomyTable` object")
+  # }
 
-  # marker in marker_table must be contained in tax_table
-  if (!all(marker$feature %in% tax@.Data[, 1])) {
-    msg <- c(msg, "marker in marker_table must be contained in `taxa_names`")
+  # summarized taxa
+  if (is.null(tax)) {
+    msg <- c(msg, "tax_table is required")
   }
 
   if (is.null(otu)) {
-    msg <- c(msg, "slot `otu_table` is required")
+    msg <- c(msg, "otu_table is required")
   }
 
-  if (is.null(tax)) {
-    msg <- c(msg, "slot `tax_table` is required")
+  # if (!is.null(norm_factor) && length(norm_factor) != nsamples(object)) {
+  #   msg <- c(msg, "the length of `norm_factor` must be equal to sample numbers")
+  # }
+
+  # marker in marker_table must be contained in tax_table
+  if (!is.null(marker) && !is.null(tax) &&
+      !all(marker$feature %in% tax@.Data[, 1])) {
+    msg <- c(msg, "marker in marker_table must be contained in tax")
   }
 
-  if (nrow(otu) != nrow(tax)) {
+  if (!is.null(otu) && !is.null(tax) && nrow(otu) != nrow(tax)) {
     msg <- c(
       msg,
       "nrow of `otu_table` must be equal to the length of `tax_table()`"
     )
   }
 
-  if (nrow(marker) > nrow(otu)) {
+  if (!is.null(tax) && !is.null(marker) && nrow(marker) > nrow(tax)) {
     msg <- c(
       msg,
       paste0(

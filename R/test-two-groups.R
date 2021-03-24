@@ -172,18 +172,21 @@ test_two_groups <- function(ps,
     warning("No significant features were found, return all the features")
     marker <- microbiomeMarker(
       marker_table = marker_table(test_res),
-      tax_table_orig = tax_table(ps),
-      otu_table(t(abd), taxa_are_rows = TRUE),
-      tax
+      # tax_table = tax_table(ps),
+      sam_data = sample_data(ps_normed),
+      otu_table = otu_table(t(abd), taxa_are_rows = TRUE),
+      tax_table = tax
     )
   } else {
     row.names(test_filtered) <- paste0("marker", seq_len(nrow(test_filtered)))
     marker <- microbiomeMarker(
       marker_table = marker_table(test_filtered),
-      sample_data(ps),
-      tax_table_orig = tax_table(ps),
-      otu_table(t(abd), taxa_are_rows = TRUE),
-      tax
+      norm_method = get_norm_method(norm),
+      diff_method = method,
+      sam_data = sample_data(ps_normed),
+      # tax_table = tax_table(ps),
+      otu_table = otu_table(t(abd), taxa_are_rows = TRUE),
+      tax_table = tax
     )
   }
 

@@ -167,3 +167,15 @@ test_that(paste0("the size factors from `estimateSizeFactorForMatrix()` ",
   expect_equal(sf1, sf3)
 })
 
+
+# clr normalization
+test_that("gm_mean works well with NA values", {
+  expect_equal(gm_mean(c(1, NA, 2, 3)), gm_mean(c(1, 0, 2, 3)))
+  expect_equal(gm_mean(c(1, -1, 2, 3), na.rm = FALSE), gm_mean(c(1, 0, 2, 3)))
+})
+
+test_that("trans_clr works well with NA/infinite values",{
+  expect_equal(trans_clr(c(1, NA, 2, 3)), trans_clr(c(1, 0, 2, 3)))
+  # Actually，Inf will unlikely to appear
+  expect_equal(trans_clr(c(1, Inf, 2, 3)), c(0, 0, 0, 0))
+})

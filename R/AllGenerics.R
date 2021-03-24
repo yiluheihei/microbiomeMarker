@@ -50,7 +50,7 @@ setMethod("marker_table", "microbiomeMarker", function(object) {
   }
   microbiomeMarker(
     value,
-    object@tax_table_orig,
+    # object@summary_tax_table,
     object@otu_table,
     object@tax_table,
     object@phy_tree,
@@ -66,8 +66,31 @@ setMethod("marker_table", "microbiomeMarker", function(object) {
 #' @export
 setMethod("show", "microbiomeMarker", function(object){
   cat("microbiomeMarker-class inherited from phyloseq-class", fill = TRUE)
+  norm <- object@norm_method
+  if (!is.null(norm)) {
+    if (grepl("per-sample normalized", norm)) {
+      norm <- gsub(".*to ", "", norm)
+      cat(
+        "normalization: per-sample to value [", norm, "]", fill = TRUE
+      )
+    } else {
+      cat(
+        "normalization method:              [", norm, "]", fill = TRUE
+      )
+    }
+  }
+
+  if (!is.null(object@diff_method)) {
+    cat(
+      "microbiome marker identity method: [",
+      object@diff_method,
+      "]",
+      fill = TRUE
+    )
+  }
+
   cat(
-    "marker_table  Marker Table:      [",
+    "marker_table() Marker Table:       [",
     nrow(object@marker_table), "microbiome markers with",
     ncol(object@marker_table), "variables ]",
     fill = TRUE
@@ -75,7 +98,7 @@ setMethod("show", "microbiomeMarker", function(object){
 
   # print otu_table (always there).
   cat(
-    "otu_table()   OTU Table:         [",
+    "otu_table()    OTU Table:          [",
     ntaxa(otu_table(object)), "taxa and ",
     nsamples(otu_table(object)), "samples ]",
     fill = TRUE
@@ -84,7 +107,7 @@ setMethod("show", "microbiomeMarker", function(object){
   # print Sample Data if there
   if(!is.null(sample_data(object, FALSE))){
     cat(
-      "sample_data() Sample Data:       [", dim(sample_data(object))[1],
+      "sample_data()  Sample Data:        [", dim(sample_data(object))[1],
       "samples by ", dim(sample_data(object))[2],
       "sample variables ]",
       fill = TRUE
@@ -94,7 +117,7 @@ setMethod("show", "microbiomeMarker", function(object){
   # print tax Tab if there
   if(!is.null(tax_table(object, FALSE))){
     cat(
-      "tax_table()   Taxonomy Table:    [", dim(tax_table(object))[1],
+      "tax_table()    Taxonomy Table:     [", dim(tax_table(object))[1],
       "taxa by", dim(tax_table(object))[2],
       "taxonomic ranks ]",
       fill = TRUE
@@ -104,7 +127,7 @@ setMethod("show", "microbiomeMarker", function(object){
   # print tree if there
   if(!is.null(phy_tree(object, FALSE))){
     cat(
-      "phy_tree()    Phylogenetic Tree: [", ntaxa(phy_tree(object)),
+      "phy_tree()    Phylogenetic Tree:   [", ntaxa(phy_tree(object)),
       "tips and", phy_tree(object)$Nnode,
       "internal nodes ]",
       fill = TRUE
@@ -115,7 +138,7 @@ setMethod("show", "microbiomeMarker", function(object){
   if(!is.null(refseq(object, FALSE))){
     cat(
       "refseq()      ", class(refseq(object))[1],
-      ":      [", ntaxa(refseq(object)),
+      ":         [", ntaxa(refseq(object)),
       " reference sequences ]",
       fill = TRUE
     )

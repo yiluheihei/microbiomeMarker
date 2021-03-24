@@ -119,6 +119,7 @@ lefse <- function(ps,
   # normalization
   norm_para <- c(norm_para, method = norm, object = list(ps))
   ps_normed <- do.call(normalize, norm_para)
+  # nf <- get_norm_factors(ps_normed)
   # ps <- normalize(ps, norm, ...)
 
   sample_meta <- sample_data(ps_normed)
@@ -205,10 +206,13 @@ lefse <- function(ps,
 
   mm <- microbiomeMarker(
     marker_table = lefse_out,
-    tax_table_orig = tax_table(ps),
-    otu_table(otus, taxa_are_rows = TRUE), # normalized feature table
-    sample_data(ps),
-    tax
+    norm_method = get_norm_method(norm),
+    # norm_factor = nf,
+    diff_method = "lefse",
+    # tax_table = tax_table(ps),
+    otu_table = otu_table(otus, taxa_are_rows = TRUE), # normalized feature table
+    sam_data = sample_data(ps_normed), # new var norm_factor (if it is calculated in normalize)
+    tax_table = tax
   )
 
   mm

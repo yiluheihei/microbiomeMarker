@@ -117,6 +117,13 @@ run_metagenomeseq <- function(ps,
     )
   }
 
+  sl <- ifelse("sl" %in% names(norm_para), norm_para[["sl"]], 1000)
+  counts_normalized <- metagenomeSeq::MRcounts(
+    mgs_summarized,
+    norm = TRUE,
+    sl = sl
+  )
+
   mod <- model.matrix(~groups)
 
   if (model == "fitFeatureModel") {
@@ -184,10 +191,12 @@ run_metagenomeseq <- function(ps,
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),
-    sample_data(ps),
-    tax_table_orig = tax_table(ps_normed),
-    otu_table(ps_summarized),
-    tax_table(ps_summarized)
+    norm_method = get_norm_method(norm),
+    diff_method = "metagenomeSeq",
+    otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE),
+    sam_data = sample_data(ps_normed),
+    # tax_table = tax_table(ps_summarized),
+    tax_table = tax_table(ps_summarized)
   )
 
   marker
