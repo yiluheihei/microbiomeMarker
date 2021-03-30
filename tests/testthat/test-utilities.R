@@ -32,3 +32,22 @@ test_that("get_norm_method works well", {
   )
   expect_identical(get_norm_method("a"), "a")
 })
+
+
+test_that("check_samples, at least one non zero features in a sample", {
+  test_ot <- otu_table(
+    cbind(matrix(1:12, 6, 2), 0),
+    taxa_are_rows = TRUE
+  )
+  test_sa <- sample_data(
+    data.frame(sample = c("sa1", "sa2", "sa3"))
+  )
+  test_ps <- phyloseq(test_ot, test_sa)
+
+  test_ot2 <- otu_table(
+    cbind(matrix(1:12, 6, 2)),
+    taxa_are_rows = TRUE
+  )
+  expect_identical(check_samples(test_ps), "sa3")
+  expect_null(check_samples(test_ot2))
+})

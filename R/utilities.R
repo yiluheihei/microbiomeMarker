@@ -103,7 +103,21 @@ check_var_in_meta <- function(var, sample_meta) {
 
 # preprocess of phyloseq object, including keep taxa in rows,
 # filter taxa whose abundance is zero, fix duplicated tax
+# filter samples whose library size is zero
+#' @importFrom phyloseq prune_samples
 preprocess_ps <- function(ps) {
+  zero_sample <- check_samples(ps)
+  if (!is.null(zero_sample)) {
+    warning(
+      "The library size of sample(s): ",
+      paste(zero_sample, collapse = ", "),
+      " is/are zero, and will be removed in the subsequent analysis."
+    )
+
+    keep <- setdiff(sample_names(ps), zero_sample)
+    ps <- prune_samples(keep, ps)
+  }
+
   # keep taxa in rows
   ps <- keep_taxa_in_rows(ps)
   # filter the taxa whose abundance is zero
@@ -141,7 +155,7 @@ keep_taxa_in_rows <- function(ps) {
 #' @keywords internal
 #' @noRd
 #' @references https://github.com/lch14forever/microbiomeViz/blob/94cbfe452a735aadf88733b27b8221a03f450a55/R/utils.R#L68-L86
-fix_duplicate_tax <-  function(ps) {
+fix_duplicate_tax <- function(ps) {
   # convert na to Unknown first
   ps <- fix_na_tax(ps)
 
@@ -225,4 +239,20 @@ get_norm_method <- function(norm) {
   )
 
   new_norm
+}
+
+
+# check samples in ps, make sure at least one non zero features in a sample
+check_samples <- function(ps) {
+  if (!taxa_are_rows(ps)) {
+    ps <- t(ps)
+  }
+  lib_size <- colSums(otu_table(ps))
+  zero_ind <- which(lib_size == 0)
+
+  if (length(zero_ind) == 0) {
+    return(NULL)
+  }
+
+  return(sample_names(ps)[zero_ind])
 }
