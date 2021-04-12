@@ -1,0 +1,12 @@
+                                                                                                              feature
+marker1                                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
+marker2                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
+marker3                                k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae
+marker4 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+marker5                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella
+        enrich_group effect_size       pvalue       padj
+marker1     Cesarean   -3.518274 0.0004343629 0.04908301
+marker2     Cesarean   -3.518274 0.0004343629 0.04908301
+marker3      Vaginal    3.674617 0.0002382063 0.02739372
+marker4     Cesarean   -3.518274 0.0004343629 0.04908301
+marker5      Vaginal    3.674617 0.0002382063 0.02739372

@@ -116,6 +116,9 @@ microbiomeMarker <- function(marker_table = NULL,
     stop("tax_table is required")
   }
 
+  # set the rownmaes of marker_table as "markern"
+  rownames(marker_table) <- paste0("marker", seq_len(nrow(marker_table)))
+
   new(
     "microbiomeMarker",
     marker_table = marker_table,

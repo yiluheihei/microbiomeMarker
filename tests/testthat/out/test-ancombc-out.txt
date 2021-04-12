@@ -1,0 +1,7 @@
+microbiomeMarker-class inherited from phyloseq-class
+normalization method:              [ none ]
+microbiome marker identity method: [ ancombc ]
+marker_table() Marker Table:       [ 5 microbiome markers with 5 variables ]
+otu_table()    OTU Table:          [ 115 taxa and  875 samples ]
+sample_data()  Sample Data:        [ 875 samples by  12 sample variables ]
+tax_table()    Taxonomy Table:     [ 115 taxa by 1 taxonomic ranks ]

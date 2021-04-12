@@ -256,3 +256,22 @@ check_samples <- function(ps) {
 
   return(sample_names(ps)[zero_ind])
 }
+
+
+# remove samples with missing values for any variable specified in the group
+remove_na_samples <- function(ps, group_var) {
+  groups <- sample_data(ps)[[group_var]]
+  na_idx <- is.na(groups)
+  if (all(!na_idx)) {
+    return(ps)
+  }
+
+  sample_nms <- sample_names(ps)
+  warning(
+    "remove sample(s): ", paste(sample_nms[na_idx], collapse = ","),
+    ", which with missing value in `", group_var, "`"
+  )
+  ps <- phyloseq::prune_samples(sample_nms[!na_idx], ps)
+
+  ps
+}

@@ -51,3 +51,21 @@ test_that("check_samples, at least one non zero features in a sample", {
   expect_identical(check_samples(test_ps), "sa3")
   expect_null(check_samples(test_ot2))
 })
+
+test_that("remove samples with missing values in the specified var", {
+  otu <- otu_table(
+    data.frame(
+      s1 = runif(10),
+      s2 = runif(10),
+      s3 = runif(10)
+    ),
+    taxa_are_rows = TRUE
+  )
+  tax <- tax_table(data.frame(feature = paste0("sp", 1:10)) %>% as.matrix())
+  sam <- data.frame(group = c(NA, "A", "B"))
+  rownames(sam) <- paste0("s", 1:3)
+  test_ps <- phyloseq(otu, tax, sample_data(sam))
+
+  new_samples <- sample_names(remove_na_samples(test_ps, "group"))
+  expect_identical(new_samples, c("s2", "s3"))
+})

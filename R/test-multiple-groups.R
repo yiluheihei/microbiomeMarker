@@ -167,7 +167,7 @@ test_multiple_groups <- function(ps,
     marker <- microbiomeMarker(
       marker_table = marker_table(res),
       # tax_table = tax_table(ps),
-      otu_table = otu_table(t(abd), taxa_are_rows = TRUE),
+      otu_table = otu_table(t(abd_norm), taxa_are_rows = TRUE),
       tax_table = tax,
       sam_data = sample_data(ps_normed)
     )
@@ -179,7 +179,7 @@ test_multiple_groups <- function(ps,
       diff_method = method,
       sam_data = sample_data(ps_normed),
       # tax_table = tax_table(ps),
-      otu_table = otu_table(t(abd), taxa_are_rows = TRUE),
+      otu_table = otu_table(t(abd_norm), taxa_are_rows = TRUE),
       tax_table = tax
     )
   }

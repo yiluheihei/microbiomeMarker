@@ -324,7 +324,14 @@ mm_ancom <- run_ancom(ecam, "delivery", p_adjust = "none", theta = 0.6)
 marker_table(mm_ancom)
 ```
 
-## Visulatiton
+## ANCOMBC
+
+```{r ancombc, warning=FALSE}
+mm_ancombc <- run_ancombc(ecam, "delivery", group_var = "delivery")
+marker_table(mm_ancombc)
+```
+
+## Visualzatiton
 
 ### Cladogram plot
 

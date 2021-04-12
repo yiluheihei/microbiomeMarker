@@ -107,6 +107,20 @@ ps <- import_qiime2(
   otu_qza = otuqza_file, taxa_qza = taxaqza_file,
   sam_tab = sample_file, tree_qza = treeqza_file
 )
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
 ps
 #> phyloseq-class experiment-level object
 #> otu_table()   OTU Table:         [ 770 taxa and 34 samples ]
@@ -192,10 +206,12 @@ mm <- lefse(
 # lefse return a microbioMarker class inherits from phyloseq
 mm
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 29 microbiome markers with 5 variables ]
-#> otu_table()   OTU Table:         [ 132 taxa and  30 samples ]
-#> sample_data() Sample Data:       [ 30 samples by  1 sample variables ]
-#> tax_table()   Taxonomy Table:    [ 132 taxa by 1 taxonomic ranks ]
+#> normalization: per-sample to value [ 1e+06 ]
+#> microbiome marker identity method: [ lefse ]
+#> marker_table() Marker Table:       [ 29 microbiome markers with 5 variables ]
+#> otu_table()    OTU Table:          [ 132 taxa and  30 samples ]
+#> sample_data()  Sample Data:        [ 30 samples by  1 sample variables ]
+#> tax_table()    Taxonomy Table:     [ 132 taxa by 1 taxonomic ranks ]
 ```
 
 The microbiome biomarker information was stored in a new data structure
@@ -260,10 +276,12 @@ two_group_welch <- test_two_groups(
 # three significantly differential genera (marker)
 two_group_welch
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 3 microbiome markers with 5 variables ]
-#> otu_table()   OTU Table:         [ 244 taxa and  39 samples ]
-#> sample_data() Sample Data:       [ 39 samples by  9 sample variables ]
-#> tax_table()   Taxonomy Table:    [ 244 taxa by 1 taxonomic ranks ]
+#> normalization method:              [ TSS ]
+#> microbiome marker identity method: [ welch.test ]
+#> marker_table() Marker Table:       [ 3 microbiome markers with 5 variables ]
+#> otu_table()    OTU Table:          [ 244 taxa and  39 samples ]
+#> sample_data()  Sample Data:        [ 39 samples by  9 sample variables ]
+#> tax_table()    Taxonomy Table:     [ 244 taxa by 1 taxonomic ranks ]
 # details of result of the three markers
 head(marker_table(two_group_welch))
 #>                                     feature enrich_group     diff_mean
@@ -298,10 +316,12 @@ multiple_group_anova <-  test_multiple_groups(
 # 24 markers
 multiple_group_anova
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 24 microbiome markers with 5 variables ]
-#> otu_table()   OTU Table:         [ 238 taxa and  32 samples ]
-#> sample_data() Sample Data:       [ 32 samples by  9 sample variables ]
-#> tax_table()   Taxonomy Table:    [ 238 taxa by 1 taxonomic ranks ]
+#> normalization method:              [ TSS ]
+#> microbiome marker identity method: [ anova ]
+#> marker_table() Marker Table:       [ 24 microbiome markers with 5 variables ]
+#> otu_table()    OTU Table:          [ 238 taxa and  32 samples ]
+#> sample_data()  Sample Data:        [ 32 samples by  9 sample variables ]
+#> tax_table()    Taxonomy Table:     [ 238 taxa by 1 taxonomic ranks ]
 head(marker_table(multiple_group_anova))
 #>                                     feature enrich_group eta_squared
 #> marker1                    p__Bacteroidetes Enterotype 1   0.5821619
@@ -395,13 +415,57 @@ mm_mgs <- run_metagenomeseq(
   pvalue_cutoff = 0.1, 
   p_adjust = "fdr"
 )
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
 #> Default value being used.
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
 mm_mgs
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 11 microbiome markers with 5 variables ]
-#> otu_table()   OTU Table:         [ 786 taxa and  43 samples ]
-#> sample_data() Sample Data:       [ 43 samples by  1 sample variables ]
-#> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
+#> normalization method:              [ CSS ]
+#> microbiome marker identity method: [ metagenomeSeq ]
+#> marker_table() Marker Table:       [ 11 microbiome markers with 5 variables ]
+#> otu_table()    OTU Table:          [ 786 taxa and  43 samples ]
+#> sample_data()  Sample Data:        [ 43 samples by  2 sample variables ]
+#> tax_table()    Taxonomy Table:     [ 786 taxa by 1 taxonomic ranks ]
 ```
 
 ## DESeq2
@@ -415,13 +479,57 @@ mm_des <- run_deseq2(
   pvalue_cutoff = 0.05, 
   p_adjust = "fdr"
 )
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
 #> converting counts to integer mode
 mm_des
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 47 microbiome markers with 5 variables ]
-#> otu_table()   OTU Table:         [ 786 taxa and  43 samples ]
-#> sample_data() Sample Data:       [ 43 samples by  1 sample variables ]
-#> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
+#> normalization method:              [ RLE ]
+#> microbiome marker identity method: [ DESeq2 ]
+#> marker_table() Marker Table:       [ 47 microbiome markers with 5 variables ]
+#> otu_table()    OTU Table:          [ 786 taxa and  43 samples ]
+#> sample_data()  Sample Data:        [ 43 samples by  2 sample variables ]
+#> tax_table()    Taxonomy Table:     [ 786 taxa by 1 taxonomic ranks ]
 ```
 
 ## edgeR
@@ -433,12 +541,56 @@ mm_edger <- run_edger(
   pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
+#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
+#> Also defined by 'tidytree'
 mm_edger
 #> microbiomeMarker-class inherited from phyloseq-class
-#> marker_table  Marker Table:      [ 34 microbiome markers with 5 variables ]
-#> otu_table()   OTU Table:         [ 786 taxa and  43 samples ]
-#> sample_data() Sample Data:       [ 43 samples by  1 sample variables ]
-#> tax_table()   Taxonomy Table:    [ 786 taxa by 1 taxonomic ranks ]
+#> normalization method:              [ TMM ]
+#> microbiome marker identity method: [ edgeR ]
+#> marker_table() Marker Table:       [ 34 microbiome markers with 5 variables ]
+#> otu_table()    OTU Table:          [ 786 taxa and  43 samples ]
+#> sample_data()  Sample Data:        [ 43 samples by  2 sample variables ]
+#> tax_table()    Taxonomy Table:     [ 786 taxa by 1 taxonomic ranks ]
 ```
 
 ## ANCOM
@@ -446,27 +598,50 @@ mm_edger
 ``` r
 mm_ancom <- run_ancom(ecam, "delivery", p_adjust = "none", theta = 0.6)
 marker_table(mm_ancom)
-#>                                                                                                          feature
-#> 3                                                                                  k__Bacteria|p__Actinobacteria
-#> 4                                                                                   k__Bacteria|p__Bacteroidetes
-#> 10                                                               k__Bacteria|p__Actinobacteria|c__Actinobacteria
-#> 12                                                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia
-#> 23                                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
-#> 25                                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales
-#> 41                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
-#> 71 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
-#>    enrich_group CLR_diff_mean   W
-#> 3      Cesarean     0.2903173 104
-#> 4       Vaginal     0.1561744  84
-#> 10     Cesarean     0.3047846 104
-#> 12      Vaginal     0.1561744  84
-#> 23     Cesarean     0.3759503 103
-#> 25      Vaginal     0.1561744  84
-#> 41     Cesarean     0.3759503 103
-#> 71     Cesarean     0.3759503 103
+#>                                                                                                                feature
+#> marker1                                                                                  k__Bacteria|p__Actinobacteria
+#> marker2                                                                k__Bacteria|p__Actinobacteria|c__Actinobacteria
+#> marker3                                           k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
+#> marker4                                        k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales
+#> marker5                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
+#> marker6                                 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae
+#> marker7                    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae
+#> marker8  k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+#> marker9                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella
+#> marker10    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae|g__Pseudomonas
+#>          enrich_group CLR_diff_mean   W
+#> marker1      Cesarean    0.29031730 105
+#> marker2      Cesarean    0.30478464 105
+#> marker3      Cesarean    0.37595028 106
+#> marker4      Cesarean    0.08923968  73
+#> marker5      Cesarean    0.37595028 106
+#> marker6      Cesarean    0.20208170  83
+#> marker7       Vaginal    0.03589234  70
+#> marker8      Cesarean    0.37595028 106
+#> marker9      Cesarean    0.20208170  83
+#> marker10      Vaginal    0.03589234  70
 ```
 
-## Visulatiton
+## ANCOMBC
+
+``` r
+mm_ancombc <- run_ancombc(ecam, "delivery", group_var = "delivery")
+marker_table(mm_ancombc)
+#>                                                                                                               feature
+#> marker1                                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
+#> marker2                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
+#> marker3                                k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae
+#> marker4 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+#> marker5                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella
+#>         enrich_group effect_size       pvalue       padj
+#> marker1     Cesarean   -3.518274 0.0004343629 0.04908301
+#> marker2     Cesarean   -3.518274 0.0004343629 0.04908301
+#> marker3      Vaginal    3.674617 0.0002382063 0.02739372
+#> marker4     Cesarean   -3.518274 0.0004343629 0.04908301
+#> marker5      Vaginal    3.674617 0.0002382063 0.02739372
+```
+
+## Visualzatiton
 
 ### Cladogram plot
 

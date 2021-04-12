@@ -1,7 +1,7 @@
-                        feature enrich_group CLR_diff_mean   W
-1                   k__Bacteria      Vaginal       0.04855   7
-2                k__Bacteria|__     Cesarean       0.08871   5
-3 k__Bacteria|p__Actinobacteria     Cesarean       0.29032 104
-4  k__Bacteria|p__Bacteroidetes      Vaginal       0.15617  78
-6   k__Bacteria|p__Fusobacteria     Cesarean       0.10031   7
-7 k__Bacteria|p__Proteobacteria      Vaginal       0.11303   7
+                              feature enrich_group CLR_diff_mean   W
+marker1                   k__Bacteria      Vaginal       0.04855   7
+marker2                k__Bacteria|__     Cesarean       0.08871   5
+marker3 k__Bacteria|p__Actinobacteria     Cesarean       0.29032 104
+marker4  k__Bacteria|p__Bacteroidetes      Vaginal       0.15617  78
+marker5   k__Bacteria|p__Fusobacteria     Cesarean       0.10031   7
+marker6 k__Bacteria|p__Proteobacteria      Vaginal       0.11303   7
