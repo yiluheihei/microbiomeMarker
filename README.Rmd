@@ -278,7 +278,7 @@ plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
 
 ## metagenomeSeq
 
-```{r metagenomeSeq,warning=FALSE}
+```{r metagenomeSeq,warning=FALSE,message=FALSE}
 mm_mgs <- run_metagenomeseq(
   pediatric_ibd, 
   norm = "CSS",
@@ -293,7 +293,7 @@ mm_mgs
 
 ## DESeq2
 
-```{r deseq,warning=FALSE}
+```{r deseq,warning=FALSE,message=FALSE}
 mm_des <- run_deseq2(
   pediatric_ibd, 
   "Class", 
@@ -307,7 +307,7 @@ mm_des
 
 ## edgeR
 
-```{r edger,warning=FALSE}
+```{r edger,warning=FALSE,message=FALSE}
 mm_edger <- run_edger(
   pediatric_ibd, 
   "Class", "Control", "CD", 
@@ -329,6 +329,35 @@ marker_table(mm_ancom)
 ```{r ancombc, warning=FALSE}
 mm_ancombc <- run_ancombc(ecam, "delivery", group_var = "delivery")
 marker_table(mm_ancombc)
+```
+
+## Superivised learning
+
+### Logistic regression
+
+```{r lr,warning=FALSE}
+mm_lr <- run_sl(enterotypes_arumugam, "Gender", method = "LR")
+marker_table(mm_lr)
+```
+
+### Random forest
+
+```{r rf,warning=FALSE}
+# must specify the importance
+mm_rf <- run_sl(
+  enterotypes_arumugam, 
+  "Gender", 
+  method = "RF", 
+  importance = "impurity"
+)
+marker_table(mm_rf)
+```
+
+### Support vector machine
+
+```{r svm,warning=FALSE}
+mm_svm <- run_sl(enterotypes_arumugam, "Gender", method = "SVM")
+marker_table(mm_svm)
 ```
 
 ## Visualzatiton

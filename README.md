@@ -387,11 +387,16 @@ markers
 # between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
 pht@result$"p__Bacteroidetes|g__Bacteroides"
 #> DataFrame with 3 rows and 5 columns
-#>               comparions  diff_mean      pvalue   ci_lower   ci_upper
-#>              <character>  <numeric>   <numeric>  <numeric>  <numeric>
-#> 1 Enterotype 2-Enterot.. -0.2813948 4.77015e-08 -0.3713469 -0.1914428
-#> 2 Enterotype 3-Enterot.. -0.2604547 1.63635e-09 -0.3312286 -0.1896808
-#> 3 Enterotype 3-Enterot..  0.0209401 7.88993e-01 -0.0575765  0.0994567
+#>                                       comparions  diff_mean      pvalue
+#>                                      <character>  <numeric>   <numeric>
+#> Enterotype 2-Enterotype 1 Enterotype 2-Enterot.. -0.2813948 4.77015e-08
+#> Enterotype 3-Enterotype 1 Enterotype 3-Enterot.. -0.2604547 1.63635e-09
+#> Enterotype 3-Enterotype 2 Enterotype 3-Enterot..  0.0209401 7.88993e-01
+#>                             ci_lower   ci_upper
+#>                            <numeric>  <numeric>
+#> Enterotype 2-Enterotype 1 -0.3713469 -0.1914428
+#> Enterotype 3-Enterotype 1 -0.3312286 -0.1896808
+#> Enterotype 3-Enterotype 2 -0.0575765  0.0994567
 ```
 
 Visualization of post test result of a given feature.
@@ -415,49 +420,6 @@ mm_mgs <- run_metagenomeseq(
   pvalue_cutoff = 0.1, 
   p_adjust = "fdr"
 )
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Default value being used.
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
 mm_mgs
 #> microbiomeMarker-class inherited from phyloseq-class
 #> normalization method:              [ CSS ]
@@ -479,49 +441,6 @@ mm_des <- run_deseq2(
   pvalue_cutoff = 0.05, 
   p_adjust = "fdr"
 )
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> converting counts to integer mode
 mm_des
 #> microbiomeMarker-class inherited from phyloseq-class
 #> normalization method:              [ RLE ]
@@ -541,48 +460,6 @@ mm_edger <- run_edger(
   pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
-#> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'
-#> Also defined by 'tidytree'
 mm_edger
 #> microbiomeMarker-class inherited from phyloseq-class
 #> normalization method:              [ TMM ]
@@ -639,6 +516,73 @@ marker_table(mm_ancombc)
 #> marker3      Vaginal    3.674617 0.0002382063 0.02739372
 #> marker4     Cesarean   -3.518274 0.0004343629 0.04908301
 #> marker5      Vaginal    3.674617 0.0002382063 0.02739372
+```
+
+## Superivised learning
+
+### Logistic regression
+
+``` r
+mm_lr <- run_sl(enterotypes_arumugam, "Gender", method = "LR")
+#> Loading required package: lattice
+#> Loading required package: grid
+#> Registered S3 method overwritten by 'quantmod':
+#>   method            from
+#>   as.zoo.data.frame zoo
+marker_table(mm_lr)
+#>                                        feature enrich_group        imp
+#> marker1        p__Proteobacteria|g__Aliivibrio            M 100.000000
+#> marker2        p__Firmicutes|g__Heliobacterium            M  69.363430
+#> marker3        p__Proteobacteria|g__Bordetella            F  65.819479
+#> marker4     p__Fusobacteria|g__Streptobacillus            F  61.682589
+#> marker5           p__Proteobacteria|g__Pantoea            F  58.638836
+#> marker6    p__Proteobacteria|g__Bradyrhizobium            M  32.194840
+#> marker7             p__Firmicutes|g__Bulleidia            F  28.061534
+#> marker8    p__Firmicutes|g__Desulfitobacterium            F  13.434122
+#> marker9  p__Proteobacteria|g__Magnetospirillum            M   4.015931
+#> marker10        p__Firmicutes|g__Anaerotruncus            F   1.435445
+```
+
+### Random forest
+
+``` r
+# must specify the importance
+mm_rf <- run_sl(
+  enterotypes_arumugam, 
+  "Gender", 
+  method = "RF", 
+  importance = "impurity"
+)
+marker_table(mm_rf)
+#>                                     feature enrich_group       imp
+#> marker1      p__Firmicutes|g__Anaerotruncus            F 100.00000
+#> marker2   p__Bacteroidetes|g__Porphyromonas            F  95.98386
+#> marker3    p__Firmicutes|g__Lachnospiraceae            F  66.05799
+#> marker4      p__Proteobacteria|g__Aeromonas            F  52.34648
+#> marker5     p__Proteobacteria|g__Bordetella            F  47.47112
+#> marker6  p__Proteobacteria|g__Campylobacter            F  41.37426
+#> marker7    p__Firmicutes|g__Subdoligranulum            F  41.08796
+#> marker8        p__Proteobacteria|g__Pantoea            F  36.76501
+#> marker9      p__Firmicutes|g__Coprobacillus            F  31.09651
+#> marker10       p__Firmicutes|g__Selenomonas            F  30.85960
+```
+
+### Support vector machine
+
+``` r
+mm_svm <- run_sl(enterotypes_arumugam, "Gender", method = "SVM")
+marker_table(mm_svm)
+#>                                            feature enrich_group       imp
+#> marker1        p__Firmicutes|g__Peptostreptococcus            M 100.00000
+#> marker2  p__Proteobacteria|g__Escherichia/Shigella            F  97.81022
+#> marker3          p__Firmicutes|g__Faecalibacterium            F  96.35036
+#> marker4             p__Firmicutes|g__Clostridiales            F  93.43066
+#> marker5             p__Firmicutes|g__Anaerotruncus            F  91.24088
+#> marker6               p__Firmicutes|g__Mitsuokella            M  86.86131
+#> marker7    p__Proteobacteria|g__Enterobacteriaceae            F  82.48175
+#> marker8           p__Firmicutes|g__Acidaminococcus            F  78.83212
+#> marker9           p__Proteobacteria|g__Citrobacter            F  78.10219
+#> marker10          p__Proteobacteria|g__Haemophilus            M  74.45255
 ```
 
 ## Visualzatiton
