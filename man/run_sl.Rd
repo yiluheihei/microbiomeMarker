@@ -12,7 +12,7 @@ run_sl(
   norm_para = list(),
   nfolds = 3,
   nrepeats = 3,
-  sampling = "smote",
+  sampling = NULL,
   tune_length = 5,
   top_n = 10,
   method = c("LR", "RF", "SVM"),
