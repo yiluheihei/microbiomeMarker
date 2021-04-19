@@ -1,5 +1,4 @@
 test_that("supervised machine learning method workds properly", {
-  skip_on_bioc()
   mm_lr <- run_sl(enterotypes_arumugam, "Gender", method = "LR")
   expect_identical(nmarker(mm_lr), 10L)
 
