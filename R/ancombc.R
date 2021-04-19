@@ -18,8 +18,6 @@
 #' @param norm the methods used to normalize the microbial abundance data. See
 #'   [`normalize()`] for more details.
 #'   Options include:
-#'   * a integer, e.g. 1e6 (default), indicating pre-sample normalization of
-#'     the sum of the values to 1e6.
 #'   * "none": do not normalize.
 #'   * "rarefy": random subsampling counts to the smallest library size in the
 #'     data set.
@@ -37,6 +35,7 @@
 #'   * "CSS": cumulative sum scaling, calculates scaling factors as the
 #'     cumulative sum of gene abundances up to a data-derived threshold.
 #'   * "CLR": centered log-ratio normalization.
+#'   * "CPM": pre-sample normalization of the sum of the values to 1e+06.
 #' @param norm_para  named `list`. other arguments passed to specific
 #'   normalization methods.  Most users will not need to pass any additional
 #'   arguments here.

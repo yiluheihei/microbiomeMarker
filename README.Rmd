@@ -174,7 +174,7 @@ data("spontaneous_colitis")
 # add prefix of ranks
 mm <- lefse(
   spontaneous_colitis, 
-  norm = 1e6, 
+  norm = "CPM", 
   class = "class", 
   multicls_strat = TRUE
 )

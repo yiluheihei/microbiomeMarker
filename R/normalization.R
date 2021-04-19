@@ -8,8 +8,6 @@
 #'   [phyloseq::otu_table-class] object.
 #' @param method the methods used to normalize the microbial abundance data.
 #'   Options includes:
-#'   * a integer, e.g. 1e6, indicating pre-sample normalization of the sum of
-#'     the values to 1e6.
 #'   * "none": do not normalize.
 #'   * "rarefy": random subsampling counts to the smallest library size in the
 #'     data set.
@@ -27,6 +25,7 @@
 #'   * "CSS": cumulative sum scaling, calculates scaling factors as the
 #'     cumulative sum of gene abundances up to a data-derived threshold.
 #'   * "CLR": centered log-ratio normalization.
+#'   * "CPM": pre-sample normalization of the sum of the values to 1e+06.
 #' @param ... other arguments passed to the corresponding normalization
 #'   methods.
 #' @seealso [edgeR::calcNormFactors()],[DESeq2::estimateSizeFactorsForMatrix()],
@@ -70,7 +69,8 @@ setMethod("normalize", "otu_table",
   function(object,
            method = "TSS",
            ...) {
-    if (method %in% c("none", "rarefy", "TSS", "TMM", "RLE", "CSS", "CLR")) {
+    methods <- c("none", "rarefy", "TSS", "TMM", "RLE", "CSS", "CLR", "CPM")
+    if (method %in% methods) {
       object_normed <- switch(method,
         none = object,
         rarefy = norm_rarefy(object, ...),
@@ -78,14 +78,13 @@ setMethod("normalize", "otu_table",
         TMM = norm_tmm(object, ...),
         RLE = norm_rle(object, ...),
         CSS = norm_css(object, ...),
-        CLR = norm_clr(object)
+        CLR = norm_clr(object),
+        CPM = norm_cpm(object)
       )
-    } else if (is.numeric(method)) {
-      object_normed <- norm_value(object, normalization = method)
     } else {
       stop(
         "`method` must be one of none, rarefy, TSS,",
-        " TMM, RLE, CSS, CLR, or an integer",
+        " TMM, RLE, CSS, CLR, or CPM",
         call. = FALSE
       )
     }
@@ -378,22 +377,20 @@ trans_clr <- function(x, base = exp(1)) {
   return(x)
 }
 
-#' Normalize the sum of values of each sample to a given value
+#' Normalize the sum of values of each sample to million (counts per million)
 #'
-#' `norm_value`: This normalization method is from the original LEfSe algorithm,
+#' `norm_cpm`: This normalization method is from the original LEfSe algorithm,
 #' recommended when very low values are present (as shown in the LEfSe galaxy).
 #'
 #' @param object a [phyloseq::phyloseq-class] or [phyloseq::otu_table-class]
-#' @param normalization  a numeric, set the normalization value, return the
-#'   feature itself if not supported.
 #' @export
 #' @rdname normalize-methods
-#' @aliases norm_value
+#' @aliases norm_cpm
 #' @importFrom phyloseq transform_sample_counts
-norm_value <- function(object, normalization) {
-  if (missing(normalization)) {
-    return(object)
-  }
+norm_cpm <- function(object) {
+  # if (missing(normalization)) {
+  #   return(object)
+  # }
 
   otu <- as(otu_table(object), "matrix") %>%
     as.data.frame()
@@ -416,7 +413,7 @@ norm_value <- function(object, normalization) {
     ## e.g. https://github.com/yiluheihei/microbiomeMarker/issues/13
     ps_normed <- transform_sample_counts(
       object,
-      function(x) x * normalization/ sum(x[single_indx])
+      function(x) x * 1e+06/ sum(x[single_indx])
     )
 
     # lib_size <- purrr::map_dbl(otu, ~ sum(.x[single_indx]))
@@ -428,7 +425,7 @@ norm_value <- function(object, normalization) {
   } else {
     ps_normed <- transform_sample_counts(
       object,
-      function(x) x * normalization / sum(x)
+      function(x) x * 1e+06 / sum(x)
     )
   }
 

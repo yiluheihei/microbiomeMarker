@@ -12,7 +12,7 @@
 \alias{norm_rle}
 \alias{norm_tmm}
 \alias{norm_clr}
-\alias{norm_value}
+\alias{norm_cpm}
 \title{Normalize the microbial abundance data}
 \usage{
 \S4method{normalize}{phyloseq}(object, method = "TSS", ...)
@@ -55,7 +55,7 @@ norm_tmm(
 
 norm_clr(object)
 
-norm_value(object, normalization)
+norm_cpm(object)
 }
 \arguments{
 \item{object}{a \link[phyloseq:phyloseq-class]{phyloseq::phyloseq} or \link[phyloseq:otu_table-class]{phyloseq::otu_table}}
@@ -63,8 +63,6 @@ norm_value(object, normalization)
 \item{method}{the methods used to normalize the microbial abundance data.
 Options includes:
 \itemize{
-\item a integer, e.g. 1e6, indicating pre-sample normalization of the sum of
-the values to 1e6.
 \item "none": do not normalize.
 \item "rarefy": random subsampling counts to the smallest library size in the
 data set.
@@ -82,6 +80,7 @@ gene counts ratios between the samples and the reference.
 \item "CSS": cumulative sum scaling, calculates scaling factors as the
 cumulative sum of gene abundances up to a data-derived threshold.
 \item "CLR": centered log-ratio normalization.
+\item "CPM": pre-sample normalization of the sum of the values to 1e+06.
 }}
 
 \item{...}{other arguments passed to the corresponding normalization
@@ -115,9 +114,6 @@ used for size factor estimation (e.g. core taxa).}
 \item{do_weighting}{whether to compute the weights or not}
 
 \item{Acutoff}{cutoff on "A" values to use before trimming}
-
-\item{normalization}{a numeric, set the normalization value, return the
-feature itself if not supported.}
 }
 \description{
 It is critical to normalize the feature table to eliminate any bias due to
@@ -151,7 +147,7 @@ excluding the highest count OTUs and OTUs with the largest log-fold change.
 In CLR, the log-ratios are computed relative to the geometric mean of all
 features.
 
-\code{norm_value}: This normalization method is from the original LEfSe algorithm,
+\code{norm_cpm}: This normalization method is from the original LEfSe algorithm,
 recommended when very low values are present (as shown in the LEfSe galaxy).
 }
 \seealso{

@@ -44,8 +44,6 @@ zeros the transformation is \code{log10(1 + object)}.
 \code{\link[=normalize]{normalize()}} for more details.
 Options include:
 \itemize{
-\item a integer, e.g. 1e6 (default), indicating pre-sample normalization of
-the sum of the values to 1e6.
 \item "none": do not normalize.
 \item "rarefy": random subsampling counts to the smallest library size in the
 data set.
@@ -63,6 +61,7 @@ gene counts ratios between the samples and the reference.
 \item "CSS": cumulative sum scaling, calculates scaling factors as the
 cumulative sum of gene abundances up to a data-derived threshold.
 \item "CLR": centered log-ratio normalization.
+\item "CPM": pre-sample normalization of the sum of the values to 1e+06.
 }}
 
 \item{norm_para}{named \code{list}. other arguments passed to specific

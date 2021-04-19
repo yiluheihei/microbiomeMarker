@@ -36,8 +36,6 @@ the var of the sample metadata}
 \code{\link[=normalize]{normalize()}} for more details.
 Options include:
 \itemize{
-\item a integer, e.g. 1e6 (default), indicating pre-sample normalization of
-the sum of the values to 1e6.
 \item "none": do not normalize.
 \item "rarefy": random subsampling counts to the smallest library size in the
 data set.
@@ -55,6 +53,7 @@ gene counts ratios between the samples and the reference.
 \item "CSS": cumulative sum scaling, calculates scaling factors as the
 cumulative sum of gene abundances up to a data-derived threshold.
 \item "CLR": centered log-ratio normalization.
+\item "CPM": pre-sample normalization of the sum of the values to 1e+06.
 }}
 
 \item{norm_para}{arguments passed to specific normalization methods. Most
@@ -106,6 +105,11 @@ a \code{\linkS4class{microbiomeMarker}} object.
 \description{
 Differential expression analysis based on the Negative Binomial distribution
 using \strong{DESeq2}.
+}
+\details{
+\strong{Note}: DESeq2 requires the input is raw counts (un-normalized counts), as
+only the counts values allow assessing the measurement precision correctly.
+For more details see the \href{http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data}{vignette of DESeq2}.
 }
 \seealso{
 \code{\link[DESeq2:results]{DESeq2::results()}},\code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}

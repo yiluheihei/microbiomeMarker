@@ -121,11 +121,11 @@ test_that("ensure the results are the same for object in different class ", {
   expect_false("norm_factor" %in% names(sample_data(clr_ps)))
 
 
-  # value -------------------------------------------------------------------
-  value_ps <- norm_value(enterotypes_arumugam, 1e6)
-  value_ot <- norm_value(ot, 1e6)
-  value_df <- normalize(df, 1e6)
-  value_mat <- normalize(mat, 1e6)
+  # cpm -------------------------------------------------------------------
+  value_ps <- norm_cpm(enterotypes_arumugam)
+  value_ot <- norm_cpm(ot)
+  value_df <- normalize(df, "CPM")
+  value_mat <- normalize(mat, "CPM")
   expect_identical(otu_table(value_ps), value_ot)
   expect_identical(as.data.frame(value_ot), value_df)
   expect_identical(as.matrix(value_df), value_mat)

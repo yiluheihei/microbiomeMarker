@@ -31,8 +31,6 @@
 #' @param norm the methods used to normalize the microbial abundance data. See
 #'   [`normalize()`] for more details.
 #'   Options include:
-#'   * a integer, e.g. 1e6 (default), indicating pre-sample normalization of
-#'     the sum of the values to 1e6.
 #'   * "none": do not normalize.
 #'   * "rarefy": random subsampling counts to the smallest library size in the
 #'     data set.
@@ -50,6 +48,7 @@
 #'   * "CSS": cumulative sum scaling, calculates scaling factors as the
 #'     cumulative sum of gene abundances up to a data-derived threshold.
 #'   * "CLR": centered log-ratio normalization.
+#'   * "CPM": pre-sample normalization of the sum of the values to 1e+06.
 #' @param norm_para arguments passed to specific normalization methods. Most
 #'   users will not need to pass any additional arguments here.
 #' @param test,fitType,sfType,betaPrior,modelMatrixType,useT,minmu these seven
@@ -77,6 +76,12 @@
 #'   more details see [stats::p.adjust].
 #' @param pvalue_cutoff pvalue_cutoff numeric, p value cutoff, default 0.05.
 #' @param ... extra parameters passed to [`DESeq2::DESeq()`].
+#'
+#' @details
+#' **Note**: DESeq2 requires the input is raw counts (un-normalized counts), as
+#' only the counts values allow assessing the measurement precision correctly.
+#' For more details see the [vignette of DESeq2](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data).
+#'
 #' @export
 #' @return a [`microbiomeMarker-class`] object.
 #' @seealso [`DESeq2::results()`],[`DESeq2::DESeq()`]
@@ -131,7 +136,8 @@ run_deseq2 <- function(ps,
   }
 
   # filter the samples in subgroup1 or subgroup2
-  groups <- sample_data(ps)[[group_var]]
+  # groups <- sample_data(ps)[[group_var]]
+  groups <- groups[groups %in% c(subgroup1, subgroup2)]
   levels(groups) <- c(subgroup1, subgroup2)
   ps <- phyloseq::prune_samples(groups %in% c(subgroup1, subgroup2), ps)
 
