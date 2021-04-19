@@ -50,4 +50,9 @@ RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Suggests: 
     testthat,
-    covr
+    covr,
+    glmnet,
+    Matrix,
+    kernlab,
+    e1071,
+    ranger
