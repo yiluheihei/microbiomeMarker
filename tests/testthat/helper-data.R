@@ -66,8 +66,7 @@ mm_mgs <- run_metagenomeseq(
 mm_des <- run_deseq2(
   pediatric_ibd,
   "Class",
-  "Control",
-  "CD",
+  contrast = c("Control", "CD"),
   pvalue_cutoff = 0.05,
   p_adjust = "fdr"
 )

@@ -103,9 +103,9 @@ lefse <- function(ps,
   # import input from the original lefse python script or galaxy,
   # will be dropped in the next release version
   summarized <- check_tax_summarize(ps)
-  if (summarized && !is.numeric(norm)) {
+  if (summarized && norm != "CPM") {
     stop(
-      '`norm` must be a numeric or "none" while `ps` has been summarized',
+      "`norm` must be a 'CPM' or 'none' while `ps` has been summarized",
       call. = FALSE
     )
   }

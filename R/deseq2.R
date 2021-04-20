@@ -11,8 +11,9 @@
 #
 # reference source code:
 # https://github.com/biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
+# https://github.com/hbctraining/DGE_workshop/blob/master/schedule/1.5-day.md
 
-#' Perform DESeq analysis
+#' Perform DESeq differential analysis
 #'
 #' Differential expression analysis based on the Negative Binomial distribution
 #' using **DESeq2**.
@@ -20,11 +21,15 @@
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group_var  character, the variable to set the group, must be one of
 #'   the var of the sample metadata
-#' @param subgroup1,subgroup2 character, subgroups to be compared.
+#' @param contrast a two length vector, specifies what comparison to extract
+#'   from the object to. The order determines the direction of fold change.
+#'   The first element is the numerator for the fold change, and the second
+#'    element is used as baseline (denominator for fold change).
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
-#'   * "identity", return the original data without any transformation (default).
+#'   * "identity", return the original data without any transformation
+#'     (default).
 #'   * "log10", the transformation is `log10(object)`, and if the data contains
 #'     zeros the transformation is `log10(1 + object)`.
 #'   * "log10p", the transformation is `log10(1 + object)`.
@@ -34,9 +39,6 @@
 #'   * "none": do not normalize.
 #'   * "rarefy": random subsampling counts to the smallest library size in the
 #'     data set.
-#'   * "TSS": total sum scaling, also referred to as "relative abundance", the
-#'     abundances were normalized by dividing the corresponding sample library
-#'     size.
 #'   * "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
 #'     The scaling factor is then derived using a weighted trimmed mean over the
 #'     differences of the log-transformed gene-count fold-change between the
@@ -47,15 +49,10 @@
 #'     gene counts ratios between the samples and the reference.
 #'   * "CSS": cumulative sum scaling, calculates scaling factors as the
 #'     cumulative sum of gene abundances up to a data-derived threshold.
-#'   * "CLR": centered log-ratio normalization.
-#'   * "CPM": pre-sample normalization of the sum of the values to 1e+06.
 #' @param norm_para arguments passed to specific normalization methods. Most
 #'   users will not need to pass any additional arguments here.
-#' @param test,fitType,sfType,betaPrior,modelMatrixType,useT,minmu these seven
+#' @param fitType,sfType,betaPrior,modelMatrixType,useT,minmu these seven
 #'   parameters are inherited form [`DESeq2::DESeq()`].
-#'   - `test`, should be either "Wald" or "LRT", which will
-#'     then use either Wald significance tests, or the likelihood ratio test on
-#'     the difference in deviance between a full and reduced model formula.
 #'   - `fitType`, either "parametric", "local", "mean", or "glmGamPoi" for the
 #'     type of fitting of dispersions to the mean intensity.
 #'   - `sfType`, either "ratio", "poscounts", or "iterate" for the type of size
@@ -70,7 +67,7 @@
 #'     dispersion.
 #'
 #'   For more details, see [`DESeq2::DESeq()`].  Most users will not need to
-#'   set this arguments (just use the deaults).
+#'   set this arguments (just use the defaults).
 #'
 #' @param p_adjust method for multiple test correction, default `none`, for
 #'   more details see [stats::p.adjust].
@@ -82,6 +79,29 @@
 #' only the counts values allow assessing the measurement precision correctly.
 #' For more details see the [vignette of DESeq2](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data).
 #'
+#' Thus, this function only supports "none", "rarefy", "RLE", "CSS", and
+#' "TMM" normalization methods. We strongly recommend using the "RLE" method
+#' (default normalization method in the DESeq2 package). The other normalization
+#' methods are used for expert users and comparisons among different
+#' normalization methods.
+#'
+#' For two groups comparisons, this function utilizes the Wald test (defined by
+#' [`DESeq2::nbinomWaldTest()`]) for hypothesis testing. A Wald test statistic
+#' is computed along with a probability (p-value) that a test statistic at least
+#' as extreme as the observed value were selected at random. `contrasts` are
+#' used to specify which two groups to compare. The order of the names
+#' determines the direction of fold change that is reported.
+#'
+#' Likelihood ratio test (LRT) is used to identify the genes that significantly
+#' changed across all the different levels for multiple groups comparisons. The
+#' LRT identified the significant features by comparing the full model to the
+#' reduced model. It is testing whether a feature removed in the reduced
+#' model explains a significant variation in the data. Please **NOTE** argument
+#' `reduced` is required for LRT test. However, `reduced` is set as
+#' `reduced = ~ 1` in the internal, as this function is for one variable
+#' comparison (in the current version). Thus, users do not need to set argument
+#' `reduced` in this function.
+#'
 #' @export
 #' @return a [`microbiomeMarker-class`] object.
 #' @seealso [`DESeq2::results()`],[`DESeq2::DESeq()`]
@@ -89,40 +109,73 @@
 #' @importFrom DESeq2 dispersions<-
 #' @importMethodsFrom S4Vectors mcols
 #' @importMethodsFrom BiocGenerics sizeFactors<- counts
+#' @references
+#' Love, Michael I., Wolfgang Huber, and Simon Anders. "Moderated estimation
+#' of fold change and dispersion for RNA-seq data with DESeq2." Genome
+#' biology 15.12 (2014): 1-21.
 run_deseq2 <- function(ps,
                       group_var,
-                      subgroup1,
-                      subgroup2,
+                      contrast,
                       norm = "RLE",
                       norm_para = list(),
                       transform = c("identity", "log10", "log10p"),
-                      test = c("Wald", "LRT"),
+                      # test = c("Wald", "LRT"),
                       fitType = c("parametric", "local", "mean", "glmGamPoi"),
                       sfType = "poscounts",
                       betaPrior = FALSE,
                       modelMatrixType,
                       useT = FALSE,
-                      minmu = if (fitType == "glmGamPoi") 1e-06 else 0.5,
+                      minmu = ifelse(fitType == "glmGamPoi", 1e-06, 0.5),
                       p_adjust = c("none", "fdr", "bonferroni", "holm",
                                    "hochberg", "hommel", "BH", "BY"),
                       pvalue_cutoff = 0.05,
                       ...) {
+  norm_methods <- c("none", "rarefy", "RLE", "CSS", "TMM")
+  if (!norm %in% norm_methods) {
+    stop(
+      "`norm` must be one of 'none', 'rarefy', 'RLE', 'CSS', or 'TMM'",
+      call. = FALSE
+    )
+  }
+
   # groups
-  groups <- sample_data(ps)[[group_var]]
+  sam_tab <- sample_data(ps)
+  if (! group_var %in% names(sam_tab)) {
+    stop(
+      "`group_var` should one of the variable in the `sample_data` of ps",
+      call. = FALSE
+    )
+  }
+  groups <- sam_tab[[group_var]]
   lvl <- unique(groups)
   n_lvl <- length(lvl)
+
   if (n_lvl < 2) {
     stop("Differential analysis requires at least two groups.")
   }
 
-  if (!any(c(subgroup1, subgroup2) %in% lvl)) {
-    stop(
-      paste0(subgroup1, " and ", subgroup2,
-             " must be included in the field of `group_var`.")
-    )
+  # contrast is only used for two-groups comparison
+  if (!missing(contrast)) {
+    if (length(contrast) != 2) {
+      stop("`contrast` must be length 2.", call. = FALSE)
+    }
+
+    for (cont in contrast) {
+      if (! cont %in% groups) {
+        stop(
+          "The element of `contrast` should be one of ",
+          paste(unique(groups), collapse = ", "),
+          call. = FALSE
+        )
+      }
+    }
+    contrast <- c(group_var, contrast)
+  } else {
+    if (n_lvl == 2) {
+      stop("`contrast` is requried for two groups comparison.")
+    }
   }
 
-  test <- match.arg(test, c("Wald", "LRT"))
   fitType <- match.arg(fitType, c("parametric", "local", "mean", "glmGamPoi"))
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
   p_adjust <- match.arg(
@@ -134,12 +187,6 @@ run_deseq2 <- function(ps,
   if (! sfType %in% c("ratio","poscounts","iterate")) {
     stop("`sfType` muste be one of poscounts, ratio, or iterate")
   }
-
-  # filter the samples in subgroup1 or subgroup2
-  # groups <- sample_data(ps)[[group_var]]
-  groups <- groups[groups %in% c(subgroup1, subgroup2)]
-  levels(groups) <- c(subgroup1, subgroup2)
-  ps <- phyloseq::prune_samples(groups %in% c(subgroup1, subgroup2), ps)
 
   # preprocess phyloseq object
   ps <- preprocess_ps(ps)
@@ -178,29 +225,18 @@ run_deseq2 <- function(ps,
   # https://support.bioconductor.org/p/63845/
   # https://support.bioconductor.org/p/122757/
   # https://github.com/biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
+  # if (! missing(contrast) && n_lvl = 3) {
+  #   stop("`contrast` is used for Wald test", call. = FALSE)
+  # }
+  #
+  test <- ifelse(!missing(contrast), "Wald", "LRT")
 
-  res_deseq <- try(
-    DESeq2::DESeq(
-      dds_summarized,
-      test = test,
-      fitType = fitType,
-      sfType = sfType,
-      quiet = TRUE,
-      betaPrior = betaPrior,
-      modelMatrixType = modelMatrixType,
-      useT = useT,
-      minmu = minmu,
-      ...),
-    silent = TRUE
-  )
-
-  if (inherits(res_deseq, "try-error") && fitType != "local") {
-    warning("data is not overdispered, try `fitType = 'local'`")
+  if (test == "Wald") {
     res_deseq <- try(
       DESeq2::DESeq(
         dds_summarized,
         test = test,
-        fitType = "local",
+        fitType = fitType,
         sfType = sfType,
         quiet = TRUE,
         betaPrior = betaPrior,
@@ -210,40 +246,84 @@ run_deseq2 <- function(ps,
         ...),
       silent = TRUE
     )
-  }
-  if (inherits(res_deseq, "try-error") && fitType != "mean") {
-    warning("data is not overdispered, try `fitType = 'mean'`")
-    res_deseq <- try(
-      DESeq2::DESeq(
+
+    if (inherits(res_deseq, "try-error") && fitType != "local") {
+      warning("data is not overdispered, try `fitType = 'local'`")
+      res_deseq <- try(
+        DESeq2::DESeq(
+          dds_summarized,
+          test = test,
+          fitType = "local",
+          sfType = sfType,
+          quiet = TRUE,
+          betaPrior = betaPrior,
+          modelMatrixType = modelMatrixType,
+          useT = useT,
+          minmu = minmu,
+          ...),
+        silent = TRUE
+      )
+    }
+    if (inherits(res_deseq, "try-error") && fitType != "mean") {
+      warning("data is not overdispered, try `fitType = 'mean'`")
+      res_deseq <- try(
+        DESeq2::DESeq(
+          dds_summarized,
+          test = test,
+          fitType = "mean",
+          sfType = sfType,
+          quiet = TRUE,
+          betaPrior = betaPrior,
+          modelMatrixType = modelMatrixType,
+          useT = useT,
+          minmu = minmu,
+          ...),
+        silent = TRUE
+      )
+    }
+    if (inherits(res_deseq, "try-error")) {
+      warning(
+        "data is not overdispered, use gene-wise estimates ",
+        "as final estimates"
+      )
+      # dds_summarized <- DESeq2::estimateSizeFactors(dds_summarized)
+      dds_summarized <- DESeq2::estimateDispersionsGeneEst(dds_summarized)
+      DESeq2::dispersions(dds_summarized) <- mcols(dds_summarized)$dispGeneEst
+
+      dds_summarized <- DESeq2::nbinomWaldTest(
         dds_summarized,
-        test = test,
-        fitType = "mean",
-        sfType = sfType,
-        quiet = TRUE,
         betaPrior = betaPrior,
+        quiet = TRUE,
         modelMatrixType = modelMatrixType,
         useT = useT,
-        minmu = minmu,
-        ...),
-      silent = TRUE
-    )
-  }
-  if (inherits(res_deseq, "try-error")) {
-    warning("data is not overdispered, use gene-wise estimates as final estimates")
-    # dds_summarized <- DESeq2::estimateSizeFactors(dds_summarized)
-    dds_summarized <- DESeq2::estimateDispersionsGeneEst(dds_summarized)
-    DESeq2::dispersions(dds_summarized) <- mcols(dds_summarized)$dispGeneEst
+        minmu = minmu
+      )
+    } else {
+      dds_summarized <- res_deseq
+    }
 
-    dds_summarized <- DESeq2::nbinomWaldTest(
-      dds_summarized,
-      betaPrior = betaPrior,
-      quiet = TRUE,
-      modelMatrixType = modelMatrixType,
-      useT = useT,
-      minmu = minmu
+    res <- DESeq2::results(
+      object = dds_summarized,
+      contrast = contrast,
+      alpha = pvalue_cutoff,
+      pAdjustMethod = p_adjust
     )
   } else {
-    dds_summarized <- res_deseq
+      dds_summarized <- DESeq2::DESeq(
+        dds_summarized,
+        test = test,
+        fitType = fitType,
+        sfType = sfType,
+        quiet = TRUE,
+        minmu = minmu,
+        reduced = ~ 1,
+        ...
+      )
+      res <- DESeq2::results(
+        object = dds_summarized,
+        alpha = pvalue_cutoff,
+        pAdjustMethod = p_adjust
+      )
   }
 
   # By default, independent filtering is performed to select a set of genes
@@ -253,18 +333,31 @@ run_deseq2 <- function(ps,
   # are set to NA.
   # By default, results assigns a p-value of NA to genes containing count
   # outliers, as identified using Cook's distance.
-  res <- DESeq2::results(
-    object = dds_summarized,
-    contrast = c(group_var, subgroup1, subgroup2),
-    alpha = pvalue_cutoff,
-    pAdjustMethod = p_adjust
-  )
+  # res <- DESeq2::results(
+  #   object = dds_summarized,
+  #   contrast = contrast,
+  #   alpha = pvalue_cutoff,
+  #   pAdjustMethod = p_adjust
+  # )
 
   # rename log2FoldChange to logFC, use base R rather than dplyr::rename
   names(res)[names(res) == "log2FoldChange"] <- "logFC"
 
+  # normalized counts
+  # https://bioinformatics.stackexchange.com/questions/193/how-can-i-extract-normalized-read-count-values-from-deseq2-results
+  counts_normalized <- DESeq2::counts(dds_summarized, normalized = TRUE)
+
+  # enrich group
+  if (!missing(contrast)) {
+    enrich_group <- ifelse(res$logFC > 0, contrast[2], contrast[3])
+  } else {
+    enrich_group <- get_sl_enrich_group(counts_normalized, groups)
+  }
+  res$enrich_group <- enrich_group
+
   res_ordered <- res[order(res$padj), ] %>%
     as.data.frame()
+
   padj <- res_ordered$padj
   res_filtered <- res_ordered[!is.na(padj) & padj < pvalue_cutoff, ]
 
@@ -274,22 +367,13 @@ run_deseq2 <- function(ps,
   } else {
     sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
   }
-
+  # rownames in the form of marker*
   row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
-  sig_feature$enrich_group <- ifelse(
-    sig_feature$logFC > 0,
-    subgroup2,
-    subgroup1
-  )
 
   # reorder columns: feature, enrich_group, other columns
   other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
   sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
   row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
-
-  # normalized counts
-  # https://bioinformatics.stackexchange.com/questions/193/how-can-i-extract-normalized-read-count-values-from-deseq2-results
-  counts_normalized <- DESeq2::counts(dds_summarized, normalized = TRUE)
 
   # only keep five variables: feature, enrich_group, effect_size (logFC),
   # pvalue, and padj
@@ -299,7 +383,7 @@ run_deseq2 <- function(ps,
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),
     norm_method = get_norm_method(norm),
-    diff_method = "DESeq2",
+    diff_method = paste0("DESeq2: ", test),
     # summary_tax_table = tax_table(ps_summarized),
     sam_data = sample_data(ps_normed),
     tax_table = tax_table(ps_summarized),

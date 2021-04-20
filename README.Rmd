@@ -294,15 +294,27 @@ mm_mgs
 ## DESeq2
 
 ```{r deseq,warning=FALSE,message=FALSE}
+# two groups comparison
 mm_des <- run_deseq2(
   pediatric_ibd, 
   "Class", 
-  "Control", 
-  "CD", 
+  contrast = c("Control", "CD"), 
   pvalue_cutoff = 0.05, 
   p_adjust = "fdr"
 )
 mm_des
+
+# multiple groups comparison
+ps <- phyloseq::subset_samples(
+  cid_ying,
+  Consistency %in% c("formed stool", "liquid", "semi-formed")
+)
+mm_des_multiple <- run_deseq2(
+  ps,
+  "Consistency",
+  pvalue_cutoff = 0.05,
+  p_adjust = "fdr"
+)
 ```
 
 ## edgeR

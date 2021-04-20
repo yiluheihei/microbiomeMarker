@@ -199,14 +199,14 @@ data("spontaneous_colitis")
 # add prefix of ranks
 mm <- lefse(
   spontaneous_colitis, 
-  norm = 1e6, 
+  norm = "CPM", 
   class = "class", 
   multicls_strat = TRUE
 )
 # lefse return a microbioMarker class inherits from phyloseq
 mm
 #> microbiomeMarker-class inherited from phyloseq-class
-#> normalization: per-sample to value [ 1e+06 ]
+#> normalization method:              [ CPM ]
 #> microbiome marker identity method: [ lefse ]
 #> marker_table() Marker Table:       [ 29 microbiome markers with 5 variables ]
 #> otu_table()    OTU Table:          [ 132 taxa and  30 samples ]
@@ -433,22 +433,34 @@ mm_mgs
 ## DESeq2
 
 ``` r
+# two groups comparison
 mm_des <- run_deseq2(
   pediatric_ibd, 
   "Class", 
-  "Control", 
-  "CD", 
+  contrast = c("Control", "CD"), 
   pvalue_cutoff = 0.05, 
   p_adjust = "fdr"
 )
 mm_des
 #> microbiomeMarker-class inherited from phyloseq-class
 #> normalization method:              [ RLE ]
-#> microbiome marker identity method: [ DESeq2 ]
+#> microbiome marker identity method: [ DESeq2: Wald ]
 #> marker_table() Marker Table:       [ 47 microbiome markers with 5 variables ]
 #> otu_table()    OTU Table:          [ 786 taxa and  43 samples ]
 #> sample_data()  Sample Data:        [ 43 samples by  2 sample variables ]
 #> tax_table()    Taxonomy Table:     [ 786 taxa by 1 taxonomic ranks ]
+
+# multiple groups comparison
+ps <- phyloseq::subset_samples(
+  cid_ying,
+  Consistency %in% c("formed stool", "liquid", "semi-formed")
+)
+mm_des_multiple <- run_deseq2(
+  ps,
+  "Consistency",
+  pvalue_cutoff = 0.05,
+  p_adjust = "fdr"
+)
 ```
 
 ## edgeR
@@ -525,22 +537,18 @@ marker_table(mm_ancombc)
 ``` r
 mm_lr <- run_sl(enterotypes_arumugam, "Gender", method = "LR")
 #> Loading required package: lattice
-#> Loading required package: grid
-#> Registered S3 method overwritten by 'quantmod':
-#>   method            from
-#>   as.zoo.data.frame zoo
 marker_table(mm_lr)
-#>                                        feature enrich_group        imp
-#> marker1        p__Proteobacteria|g__Aliivibrio            M 100.000000
-#> marker2        p__Firmicutes|g__Heliobacterium            M  69.363430
-#> marker3        p__Proteobacteria|g__Bordetella            F  65.819479
-#> marker4     p__Fusobacteria|g__Streptobacillus            F  61.682589
-#> marker5           p__Proteobacteria|g__Pantoea            F  58.638836
-#> marker6    p__Proteobacteria|g__Bradyrhizobium            M  32.194840
-#> marker7             p__Firmicutes|g__Bulleidia            F  28.061534
-#> marker8    p__Firmicutes|g__Desulfitobacterium            F  13.434122
-#> marker9  p__Proteobacteria|g__Magnetospirillum            M   4.015931
-#> marker10        p__Firmicutes|g__Anaerotruncus            F   1.435445
+#>                                        feature enrich_group       imp
+#> marker1       p__Bacteroidetes|g__Zunongwangia            F 100.00000
+#> marker2        p__Proteobacteria|g__Aliivibrio            M  61.82504
+#> marker3    p__Proteobacteria|g__Bradyrhizobium            M  48.58126
+#> marker4         p__Proteobacteria|g__Aeromonas            F  43.03515
+#> marker5                       p__Cyanobacteria            M  24.08290
+#> marker6              p__Firmicutes|g__Listeria            M  20.94169
+#> marker7  p__Proteobacteria|g__Magnetospirillum            M  14.41667
+#> marker8    p__Firmicutes|g__Thermoanaerobacter            F  13.55835
+#> marker9           p__Proteobacteria|g__Proteus            M  12.46479
+#> marker10       p__Firmicutes|g__Heliobacterium            M  12.34414
 ```
 
 ### Random forest
@@ -554,17 +562,17 @@ mm_rf <- run_sl(
   importance = "impurity"
 )
 marker_table(mm_rf)
-#>                                     feature enrich_group       imp
-#> marker1      p__Firmicutes|g__Anaerotruncus            F 100.00000
-#> marker2   p__Bacteroidetes|g__Porphyromonas            F  95.98386
-#> marker3    p__Firmicutes|g__Lachnospiraceae            F  66.05799
-#> marker4      p__Proteobacteria|g__Aeromonas            F  52.34648
-#> marker5     p__Proteobacteria|g__Bordetella            F  47.47112
-#> marker6  p__Proteobacteria|g__Campylobacter            F  41.37426
-#> marker7    p__Firmicutes|g__Subdoligranulum            F  41.08796
-#> marker8        p__Proteobacteria|g__Pantoea            F  36.76501
-#> marker9      p__Firmicutes|g__Coprobacillus            F  31.09651
-#> marker10       p__Firmicutes|g__Selenomonas            F  30.85960
+#>                                       feature enrich_group       imp
+#> marker1      p__Firmicutes|g__Ruminococcaceae            F 100.00000
+#> marker2      p__Firmicutes|g__Subdoligranulum            F  78.62319
+#> marker3      p__Firmicutes|g__Acidaminococcus            F  76.00265
+#> marker4          p__Firmicutes|g__Megasphaera            F  75.94370
+#> marker5     p__Firmicutes|g__Faecalibacterium            F  71.57685
+#> marker6       p__Firmicutes|g__Heliobacterium            M  71.42977
+#> marker7        p__Firmicutes|g__Anaerotruncus            F  68.36368
+#> marker8        p__Firmicutes|g__Coprobacillus            F  66.67126
+#> marker9     p__Bacteroidetes|g__Porphyromonas            F  66.50552
+#> marker10 p__Actinobacteria|g__Bifidobacterium            F  65.86837
 ```
 
 ### Support vector machine

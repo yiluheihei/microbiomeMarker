@@ -2,23 +2,21 @@
 % Please edit documentation in R/deseq2.R
 \name{run_deseq2}
 \alias{run_deseq2}
-\title{Perform DESeq analysis}
+\title{Perform DESeq differential analysis}
 \usage{
 run_deseq2(
   ps,
   group_var,
-  subgroup1,
-  subgroup2,
+  contrast,
   norm = "RLE",
   norm_para = list(),
   transform = c("identity", "log10", "log10p"),
-  test = c("Wald", "LRT"),
   fitType = c("parametric", "local", "mean", "glmGamPoi"),
   sfType = "poscounts",
   betaPrior = FALSE,
   modelMatrixType,
   useT = FALSE,
-  minmu = if (fitType == "glmGamPoi") 1e-06 else 0.5,
+  minmu = ifelse(fitType == "glmGamPoi", 1e-06, 0.5),
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
   pvalue_cutoff = 0.05,
   ...
@@ -30,7 +28,10 @@ run_deseq2(
 \item{group_var}{character, the variable to set the group, must be one of
 the var of the sample metadata}
 
-\item{subgroup1, subgroup2}{character, subgroups to be compared.}
+\item{contrast}{a two length vector, specifies what comparison to extract
+from the object to. The order determines the direction of fold change.
+The first element is the numerator for the fold change, and the second
+element is used as baseline (denominator for fold change).}
 
 \item{norm}{the methods used to normalize the microbial abundance data. See
 \code{\link[=normalize]{normalize()}} for more details.
@@ -39,9 +40,6 @@ Options include:
 \item "none": do not normalize.
 \item "rarefy": random subsampling counts to the smallest library size in the
 data set.
-\item "TSS": total sum scaling, also referred to as "relative abundance", the
-abundances were normalized by dividing the corresponding sample library
-size.
 \item "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
 The scaling factor is then derived using a weighted trimmed mean over the
 differences of the log-transformed gene-count fold-change between the
@@ -52,8 +50,6 @@ samples. The scaling factors are then calculated as the median of the
 gene counts ratios between the samples and the reference.
 \item "CSS": cumulative sum scaling, calculates scaling factors as the
 cumulative sum of gene abundances up to a data-derived threshold.
-\item "CLR": centered log-ratio normalization.
-\item "CPM": pre-sample normalization of the sum of the values to 1e+06.
 }}
 
 \item{norm_para}{arguments passed to specific normalization methods. Most
@@ -63,18 +59,16 @@ users will not need to pass any additional arguments here.}
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
 options include:
 \itemize{
-\item "identity", return the original data without any transformation (default).
+\item "identity", return the original data without any transformation
+(default).
 \item "log10", the transformation is \code{log10(object)}, and if the data contains
 zeros the transformation is \code{log10(1 + object)}.
 \item "log10p", the transformation is \code{log10(1 + object)}.
 }}
 
-\item{test, fitType, sfType, betaPrior, modelMatrixType, useT, minmu}{these seven
+\item{fitType, sfType, betaPrior, modelMatrixType, useT, minmu}{these seven
 parameters are inherited form \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}.
 \itemize{
-\item \code{test}, should be either "Wald" or "LRT", which will
-then use either Wald significance tests, or the likelihood ratio test on
-the difference in deviance between a full and reduced model formula.
 \item \code{fitType}, either "parametric", "local", "mean", or "glmGamPoi" for the
 type of fitting of dispersions to the mean intensity.
 \item \code{sfType}, either "ratio", "poscounts", or "iterate" for the type of size
@@ -90,7 +84,7 @@ dispersion.
 }
 
 For more details, see \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}.  Most users will not need to
-set this arguments (just use the deaults).}
+set this arguments (just use the defaults).}
 
 \item{p_adjust}{method for multiple test correction, default \code{none}, for
 more details see \link[stats:p.adjust]{stats::p.adjust}.}
@@ -110,6 +104,34 @@ using \strong{DESeq2}.
 \strong{Note}: DESeq2 requires the input is raw counts (un-normalized counts), as
 only the counts values allow assessing the measurement precision correctly.
 For more details see the \href{http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data}{vignette of DESeq2}.
+
+Thus, this function only supports "none", "rarefy", "RLE", "CSS", and
+"TMM" normalization methods. We strongly recommend using the "RLE" method
+(default normalization method in the DESeq2 package). The other normalization
+methods are used for expert users and comparisons among different
+normalization methods.
+
+For two groups comparisons, this function utilizes the Wald test (defined by
+\code{\link[DESeq2:nbinomWaldTest]{DESeq2::nbinomWaldTest()}}) for hypothesis testing. A Wald test statistic
+is computed along with a probability (p-value) that a test statistic at least
+as extreme as the observed value were selected at random. \code{contrasts} are
+used to specify which two groups to compare. The order of the names
+determines the direction of fold change that is reported.
+
+Likelihood ratio test (LRT) is used to identify the genes that significantly
+changed across all the different levels for multiple groups comparisons. The
+LRT identified the significant features by comparing the full model to the
+reduced model. It is testing whether a feature removed in the reduced
+model explains a significant variation in the data. Please \strong{NOTE} argument
+\code{reduced} is required for LRT test. However, \code{reduced} is set as
+\code{reduced = ~ 1} in the internal, as this function is for one variable
+comparison (in the current version). Thus, users do not need to set argument
+\code{reduced} in this function.
+}
+\references{
+Love, Michael I., Wolfgang Huber, and Simon Anders. "Moderated estimation
+of fold change and dispersion for RNA-seq data with DESeq2." Genome
+biology 15.12 (2014): 1-21.
 }
 \seealso{
 \code{\link[DESeq2:results]{DESeq2::results()}},\code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}
