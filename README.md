@@ -39,6 +39,25 @@ tree of taxon output from common microbiome bioinformatics platforms,
 such as [DADA2](https://benjjneb.github.io/dada2/) and
 [qiime2](https://qiime2.org/).
 
+## Citation
+
+Kindly cite as follows: Yang Cao (2020). microbiomeMarker: microbiome
+biomarker analysis. R package version 0.0.1.9000.
+<https://github.com/yiluheihei/microbiomeMarker>. DOI:
+[10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
+
+### Publications citing microbiomeMarker
+
+-   Shanmugam, Gnanendra, Song Hee Lee, and Junhyun Jeon. “EzMAP: Easy
+    Microbiome Analysis Platform.” BMC bioinformatics 22.1 (2021): 1-10.
+-   Altaib, Hend, et al. “Differences in the Concentration of the Fecal
+    Neurotransmitters GABA and Glutamate Are Associated with Microbial
+    Composition among Healthy Human Subjects.” Microorganisms 9.2
+    (2021): 378.
+-   Ingham, Anna Cäcilia, et al. “Microbiota long-term dynamics and
+    prediction of acute graft-versus-host-disease in pediatric
+    allogeneic stem cell transplantation.” medRxiv (2021).
+
 ## Installation
 
 You can install the package directly from github
@@ -461,6 +480,14 @@ mm_des_multiple <- run_deseq2(
   pvalue_cutoff = 0.05,
   p_adjust = "fdr"
 )
+mm_des_multiple
+#> microbiomeMarker-class inherited from phyloseq-class
+#> normalization method:              [ RLE ]
+#> microbiome marker identity method: [ DESeq2: LRT ]
+#> marker_table() Marker Table:       [ 90 microbiome markers with 5 variables ]
+#> otu_table()    OTU Table:          [ 669 taxa and  413 samples ]
+#> sample_data()  Sample Data:        [ 413 samples by  6 sample variables ]
+#> tax_table()    Taxonomy Table:     [ 669 taxa by 1 taxonomic ranks ]
 ```
 
 ## edgeR
@@ -617,13 +644,6 @@ plot_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
 **microbiomeMarker is still a newborn, and only contains lefse methods
 right now. Your suggestion and contribution will be highly
 appreciated.**
-
-## Citation
-
-Kindly cite as follows: Yang Cao (2020). microbiomeMarker: microbiome
-biomarker analysis. R package version 0.0.1.9000.
-<https://github.com/yiluheihei/microbiomeMarker>. DOI:
-[10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
 
 ## Acknowledgement
 
