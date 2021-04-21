@@ -1,7 +1,7 @@
 context("edgeR")
 
 test_that("check the norm factors in edgeR", {
-  skip_on_bioc()
+  # skip_on_bioc()
   # library(edgeR)
   # normalize, summarize, and then convert to metagenomeSeq
   # ps <- pediatric_ibd
@@ -22,4 +22,25 @@ test_that("result of edger",{
     test_path("out/test-edger.txt"),
     print = TRUE
   )
+
+  # ps_test <- phyloseq::subset_samples(
+  #   cid_ying,
+  #   Consistency %in% c("formed stool", "liquid", "semi-formed")
+  # )
+  # mm_test <- run_edger(
+  #   ps,
+  #   "Consistency",
+  #   method  = "QLFT",
+  #   pvalue_cutoff = 0.05,
+  #   p_adjust = "fdr"
+  # )
+  #
+  # # two groups comparison for multiple groups
+  # mm_test2 <- run_edger(
+  #   ps_test,
+  #   "Consistency",
+  #   contrast = c("liquid", "semi-formed"),
+  #   pvalue_cutoff = 0.05,
+  #   p_adjust = "fdr"
+  # )
 })

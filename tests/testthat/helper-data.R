@@ -73,7 +73,8 @@ mm_des <- run_deseq2(
 
 mm_edger <- run_edger(
   pediatric_ibd,
-  "Class", "Control", "CD",
+  "Class",
+  c("CD", "Control"),
   pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )

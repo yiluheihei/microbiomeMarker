@@ -7,8 +7,8 @@
 run_edger(
   ps,
   group_var,
-  subgroup1,
-  subgroup2,
+  contrast = NULL,
+  method = c("LRT", "QLFT"),
   transform = c("identity", "log10", "log10p"),
   norm = "TMM",
   norm_para = list(),
@@ -24,13 +24,20 @@ run_edger(
 \item{group_var}{character, the variable to set the group, must be one of
 the var of the sample metadata}
 
-\item{subgroup1, subgroup2}{character, subgroups to be compared.}
+\item{contrast}{a two length vector used for two groups comparison. The
+order determines the direction of fold change, the first element is the
+numerator for the fold change, and the second element is used as baseline
+(denominator for fold change); or \code{NULL} for multiple groups comparison.}
+
+\item{method}{character, used for differential analysis, please see details
+below for more info.}
 
 \item{transform}{character, the methods used to transform the microbial
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
 options include:
 \itemize{
-\item "identity", return the original data without any transformation (default).
+\item "identity", return the original data without any transformation
+(default).
 \item "log10", the transformation is \code{log10(object)}, and if the data contains
 zeros the transformation is \code{log10(1 + object)}.
 \item "log10p", the transformation is \code{log10(1 + object)}.
@@ -47,9 +54,9 @@ data set.
 abundances were normalized by dividing the corresponding sample library
 size.
 \item "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
-The scaling factor is then derived using a weighted trimmed mean over the
-differences of the log-transformed gene-count fold-change between the
-sample and the reference.
+The scaling factor is then derived using a weighted trimmed mean over
+the differences of the log-transformed gene-count fold-change between
+the sample and the reference.
 \item "RLE", relative log expression, RLE uses a pseudo-reference calculated
 using the geometric mean of the gene-specific abundances over all
 samples. The scaling factors are then calculated as the median of the
@@ -72,8 +79,8 @@ for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 
 \item{pvalue_cutoff}{numeric, p value cutoff, default 0.05}
 
-\item{...}{extra arguments passed to the model. See \code{\link[edgeR:glmfit]{edgeR::glmFit()}} for
-more details.}
+\item{...}{extra arguments passed to the model. See \code{\link[edgeR:glmQLFTest]{edgeR::glmQLFit()}}
+and \code{\link[edgeR:glmfit]{edgeR::glmFit()}} for more details.}
 }
 \value{
 a \code{\linkS4class{microbiomeMarker}} object.
@@ -82,8 +89,32 @@ a \code{\linkS4class{microbiomeMarker}} object.
 Differential expression analysis based on the Negative Binomial distribution
 using \strong{edgeR}.
 }
+\details{
+\strong{Note} that edgeR is designed to work with actual counts. This means that
+transformation is not required in any way before inputting them to edgeR.
+
+There are two test methods for differential analysis in \strong{edgeR},
+likelihood ratio test (LRT) and quasi-likelihood F-test (QLFT). The QLFT
+method is recommended as it allows stricter error rate control by
+accounting for the uncertainty in dispersion estimation.
+
+The para \code{contrast} is used to specify contrast of the linear model
+coefficients to be tested equal to zero. \code{NULL} means performing multiple
+groups comparisons. This is done by creating a matrix of all
+pairwise independent contrasts. In this manner, users can
+}
+\references{
+Robinson, Mark D., and Alicia Oshlack. "A scaling normalization method for
+differential expression analysis of RNA-seq data." Genome biology 11.3
+(2010): 1-9.
+
+Robinson, Mark D., Davis J. McCarthy, and Gordon K. Smyth. "edgeR: a
+Bioconductor package for differential expression analysis of digital
+gene expression data." Bioinformatics 26.1 (2010): 139-140.
+}
 \seealso{
-\code{\link[edgeR:glmfit]{edgeR::glmFit()}},\code{\link[edgeR:estimateDisp]{edgeR::estimateDisp()}},\code{\link[=normalize]{normalize()}}
+\code{\link[edgeR:glmfit]{edgeR::glmFit()}},\code{\link[edgeR:glmQLFTest]{edgeR::glmQLFit()}},\code{\link[edgeR:estimateDisp]{edgeR::estimateDisp()}}
+,\code{\link[=normalize]{normalize()}}
 }
 \author{
 Yang Cao
