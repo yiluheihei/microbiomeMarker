@@ -297,15 +297,21 @@ plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
 
 ```{r metagenomeSeq,warning=FALSE,message=FALSE}
 mm_mgs <- run_metagenomeseq(
-  pediatric_ibd, 
-  norm = "CSS",
-  "Class", 
-  "Control", 
-  "CD", 
-  pvalue_cutoff = 0.1, 
+  pediatric_ibd,
+  "Class",
+  contrast = c("CD","Control"),
+  pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )
 mm_mgs
+
+# multiple groups comparison
+ps <- phyloseq::subset_samples(
+  cid_ying,
+  Consistency %in% c("formed stool", "liquid", "semi-formed")
+)
+mm_mgs_multiple <- run_metagenomeseq(ps, "Consistency", method = "ZIG")
+mm_mgs_multiple
 ```
 
 ## DESeq2
@@ -321,11 +327,7 @@ mm_des <- run_deseq2(
 )
 mm_des
 
-# multiple groups comparison
-ps <- phyloseq::subset_samples(
-  cid_ying,
-  Consistency %in% c("formed stool", "liquid", "semi-formed")
-)
+# multiple groups
 mm_des_multiple <- run_deseq2(
   ps,
   "Consistency",
@@ -339,12 +341,23 @@ mm_des_multiple
 
 ```{r edger,warning=FALSE,message=FALSE}
 mm_edger <- run_edger(
-  pediatric_ibd, 
-  "Class", "Control", "CD", 
+  pediatric_ibd,
+  "Class",
+  c("CD", "Control"),
   pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )
 mm_edger
+
+# multiple groups
+mm_edger_multiple <- run_edger(
+  ps,
+  "Consistency",
+  method  = "QLFT",
+  pvalue_cutoff = 0.05,
+  p_adjust = "fdr"
+)
+mm_edger_multiple
 ```
 
 ## ANCOM

@@ -103,46 +103,10 @@ run_edger <- function(ps,
 
   groups <- sample_data(ps)[[group_var]]
   groups <- factor(groups)
-  lvl_n <- nlevels(groups)
-
-  if (lvl_n < 2) {
-    stop("Differential analysis requires at least two groups.")
-  }
 
   # For two-groups comparison, contrast must be a two-length vector,
   # for multiple groups comparison, contrast must be NULL
-  if (!is.null(contrast)) {
-    if (length(contrast) != 2) {
-      stop(
-        "`contrast` must be length 2 or NULL (for multiple groups comparison).",
-        call. = FALSE
-      )
-    }
-
-    for (cont in contrast) {
-      if (! cont %in% groups) {
-        stop(
-          "The element of `contrast` should be one of ",
-          paste(unique(groups), collapse = ", "),
-          call. = FALSE
-        )
-      }
-    }
-    two_groups <- contrast
-    idx <- match(contrast, levels(groups))
-    contrast <- rep(0, lvl_n)
-    contrast[idx[1]] <- 1
-    contrast[idx[2]] <- -1
-  } else {
-    if (lvl_n > 2) {
-      contrast <- generate_anova_contrast(levels(groups))
-    } else {
-      stop(
-        "`contrast` must be a two length vector for two groups comparison.",
-        call. = FALSE
-      )
-    }
-  }
+  contrast_new <- create_contrast(groups, contrast)
 
   # preprocess phyloseq object
   ps <- preprocess_ps(ps)
@@ -178,7 +142,7 @@ run_edger <- function(ps,
   fit_fun <- ifelse(method == "LRT", edgeR::glmFit, edgeR::glmQLFit)
   test_fun <- ifelse(method == "LRT", edgeR::glmLRT, edgeR::glmQLFTest)
   fit <- fit_fun(dge_summarized, design, ...)
-  lrt <- test_fun(fit, contrast = contrast)
+  lrt <- test_fun(fit, contrast = contrast_new)
   res <- edgeR::topTags(
     lrt,
     n = ntaxa(ps_summarized),
@@ -209,8 +173,8 @@ run_edger <- function(ps,
   row.names(counts_normalized) <- row.names(tax_table(ps_summarized))
 
   # enrich group
-  if (!is.matrix(contrast)) {
-    enrich_group <- ifelse(res$logFC > 0, two_groups[1], two_groups[2])
+  if (!is.matrix(contrast_new)) {
+    enrich_group <- ifelse(res$logFC > 0, contrast[1], contrast[2])
   } else {
     enrich_group <- get_sl_enrich_group(counts_normalized, groups)
   }
@@ -292,20 +256,4 @@ phyloseq2edgeR <- function(ps, ...) {
 }
 
 
-# create all pair-wise comparisons (contrasts) for anova-like test
-generate_anova_contrast <- function(levels) {
-  n <- length(levels)
-  design <- matrix(0, n, choose(n, 2))
-  rownames(design) <- levels
-  colnames(design) <- seq_len(choose(n, 2))
-  k <- 0
-  for (i in seq_len(n - 1)) {
-    for (j in (i + 1):n) {
-      k <- k + 1
-      design[j, k] <- 1
-      design[i, k] <- -1
-      colnames(design)[k] <- paste(levels[j], "-", levels[i], sep = "")
-    }
-  }
-  design
-}
+

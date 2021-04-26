@@ -431,22 +431,44 @@ plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
 
 ``` r
 mm_mgs <- run_metagenomeseq(
-  pediatric_ibd, 
-  norm = "CSS",
-  "Class", 
-  "Control", 
-  "CD", 
-  pvalue_cutoff = 0.1, 
+  pediatric_ibd,
+  "Class",
+  contrast = c("CD","Control"),
+  pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )
 mm_mgs
 #> microbiomeMarker-class inherited from phyloseq-class
 #> normalization method:              [ CSS ]
-#> microbiome marker identity method: [ metagenomeSeq ]
+#> microbiome marker identity method: [ metagenomeSeq: ZILN ]
 #> marker_table() Marker Table:       [ 11 microbiome markers with 5 variables ]
 #> otu_table()    OTU Table:          [ 786 taxa and  43 samples ]
 #> sample_data()  Sample Data:        [ 43 samples by  2 sample variables ]
 #> tax_table()    Taxonomy Table:     [ 786 taxa by 1 taxonomic ranks ]
+
+# multiple groups comparison
+ps <- phyloseq::subset_samples(
+  cid_ying,
+  Consistency %in% c("formed stool", "liquid", "semi-formed")
+)
+mm_mgs_multiple <- run_metagenomeseq(ps, "Consistency", method = "ZIG")
+#> it= 0, nll=608.38, log10(eps+1)=Inf, stillActive=669
+#> it= 1, nll=621.65, log10(eps+1)=0.02, stillActive=137
+#> it= 2, nll=617.53, log10(eps+1)=0.04, stillActive=132
+#> it= 3, nll=613.29, log10(eps+1)=0.04, stillActive=124
+#> it= 4, nll=608.76, log10(eps+1)=0.07, stillActive=95
+#> it= 5, nll=605.16, log10(eps+1)=0.07, stillActive=60
+#> it= 6, nll=603.49, log10(eps+1)=0.07, stillActive=35
+#> it= 7, nll=604.06, log10(eps+1)=0.05, stillActive=23
+#> it= 8, nll=607.70, log10(eps+1)=0.00, stillActive=0
+mm_mgs_multiple
+#> microbiomeMarker-class inherited from phyloseq-class
+#> normalization method:              [ CSS ]
+#> microbiome marker identity method: [ metagenomeSeq: ZIG ]
+#> marker_table() Marker Table:       [ 486 microbiome markers with 5 variables ]
+#> otu_table()    OTU Table:          [ 669 taxa and  413 samples ]
+#> sample_data()  Sample Data:        [ 413 samples by  6 sample variables ]
+#> tax_table()    Taxonomy Table:     [ 669 taxa by 1 taxonomic ranks ]
 ```
 
 ## DESeq2
@@ -469,11 +491,7 @@ mm_des
 #> sample_data()  Sample Data:        [ 43 samples by  2 sample variables ]
 #> tax_table()    Taxonomy Table:     [ 786 taxa by 1 taxonomic ranks ]
 
-# multiple groups comparison
-ps <- phyloseq::subset_samples(
-  cid_ying,
-  Consistency %in% c("formed stool", "liquid", "semi-formed")
-)
+# multiple groups
 mm_des_multiple <- run_deseq2(
   ps,
   "Consistency",
@@ -494,19 +512,37 @@ mm_des_multiple
 
 ``` r
 mm_edger <- run_edger(
-  pediatric_ibd, 
-  "Class", "Control", "CD", 
+  pediatric_ibd,
+  "Class",
+  c("CD", "Control"),
   pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )
 mm_edger
 #> microbiomeMarker-class inherited from phyloseq-class
 #> normalization method:              [ TMM ]
-#> microbiome marker identity method: [ edgeR ]
+#> microbiome marker identity method: [ edgeR: LRT ]
 #> marker_table() Marker Table:       [ 34 microbiome markers with 5 variables ]
 #> otu_table()    OTU Table:          [ 786 taxa and  43 samples ]
 #> sample_data()  Sample Data:        [ 43 samples by  2 sample variables ]
 #> tax_table()    Taxonomy Table:     [ 786 taxa by 1 taxonomic ranks ]
+
+# multiple groups
+mm_edger_multiple <- run_edger(
+  ps,
+  "Consistency",
+  method  = "QLFT",
+  pvalue_cutoff = 0.05,
+  p_adjust = "fdr"
+)
+mm_edger_multiple
+#> microbiomeMarker-class inherited from phyloseq-class
+#> normalization method:              [ TMM ]
+#> microbiome marker identity method: [ edgeR: QLFT ]
+#> marker_table() Marker Table:       [ 325 microbiome markers with 5 variables ]
+#> otu_table()    OTU Table:          [ 669 taxa and  413 samples ]
+#> sample_data()  Sample Data:        [ 413 samples by  6 sample variables ]
+#> tax_table()    Taxonomy Table:     [ 669 taxa by 1 taxonomic ranks ]
 ```
 
 ## ANCOM

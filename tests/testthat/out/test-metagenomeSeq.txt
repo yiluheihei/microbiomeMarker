@@ -10,7 +10,7 @@ marker8                                                                         
 marker9                                                        k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
 marker10                                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
 marker11                                                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus
-         enrich_group    logFC     pvalue       padj
+         enrich_group ef_logFC     pvalue       padj
 marker1            CD  1.86779 2.3698e-09 1.8627e-06
 marker2            CD  1.79860 2.3899e-08 9.3924e-06
 marker3            CD  2.50558 1.9000e-04 3.9370e-02

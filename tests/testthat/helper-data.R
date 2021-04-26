@@ -52,13 +52,10 @@ mm_kruskal <-  test_multiple_groups(
   method = "kruskal"
 )
 
-# logFC
 mm_mgs <- run_metagenomeseq(
   pediatric_ibd,
-  norm = "CSS",
   "Class",
-  "Control",
-  "CD",
+  contrast = c("CD","Control"),
   pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )

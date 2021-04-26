@@ -1,7 +1,7 @@
 context("metagenomeSeq")
 
 test_that("check the norm factors in metagenomeSeq", {
-  skip_on_bioc()
+  # skip_on_bioc()
   # library(metagenomeSeq)
   # # normalize, summarize, and then convert to metagenomeSeq
   # ps <- pediatric_ibd
@@ -23,9 +23,50 @@ test_that("check the norm factors in metagenomeSeq", {
 })
 
 test_that("result of metagenomeSeq", {
+  ps <- phyloseq::subset_samples(
+    cid_ying,
+    Consistency %in% c("formed stool", "liquid", "semi-formed")
+  )
+
   expect_output_file(
     round_DF(marker_table(mm_mgs)),
     test_path("out/test-metagenomeSeq.txt"),
     print = TRUE
   )
+
+  expect_error(
+    run_metagenomeseq(pediatric_ibd, "Class"),
+    "`contrast` is required"
+  )
+
+  expect_error(
+    run_metagenomeseq(ps, "Consistency"),
+    "ZILN method do not allows"
+  )
+
+  expect_error(
+    run_metagenomeseq(ps, "Consistency", contrast = c("Control", "CD")),
+    "ZILN method do not allows"
+  )
+
+  # run_metagenomeseq(
+  #   ps,
+  #   "Consistency",
+  #   contrast = c("Control", "CD"),
+  #   p_adjust = "fdr",
+  #   method = "ZIG"
+  # )
+
+  # run_metagenomeseq(ps, "Consistency", method = "ZIG")
+})
+
+test_that("get enrich group of a featrue of multiple groups comparison", {
+  group_pairs <- list(
+    c("a", "b"),
+    c("a", "c"),
+    c("b", "c")
+  )
+  logFC_pairs <- c(1, 1, 1)
+
+  expect_identical(get_mgs_enrich_group(group_pairs, logFC_pairs), "a")
 })

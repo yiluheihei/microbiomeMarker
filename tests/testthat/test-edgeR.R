@@ -28,7 +28,7 @@ test_that("result of edger",{
   #   Consistency %in% c("formed stool", "liquid", "semi-formed")
   # )
   # mm_test <- run_edger(
-  #   ps,
+  #   ps_test,
   #   "Consistency",
   #   method  = "QLFT",
   #   pvalue_cutoff = 0.05,

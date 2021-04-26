@@ -7,12 +7,11 @@
 run_metagenomeseq(
   ps,
   group_var,
-  subgroup1,
-  subgroup2,
+  contrast,
   transform = c("identity", "log10", "log10p"),
   norm = "CSS",
   norm_para = list(),
-  model = c("fitFeatureModel", "fitZig"),
+  method = c("ZILN", "ZIG"),
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
   pvalue_cutoff = 0.05,
   ...
@@ -24,7 +23,7 @@ run_metagenomeseq(
 \item{group_var}{character, the variable to set the group, must be one of
 the var of the sample metadata}
 
-\item{subgroup1, subgroup2}{character, subgroups to be compared.}
+\item{contrast}{a two length vector, only used for two groups comparison.}
 
 \item{transform}{character, the methods used to transform the microbial
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
@@ -62,10 +61,10 @@ cumulative sum of gene abundances up to a data-derived threshold.
 
 \item{norm_para}{arguments passed to specific normalization methods.}
 
-\item{model}{character, which model used for differential analysis,
-"fitFeatureModel" (Zero-inflated Log-Normal mixture model)" or "fitZig"
-(Zero-inflated Gaussian mixture model). As the authors of \strong{metagenomeSeq}
-said, we currently recommend using the zero-inflated log-normal model.}
+\item{method}{character, which model used for differential analysis,
+"ZILN" (Zero-inflated Log-Normal mixture model)" or "ZIG" (Zero-inflated
+Gaussian mixture model). And the zero-inflated log-normal model is
+preferred due to the high sensitivity and low FDR.}
 
 \item{p_adjust}{method for multiple test correction, default \code{none},
 for more details see \link[stats:p.adjust]{stats::p.adjust}.}
@@ -73,8 +72,9 @@ for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 \item{pvalue_cutoff}{numeric, p value cutoff, default 0.05}
 
 \item{...}{extra arguments passed to the model. more details see
-\code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}} and \code{\link[metagenomeSeq:fitZig]{metagenomeSeq::fitZig()}}
-for more details.}
+\code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}} and \code{\link[metagenomeSeq:fitZig]{metagenomeSeq::fitZig()}},
+e.g. \code{control} (can be setted using \code{\link[metagenomeSeq:zigControl]{metagenomeSeq::zigControl()}}) for
+\code{\link[metagenomeSeq:fitZig]{metagenomeSeq::fitZig()}}.}
 }
 \value{
 a \code{\linkS4class{microbiomeMarker}} object.
@@ -82,6 +82,29 @@ a \code{\linkS4class{microbiomeMarker}} object.
 \description{
 Differential expression analysis based on the Zero-inflated Log-Normal
 mixture model or Zero-inflated Gaussian mixture model using metagenomeSeq.
+}
+\details{
+metagnomeSeq provides two differential analysis methods, zero-inflated
+log-normal mixture model (implemented in
+\code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}}) and zero-inflated Gaussian mixture
+model (implemented in \code{\link[metagenomeSeq:fitZig]{metagenomeSeq::fitZig()}}). We recommend
+fitFeatureModel over fitZig due to high sensitivity and low FDR. Both
+\code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}} and \code{\link[metagenomeSeq:fitZig]{metagenomeSeq::fitZig()}} require
+the abundance profiles before normalization.
+
+For \code{\link[metagenomeSeq:fitZig]{metagenomeSeq::fitZig()}}, the output column is the coefficient of
+interest, and logFC column in the output of
+\code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}} is anologous to coefficient. Thus,
+logFC is really just the estimate the coefficient of interest in
+\code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}}. For more details see
+these question \href{https://support.bioconductor.org/p/94138/}{Difference between fitFeatureModel and fitZIG in metagenomeSeq}.
+
+Of note, \code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}} ae not allows for multiple
+groups comparison.
+}
+\references{
+Paulson, Joseph N., et al. "Differential abundance analysis for microbial
+marker-gene surveys." Nature methods 10.12 (2013): 1200-1202.
 }
 \author{
 Yang Cao

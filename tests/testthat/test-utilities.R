@@ -69,3 +69,25 @@ test_that("remove samples with missing values in the specified var", {
   new_samples <- sample_names(remove_na_samples(test_ps, "group"))
   expect_identical(new_samples, c("s2", "s3"))
 })
+
+
+# create contrast
+test_that("create contrast", {
+  expect_error(create_contrast("a"), "at least two groups")
+
+  # multiple groups, pairwise comparisons
+  groups <- factor(rep(c("a", "b", "c"), each = 3))
+  mat <- matrix(c(-1, 1, 0, -1, 0, 1, 0, -1, 1), 3)
+  row.names(mat) <- c("a", "b", "c")
+  colnames(mat) <- c("b-a", "c-a", "c-b")
+  expect_identical(create_pairwise_contrast(levels(groups)), mat)
+
+  # create contrast
+  expect_identical(create_contrast(groups, c("a", "b")), c(1, -1, 0))
+  expect_identical(create_contrast(groups), mat)
+
+  expect_error(create_contrast(c("a", "b")), "two length vector")
+  expect_error(create_contrast(groups, c("a", "b", "c")), "must be length 2")
+  expect_error(create_contrast(c("a", "b"), c("b", "c")), "one of a, b")
+
+})

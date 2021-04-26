@@ -275,3 +275,85 @@ remove_na_samples <- function(ps, group_var) {
 
   ps
 }
+
+
+## create contrast for edgeR, metagenomeSeq, and DESeq2
+
+# For two groups (contrast is a two-length vector), return a vector
+# in which the element 1 demotes the experiment group and -1 specifies the
+# reference (control) group.
+#
+# For multiple groups (contrast is NULL), return a matrix,
+# consists of all pair-wise comparisons (contrasts) for anova-like test.
+create_contrast <- function(groups, contrast = NULL) {
+  groups <- factor(groups)
+  lvl <- levels(groups)
+  n <- length(lvl)
+  if (n < 2) {
+    stop("Differential analysis requires at least two groups.")
+  }
+
+  # if (any(duplicated(lvl))) {
+  #   stop(
+  #     "\nFind duplicated elements in `levles.\n",
+  #     "`levels` denotes the levels of a factor and must be unique.",
+  #     call. = FALSE
+  #   )
+  # }
+  if (!is.null(contrast)) {
+    if (length(contrast) != 2) {
+      stop(
+        "`contrast` must be length 2 or NULL (for multiple groups comparison).",
+        call. = FALSE
+      )
+    }
+
+    for (cont in contrast) {
+      if (! cont %in% lvl) {
+        stop(
+          "The element of `contrast` should be one of ",
+          paste(unique(lvl), collapse = ", "),
+          call. = FALSE
+        )
+      }
+    }
+
+    idx <- match(contrast, lvl)
+    design <- rep(0, n)
+    design[idx[1]] <- 1
+    design[idx[2]] <- -1
+  } else {
+    if (n > 2) {
+      design <- create_pairwise_contrast(levels(groups))
+    } else {
+      stop(
+        "`contrast` must be a two length vector for two groups comparison.",
+        call. = FALSE
+      )
+    }
+  }
+
+  design
+}
+
+# create all pair-wise comparisons (contrasts) for anova-like test
+create_pairwise_contrast <- function(groups) {
+  groups <- factor(groups)
+  lvl <- levels(groups)
+  n <- length(lvl)
+
+  design <- matrix(0, n, choose(n, 2))
+  rownames(design) <- lvl
+  colnames(design) <- seq_len(choose(n, 2))
+  k <- 0
+  for (i in seq_len(n - 1)) {
+    for (j in (i + 1):n) {
+      k <- k + 1
+      design[j, k] <- 1
+      design[i, k] <- -1
+      colnames(design)[k] <- paste(lvl[j], "-", lvl[i], sep = "")
+    }
+  }
+  design
+}
+

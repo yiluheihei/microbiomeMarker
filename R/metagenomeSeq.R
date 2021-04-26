@@ -2,12 +2,13 @@
 # are useful summary tables of the model outputs. We currently recommend using
 # the zero-inflated log-normal model as implemented in fitFeatureModel.
 #
-# In metagenomeSeq, both fitZig and fitFeatureModel require the abundance
-# profiles before normalization, and the normalized counts can be obtained
-# according to the norm factors of MRexperiment.
-#
 # https://github.com/biocore/qiime/blob/master/qiime/support_files/R/fitZIG.r
 # https://github.com/xia-lab/MicrobiomeAnalystR/blob/master/R/general_anal.R#L505
+# https://support.bioconductor.org/p/78230/
+
+# Difference between fitFeatureModel and fitZIG in metagenomeSeq, https://support.bioconductor.org/p/94138/.
+#
+# fitFeatureModel doesn't seem to allow for multiple comparisons.
 
 #' metagenomeSeq differential analysis
 #'
@@ -17,7 +18,7 @@
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group_var  character, the variable to set the group, must be one of
 #'   the var of the sample metadata
-#' @param subgroup1,subgroup2 character, subgroups to be compared.
+#' @param contrast  a two length vector, only used for two groups comparison.
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
@@ -47,47 +48,122 @@
 #'   * "CLR": centered log-ratio normalization.
 #'   * "CPM": pre-sample normalization of the sum of the values to 1e+06.
 #' @param norm_para arguments passed to specific normalization methods.
-#' @param model character, which model used for differential analysis,
-#'   "fitFeatureModel" (Zero-inflated Log-Normal mixture model)" or "fitZig"
-#'   (Zero-inflated Gaussian mixture model). As the authors of **metagenomeSeq**
-#'   said, we currently recommend using the zero-inflated log-normal model.
+#' @param method character, which model used for differential analysis,
+#'   "ZILN" (Zero-inflated Log-Normal mixture model)" or "ZIG" (Zero-inflated
+#'    Gaussian mixture model). And the zero-inflated log-normal model is
+#'    preferred due to the high sensitivity and low FDR.
 #' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
 #' @param pvalue_cutoff numeric, p value cutoff, default 0.05
 #' @param ... extra arguments passed to the model. more details see
-#'   [`metagenomeSeq::fitFeatureModel()`] and [`metagenomeSeq::fitZig()`]
-#'   for more details.
+#'   [`metagenomeSeq::fitFeatureModel()`] and [`metagenomeSeq::fitZig()`],
+#'   e.g. `control` (can be setted using [`metagenomeSeq::zigControl()`]) for
+#'   [`metagenomeSeq::fitZig()`].
+#'
+#' @details
+#' metagnomeSeq provides two differential analysis methods, zero-inflated
+#' log-normal mixture model (implemented in
+#' [`metagenomeSeq::fitFeatureModel()`]) and zero-inflated Gaussian mixture
+#' model (implemented in [`metagenomeSeq::fitZig()`]). We recommend
+#' fitFeatureModel over fitZig due to high sensitivity and low FDR. Both
+#' [`metagenomeSeq::fitFeatureModel()`] and [`metagenomeSeq::fitZig()`] require
+#' the abundance profiles before normalization.
+#'
+#' For [`metagenomeSeq::fitZig()`], the output column is the coefficient of
+#' interest, and logFC column in the output of
+#' [`metagenomeSeq::fitFeatureModel()`] is anologous to coefficient. Thus,
+#' logFC is really just the estimate the coefficient of interest in
+#' [`metagenomeSeq::fitFeatureModel()`]. For more details see
+#' these question [Difference between fitFeatureModel and fitZIG in metagenomeSeq](https://support.bioconductor.org/p/94138/).
+#'
+#' Of note, [`metagenomeSeq::fitFeatureModel()`] ae not allows for multiple
+#' groups comparison.
+#'
 #' @return  a [`microbiomeMarker-class`] object.
 #' @export
 #' @author Yang Cao
 #' @importFrom stats model.matrix
 #' @importFrom metagenomeSeq normFactors<- MRcounts
 #' @importFrom Biobase pData<- pData
+#' @references
+#' Paulson, Joseph N., et al. "Differential abundance analysis for microbial
+#' marker-gene surveys." Nature methods 10.12 (2013): 1200-1202.
 run_metagenomeseq <- function(ps,
                               group_var,
-                              subgroup1,
-                              subgroup2,
+                              contrast,
                               transform = c("identity", "log10", "log10p"),
                               norm = "CSS",
                               norm_para = list(),
-                              model = c("fitFeatureModel", "fitZig"),
+                              method = c("ZILN", "ZIG"),
                               p_adjust = c("none", "fdr", "bonferroni", "holm",
                                            "hochberg", "hommel", "BH", "BY"),
                               pvalue_cutoff = 0.05,
                               ...) {
-
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
-  model <- match.arg(model, c("fitFeatureModel", "fitZig"))
+  method <- match.arg(method, c("ZILN", "ZIG"))
+  # test_fun <- ifelse(method == "ZILN",
+  #   metagenomeSeq::fitFeatureModel,
+  #   metagenomeSeq::fitZig
+  # )
+
   p_adjust <- match.arg(
     p_adjust,
     c("none", "fdr", "bonferroni", "holm",
       "hochberg", "hommel", "BH", "BY")
   )
 
-  # filter the samples in subgroup1 or subgroup2
+  # The levels must by syntactically valid names in R, makeContrast
+  if (!missing(contrast)) contrast <- make.names(contrast)
+
   groups <- sample_data(ps)[[group_var]]
-  levels(groups) <- c(subgroup1, subgroup2)
-  ps <- phyloseq::prune_samples(groups %in% c(subgroup1, subgroup2), ps)
+  groups <- factor(groups)
+  # The levels must by syntactically valid names in R, makeContrast
+  levels(groups) <- make.names(levels(groups))
+  n_lvl <- length(levels(groups))
+
+  if (n_lvl > 2 && method == "ZILN") {
+    stop(
+      "ZILN method do not allows for multiple groups comparison.",
+      call. = FALSE
+    )
+  }
+
+  if (missing(contrast)) {
+    if (n_lvl == 2) {
+      stop("`contrast` is required for two groups comparison.", call. = FALSE)
+    }
+
+    if (method == "ZILN")
+    stop(
+      "ZILN method do not allows for multiple groups comparison.",
+      call. = FALSE
+    )
+  }
+
+  if (!missing(contrast)) {
+    if (n_lvl == 2) {
+      levels(groups) <- rev(contrast)
+    } else {
+      contrast_new <- limma::makeContrasts(
+        paste(contrast[1], "-", contrast[2]),
+        levels = levels(groups)
+      )
+      # add var scalingFactor
+      old_contrast_nms <- row.names(contrast_new)
+      contrast_new <- rbind(contrast_new, rep(0, ncol(contrast_new)))
+      row.names(contrast_new) <- c(old_contrast_nms, "scalingFactor")
+    }
+  } else {
+    if (n_lvl < 3) {
+      stop("`contrast` is required for two groups comparions.")
+    }
+    contrast_new <- create_contrast(groups)
+    # add var scalingFactor
+    old_contrast_nms <- row.names(contrast_new)
+    contrast_new <- rbind(contrast_new, rep(0, ncol(contrast_new)))
+    row.names(contrast_new) <- c(old_contrast_nms, "scalingFactor")
+  }
+
 
   # preprocess phyloseq object
   ps <- preprocess_ps(ps)
@@ -124,48 +200,83 @@ run_metagenomeseq <- function(ps,
   )
 
   mod <- model.matrix(~groups)
+  colnames(mod) <- levels(groups)
 
-  if (model == "fitFeatureModel") {
-    tryCatch(
-      fit <- metagenomeSeq::fitFeatureModel(mgs_summarized, mod, ...),
-      error = function(e) {
-         paste0(
-           "fitFeatureModel model failed to fit to your data! ",
-           "Consider fitZig model or further filtering your dataset!"
-         )
-      }
-    )
-  } else {
-    tryCatch(
+
+  if (n_lvl == 2) {
+    if (method == "ZILN") {
+      tryCatch(
+        fit <- metagenomeSeq::fitFeatureModel(mgs_summarized, mod, ...),
+        error = function(e) {
+           paste0(
+             "fitFeatureModel model failed to fit to your data! ",
+            "Consider fitZig model or further filtering your dataset!"
+          )
+        }
+      )
+    } else {
+      tryCatch(
         fit <- metagenomeSeq::fitZig(mgs_summarized, mod, ...),
-      error = function(e) {
-        paste0(
-          "fitZig model failed to fit to your data! ",
-          "Consider fitFeatureModel model or further filtering your dataset!"
-        )
-      }
+        error = function(e) {
+          paste0(
+            "fitZig model failed to fit to your data! ",
+            "Consider fitFeatureModel model or further filtering your dataset!"
+          )
+        }
+      )
+    }
+
+    # metagenomeSeq vignette: We recommend the user remove features based on the
+    # number of estimated effective samples, please see
+    # calculateEffectiveSamples.We recommend removing features with less than
+    # the average number of effective samples in all features. In essence,
+    # setting eff = .5 when using MRcoefs, MRfulltable, or MRtable.
+    res <- metagenomeSeq::MRcoefs(
+      fit,
+      number = ntaxa(ps_summarized),
+      adjustMethod = p_adjust,
+      group = 3,
+      eff = 0.5
     )
+    res <- dplyr::rename(res, pvalue = .data$pvalues, padj = .data$adjPvalues)
+
+    # For fitZig, the output var is the coefficient of interest (effect size),
+    # For fitFeaturemodel, logFC is anologous to coefficient of fitZig
+    # (as logFC is really just the estimate the coefficient of interest).
+    ef_var <- ifelse(method == "ZILN", "logFC", contrast[1])
+    res$enrich_group <- ifelse(res[[ef_var]] > 0, contrast[1], contrast[2])
+
+  } else {
+    fit <- metagenomeSeq::fitZig(mgs_summarized, mod, ...)
+    zigfit <- slot(fit, "fit")
+    new_fit <- limma::contrasts.fit(zigfit, contrasts = contrast_new)
+    new_fit <- limma::eBayes(new_fit)
+    res <- limma::topTable(
+      new_fit,
+      number = Inf,
+      adjust.method = p_adjust,
+      p.value = pvalue_cutoff
+    )
+    res <- dplyr::rename(res, pvalue = .data$P.Value, padj = .data$adj.P.Val)
+    # enrich_group
+    if (missing(contrast)) { # multiple groups comparison
+      n_pairs <- ncol(contrast_new)
+      contrasts_pairs <- colnames(contrast_new)
+      names(res)[1:n_pairs] <- contrasts_pairs
+      group_pairs <- strsplit(contrasts_pairs, "-")
+      logFCs <- res[, 1:n_pairs]
+      enrich_group <- apply(
+        logFCs,
+        1,
+        get_mgs_enrich_group,
+        group_pairs = group_pairs
+      )
+    } else {
+      enrich_group <- ifelse(res$logFC > 0, contrast[1], contrast[2])
+    }
+    ef_var <- ifelse(missing(contrast), "F", "logFC")
+    res$enrich_group <- enrich_group
   }
-
-  res <- metagenomeSeq::MRfulltable(
-    fit,
-    number = ntaxa(ps_summarized),
-    adjustMethod = p_adjust,
-    group = 3
-  )
-  res <- dplyr::rename(res, pvalue = .data$pvalues, padj = .data$adjPvalues)
-
-  # # enrich_group
-  # if (model == "fitFeatureModel") {
-  #   res$enrich_group <- ifelse(res$logFC > 0, subgroup2, subgroup1)
-  # } else {
-  #   res$enrich_group <- ifelse(res$oddsRatio > 1, subgroup2, subgroup1)
-  # }
-  res$enrich_group <- ifelse(
-    res$`counts in group 0` > res$`counts in group 1`,
-    subgroup1,
-    subgroup2
-  )
 
 
   res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
@@ -178,20 +289,23 @@ run_metagenomeseq <- function(ps,
     sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
   }
 
-  # first two columns: feature enrich_group (write a function)
-  other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
-  sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
-  row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
-
-  # only keep five variables: feature, enrich_group, effect_size (logFC),
+  # only keep five variables: feature, enrich_group, effect_size (e.g. logFC),
   # pvalue, and padj
   sig_feature <- sig_feature[, c("feature", "enrich_group",
-                                 "logFC", "pvalue", "padj")]
+                                 ef_var, "pvalue", "padj")]
+  row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+
+  # rename the ef
+  names(sig_feature)[3] <- ifelse(
+    ef_var %in% c("logFC", "F"),
+    paste0("ef_", ef_var),
+    paste0("ef_", "coef")
+  )
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),
     norm_method = get_norm_method(norm),
-    diff_method = "metagenomeSeq",
+    diff_method = paste0("metagenomeSeq: ", method),
     otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE),
     sam_data = sample_data(ps_normed),
     # tax_table = tax_table(ps_summarized),
@@ -291,3 +405,19 @@ otu_table2metagenomeSeq <- function(ps, ...) {
   mgs
 }
 
+
+# get enrich group of a feature for multiple groups comparison
+# group_pairs and logFC_pairs are the same length
+get_mgs_enrich_group <- function(group_pairs, logFC_pairs) {
+  all_groups <- unique(unlist(group_pairs))
+  for (i in seq_along(group_pairs)) {
+    group_low <- ifelse(
+      logFC_pairs[i] > 0,
+      group_pairs[[i]][2],
+      group_pairs[[i]][1]
+    )
+    all_groups <- setdiff(all_groups, group_low)
+  }
+
+  all_groups
+}
