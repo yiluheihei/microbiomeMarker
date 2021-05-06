@@ -21,10 +21,10 @@
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group_var  character, the variable to set the group, must be one of
 #'   the var of the sample metadata
-#' @param contrast a two length vector, specifies what comparison to extract
-#'   from the object to. The order determines the direction of fold change.
-#'   The first element is the numerator for the fold change, and the second
-#'    element is used as baseline (denominator for fold change).
+#' @param contrast a two length vector,  The order determines the direction of
+#'   fold change, the first element is the numerator for the fold change, and
+#'   the second element is used as baseline (denominator for fold change), this
+#'   parameter only for two groups comparison.
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
@@ -155,6 +155,7 @@ run_deseq2 <- function(ps,
   }
 
   # contrast is only used for two-groups comparison
+  # did not required contrast for multiple groups comparison
   if (!missing(contrast)) {
     if (length(contrast) != 2) {
       stop("`contrast` must be length 2.", call. = FALSE)

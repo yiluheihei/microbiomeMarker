@@ -7,7 +7,7 @@
 run_edger(
   ps,
   group_var,
-  contrast = NULL,
+  contrast,
   method = c("LRT", "QLFT"),
   transform = c("identity", "log10", "log10p"),
   norm = "TMM",
@@ -24,10 +24,10 @@ run_edger(
 \item{group_var}{character, the variable to set the group, must be one of
 the var of the sample metadata}
 
-\item{contrast}{a two length vector used for two groups comparison. The
-order determines the direction of fold change, the first element is the
-numerator for the fold change, and the second element is used as baseline
-(denominator for fold change); or \code{NULL} for multiple groups comparison.}
+\item{contrast}{a two length vector,  The order determines the direction of
+fold change, the first element is the numerator for the fold change, and
+the second element is used as baseline (denominator for fold change), this
+parameter only for two groups comparison.}
 
 \item{method}{character, used for differential analysis, please see details
 below for more info.}

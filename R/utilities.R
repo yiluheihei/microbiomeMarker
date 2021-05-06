@@ -283,9 +283,9 @@ remove_na_samples <- function(ps, group_var) {
 # in which the element 1 demotes the experiment group and -1 specifies the
 # reference (control) group.
 #
-# For multiple groups (contrast is NULL), return a matrix,
-# consists of all pair-wise comparisons (contrasts) for anova-like test.
-create_contrast <- function(groups, contrast = NULL) {
+# For multiple groups, return a matrix, consists of all pair-wise comparisons
+# (contrasts) for anova-like test.
+create_contrast <- function(groups, contrast) {
   groups <- factor(groups)
   lvl <- levels(groups)
   n <- length(lvl)
@@ -300,10 +300,10 @@ create_contrast <- function(groups, contrast = NULL) {
   #     call. = FALSE
   #   )
   # }
-  if (!is.null(contrast)) {
+  if (!missing(contrast)) {
     if (length(contrast) != 2) {
       stop(
-        "`contrast` must be length 2 or NULL (for multiple groups comparison).",
+        "`contrast` must be length 2 for two groups comparison.",
         call. = FALSE
       )
     }
@@ -327,7 +327,7 @@ create_contrast <- function(groups, contrast = NULL) {
       design <- create_pairwise_contrast(levels(groups))
     } else {
       stop(
-        "`contrast` must be a two length vector for two groups comparison.",
+        "`contrast` is required for two groups comparison",
         call. = FALSE
       )
     }

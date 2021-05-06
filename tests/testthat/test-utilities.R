@@ -86,7 +86,7 @@ test_that("create contrast", {
   expect_identical(create_contrast(groups, c("a", "b")), c(1, -1, 0))
   expect_identical(create_contrast(groups), mat)
 
-  expect_error(create_contrast(c("a", "b")), "two length vector")
+  expect_error(create_contrast(c("a", "b")), "`contrast` is required")
   expect_error(create_contrast(groups, c("a", "b", "c")), "must be length 2")
   expect_error(create_contrast(c("a", "b"), c("b", "c")), "one of a, b")
 

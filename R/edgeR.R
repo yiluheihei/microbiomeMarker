@@ -6,10 +6,10 @@
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group_var  character, the variable to set the group, must be one of
 #'   the var of the sample metadata
-#' @param contrast  a two length vector used for two groups comparison. The
-#'   order determines the direction of fold change, the first element is the
-#'   numerator for the fold change, and the second element is used as baseline
-#'   (denominator for fold change); or `NULL` for multiple groups comparison.
+#' @param contrast  a two length vector,  The order determines the direction of
+#'   fold change, the first element is the numerator for the fold change, and
+#'   the second element is used as baseline (denominator for fold change), this
+#'   parameter only for two groups comparison.
 #' @param method character, used for differential analysis, please see details
 #'   below for more info.
 #' @param transform character, the methods used to transform the microbial
@@ -83,7 +83,7 @@
 #' gene expression data." Bioinformatics 26.1 (2010): 139-140.
 run_edger <- function(ps,
                       group_var,
-                      contrast = NULL,
+                      contrast,
                       method = c("LRT", "QLFT"),
                       transform = c("identity", "log10", "log10p"),
                       norm = "TMM",
@@ -104,8 +104,7 @@ run_edger <- function(ps,
   groups <- sample_data(ps)[[group_var]]
   groups <- factor(groups)
 
-  # For two-groups comparison, contrast must be a two-length vector,
-  # for multiple groups comparison, contrast must be NULL
+  # contrast must be a two-length vector, only used for two groups comparison
   contrast_new <- create_contrast(groups, contrast)
 
   # preprocess phyloseq object

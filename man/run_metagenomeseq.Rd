@@ -23,7 +23,10 @@ run_metagenomeseq(
 \item{group_var}{character, the variable to set the group, must be one of
 the var of the sample metadata}
 
-\item{contrast}{a two length vector, only used for two groups comparison.}
+\item{contrast}{a two length vector,  The order determines the direction of
+fold change, the first element is the numerator for the fold change, and
+the second element is used as baseline (denominator for fold change), this
+parameter only for two groups comparison.}
 
 \item{transform}{character, the methods used to transform the microbial
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The

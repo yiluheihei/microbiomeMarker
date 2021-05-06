@@ -28,10 +28,10 @@ run_deseq2(
 \item{group_var}{character, the variable to set the group, must be one of
 the var of the sample metadata}
 
-\item{contrast}{a two length vector, specifies what comparison to extract
-from the object to. The order determines the direction of fold change.
-The first element is the numerator for the fold change, and the second
-element is used as baseline (denominator for fold change).}
+\item{contrast}{a two length vector,  The order determines the direction of
+fold change, the first element is the numerator for the fold change, and
+the second element is used as baseline (denominator for fold change), this
+parameter only for two groups comparison.}
 
 \item{norm}{the methods used to normalize the microbial abundance data. See
 \code{\link[=normalize]{normalize()}} for more details.
