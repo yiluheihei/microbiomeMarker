@@ -48,15 +48,20 @@ biomarker analysis. R package version 0.0.1.9000.
 
 ### Publications citing microbiomeMarker
 
--   Shanmugam, Gnanendra, Song Hee Lee, and Junhyun Jeon. “EzMAP: Easy
-    Microbiome Analysis Platform.” BMC bioinformatics 22.1 (2021): 1-10.
--   Altaib, Hend, et al. “Differences in the Concentration of the Fecal
+-   [Shanmugam, Gnanendra, Song Hee Lee, and Junhyun Jeon. “EzMAP: Easy
+    Microbiome Analysis Platform.” BMC bioinformatics 22.1 (2021):
+    1-10.](https://doi.org/10.1186/s12859-021-04106-7)
+-   [Altaib, Hend, et al. “Differences in the Concentration of the Fecal
     Neurotransmitters GABA and Glutamate Are Associated with Microbial
     Composition among Healthy Human Subjects.” Microorganisms 9.2
-    (2021): 378.
--   Ingham, Anna Cäcilia, et al. “Microbiota long-term dynamics and
+    (2021): 378.](https://doi.org/10.3390/microorganisms9020378)
+-   [Ingham, Anna Cäcilia, et al. “Microbiota long-term dynamics and
     prediction of acute graft-versus-host-disease in pediatric
-    allogeneic stem cell transplantation.” medRxiv (2021).
+    allogeneic stem cell transplantation.” medRxiv
+    (2021).](https://doi.org/10.1101/2021.02.19.21252040)
+-   [Künstner, Axel, et al. “Effect of Differences in the Microbiome of
+    Cyp17a1-Deficient Mice on Atherosclerotic Background.” Cells 10.6
+    (2021): 1292.](https://doi.org/10.3390/cells10061292)
 
 ## Installation
 
@@ -88,9 +93,6 @@ Conveniently, taxa names are saved as
 
 ``` r
 library(microbiomeMarker)
-#> Registered S3 method overwritten by 'treeio':
-#>   method     from
-#>   root.phylo ape
 
 seq_tab <- readRDS(system.file("extdata", "dada2_seqtab.rds",
   package= "microbiomeMarker"))
