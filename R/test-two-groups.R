@@ -144,7 +144,7 @@ test_two_groups <- function(ps,
   if (!is.null(diff_mean_cutoff)) {
     test_filtered <- filter(
       test_filtered,
-      abs(.data$diff_mean) >= diff_mean_cutoff
+      abs(.data$ef_diff_mean) >= diff_mean_cutoff
     )
   }
   # ratio >= cutoff or <= 1/cutoff
@@ -163,9 +163,9 @@ test_two_groups <- function(ps,
   # only keep five variables: feature, enrich_group, effect_size (diff_mean),
   # pvalue, and padj
   test_res <- test_res[, c("feature", "enrich_group",
-                           "diff_mean", "pvalue", "padj")]
+                           "ef_diff_mean", "pvalue", "padj")]
   test_filtered <- test_filtered[, c("feature", "enrich_group",
-                                     "diff_mean", "pvalue", "padj")]
+                                     "ef_diff_mean", "pvalue", "padj")]
 
   if (nrow(test_filtered) == 0) {
     warning("No significant features were found, return all the features")
@@ -243,7 +243,7 @@ run_t_test <- function(abd_group, conf_level = 0.95, var_equal = FALSE, ...) {
     ci_lower,
     ci_upper
   )
-  names(res) <- c("pvalue", mean_names, "diff_mean", "ci_lower", "ci_upper")
+  names(res) <- c("pvalue", mean_names, "ef_diff_mean", "ci_lower", "ci_upper")
 
   # enrich_group
   means_df <- data.frame(mean_g1, mean_g2)
@@ -333,7 +333,7 @@ run_white_test <- function(norm_group1,
     ci_lower,
     ci_upper
   )
-  names(res) <- c("pvalue", mean_names, "diff_mean", "ci_lower", "ci_upper")
+  names(res) <- c("pvalue", mean_names, "ef_diff_mean", "ci_lower", "ci_upper")
 
   # enrich_group
   means_df <- data.frame(mean_g1, mean_g2)

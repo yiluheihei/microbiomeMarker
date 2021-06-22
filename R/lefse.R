@@ -181,11 +181,11 @@ lefse <- function(ps,
     feature = names(sig_otus),
     enrich_group = otus_enriched_group$group,
     # log_max_mean = otus_enriched_group$log_max_mean,
-    lda = ldas,
+    ef_lda = ldas,
     pvalue = kw_p[sig_ind][wilcoxon_p],
     stringsAsFactors = FALSE) %>%
-    filter(.data$lda >= lda_cutoff) %>%
-    arrange(.data$enrich_group, desc(.data$lda)) %>%
+    filter(.data$ef_lda >= lda_cutoff) %>%
+    arrange(.data$enrich_group, desc(.data$ef_lda)) %>%
     marker_table()
   lefse_out$padj <- lefse_out$pvalue
   row.names(lefse_out) <- paste0("marker", seq_len(nrow(lefse_out)))

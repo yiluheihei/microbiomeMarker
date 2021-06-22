@@ -129,7 +129,7 @@ test_multiple_groups <- function(ps,
       enrich_group = group_enriched,
       pvalue = pvalue,
       padj= padj,
-      eta_squared = ef
+      ef_eta_squared = ef
     ),
     abd_means
   )
@@ -146,7 +146,7 @@ test_multiple_groups <- function(ps,
   if (!is.null(effect_size_cutoff)) {
     res_filtered <- filter(
       res_filtered,
-      .data$eta_squared >= effect_size_cutoff
+      .data$ef_eta_squared >= effect_size_cutoff
     )
   }
 
@@ -157,9 +157,9 @@ test_multiple_groups <- function(ps,
 
   # only keep five variables: feature, enrich_group, effect_size (diff_mean),
   # pvalue, and padj
-  res <- res[, c("feature", "enrich_group", "eta_squared", "pvalue", "padj")]
+  res <- res[, c("feature", "enrich_group", "ef_eta_squared", "pvalue", "padj")]
   res_filtered <- res_filtered[, c("feature", "enrich_group",
-                                   "eta_squared", "pvalue", "padj")]
+                                   "ef_eta_squared", "pvalue", "padj")]
 
   if (nrow(res_filtered) == 0) {
     warning("No significant features were found, return all the features")

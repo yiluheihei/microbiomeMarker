@@ -46,8 +46,8 @@ plot_ef_dot <- function(mm,
 
   marker <- marker_table(mm)
 
-  # effect size names
-  orig_ef_nm <- names(marker)[3]
+  # effect size names, the third var of marker_table: prefix with "ef_"
+  orig_ef_nm <- gsub("ef_", "", names(marker)[3])
   names(marker)[3] <- "effect_size"
 
   # labels of x
@@ -76,7 +76,11 @@ plot_ef_dot <- function(mm,
     ind <- match(markers, marker$feature)
     ind_na <- is.na(ind)
     if (all(ind_na)) {
-      stop("all the elements of `markers` should be a contained in marker_table")
+      stop(
+        "all the elements of `markers` should be a contained in ",
+        "`marker_table`",
+        call. = FALSE
+      )
     }
 
     if (any(ind_na)) {
@@ -93,7 +97,11 @@ plot_ef_dot <- function(mm,
   }
 
   # increase order in each group
-  marker <- dplyr::arrange(data.frame(marker), .data$enrich_group, .data$effect_size)
+  marker <- dplyr::arrange(
+    data.frame(marker),
+    .data$enrich_group,
+    .data$effect_size
+  )
   feat <- marker$feature
   marker$feature <- factor(feat, levels = feat)
 
@@ -102,8 +110,6 @@ plot_ef_dot <- function(mm,
     stop("`marker_table` must contains variable `feature` and `enrich_group`")
 
   }
-
-  marker$logp <- -log10(marker$padj)
 
   if (type == "bar") {
     p <-
@@ -119,13 +125,20 @@ plot_ef_dot <- function(mm,
   } else {
     p <- ggplot(
       marker,
-      aes(.data$effect_size, .data$feature,
-          color = .data$enrich_group, size = .data$logp)) +
+      aes(.data$effect_size, .data$feature, color = .data$enrich_group)) +
       geom_point() +
-      labs(x = label_x, y = NULL, color = "Enriched group", size = "-log10(pvalue)") +
+      labs(
+        x = label_x, y = NULL,
+        color = "Enriched group") +
       scale_y_discrete(labels = function(x) {
         get_features_labels(x, label_level, max_label_len)}) +
       theme_bw()
+    if ("padj" %in% names(marker)) {
+      marker$logp <- -log10(marker$padj)
+      p <- p +
+        geom_point(data = marker, aes(size = .data$logp)) +
+        labs(size = "-log10(pvalue)")
+    }
   }
 
   p
