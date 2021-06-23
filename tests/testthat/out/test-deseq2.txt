@@ -46,7 +46,7 @@ marker44                                                                        
 marker45                                                  k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Enterobacteriales|f__Enterobacteriaceae
 marker46                                               k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia|s__faecis
 marker47              k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pasteurellales|f__Pasteurellaceae|g__Aggregatibacter|g__Aggregatibacter_s__
-         enrich_group    logFC     pvalue       padj
+         enrich_group ef_logFC     pvalue       padj
 marker1       Control 23.05163 3.2267e-15 3.6784e-13
 marker2       Control 23.05163 3.2267e-15 3.6784e-13
 marker3       Control  3.45521 1.1641e-07 6.6355e-06

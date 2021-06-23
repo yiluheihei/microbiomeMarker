@@ -19,7 +19,7 @@ marker17                                                     k__Bacteria|p__Fuso
 marker18                                    k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium
 marker19               k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium|s__Fusobacterium_s__
 marker20       k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium|s__Fusobacterium necrophorum
-         enrich_group      lda       pvalue         padj
+         enrich_group   ef_lda       pvalue         padj
 marker1       Healthy 4.938091 2.577541e-06 2.577541e-06
 marker2       Healthy 4.938091 2.577541e-06 2.577541e-06
 marker3       Healthy 4.842391 1.425032e-04 1.425032e-04

@@ -181,9 +181,9 @@ run_ancom <- function(ps,
   # the maximum number of rejections is (n_taxa - 1).
   marker <- out_comp[out_comp$W > theta * (n_taxa -1), ]
   if (cls_n == 2) {
-    names(marker)[3] <- "CLR_diff_mean"
+    names(marker)[3] <- "ef_CLR_diff_mean"
   } else {
-    names(marker)[3] <- "CLR_F_statistic"
+    names(marker)[3] <- "ef_CLR_F_statistic"
   }
   marker <- marker_table(marker)
   tax <- matrix(taxa_id) %>%

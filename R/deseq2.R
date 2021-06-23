@@ -342,7 +342,7 @@ run_deseq2 <- function(ps,
   # )
 
   # rename log2FoldChange to logFC, use base R rather than dplyr::rename
-  names(res)[names(res) == "log2FoldChange"] <- "logFC"
+  names(res)[names(res) == "log2FoldChange"] <- "ef_logFC"
 
   # normalized counts
   # https://bioinformatics.stackexchange.com/questions/193/how-can-i-extract-normalized-read-count-values-from-deseq2-results
@@ -350,7 +350,7 @@ run_deseq2 <- function(ps,
 
   # enrich group
   if (!missing(contrast)) {
-    enrich_group <- ifelse(res$logFC > 0, contrast[2], contrast[3])
+    enrich_group <- ifelse(res$ef_logFC > 0, contrast[2], contrast[3])
   } else {
     enrich_group <- get_sl_enrich_group(counts_normalized, groups)
   }
@@ -379,7 +379,7 @@ run_deseq2 <- function(ps,
   # only keep five variables: feature, enrich_group, effect_size (logFC),
   # pvalue, and padj
   sig_feature <- sig_feature[, c("feature", "enrich_group",
-                                 "logFC", "pvalue", "padj")]
+                                 "ef_logFC", "pvalue", "padj")]
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),

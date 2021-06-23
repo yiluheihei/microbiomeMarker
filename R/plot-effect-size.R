@@ -61,10 +61,18 @@ plot_ef_dot <- function(mm,
     label_x <- "log2 Fold Change"
   } else if (orig_ef_nm == "eta_squared") {
     label_x <- "Eta squared"
+  } else if (orig_ef_nm =="CLR_diff_mean") {
+    label_x <- "CLR differential means"
+  } else if (orig_ef_nm == "CLR_F_statistic") {
+    label_x <- "CLR F statistic"
+  } else if (orig_ef_nm == "W") {
+    label_x <- "W"
+  } else if (orig_ef_nm == "imp") {
+    label_x <- "Importance score"
   } else {
     stop(
-      "The name of third column muste be one of lda ",
-      "diff_mean, eat_squared or logFC"
+      "The effect size must be one of lda, diff_mean, eat_squared, ",
+      "logFC, clr_diff_mean, clr_F_statistic, W, or imp"
     )
   }
 

@@ -204,6 +204,7 @@ run_sl <- function(ps,
   )
   marker$enrich_group <- enrich_group
   marker <- marker[c("feature", "enrich_group", "imp")]
+  names(marker) <- c("feature", "enrich_group", "ef_imp")
 
 
   mm <- microbiomeMarker(

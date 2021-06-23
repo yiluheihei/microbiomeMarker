@@ -175,7 +175,7 @@ run_ancombc <- function(ps,
   mtab <- cbind(mtab, group_enrich)
   mtab <- mtab[mtab$diff_abn, ]
   mtab <- mtab[c("feature", "enrich_group", "W", "p_val", "q_val")]
-  names(mtab) <- c("feature", "enrich_group", "effect_size", "pvalue", "padj")
+  names(mtab) <- c("feature", "enrich_group", "ef_W", "pvalue", "padj")
 
   mm <- microbiomeMarker(
     marker_table = marker_table(mtab),
