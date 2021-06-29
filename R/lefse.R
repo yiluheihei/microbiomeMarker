@@ -5,6 +5,12 @@
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object
 #' @param class character, the column name to set the class
 #' @param subclass character, the column name to set the subclass
+#' @param taxa_rank character to specify taxonomic rank to perform
+#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
+#'   or "all" means to summarize the taxa by the top taxa ranks
+#'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
+#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
+#'   OTU or ASV).
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
@@ -57,7 +63,7 @@
 #' @importFrom  dplyr mutate filter arrange rowwise select
 #' @importFrom  purrr map_dbl pmap_dbl pmap_chr
 #' @importFrom stats p.adjust
-#' @importFrom phyloseq rank_names
+#' @importFrom phyloseq rank_names tax_glom
 #' @export
 #' @return a [microbiomeMarker-class] object, in which the `slot` of `marker_table`
 #' contains four variables:
@@ -72,6 +78,7 @@
 lefse <- function(ps,
                   class,
                   subclass = NULL,
+                  taxa_rank = "all",
                   transform = c("identity", "log10", "log10p"),
                   norm = "CPM",
                   norm_para = list(),
@@ -93,6 +100,15 @@ lefse <- function(ps,
     stop(
       "ranks of `ps` must be one of ",
       paste(available_ranks, collapse = ", ")
+    )
+  }
+
+  # check taxa_rank
+  all_taxa_rank <- c("all", "none", as.character(available_ranks))
+  if (! taxa_rank %in% all_taxa_rank) {
+    stop(
+      "`taxa_rank` must be one of ", paste(all_taxa_rank, collapse = ", "),
+      call. = FALSE
     )
   }
 
@@ -127,7 +143,13 @@ lefse <- function(ps,
   subcls <- cls_info$subcls
   cls_hie <- cls_info$cls_hie
 
-  ps_summarized <- summarize_taxa(ps_normed)
+  if (taxa_rank == "all") {
+    ps_summarized <- summarize_taxa(ps_normed)
+  } else if (taxa_rank %in% rank_names(ps_normed)) {
+    ps_summarized <- extract_rank(aggregate_taxa(ps_normed, taxa_rank), taxa_rank)
+  } else {
+    ps_summarized <- extract_rank(ps_normed, taxa_rank)
+  }
   # otus <- otu_table(ps_summarized)
   otus <- abundances(ps_summarized, norm = TRUE)
   # otus_norm <- normalize_feature(otus, normalization = normalization)
@@ -177,16 +199,33 @@ lefse <- function(ps,
     sample_fract = bootstrap_fraction
   )
 
-  lefse_out <- data.frame(
+  lefse_res <- data.frame(
     feature = names(sig_otus),
     enrich_group = otus_enriched_group$group,
     # log_max_mean = otus_enriched_group$log_max_mean,
     ef_lda = ldas,
     pvalue = kw_p[sig_ind][wilcoxon_p],
-    stringsAsFactors = FALSE) %>%
-    filter(.data$ef_lda >= lda_cutoff) %>%
-    arrange(.data$enrich_group, desc(.data$ef_lda)) %>%
-    marker_table()
+    stringsAsFactors = FALSE
+  )
+
+  lefse_sig <- filter(lefse_res, .data$ef_lda >= lda_cutoff) %>%
+    arrange(.data$enrich_group, desc(.data$ef_lda))
+
+  if (nrow(lefse_sig)) {
+    lefse_out <- marker_table(lefse_sig)
+  } else {
+    warning(
+      "No significant feature identified, return all the features",
+      call. = FALSE
+    )
+    lefse_out <- marker_table(lefse_res)
+    if (norm != "CPM") {
+      warning(
+        "CPM normalization method is recommended according to the lefse paper",
+        call. = FALSE
+      )
+    }
+  }
   lefse_out$padj <- lefse_out$pvalue
   row.names(lefse_out) <- paste0("marker", seq_len(nrow(lefse_out)))
 

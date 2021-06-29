@@ -357,3 +357,27 @@ create_pairwise_contrast <- function(groups) {
   design
 }
 
+
+# extract the specify rank of phyloseq object, return a phyloseq object with only one rank
+extract_rank <- function(ps, taxa_rank) {
+  ranks <- rank_names(ps)
+  if (! taxa_rank %in% c("none", ranks)) {
+    stop(
+      "`taxa_rank` must be one of options: none, ", paste(rank_names(ps), collapse = ", "),
+      call. = FALSE
+    )
+  }
+  if (taxa_rank != "none") {
+    ps <- aggregate_taxa(ps, taxa_rank)
+    new_tax_table <- tax_table(ps)[, taxa_rank]
+  } else {
+    taxon <- taxa_names(ps)
+    new_tax_table <- tax_table(matrix(taxon))
+    colnames(new_tax_table) <- "otu"
+    rownames(new_tax_table) <- taxon
+  }
+
+  tax_table(ps) <- new_tax_table
+
+  ps
+}
