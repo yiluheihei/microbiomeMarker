@@ -103,15 +103,6 @@ lefse <- function(ps,
     )
   }
 
-  # check taxa_rank
-  all_taxa_rank <- c("all", "none", as.character(available_ranks))
-  if (! taxa_rank %in% all_taxa_rank) {
-    stop(
-      "`taxa_rank` must be one of ", paste(all_taxa_rank, collapse = ", "),
-      call. = FALSE
-    )
-  }
-
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
   correct <- match.arg(correct, c("0", "1", "2"))
   correct <- as.numeric(correct)
@@ -143,12 +134,15 @@ lefse <- function(ps,
   subcls <- cls_info$subcls
   cls_hie <- cls_info$cls_hie
 
+  # check taxa_rank
+  check_taxa_rank(ps, taxa_rank)
   if (taxa_rank == "all") {
     ps_summarized <- summarize_taxa(ps_normed)
-  } else if (taxa_rank %in% rank_names(ps_normed)) {
-    ps_summarized <- extract_rank(aggregate_taxa(ps_normed, taxa_rank), taxa_rank)
-  } else {
+  } else if (taxa_rank =="none") {
     ps_summarized <- extract_rank(ps_normed, taxa_rank)
+  } else {
+    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
+      extract_rank(taxa_rank)
   }
   # otus <- otu_table(ps_summarized)
   otus <- abundances(ps_summarized, norm = TRUE)

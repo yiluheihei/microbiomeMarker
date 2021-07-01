@@ -381,3 +381,26 @@ extract_rank <- function(ps, taxa_rank) {
 
   ps
 }
+
+# only used for check the argument taxa_rank which is used to specify
+# taxonomic rank to perform differential analysis on
+check_taxa_rank <- function(ps, taxa_rank) {
+  ranks <- rank_names(ps)
+  if (! all(ranks %in% available_ranks)) {
+    stop(
+      "`rank_names(ps)` must be one of ",
+      paste(available_ranks, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  all_taxa_rank <- c("all", "none", ranks)
+  if (! taxa_rank %in% all_taxa_rank) {
+    stop(
+      "`taxa_rank` must be one of ", paste(all_taxa_rank, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  invisible(ps)
+}

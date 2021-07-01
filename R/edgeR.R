@@ -5,7 +5,13 @@
 #'
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group_var  character, the variable to set the group, must be one of
-#'   the var of the sample metadata
+#'   the var of the sample metadata.
+#' @param taxa_rank character to specify taxonomic rank to perform
+#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
+#'   or "all" means to summarize the taxa by the top taxa ranks
+#'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
+#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
+#'   OTU or ASV).
 #' @param contrast  a two length vector,  The order determines the direction of
 #'   fold change, the first element is the numerator for the fold change, and
 #'   the second element is used as baseline (denominator for fold change), this
@@ -84,6 +90,7 @@
 run_edger <- function(ps,
                       group_var,
                       contrast,
+                      taxa_rank = "all",
                       method = c("LRT", "QLFT"),
                       transform = c("identity", "log10", "log10p"),
                       norm = "TMM",
@@ -115,7 +122,17 @@ run_edger <- function(ps,
   ps_normed <- do.call(normalize, norm_para)
 
   # summarize data and  add norm.factors var to samples of DGEList
-  ps_summarized <- summarize_taxa(ps_normed)
+  # check taxa_rank
+  check_taxa_rank(ps, taxa_rank)
+  if (taxa_rank == "all") {
+    ps_summarized <- summarize_taxa(ps_normed)
+  } else if (taxa_rank =="none") {
+    ps_summarized <- extract_rank(ps_normed, taxa_rank)
+  } else {
+    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
+      extract_rank(taxa_rank)
+  }
+  # ps_summarized <- summarize_taxa(ps_normed)
   dge_summarized <- phyloseq2edgeR(ps_summarized)
 
   nf <- get_norm_factors(ps_normed)
