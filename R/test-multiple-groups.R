@@ -71,16 +71,15 @@ test_multiple_groups <- function(ps,
   ps <- preprocess_ps(ps)
   ps <- transform_abundances(ps, transform = transform)
 
-  ps_summarized <- summarize_taxa(ps)
-  # otus <-  otu_table(ps_summarized)
-  otus <- abundances(ps_summarized, norm = FALSE)
   # normalize
-  norm_para <- c(norm_para, method = norm, object = list(ps_summarized))
+  norm_para <- c(norm_para, method = norm, object = list(ps))
   ps_normed <- do.call(normalize, norm_para)
+  ps_summarized <- summarize_taxa(ps_normed)
+
 
   feature <- tax_table(ps_summarized)@.Data[, 1]
-  abd <- transpose_and_2df(otus)
-  abd_norm <- abundances(ps_normed, norm = TRUE) %>%
+  # abd <- transpose_and_2df(otus)
+  abd_norm <- abundances(ps_summarized, norm = TRUE) %>%
     transpose_and_2df()
 
   sample_meta <- sample_data(ps_summarized)
@@ -153,7 +152,7 @@ test_multiple_groups <- function(ps,
   # summarized tax table
   tax <- matrix(feature) %>%
     tax_table()
-  row.names(tax) <- row.names(otus)
+  row.names(tax) <- colnames(abd_norm)
 
   # only keep five variables: feature, enrich_group, effect_size (diff_mean),
   # pvalue, and padj

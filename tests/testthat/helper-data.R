@@ -23,12 +23,12 @@ mm_t <- test_two_groups(
 )
 
 # white test - diff_mean
-mm_white <- test_two_groups(
-  enterotypes_arumugam,
-  group = "Gender",
-  method = "white.test",
-  nperm = 50
-)
+# mm_white <- test_two_groups(
+#   enterotypes_arumugam,
+#   group = "Gender",
+#   method = "white.test",
+#   nperm = 50
+# )
 
 
 # multiple groups ---------------------------------------------------------

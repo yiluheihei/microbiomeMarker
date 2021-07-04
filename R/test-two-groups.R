@@ -81,15 +81,15 @@ test_two_groups <- function(ps,
   ps <- preprocess_ps(ps)
   ps <- transform_abundances(ps, transform = transform)
 
-  ps_summarized <- summarize_taxa(ps)
-  # otus <- otu_table(ps_summarized)
-  otus <- abundances(ps_summarized, norm = FALSE)
-  # normalize
-  norm_para <- c(norm_para, method = norm, object = list(ps_summarized))
-  ps_normed <- do.call(normalize, norm_para)
-
+  # original abundance for white test
+  otus <- abundances(summarize_taxa(ps), norm = FALSE)
   abd <- transpose_and_2df(otus)
-  abd_norm <- abundances(ps_normed, norm = TRUE) %>%
+
+  # normalize, normalize first, then summarize
+  norm_para <- c(norm_para, method = norm, object = list(ps))
+  ps_normed <- do.call(normalize, norm_para)
+  ps_summarized <- summarize_taxa(ps_normed)
+  abd_norm <- abundances(ps_summarized, norm = TRUE) %>%
     transpose_and_2df()
 
   sample_meta <- sample_data(ps_summarized)
