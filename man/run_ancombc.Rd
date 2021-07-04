@@ -8,6 +8,7 @@
 run_ancombc(
   ps,
   formula,
+  taxa_rank = "all",
   transform = c("identity", "log10", "log10p"),
   norm = "none",
   norm_para = list(),
@@ -29,6 +30,13 @@ table, a sample metadata and a taxonomy table.}
 
 \item{formula}{the character string expresses how the microbial absolute
 abundances for each taxon depend on the variables in metadata.}
+
+\item{taxa_rank}{character to specify taxonomic rank to perform
+differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
+or "all" means to summarize the taxa by the top taxa ranks
+(\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or "none" means perform
+differential analysis on the original taxa (\code{taxa_names(phyloseq)}, e.g.,
+OTU or ASV).}
 
 \item{transform}{character, the methods used to transform the microbial
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The

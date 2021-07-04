@@ -8,6 +8,12 @@
 #'   table, a sample metadata and a taxonomy table.
 #' @param formula the character string expresses how the microbial absolute
 #'   abundances for each taxon depend on the variables in metadata.
+#' @param taxa_rank character to specify taxonomic rank to perform
+#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
+#'   or "all" means to summarize the taxa by the top taxa ranks
+#'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
+#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
+#'   OTU or ASV).
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
@@ -75,6 +81,7 @@
 #' @export
 run_ancombc <- function(ps,
                         formula,
+                        taxa_rank = "all",
                         transform = c("identity", "log10", "log10p"),
                         norm = "none",
                         norm_para = list(),
@@ -127,11 +134,20 @@ run_ancombc <- function(ps,
   norm_para <- c(norm_para, method = norm, object = list(ps))
   ps_normed <- do.call(normalize, norm_para)
   # summarize data
-  ps_normed <- summarize_taxa(ps_normed)
+  # check taxa_rank
+  check_taxa_rank(ps, taxa_rank)
+  if (taxa_rank == "all") {
+    ps_summarized <- summarize_taxa(ps_normed)
+  } else if (taxa_rank =="none") {
+    ps_summarized <- extract_rank(ps_normed, taxa_rank)
+  } else {
+    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
+      extract_rank(taxa_rank)
+  }
 
   # ancombc differential abundance analysis
   ancombc_out <- ANCOMBC::ancombc(
-    ps_normed,
+    ps_summarized,
     formula = formula,
     p_adj_method = p_adjust,
     zero_cut = zero_cut,
@@ -146,7 +162,7 @@ run_ancombc <- function(ps,
     global = TRUE
   )
 
-  groups <- sample_data(ps_normed)[[group_var]]
+  groups <- sample_data(ps_summarized)[[group_var]]
   n_group <- length(unique(groups))
 
   # multiple-group comparison will be performed while the group
@@ -166,7 +182,7 @@ run_ancombc <- function(ps,
   }
 
   # enriched group
-  enrich_abd <- get_ancombc_enrich_group(ps_normed, ancombc_out, group_var)
+  enrich_abd <- get_ancombc_enrich_group(ps_summarized, ancombc_out, group_var)
   norm_abd <- enrich_abd$abd
   group_enrich <- enrich_abd$group_enrich
   idx <- match(group_enrich$feature, rownames(mtab))
@@ -181,10 +197,10 @@ run_ancombc <- function(ps,
     marker_table = marker_table(mtab),
     norm_method = get_norm_method(norm),
     diff_method = "ancombc",
-    sam_data = sample_data(ps_normed),
+    sam_data = sample_data(ps_summarized),
     # tax_table = tax_table(ps),
     otu_table = otu_table(norm_abd, taxa_are_rows = TRUE),
-    tax_table = tax_table(ps_normed)
+    tax_table = tax_table(ps_summarized)
   )
 
   mm

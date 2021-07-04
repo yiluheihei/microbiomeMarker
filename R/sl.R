@@ -5,6 +5,12 @@
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object.
 #' @param group_var character, the variable to set the group.
+#' @param taxa_rank character to specify taxonomic rank to perform
+#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
+#'   or "all" means to summarize the taxa by the top taxa ranks
+#'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
+#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
+#'   OTU or ASV).
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
@@ -71,6 +77,7 @@
 #' @export
 run_sl <- function(ps,
                    group_var,
+                   taxa_rank = "all",
                    transform = c("identity", "log10", "log10p"),
                    norm = "none",
                    norm_para = list(),
@@ -124,7 +131,18 @@ run_sl <- function(ps,
   ps_normed <- do.call(normalize, norm_para)
 
   # summarize data
-  ps_summarized <- summarize_taxa(ps_normed)
+  # create a function, extract_summarize?
+  # check taxa_rank
+  check_taxa_rank(ps, taxa_rank)
+  if (taxa_rank == "all") {
+    ps_summarized <- summarize_taxa(ps_normed)
+  } else if (taxa_rank =="none") {
+    ps_summarized <- extract_rank(ps_normed, taxa_rank)
+  } else {
+    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
+      extract_rank(taxa_rank)
+  }
+
   counts_tab <- abundances(ps_summarized, norm = TRUE)
   tax_tab <- as.data.frame(tax_table(ps_summarized))
   # sam_tab <- sample_data(ps_summarized)
