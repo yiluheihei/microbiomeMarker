@@ -2,14 +2,8 @@ comment: false
 
 coverage:
   status:
-    project:
-      default:
-        target: auto
-        threshold: 1%
-    patch:
-      default:
-        target: auto
-        threshold: 1%
+    project: off
+    patch: off
 
 after_success:
     - Rscript -e 'covr::codecov()'
