@@ -1,9 +1,15 @@
 comment: false
 
+# disable project and patch check
 coverage:
   status:
-    project: off
-    patch: off
+    project:
+      default:
+        enabled: false
+    patch:
+      default:
+        enabled: false
+    changes: no
 
 after_success:
     - Rscript -e 'covr::codecov()'
