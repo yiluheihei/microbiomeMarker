@@ -46,7 +46,7 @@
 #'   effect size for anova/kruskal test.
 #' @importFrom dplyr mutate bind_cols filter select
 #' @importFrom stats p.adjust
-#' @seealso [posthoc_test()]
+#' @seealso [posthoc_test()],[`test_two_groups()`],[`run_simple_stat()`]
 #' @export
 test_multiple_groups <- function(ps,
                                  group,

@@ -94,6 +94,9 @@ a \code{\linkS4class{microbiomeMarker}} object.
 \description{
 Statistical test between two groups
 }
+\seealso{
+\code{\link[=test_multiple_groups]{test_multiple_groups()}},\code{\link{run_simple_stat}}
+}
 \author{
 Yang Cao
 }

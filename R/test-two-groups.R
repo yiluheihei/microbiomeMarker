@@ -54,6 +54,7 @@
 #' @export
 #' @author Yang Cao
 #' @return a [`microbiomeMarker-class`] object.
+#' @seealso [`test_multiple_groups()`],[`run_simple_stat`]
 test_two_groups <- function(ps,
                             group,
                             taxa_rank = "all",
