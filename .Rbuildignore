@@ -10,3 +10,6 @@
 ^LICENSE\.md$
 references.bib
 ^codecov\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
