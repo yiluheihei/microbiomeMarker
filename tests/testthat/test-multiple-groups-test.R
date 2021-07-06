@@ -1,6 +1,6 @@
 context("test multiple group enterotype test")
 
-tukey_res <- posthoc_test(enterotype, "Enterotype", method = "tukey")
+tukey_res <- run_posthoc_test(enterotype, "Enterotype", method = "tukey")
 
 # round_DF <- function(DF) {
 #   round2 <- function(x) {
@@ -26,7 +26,7 @@ test_that("test multiple group enterotype result", {
 
   # error group
   expect_error(
-    test_multiple_groups(enterotype, "Entertype"),
+    run_test_multiple_groups(enterotype, "Entertype"),
     regexp = "`group` must in the field of sample meta data",
     fixed = TRUE
   )
@@ -57,7 +57,7 @@ test_that("test post hoc test result", {
    )
   )
 
-  games_res <- posthoc_test(enterotype, "Enterotype", method = "games_howell")
+  games_res <- run_posthoc_test(enterotype, "Enterotype", method = "games_howell")
   expect_snapshot_output(
     print(
       round_DF(games_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
@@ -65,7 +65,7 @@ test_that("test post hoc test result", {
     )
   )
 
-  scheffe_res <- posthoc_test(enterotype, "Enterotype", method = "scheffe")
+  scheffe_res <- run_posthoc_test(enterotype, "Enterotype", method = "scheffe")
   expect_snapshot_output(
     print(
       round_DF(scheffe_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
@@ -73,7 +73,7 @@ test_that("test post hoc test result", {
     )
   )
 
-  welch_res <- posthoc_test(enterotype, "Enterotype" , method = "welch_uncorrected")
+  welch_res <- run_posthoc_test(enterotype, "Enterotype" , method = "welch_uncorrected")
   expect_snapshot_output(
     print(
       round_DF(welch_res@result[["p__Bacteroidetes|g__Bacteroides"]]),

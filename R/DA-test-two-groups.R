@@ -54,22 +54,22 @@
 #' @export
 #' @author Yang Cao
 #' @return a [`microbiomeMarker-class`] object.
-#' @seealso [`test_multiple_groups()`],[`run_simple_stat`]
-test_two_groups <- function(ps,
-                            group,
-                            taxa_rank = "all",
-                            transform = c("identity", "log10", "log10p"),
-                            norm = "TSS",
-                            norm_para = list(),
-                            method = c("welch.test", "t.test", "white.test"),
-                            p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                          "hochberg", "hommel", "BH", "BY"),
-                            pvalue_cutoff = 0.05,
-                            diff_mean_cutoff = NULL,
-                            ratio_cutoff = NULL,
-                            conf_level = 0.95,
-                            nperm = 1000,
-                            ...) {
+#' @seealso [`run_test_multiple_groups()`],[`run_simple_stat`]
+run_test_two_groups <- function(ps,
+                              group,
+                              taxa_rank = "all",
+                              transform = c("identity", "log10", "log10p"),
+                              norm = "TSS",
+                              norm_para = list(),
+                              method = c("welch.test", "t.test", "white.test"),
+                              p_adjust = c("none", "fdr", "bonferroni", "holm",
+                                           "hochberg", "hommel", "BH", "BY"),
+                              pvalue_cutoff = 0.05,
+                              diff_mean_cutoff = NULL,
+                              ratio_cutoff = NULL,
+                              conf_level = 0.95,
+                              nperm = 1000,
+                              ...) {
   stopifnot(inherits(ps, "phyloseq"))
 
   if (!check_rank_names(ps)) {

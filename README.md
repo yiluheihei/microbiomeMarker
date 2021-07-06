@@ -218,21 +218,23 @@ library(ggplot2)
 # (control) and 20 truc (case) mice
 data("spontaneous_colitis")
 # add prefix of ranks
-mm <- lefse(
-  spontaneous_colitis, 
-  norm = "CPM", 
-  class = "class", 
-  multicls_strat = TRUE
+mm_lefse <- run_lefse(
+  kostic_crc,
+  wilcoxon_cutoff = 0.01,
+  class = "DIAGNOSIS",
+  kw_cutoff = 0.01,
+  multicls_strat = TRUE,
+  lda_cutoff = 4,
 )
 # lefse return a microbioMarker class inherits from phyloseq
-mm
+mm_lefse
 #> microbiomeMarker-class inherited from phyloseq-class
 #> normalization method:              [ CPM ]
 #> microbiome marker identity method: [ lefse ]
-#> marker_table() Marker Table:       [ 29 microbiome markers with 5 variables ]
-#> otu_table()    OTU Table:          [ 132 taxa and  30 samples ]
-#> sample_data()  Sample Data:        [ 30 samples by  1 sample variables ]
-#> tax_table()    Taxonomy Table:     [ 132 taxa by 1 taxonomic ranks ]
+#> marker_table() Marker Table:       [ 20 microbiome markers with 5 variables ]
+#> otu_table()    OTU Table:          [ 960 taxa and  177 samples ]
+#> sample_data()  Sample Data:        [ 177 samples by  71 sample variables ]
+#> tax_table()    Taxonomy Table:     [ 960 taxa by 1 taxonomic ranks ]
 ```
 
 The microbiome biomarker information was stored in a new data structure
@@ -240,21 +242,21 @@ The microbiome biomarker information was stored in a new data structure
 by using `marker_table()`.
 
 ``` r
-head(marker_table(mm))
-#>                                                                                                               feature
-#> marker1                                                                                  k__Bacteria|p__Bacteroidetes
-#> marker2                                                                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia
-#> marker3                                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales
-#> marker4 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
-#> marker5                            k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae
-#> marker6                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
-#>         enrich_group      lda       pvalue         padj
-#> marker1         rag2 5.178600 0.0155342816 0.0155342816
-#> marker2         rag2 5.178501 0.0137522075 0.0137522075
-#> marker3         rag2 5.178501 0.0137522075 0.0137522075
-#> marker4         rag2 5.044767 0.0001217981 0.0001217981
-#> marker5         rag2 4.886991 0.0013201097 0.0013201097
-#> marker6         rag2 4.750839 0.0001217981 0.0001217981
+head(marker_table(mm_lefse))
+#>                                                                                                              feature
+#> marker1                                                                      k__Bacteria|p__Firmicutes|c__Clostridia
+#> marker2                                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales
+#> marker3                                                                                    k__Bacteria|p__Firmicutes
+#> marker4                               k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae
+#> marker5 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroidaceae_Bacteroides
+#> marker6                                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae
+#>         enrich_group   ef_lda       pvalue         padj
+#> marker1      Healthy 4.938091 2.577541e-06 2.577541e-06
+#> marker2      Healthy 4.938091 2.577541e-06 2.577541e-06
+#> marker3      Healthy 4.842391 1.425032e-04 1.425032e-04
+#> marker4      Healthy 4.820702 3.706059e-04 3.706059e-04
+#> marker5      Healthy 4.820702 3.706059e-04 3.706059e-04
+#> marker6      Healthy 4.727401 6.529659e-07 6.529659e-07
 ```
 
 ### Visualization of the result of lefse analysis
@@ -262,8 +264,8 @@ head(marker_table(mm))
 Bar plot for output of lefse:
 
 ``` r
-plot_ef_bar(mm, label_level = 1) +
-  scale_fill_manual(values = c("rag2" = "blue", "truc" = "red"))
+plot_ef_bar(mm_lefse, label_level = 1) +
+  scale_fill_manual(values = c("Healthy" = "blue", "Tumor" = "red"))
 ```
 
 ![](man/figures/README-lefse-barplot-1.png)<!-- -->
@@ -281,14 +283,14 @@ comparison analysis between two-groups and multiple-groups.
 
 ### Statitical analysis between two groups
 
-Function `test_two_groups()` is developed for statistical test between
-two groups, and three test methods are provided: welch test, t test and
-white test.
+Function `run_test_two_groups()` is developed for statistical test
+between two groups, and three test methods are provided: welch test, t
+test and white test.
 
 ``` r
 data("enterotypes_arumugam")
 # take welch test for example
-two_group_welch <- test_two_groups(
+two_group_welch <- run_test_two_groups(
   enterotypes_arumugam, 
   group = "Gender", 
   method = "welch.test"
@@ -305,10 +307,10 @@ two_group_welch
 #> tax_table()    Taxonomy Table:     [ 244 taxa by 1 taxonomic ranks ]
 # details of result of the three markers
 head(marker_table(two_group_welch))
-#>                                     feature enrich_group     diff_mean
-#> marker1     p__Firmicutes|g__Heliobacterium            M -4.271086e-06
-#> marker2         p__Firmicutes|g__Parvimonas            M -6.699283e-06
-#> marker3 p__Firmicutes|g__Peptostreptococcus            M -3.347523e-05
+#>                                     feature enrich_group  ef_diff_mean
+#> marker1     p__Firmicutes|g__Heliobacterium            M -8.542172e-06
+#> marker2         p__Firmicutes|g__Parvimonas            M -1.339857e-05
+#> marker3 p__Firmicutes|g__Peptostreptococcus            M -6.695045e-05
 #>             pvalue       padj
 #> marker1 0.02940341 0.02940341
 #> marker2 0.03281399 0.03281399
@@ -317,9 +319,9 @@ head(marker_table(two_group_welch))
 
 ### Statistical analysis multiple groups
 
-Function `test_multiple_groups()` is constructed for statistical test
-for multiple groups, two test method are provided: anova and kruskal
-test.
+Function `run_test_multiple_groups()` is constructed for statistical
+test for multiple groups, two test method are provided: anova and
+kruskal test.
 
 ``` r
 # three groups
@@ -328,7 +330,7 @@ ps <- phyloseq::subset_samples(
   Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
 )
 
-multiple_group_anova <-  test_multiple_groups(
+multiple_group_anova <-  run_test_multiple_groups(
   ps,
   group = "Enterotype", 
   method = "anova"
@@ -344,13 +346,13 @@ multiple_group_anova
 #> sample_data()  Sample Data:        [ 32 samples by  9 sample variables ]
 #> tax_table()    Taxonomy Table:     [ 238 taxa by 1 taxonomic ranks ]
 head(marker_table(multiple_group_anova))
-#>                                     feature enrich_group eta_squared
-#> marker1                    p__Bacteroidetes Enterotype 1   0.5821619
-#> marker2                     p__Unclassified Enterotype 3   0.4497271
-#> marker3      p__Actinobacteria|g__Scardovia Enterotype 2   0.2196652
-#> marker4       p__Bacteroidetes|g__Alistipes Enterotype 3   0.2001541
-#> marker5     p__Bacteroidetes|g__Bacteroides Enterotype 1   0.7633661
-#> marker6 p__Bacteroidetes|g__Parabacteroides Enterotype 1   0.2582573
+#>                                     feature enrich_group ef_eta_squared
+#> marker1                    p__Bacteroidetes Enterotype 1      0.5821619
+#> marker2                     p__Unclassified Enterotype 3      0.4497271
+#> marker3      p__Actinobacteria|g__Scardovia Enterotype 2      0.2196652
+#> marker4       p__Bacteroidetes|g__Alistipes Enterotype 3      0.2001541
+#> marker5     p__Bacteroidetes|g__Bacteroides Enterotype 1      0.7633661
+#> marker6 p__Bacteroidetes|g__Parabacteroides Enterotype 1      0.2582573
 #>               pvalue         padj
 #> marker1 3.196070e-06 3.196070e-06
 #> marker2 1.731342e-04 1.731342e-04
@@ -365,7 +367,7 @@ all groups is equal or not. To identify which pairs of groups may differ
 from each other, post-hoc test must be performed.
 
 ``` r
-pht <- posthoc_test(ps, group = "Enterotype")
+pht <- run_posthoc_test(ps, group = "Enterotype")
 pht
 #> postHocTest-class object
 #> Pairwise test result of 238  features,  DataFrameList object, each DataFrame has five variables:
@@ -563,17 +565,17 @@ marker_table(mm_ancom)
 #> marker8  k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
 #> marker9                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella
 #> marker10    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae|g__Pseudomonas
-#>          enrich_group CLR_diff_mean   W
-#> marker1      Cesarean    0.29031730 105
-#> marker2      Cesarean    0.30478464 105
-#> marker3      Cesarean    0.37595028 106
-#> marker4      Cesarean    0.08923968  73
-#> marker5      Cesarean    0.37595028 106
-#> marker6      Cesarean    0.20208170  83
-#> marker7       Vaginal    0.03589234  70
-#> marker8      Cesarean    0.37595028 106
-#> marker9      Cesarean    0.20208170  83
-#> marker10      Vaginal    0.03589234  70
+#>          enrich_group ef_CLR_diff_mean   W
+#> marker1      Cesarean       0.29031730 105
+#> marker2      Cesarean       0.30478464 105
+#> marker3      Cesarean       0.37595028 106
+#> marker4      Cesarean       0.08923968  73
+#> marker5      Cesarean       0.37595028 106
+#> marker6      Cesarean       0.20208170  83
+#> marker7       Vaginal       0.03589234  70
+#> marker8      Cesarean       0.37595028 106
+#> marker9      Cesarean       0.20208170  83
+#> marker10      Vaginal       0.03589234  70
 ```
 
 ## ANCOMBC
@@ -587,12 +589,12 @@ marker_table(mm_ancombc)
 #> marker3                                k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae
 #> marker4 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
 #> marker5                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella
-#>         enrich_group effect_size       pvalue       padj
-#> marker1     Cesarean   -3.518274 0.0004343629 0.04908301
-#> marker2     Cesarean   -3.518274 0.0004343629 0.04908301
-#> marker3      Vaginal    3.674617 0.0002382063 0.02739372
-#> marker4     Cesarean   -3.518274 0.0004343629 0.04908301
-#> marker5      Vaginal    3.674617 0.0002382063 0.02739372
+#>         enrich_group      ef_W       pvalue       padj
+#> marker1     Cesarean -3.518274 0.0004343629 0.04908301
+#> marker2     Cesarean -3.518274 0.0004343629 0.04908301
+#> marker3      Vaginal  3.674617 0.0002382063 0.02739372
+#> marker4     Cesarean -3.518274 0.0004343629 0.04908301
+#> marker5      Vaginal  3.674617 0.0002382063 0.02739372
 ```
 
 ## Superivised learning
@@ -603,17 +605,17 @@ marker_table(mm_ancombc)
 mm_lr <- run_sl(enterotypes_arumugam, "Gender", method = "LR")
 #> Loading required package: lattice
 marker_table(mm_lr)
-#>                                        feature enrich_group       imp
-#> marker1       p__Bacteroidetes|g__Zunongwangia            F 100.00000
-#> marker2        p__Proteobacteria|g__Aliivibrio            M  61.82504
-#> marker3    p__Proteobacteria|g__Bradyrhizobium            M  48.58126
-#> marker4         p__Proteobacteria|g__Aeromonas            F  43.03515
-#> marker5                       p__Cyanobacteria            M  24.08290
-#> marker6              p__Firmicutes|g__Listeria            M  20.94169
-#> marker7  p__Proteobacteria|g__Magnetospirillum            M  14.41667
-#> marker8    p__Firmicutes|g__Thermoanaerobacter            F  13.55835
-#> marker9           p__Proteobacteria|g__Proteus            M  12.46479
-#> marker10       p__Firmicutes|g__Heliobacterium            M  12.34414
+#>                                        feature enrich_group    ef_imp
+#> marker1        p__Proteobacteria|g__Variovorax            F 100.00000
+#> marker2         p__Proteobacteria|g__Aeromonas            F  86.21530
+#> marker3        p__Proteobacteria|g__Aliivibrio            M  82.51265
+#> marker4       p__Bacteroidetes|g__Zunongwangia            F  68.17224
+#> marker5       p__Proteobacteria|g__Azotobacter            F  59.64652
+#> marker6     p__Bacteroidetes|g__Capnocytophaga            M  52.47557
+#> marker7  p__Proteobacteria|g__Methylobacterium            M  42.59024
+#> marker8    p__Proteobacteria|g__Bradyrhizobium            M  37.50843
+#> marker9    p__Proteobacteria|g__Photobacterium            M  33.71803
+#> marker10      p__Proteobacteria|g__Simonsiella            F  33.41961
 ```
 
 ### Random forest
@@ -627,17 +629,17 @@ mm_rf <- run_sl(
   importance = "impurity"
 )
 marker_table(mm_rf)
-#>                                       feature enrich_group       imp
-#> marker1      p__Firmicutes|g__Ruminococcaceae            F 100.00000
-#> marker2      p__Firmicutes|g__Subdoligranulum            F  78.62319
-#> marker3      p__Firmicutes|g__Acidaminococcus            F  76.00265
-#> marker4          p__Firmicutes|g__Megasphaera            F  75.94370
-#> marker5     p__Firmicutes|g__Faecalibacterium            F  71.57685
-#> marker6       p__Firmicutes|g__Heliobacterium            M  71.42977
-#> marker7        p__Firmicutes|g__Anaerotruncus            F  68.36368
-#> marker8        p__Firmicutes|g__Coprobacillus            F  66.67126
-#> marker9     p__Bacteroidetes|g__Porphyromonas            F  66.50552
-#> marker10 p__Actinobacteria|g__Bifidobacterium            F  65.86837
+#>                                            feature enrich_group    ef_imp
+#> marker1               p__Firmicutes|g__Megasphaera            F 100.00000
+#> marker2           p__Firmicutes|g__Ruminococcaceae            F  70.45596
+#> marker3  p__Proteobacteria|g__Escherichia/Shigella            F  69.31432
+#> marker4        p__Firmicutes|g__Desulfitobacterium            F  69.01567
+#> marker5        p__Firmicutes|g__Peptostreptococcus            M  66.95028
+#> marker6           p__Firmicutes|g__Subdoligranulum            F  65.87990
+#> marker7          p__Bacteroidetes|g__Porphyromonas            F  65.41748
+#> marker8           p__Firmicutes|g__Lachnospiraceae            F  65.10861
+#> marker9             p__Firmicutes|g__Anaerotruncus            F  64.84360
+#> marker10   p__Proteobacteria|g__Enterobacteriaceae            F  64.63217
 ```
 
 ### Support vector machine
@@ -645,7 +647,7 @@ marker_table(mm_rf)
 ``` r
 mm_svm <- run_sl(enterotypes_arumugam, "Gender", method = "SVM")
 marker_table(mm_svm)
-#>                                            feature enrich_group       imp
+#>                                            feature enrich_group    ef_imp
 #> marker1        p__Firmicutes|g__Peptostreptococcus            M 100.00000
 #> marker2  p__Proteobacteria|g__Escherichia/Shigella            F  97.81022
 #> marker3          p__Firmicutes|g__Faecalibacterium            F  96.35036
@@ -663,7 +665,7 @@ marker_table(mm_svm)
 ### Cladogram plot
 
 ``` r
-plot_cladogram(mm, color = c("blue", "red"))
+plot_cladogram(mm_lefse, color = c("blue", "red"))
 ```
 
 ![](man/figures/README-cladogram-1.png)<!-- -->
@@ -672,7 +674,7 @@ It’s recommended to use a named vector to set the colors of enriched
 group:
 
 ``` r
-plot_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
+plot_cladogram(mm_lefse, color = c(Healthy = "blue", Tumor = "red"))
 ```
 
 ![](man/figures/README-cladogram-color-1.png)<!-- -->

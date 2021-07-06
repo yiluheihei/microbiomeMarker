@@ -101,8 +101,8 @@ a \code{\linkS4class{microbiomeMarker}} object.
 }
 \description{
 Perform simple statistical analysis of metagenomic profiles. This function
-is a wrapper of \code{test_two_groups} and \code{test_multiple_groups}.
+is a wrapper of \code{run_test_two_groups} and \code{run_test_multiple_groups}.
 }
 \seealso{
-\code{\link[=test_two_groups]{test_two_groups()}},\code{\link[=test_multiple_groups]{test_multiple_groups()}}
+\code{\link[=run_test_two_groups]{run_test_two_groups()}},\code{\link[=run_test_multiple_groups]{run_test_multiple_groups()}}
 }

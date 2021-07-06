@@ -1,5 +1,5 @@
 # lefse - lda
-mm_lefse <- lefse(
+mm_lefse <- run_lefse(
   kostic_crc,
   wilcoxon_cutoff = 0.01,
   class = "DIAGNOSIS",
@@ -13,10 +13,10 @@ set.seed(2020)
 # two groups --------------------------------------------------------------
 
 # welch test - diff_mean
-mm_welch <- test_two_groups(enterotypes_arumugam, "Gender")
+mm_welch <- run_test_two_groups(enterotypes_arumugam, "Gender")
 
 # t test - diff_mean
-mm_t <- test_two_groups(
+mm_t <- run_test_two_groups(
   enterotypes_arumugam,
   group = "Gender",
   method = "t.test"
@@ -39,14 +39,14 @@ enterotype <- phyloseq::subset_samples(
 )
 
 # eta squared
-mm_anova <- test_multiple_groups(
+mm_anova <- run_test_multiple_groups(
   enterotype,
   group = "Enterotype",
   method = "anova",
   effect_size_cutoff = 0.7
 )
 
-mm_kruskal <-  test_multiple_groups(
+mm_kruskal <-  run_test_multiple_groups(
   enterotype,
   group = "Enterotype",
   method = "kruskal"

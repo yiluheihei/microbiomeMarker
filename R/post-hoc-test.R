@@ -43,18 +43,18 @@
 #' defining the method for the pairwise comparisons. See details for more
 #' information.
 #' @return a [postHocTest-class] object
-#' @seealso [postHocTest-class], [test_multiple_groups()]
+#' @seealso [postHocTest-class], [run_test_multiple_groups()]
 #' @importFrom IRanges DataFrameList
 #' @importFrom dplyr mutate
 #' @export
-posthoc_test <- function(ps,
-                         group,
-                         transform = c("identity", "log10", "log10p"),
-                         norm = "TSS",
-                         norm_para = list(),
-                         conf_level = 0.95,
-                         method = c("tukey", "games_howell",
-                                    "scheffe", "welch_uncorrected")) {
+run_posthoc_test <- function(ps,
+                          group,
+                          transform = c("identity", "log10", "log10p"),
+                          norm = "TSS",
+                          norm_para = list(),
+                          conf_level = 0.95,
+                          method = c("tukey", "games_howell",
+                                     "scheffe", "welch_uncorrected")) {
   stopifnot(inherits(ps, "phyloseq"))
 
   if (!check_rank_names(ps)) {

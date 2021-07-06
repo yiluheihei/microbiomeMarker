@@ -46,19 +46,20 @@
 #'   effect size for anova/kruskal test.
 #' @importFrom dplyr mutate bind_cols filter select
 #' @importFrom stats p.adjust
-#' @seealso [posthoc_test()],[`test_two_groups()`],[`run_simple_stat()`]
+#' @seealso [run_posthoc_test()],[`run_test_two_groups()`],[`run_simple_stat()`]
 #' @export
-test_multiple_groups <- function(ps,
-                                 group,
-                                 taxa_rank = "all",
-                                 transform = c("identity", "log10", "log10p"),
-                                 norm = "TSS",
-                                 norm_para = list(),
-                                 method = c("anova", "kruskal"),
-                                 p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                              "hochberg", "hommel", "BH", "BY"),
-                                 pvalue_cutoff = 0.05,
-                                 effect_size_cutoff = NULL) {
+run_test_multiple_groups <- function(ps,
+                                  group,
+                                  taxa_rank = "all",
+                                  transform = c("identity", "log10", "log10p"),
+                                  norm = "TSS",
+                                  norm_para = list(),
+                                  method = c("anova", "kruskal"),
+                                  p_adjust = c("none", "fdr", "bonferroni",
+                                               "holm", "hochberg", "hommel",
+                                               "BH", "BY"),
+                                  pvalue_cutoff = 0.05,
+                                  effect_size_cutoff = NULL) {
   stopifnot(inherits(ps, "phyloseq"))
 
   if (!check_rank_names(ps)) {

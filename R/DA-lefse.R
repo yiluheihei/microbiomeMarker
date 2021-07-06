@@ -75,23 +75,23 @@
 #' @seealso [normalize]
 #' @references Segata, Nicola, et al. Metagenomic biomarker discovery and
 #' explanation. Genome biology 12.6 (2011): R60.
-lefse <- function(ps,
-                  class,
-                  subclass = NULL,
-                  taxa_rank = "all",
-                  transform = c("identity", "log10", "log10p"),
-                  norm = "CPM",
-                  norm_para = list(),
-                  kw_cutoff = 0.05,
-                  lda_cutoff = 2,
-                  bootstrap_n = 30,
-                  bootstrap_fraction = 2/3,
-                  wilcoxon_cutoff = 0.05,
-                  multicls_strat = FALSE,
-                  correct = c("0", "1", "2"),
-                  sample_min = 10,
-                  only_same_subcls = FALSE,
-                  curv = FALSE) {
+run_lefse <- function(ps,
+                    class,
+                    subclass = NULL,
+                    taxa_rank = "all",
+                    transform = c("identity", "log10", "log10p"),
+                    norm = "CPM",
+                    norm_para = list(),
+                    kw_cutoff = 0.05,
+                    lda_cutoff = 2,
+                    bootstrap_n = 30,
+                    bootstrap_fraction = 2/3,
+                    wilcoxon_cutoff = 0.05,
+                    multicls_strat = FALSE,
+                    correct = c("0", "1", "2"),
+                    sample_min = 10,
+                    only_same_subcls = FALSE,
+                    curv = FALSE) {
   if (!inherits(ps, "phyloseq")) {
     stop("`ps` must be phyloseq object", call. = FALSE)
   }

@@ -1,7 +1,7 @@
 #' Simple statistical analysis of metagenomic profiles
 #'
 #' Perform simple statistical analysis of metagenomic profiles. This function
-#' is a wrapper of `test_two_groups` and `test_multiple_groups`.
+#' is a wrapper of `run_test_two_groups` and `run_test_multiple_groups`.
 #'
 #' @param ps a [`phyloseq::phyloseq-class`] object
 #' @param group character, the variable to set the group
@@ -59,7 +59,7 @@
 #' @param ... only used for two groups comparison, extra arguments passed to
 #' [`t.test()`] or [`fisher.test()`].
 #' @return a [`microbiomeMarker-class`] object.
-#' @seealso [`test_two_groups()`],[`test_multiple_groups()`]
+#' @seealso [`run_test_two_groups()`],[`run_test_multiple_groups()`]
 #' @export
 run_simple_stat <- function(ps,
                                   group,
@@ -118,7 +118,7 @@ run_simple_stat <- function(ps,
       )
     }
 
-    res <- test_two_groups(
+    res <- run_test_two_groups(
       ps = ps,
       group = group,
       taxa_rank = taxa_rank,
@@ -168,7 +168,7 @@ run_simple_stat <- function(ps,
       )
     }
 
-    res <- test_multiple_groups(
+    res <- run_test_multiple_groups(
       ps = ps,
       group = group,
       taxa_rank = taxa_rank,

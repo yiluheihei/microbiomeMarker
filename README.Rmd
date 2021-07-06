@@ -195,14 +195,16 @@ library(ggplot2)
 # (control) and 20 truc (case) mice
 data("spontaneous_colitis")
 # add prefix of ranks
-mm <- lefse(
-  spontaneous_colitis, 
-  norm = "CPM", 
-  class = "class", 
-  multicls_strat = TRUE
+mm_lefse <- run_lefse(
+  kostic_crc,
+  wilcoxon_cutoff = 0.01,
+  class = "DIAGNOSIS",
+  kw_cutoff = 0.01,
+  multicls_strat = TRUE,
+  lda_cutoff = 4,
 )
 # lefse return a microbioMarker class inherits from phyloseq
-mm
+mm_lefse
 ```
 
 The microbiome biomarker information was stored in a new data structure 
@@ -210,7 +212,7 @@ The microbiome biomarker information was stored in a new data structure
 using `marker_table()`.
 
 ```{r}
-head(marker_table(mm))
+head(marker_table(mm_lefse))
 ```
 
 ### Visualization of the result of lefse analysis
@@ -218,8 +220,8 @@ head(marker_table(mm))
 Bar plot for output of lefse:
 
 ```{r lefse-barplot,dpi=300}
-plot_ef_bar(mm, label_level = 1) +
-  scale_fill_manual(values = c("rag2" = "blue", "truc" = "red"))
+plot_ef_bar(mm_lefse, label_level = 1) +
+  scale_fill_manual(values = c("Healthy" = "blue", "Tumor" = "red"))
 ```
 
 ## statistical analysis (stamp)
@@ -234,13 +236,13 @@ microbial comparison analysis between two-groups and multiple-groups.
 
 ### Statitical analysis between two groups
 
-Function `test_two_groups()` is developed for statistical test between two 
+Function `run_test_two_groups()` is developed for statistical test between two 
 groups, and three test methods are provided: welch test, t test and white test.
 
 ```{r test-two-groups}
 data("enterotypes_arumugam")
 # take welch test for example
-two_group_welch <- test_two_groups(
+two_group_welch <- run_test_two_groups(
   enterotypes_arumugam, 
   group = "Gender", 
   method = "welch.test"
@@ -254,7 +256,7 @@ head(marker_table(two_group_welch))
 
 ### Statistical analysis multiple groups
 
-Function `test_multiple_groups()` is constructed for statistical test for multiple
+Function `run_test_multiple_groups()` is constructed for statistical test for multiple
 groups, two test method are provided: anova and kruskal test.
 
 ```{r test-multiple-groups}
@@ -264,7 +266,7 @@ ps <- phyloseq::subset_samples(
   Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
 )
 
-multiple_group_anova <-  test_multiple_groups(
+multiple_group_anova <-  run_test_multiple_groups(
   ps,
   group = "Enterotype", 
   method = "anova"
@@ -280,7 +282,7 @@ is equal or not. To identify which pairs of groups may differ from each other,
 post-hoc test must be performed.
 
 ```{r post-hoc-test}
-pht <- posthoc_test(ps, group = "Enterotype")
+pht <- run_posthoc_test(ps, group = "Enterotype")
 pht
 
 # 24 significantly differential genera
@@ -414,13 +416,13 @@ marker_table(mm_svm)
 ### Cladogram plot
 
 ```{r cladogram,dpi=300,fig.width=14}
-plot_cladogram(mm, color = c("blue", "red"))
+plot_cladogram(mm_lefse, color = c("blue", "red"))
 ```
 
 It's recommended to use a named vector to set the colors of enriched group:
 
 ```{r cladogram-color,dpi=300,fig.width=14}
-plot_cladogram(mm, color = c(truc = "blue", rag2 = "red"))
+plot_cladogram(mm_lefse, color = c(Healthy = "blue", Tumor = "red"))
 ```
 
 ## Welcome
