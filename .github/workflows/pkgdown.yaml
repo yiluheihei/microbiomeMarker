@@ -20,6 +20,9 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
+      - name: Install XQuartz # .onLoad failed in loadNamespace() for 'Cairo'
+        run: brew install xquartz --cask
+
       - name: Query dependencies
         run: |
           install.packages('remotes')
