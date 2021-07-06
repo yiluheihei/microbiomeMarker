@@ -195,13 +195,14 @@ run_ancom <- function(ps,
   # Declare a taxon to be differentially abundant based on the quantile of W
   # statistic. We perform (n_taxa - 1) hypothesis testings on each taxon, so
   # the maximum number of rejections is (n_taxa - 1).
-  marker <- out_comp[out_comp$W > theta * (n_taxa -1), ]
+  sig_out <- out_comp[out_comp$W > theta * (n_taxa -1), ]
   if (cls_n == 2) {
-    names(marker)[3] <- "ef_CLR_diff_mean"
+    names(sig_out)[3] <- "ef_CLR_diff_mean"
   } else {
-    names(marker)[3] <- "ef_CLR_F_statistic"
+    names(sig_out)[3] <- "ef_CLR_F_statistic"
   }
-  marker <- marker_table(marker)
+
+  marker <- return_marker(sig_out, out_comp)
   tax <- matrix(taxa_id) %>%
     tax_table()
   row.names(tax) <- row.names(feature_table)

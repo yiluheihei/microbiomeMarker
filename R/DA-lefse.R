@@ -205,21 +205,22 @@ run_lefse <- function(ps,
   lefse_sig <- filter(lefse_res, .data$ef_lda >= lda_cutoff) %>%
     arrange(.data$enrich_group, desc(.data$ef_lda))
 
-  if (nrow(lefse_sig)) {
-    lefse_out <- marker_table(lefse_sig)
-  } else {
-    warning(
-      "No significant feature identified, return all the features",
-      call. = FALSE
-    )
-    lefse_out <- marker_table(lefse_res)
-    if (norm != "CPM") {
-      warning(
-        "CPM normalization method is recommended according to the lefse paper",
-        call. = FALSE
-      )
-    }
-  }
+  # if (nrow(lefse_sig)) {
+  #   lefse_out <- marker_table(lefse_sig)
+  # } else {
+  #   warning(
+  #     "No significant feature identified, return all the features",
+  #     call. = FALSE
+  #   )
+  #   lefse_out <- marker_table(lefse_res)
+  #   if (norm != "CPM") {
+  #     warning(
+  #       "CPM normalization method is recommended according to the lefse paper",
+  #       call. = FALSE
+  #     )
+  #   }
+  # }
+  lefse_out <- return_marker(lefse_sig, lefse_res)
   lefse_out$padj <- lefse_out$pvalue
   row.names(lefse_out) <- paste0("marker", seq_len(nrow(lefse_out)))
 

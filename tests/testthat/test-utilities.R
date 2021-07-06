@@ -91,3 +91,16 @@ test_that("create contrast", {
   expect_error(create_contrast(c("a", "b"), c("b", "c")), "one of a, b")
 
 })
+
+
+# return marker
+test_that("marker_table, if no significant marker return all the features", {
+  sig_ft1 <- data.frame()
+  ft <- data.frame(feature = letters[1:3], ef = runif(3))
+  expect_warning(return_marker(sig_ft1, ft), "No significant feature")
+  expect_equal(marker_table(ft), return_marker(sig_ft1, ft))
+
+  sig_ft2 <- data.frame(feature = "a", ef = 1)
+  expect_equal(marker_table(sig_ft2), return_marker(sig_ft2, ft))
+
+})

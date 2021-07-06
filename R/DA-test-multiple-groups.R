@@ -175,28 +175,17 @@ run_test_multiple_groups <- function(ps,
   res <- res[, c("feature", "enrich_group", "ef_eta_squared", "pvalue", "padj")]
   res_filtered <- res_filtered[, c("feature", "enrich_group",
                                    "ef_eta_squared", "pvalue", "padj")]
+  row.names(res_filtered) <- paste0("marker", seq_len(nrow(res_filtered)))
 
-  if (nrow(res_filtered) == 0) {
-    warning("No significant features were found, return all the features")
-    marker <- microbiomeMarker(
-      marker_table = marker_table(res),
-      # tax_table = tax_table(ps),
-      otu_table = otu_table(t(abd_norm), taxa_are_rows = TRUE),
-      tax_table = tax,
-      sam_data = sample_data(ps_normed)
-    )
-  } else {
-    row.names(res_filtered) <- paste0("marker", seq_len(nrow(res_filtered)))
-    marker <- microbiomeMarker(
-      marker_table = marker_table(res_filtered),
-      norm_method = get_norm_method(norm),
-      diff_method = method,
-      sam_data = sample_data(ps_normed),
-      # tax_table = tax_table(ps),
-      otu_table = otu_table(t(abd_norm), taxa_are_rows = TRUE),
-      tax_table = tax
-    )
-  }
+  marker <- return_marker(res_filtered, res)
+  marker <- microbiomeMarker(
+    marker_table = marker,
+    norm_method = get_norm_method(norm),
+    diff_method = method,
+    sam_data = sample_data(ps_normed),
+    otu_table = otu_table(t(abd_norm), taxa_are_rows = TRUE),
+    tax_table = tax
+  )
 
   marker
 }

@@ -189,12 +189,12 @@ run_ancombc <- function(ps,
   group_enrich <- group_enrich[idx, ]
 
   mtab <- cbind(mtab, group_enrich)
-  mtab <- mtab[mtab$diff_abn, ]
-  mtab <- mtab[c("feature", "enrich_group", "W", "p_val", "q_val")]
-  names(mtab) <- c("feature", "enrich_group", "ef_W", "pvalue", "padj")
-
-  mm <- microbiomeMarker(
-    marker_table = marker_table(mtab),
+  mtab_sig <- mtab[mtab$diff_abn, ]
+  mtab_sig <- mtab_sig[c("feature", "enrich_group", "W", "p_val", "q_val")]
+  names(mtab_sig) <- c("feature", "enrich_group", "ef_W", "pvalue", "padj")
+  marker <- return_marker(mtab_sig, mtab)
+  marker <- microbiomeMarker(
+    marker_table = marker,
     norm_method = get_norm_method(norm),
     diff_method = "ancombc",
     sam_data = sample_data(ps_summarized),
@@ -203,7 +203,7 @@ run_ancombc <- function(ps,
     tax_table = tax_table(ps_summarized)
   )
 
-  mm
+  marker
 }
 
 get_ancombc_enrich_group <- function(ps, ancombc_out, group_var) {

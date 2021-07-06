@@ -404,3 +404,19 @@ check_taxa_rank <- function(ps, taxa_rank) {
 
   invisible(ps)
 }
+
+# return the marker_table, if no significant marker return all the features
+return_marker <- function(sig_feature, all_feature) {
+  if (nrow(sig_feature)) {
+    marker <- marker_table(sig_feature)
+  } else {
+    warning(
+      "No significant feature identified, return all the features",
+      call. = FALSE
+    )
+    marker <- marker_table(all_feature)
+  }
+
+  marker
+}
+
