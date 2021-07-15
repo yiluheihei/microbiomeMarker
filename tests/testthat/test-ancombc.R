@@ -88,7 +88,7 @@ test_that("ancombc works correctly", {
       tol = 1e-5,
       max_iter = 100,
       conserve = FALSE,
-      alpha = 0.05
+      pvalue_cutoff = 0.05
     )
     marker <- data.frame(marker_table(out2))
 
@@ -96,7 +96,12 @@ test_that("ancombc works correctly", {
     identical(marker, res)
   }
 
-  mm_ancombc <- run_ancombc(ecam, "delivery", group_var = "delivery")
+  mm_ancombc <- run_ancombc(
+    ecam,
+    "delivery",
+    group_var = "delivery",
+    p_adjust = "holm"
+  )
   expect_known_output(
     mm_ancombc,
     test_path("out/test-ancombc-out.txt"),

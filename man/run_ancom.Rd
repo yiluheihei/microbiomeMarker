@@ -12,8 +12,8 @@ run_ancom(
   norm = "TSS",
   norm_para = list(),
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
-  alpha = 0.05,
-  theta = 0.75,
+  pvalue_cutoff = 0.05,
+  W_cutoff = 0.75,
   test = c("aov", "wilcox.test", "kruskal.test"),
   ...
 )
@@ -71,10 +71,10 @@ arguments here.}
 \item{p_adjust}{method for multiple test correction, default \code{none},
 for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 
-\item{alpha}{significance level for each of the statistical tests,
+\item{pvalue_cutoff}{significance level for each of the statistical tests,
 default 0.05.}
 
-\item{theta}{lower bound for the proportion for the W-statistic, default 0.7.}
+\item{W_cutoff}{lower bound for the proportion for the W-statistic, default 0.7.}
 
 \item{test}{character, the test to dtermine the p value of log ratio,
 one of "aov", "wilcox.test",  "kruskal.test".}

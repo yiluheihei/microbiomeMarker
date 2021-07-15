@@ -39,7 +39,7 @@ test_that("ancom result", {
     ecam, "delivery",
     test = "wilcox.test",
     p_adjust = "BH",
-    theta = 0
+    W_cutoff = 0
   )
   curr_marker <- round_DF(marker_table(ancom_res))
   expect_known_output(

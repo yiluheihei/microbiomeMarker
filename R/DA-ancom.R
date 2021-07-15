@@ -44,9 +44,9 @@
 #'   arguments here.
 #' @param p_adjust method for multiple test correction, default `none`,
 #' for more details see [stats::p.adjust].
-#' @param alpha significance level for each of the statistical tests,
+#' @param pvalue_cutoff significance level for each of the statistical tests,
 #'   default 0.05.
-#' @param theta lower bound for the proportion for the W-statistic, default 0.7.
+#' @param W_cutoff lower bound for the proportion for the W-statistic, default 0.7.
 #' @param test character, the test to dtermine the p value of log ratio,
 #'   one of "aov", "wilcox.test",  "kruskal.test".
 #' @param ... additional arguments passed to the test function.
@@ -89,8 +89,8 @@ run_ancom <- function(ps,
                       norm_para = list(),
                       p_adjust = c("none", "fdr", "bonferroni", "holm",
                                     "hochberg", "hommel", "BH", "BY"),
-                      alpha = 0.05,
-                      theta = 0.75,
+                      pvalue_cutoff = 0.05,
+                      W_cutoff = 0.75,
                       test = c("aov", "wilcox.test", "kruskal.test"),
                       ...) {
   stopifnot(inherits(ps, "phyloseq"))
@@ -180,8 +180,8 @@ run_ancom <- function(ps,
   )
 
   # Calculate the W statistic of ANCOM.
-  # For each taxon, count the number of q-values < alpha.
-  W <- apply(p_adjusted, 2, function(x) sum(x < alpha))
+  # For each taxon, count the number of q-values < pvalue_cutoff.
+  W <- apply(p_adjusted, 2, function(x) sum(x < pvalue_cutoff))
 
   # Organize outputs
   out_comp <- data.frame(
@@ -195,7 +195,7 @@ run_ancom <- function(ps,
   # Declare a taxon to be differentially abundant based on the quantile of W
   # statistic. We perform (n_taxa - 1) hypothesis testings on each taxon, so
   # the maximum number of rejections is (n_taxa - 1).
-  sig_out <- out_comp[out_comp$W > theta * (n_taxa -1), ]
+  sig_out <- out_comp[out_comp$W > W_cutoff * (n_taxa -1), ]
   if (cls_n == 2) {
     names(sig_out)[3] <- "ef_CLR_diff_mean"
   } else {

@@ -4,7 +4,7 @@
 #' is a wrapper of `run_test_two_groups` and `run_test_multiple_groups`.
 #'
 #' @param ps a [`phyloseq::phyloseq-class`] object
-#' @param group character, the variable to set the group
+#' @param group_var character, the variable to set the group
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
 #'   or "all" means to summarize the taxa by the top taxa ranks
@@ -62,22 +62,22 @@
 #' @seealso [`run_test_two_groups()`],[`run_test_multiple_groups()`]
 #' @export
 run_simple_stat <- function(ps,
-                                  group,
-                                  taxa_rank = "all",
-                                  transform = c("identity", "log10", "log10p"),
-                                  norm = "TSS",
-                                  norm_para = list(),
-                                  method = c("welch.test", "t.test", "white.test",
-                                             "anova", "kruskal"),
-                                  p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                               "hochberg", "hommel", "BH", "BY"),
-                                  pvalue_cutoff = 0.05,
-                                  diff_mean_cutoff = NULL,
-                                  ratio_cutoff = NULL,
-                                  eta_squared_cutoff = NULL,
-                                  conf_level = 0.95,
-                                  nperm = 1000,
-                                  ...) {
+                            group_var,
+                            taxa_rank = "all",
+                            transform = c("identity", "log10", "log10p"),
+                            norm = "TSS",
+                            norm_para = list(),
+                            method = c("welch.test", "t.test", "white.test",
+                                       "anova", "kruskal"),
+                            p_adjust = c("none", "fdr", "bonferroni", "holm",
+                                         "hochberg", "hommel", "BH", "BY"),
+                            pvalue_cutoff = 0.05,
+                            diff_mean_cutoff = NULL,
+                            ratio_cutoff = NULL,
+                            eta_squared_cutoff = NULL,
+                            conf_level = 0.95,
+                            nperm = 1000,
+                            ...) {
   stopifnot(inherits(ps, "phyloseq"))
 
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
@@ -93,10 +93,10 @@ run_simple_stat <- function(ps,
 
   # group
   sample_meta <- sample_data(ps)
-  if (!group %in% names(sample_meta)) {
-    stop("`group` must in the field of sample meta data", call. = FALSE)
+  if (! group_var %in% names(sample_meta)) {
+    stop("`group_var` must in the field of sample meta data", call. = FALSE)
   }
-  groups <- sample_meta[[group]]
+  groups <- sample_meta[[group_var]]
   n_group <- length(unique(groups))
   if (n_group == 1) {
     stop("at least two groups required", call. = FALSE)
@@ -120,7 +120,7 @@ run_simple_stat <- function(ps,
 
     res <- run_test_two_groups(
       ps = ps,
-      group = group,
+      group = group_var,
       taxa_rank = taxa_rank,
       transform = transform,
       norm = norm,
@@ -170,7 +170,7 @@ run_simple_stat <- function(ps,
 
     res <- run_test_multiple_groups(
       ps = ps,
-      group = group,
+      group = group_var,
       taxa_rank = taxa_rank,
       transform = transform,
       norm = norm,

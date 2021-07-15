@@ -69,7 +69,7 @@
 #'   the test statistic. It is recommended if the sample size is small and/or
 #'   the number of differentially abundant taxa is believed to be large.
 #'   Default is FALSE.
-#' @param alpha level of significance. Default is 0.05.
+#' @param pvalue_cutoff level of significance. Default is 0.05.
 #'
 #' @references
 #' Lin, Huang, and Shyamal Das Peddada. "Analysis of compositions of microbiomes
@@ -80,21 +80,22 @@
 #' @importFrom ANCOMBC ancombc
 #' @export
 run_ancombc <- function(ps,
+                        group_var,
                         formula,
                         taxa_rank = "all",
                         transform = c("identity", "log10", "log10p"),
                         norm = "none",
                         norm_para = list(),
-                        p_adjust = "holm",
+                        p_adjust = c("none", "fdr", "bonferroni", "holm",
+                                     "hochberg", "hommel", "BH", "BY"),
                         zero_cut = 0.9,
                         lib_cut = 0,
-                        group_var = NULL,
                         struc_zero = FALSE,
                         neg_lb = FALSE,
                         tol = 1e-05,
                         max_iter = 100,
                         conserve = FALSE,
-                        alpha = 0.05) {
+                        pvalue_cutoff = 0.05) {
   stopifnot(inherits(ps, "phyloseq"))
 
   # check whether group_var is valid, write a function
@@ -158,7 +159,7 @@ run_ancombc <- function(ps,
     tol = tol,
     max_iter = max_iter,
     conserve = conserve,
-    alpha = alpha,
+    alpha = pvalue_cutoff,
     global = TRUE
   )
 

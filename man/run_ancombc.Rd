@@ -7,26 +7,30 @@
 \usage{
 run_ancombc(
   ps,
+  group_var,
   formula,
   taxa_rank = "all",
   transform = c("identity", "log10", "log10p"),
   norm = "none",
   norm_para = list(),
-  p_adjust = "holm",
+  p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
   zero_cut = 0.9,
   lib_cut = 0,
-  group_var = NULL,
   struc_zero = FALSE,
   neg_lb = FALSE,
   tol = 1e-05,
   max_iter = 100,
   conserve = FALSE,
-  alpha = 0.05
+  pvalue_cutoff = 0.05
 )
 }
 \arguments{
 \item{ps}{a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object, which consists of a feature
 table, a sample metadata and a taxonomy table.}
+
+\item{group_var}{the name of the group variable in metadata. Specifying
+\code{group_var} is required for detecting structural zeros and performing
+global test.}
 
 \item{formula}{the character string expresses how the microbial absolute
 abundances for each taxon depend on the variables in metadata.}
@@ -88,10 +92,6 @@ is 0.90.}
 sizes. Samples with library sizes less than \code{lib_cut} will be excluded
 in the analysis. Default is 0, i.e. do not filter any sample.}
 
-\item{group_var}{the name of the group variable in metadata. Specifying
-\code{group_var} is required for detecting structural zeros and performing
-global test.}
-
 \item{struc_zero}{whether to detect structural zeros. Default is FALSE.}
 
 \item{neg_lb}{whether to classify a taxon as a structural zero in the
@@ -109,7 +109,7 @@ the test statistic. It is recommended if the sample size is small and/or
 the number of differentially abundant taxa is believed to be large.
 Default is FALSE.}
 
-\item{alpha}{level of significance. Default is 0.05.}
+\item{pvalue_cutoff}{level of significance. Default is 0.05.}
 }
 \description{
 Differential abundance analysis for microbial absolute abundance data. This
