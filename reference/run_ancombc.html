@@ -127,21 +127,21 @@ function is a wrapper of <code><a href='https://rdrr.io/pkg/ANCOMBC/man/ancombc.
 
     <pre class="usage"><span class='fu'>run_ancombc</span><span class='op'>(</span>
   <span class='va'>ps</span>,
+  <span class='va'>group_var</span>,
   <span class='va'>formula</span>,
   taxa_rank <span class='op'>=</span> <span class='st'>"all"</span>,
   transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
   norm <span class='op'>=</span> <span class='st'>"none"</span>,
   norm_para <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
-  p_adjust <span class='op'>=</span> <span class='st'>"holm"</span>,
+  p_adjust <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"none"</span>, <span class='st'>"fdr"</span>, <span class='st'>"bonferroni"</span>, <span class='st'>"holm"</span>, <span class='st'>"hochberg"</span>, <span class='st'>"hommel"</span>, <span class='st'>"BH"</span>, <span class='st'>"BY"</span><span class='op'>)</span>,
   zero_cut <span class='op'>=</span> <span class='fl'>0.9</span>,
   lib_cut <span class='op'>=</span> <span class='fl'>0</span>,
-  group_var <span class='op'>=</span> <span class='cn'>NULL</span>,
   struc_zero <span class='op'>=</span> <span class='cn'>FALSE</span>,
   neg_lb <span class='op'>=</span> <span class='cn'>FALSE</span>,
   tol <span class='op'>=</span> <span class='fl'>1e-05</span>,
   max_iter <span class='op'>=</span> <span class='fl'>100</span>,
   conserve <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  alpha <span class='op'>=</span> <span class='fl'>0.05</span>
+  pvalue_cutoff <span class='op'>=</span> <span class='fl'>0.05</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -151,6 +151,12 @@ function is a wrapper of <code><a href='https://rdrr.io/pkg/ANCOMBC/man/ancombc.
       <th>ps</th>
       <td><p>a <code><a href='https://rdrr.io/pkg/phyloseq/man/phyloseq-class.html'>phyloseq::phyloseq</a></code> object, which consists of a feature
 table, a sample metadata and a taxonomy table.</p></td>
+    </tr>
+    <tr>
+      <th>group_var</th>
+      <td><p>the name of the group variable in metadata. Specifying
+<code>group_var</code> is required for detecting structural zeros and performing
+global test.</p></td>
     </tr>
     <tr>
       <th>formula</th>
@@ -227,12 +233,6 @@ sizes. Samples with library sizes less than <code>lib_cut</code> will be exclude
 in the analysis. Default is 0, i.e. do not filter any sample.</p></td>
     </tr>
     <tr>
-      <th>group_var</th>
-      <td><p>the name of the group variable in metadata. Specifying
-<code>group_var</code> is required for detecting structural zeros and performing
-global test.</p></td>
-    </tr>
-    <tr>
       <th>struc_zero</th>
       <td><p>whether to detect structural zeros. Default is FALSE.</p></td>
     </tr>
@@ -260,7 +260,7 @@ the number of differentially abundant taxa is believed to be large.
 Default is FALSE.</p></td>
     </tr>
     <tr>
-      <th>alpha</th>
+      <th>pvalue_cutoff</th>
       <td><p>level of significance. Default is 0.05.</p></td>
     </tr>
     </table>

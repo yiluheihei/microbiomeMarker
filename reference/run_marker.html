@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Simple statistical analysis of metagenomic profiles — run_simple_stat • microbiomeMarker</title>
+<title>Find makers (differentially expressed metagenomic features) — run_marker • microbiomeMarker</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Simple statistical analysis of metagenomic profiles — run_simple_stat" />
-<meta property="og:description" content="Perform simple statistical analysis of metagenomic profiles. This function
-is a wrapper of run_test_two_groups and run_test_multiple_groups." />
+<meta property="og:title" content="Find makers (differentially expressed metagenomic features) — run_marker" />
+<meta property="og:description" content="run_marker is a wrapper of all differential analysis functions." />
 
 
 
@@ -112,31 +111,27 @@ is a wrapper of run_test_two_groups and run_test_multiple_groups." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Simple statistical analysis of metagenomic profiles</h1>
-    <small class="dont-index">Source: <a href='https://github.com/yiluheihei/microbiomeMarker/blob/master/R/DA-simple-statistic.R'><code>R/DA-simple-statistic.R</code></a></small>
-    <div class="hidden name"><code>run_simple_stat.Rd</code></div>
+    <h1>Find makers (differentially expressed metagenomic features)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/yiluheihei/microbiomeMarker/blob/master/R/DA-all.R'><code>R/DA-all.R</code></a></small>
+    <div class="hidden name"><code>run_marker.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform simple statistical analysis of metagenomic profiles. This function
-is a wrapper of <code>run_test_two_groups</code> and <code>run_test_multiple_groups</code>.</p>
+    <p><code>run_marker</code> is a wrapper of all differential analysis functions.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_simple_stat</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>run_marker</span><span class='op'>(</span>
   <span class='va'>ps</span>,
-  <span class='va'>group_var</span>,
+  <span class='va'>group</span>,
+  da_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lefse"</span>, <span class='st'>"simple_t"</span>, <span class='st'>"simple_welch"</span>, <span class='st'>"simple_white"</span>, <span class='st'>"simple_kruskal"</span>,
+    <span class='st'>"simple_anova"</span>, <span class='st'>"edger"</span>, <span class='st'>"deseq2"</span>, <span class='st'>"metagenomeseq"</span>, <span class='st'>"ancom"</span>, <span class='st'>"ancombc"</span>, <span class='st'>"aldex"</span>,
+    <span class='st'>"limma_voom"</span>, <span class='st'>"sl_lr"</span>, <span class='st'>"sl_rf"</span>, <span class='st'>"sl_svm"</span><span class='op'>)</span>,
   taxa_rank <span class='op'>=</span> <span class='st'>"all"</span>,
   transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
-  norm <span class='op'>=</span> <span class='st'>"TSS"</span>,
+  norm <span class='op'>=</span> <span class='st'>"none"</span>,
   norm_para <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
-  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"welch.test"</span>, <span class='st'>"t.test"</span>, <span class='st'>"white.test"</span>, <span class='st'>"anova"</span>, <span class='st'>"kruskal"</span><span class='op'>)</span>,
   p_adjust <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"none"</span>, <span class='st'>"fdr"</span>, <span class='st'>"bonferroni"</span>, <span class='st'>"holm"</span>, <span class='st'>"hochberg"</span>, <span class='st'>"hommel"</span>, <span class='st'>"BH"</span>, <span class='st'>"BY"</span><span class='op'>)</span>,
   pvalue_cutoff <span class='op'>=</span> <span class='fl'>0.05</span>,
-  diff_mean_cutoff <span class='op'>=</span> <span class='cn'>NULL</span>,
-  ratio_cutoff <span class='op'>=</span> <span class='cn'>NULL</span>,
-  eta_squared_cutoff <span class='op'>=</span> <span class='cn'>NULL</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-  nperm <span class='op'>=</span> <span class='fl'>1000</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -148,8 +143,34 @@ is a wrapper of <code>run_test_two_groups</code> and <code>run_test_multiple_gro
       <td><p>a <code><a href='https://rdrr.io/pkg/phyloseq/man/phyloseq-class.html'>phyloseq::phyloseq</a></code> object</p></td>
     </tr>
     <tr>
-      <th>group_var</th>
+      <th>group</th>
       <td><p>character, the variable to set the group</p></td>
+    </tr>
+    <tr>
+      <th>da_method</th>
+      <td><p>character to specify the differential analysis method. The
+options include:</p><ul>
+<li><p>"lefse", linear discriminant analysis (LDA) effect size (LEfSe) method,
+for more details see <code><a href='run_lefse.html'>run_lefse()</a></code>.</p></li>
+<li><p>"simple_t", "simple_welch", "simple_white", "simple_kruskal",
+and "simple_anova", simple statistic methods; "simple_t", "simple_welch",
+and "simple_white" for two groups comparison; "simple_kruskal", and
+"simple_anova" for multiple groups comparison. For more details see
+<code><a href='run_simple_stat.html'>run_simple_stat()</a></code>.</p></li>
+<li><p>"edger", see <code><a href='run_edger.html'>run_edger()</a></code>.
+"deseq2", see <code><a href='run_deseq2.html'>run_deseq2()</a></code>.</p></li>
+<li><p>"metagenomeseq", differential expression analysis based on the
+Zero-inflated Log-Normal mixture model or Zero-inflated Gaussian mixture
+model using metagenomeSeq, see <code><a href='run_metagenomeseq.html'>run_metagenomeseq()</a></code>.</p></li>
+<li><p>"ancom", see <code><a href='run_ancom.html'>run_ancom()</a></code>.</p></li>
+<li><p>"ancombc", differential analysis of compositions of microbiomes with bias
+correction, see <code><a href='run_ancombc.html'>run_ancombc()</a></code>.</p></li>
+<li><p>"aldex", see <code><a href='run_aldex.html'>run_aldex()</a></code>.</p></li>
+<li><p>"limma_voom", see <code><a href='run_limma_voom.html'>run_limma_voom()</a></code>.</p></li>
+<li><p>"sl_lr", "sl_rf", and "sl_svm", there supervised leaning (SL) methods:
+logistic regression (lr), random forest (rf), or support vector machine
+(svm). For more details see <code><a href='run_sl.html'>run_sl()</a></code>.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>taxa_rank</th>
@@ -201,55 +222,35 @@ cumulative sum of gene abundances up to a data-derived threshold.</p></li>
       <td><p>arguments passed to specific normalization methods</p></td>
     </tr>
     <tr>
-      <th>method</th>
-      <td><p>test method, options include: "welch.test", "t.test" and
-"white.test" for two groups comparison,  "anova"and "kruskal" for multiple
-groups comparison.</p></td>
-    </tr>
-    <tr>
       <th>p_adjust</th>
       <td><p>method for multiple test correction, default <code>none</code>,
 for more details see <a href='https://rdrr.io/r/stats/p.adjust.html'>stats::p.adjust</a>.</p></td>
     </tr>
     <tr>
       <th>pvalue_cutoff</th>
-      <td><p>numeric, p value cutoff, default 0.05</p></td>
-    </tr>
-    <tr>
-      <th>diff_mean_cutoff, ratio_cutoff</th>
-      <td><p>only used for two groups comparison,
-cutoff of different means and ratios, default <code>NULL</code> which means no effect
-size filter.</p></td>
-    </tr>
-    <tr>
-      <th>eta_squared_cutoff</th>
-      <td><p>only used for multiple groups comparison, numeric,
-cutoff of effect size (eta squared) default <code>NULL</code> which means no effect
-size filter.</p></td>
-    </tr>
-    <tr>
-      <th>conf_level</th>
-      <td><p>only used for two groups comparison, numeric, confidence
-level of interval.</p></td>
-    </tr>
-    <tr>
-      <th>nperm</th>
-      <td><p>integer, only used for two groups comparison, number of
-permutations for white non parametric t test estimation</p></td>
+      <td><p>numeric, p value cutoff, default 0.05.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>only used for two groups comparison, extra arguments passed to
-<code><a href='https://rdrr.io/r/stats/t.test.html'>t.test()</a></code> or <code><a href='https://rdrr.io/r/stats/fisher.test.html'>fisher.test()</a></code>.</p></td>
+      <td><p>extra arguments passed to the corresponding differential analysis
+functions, e.g. <code><a href='run_lefse.html'>run_lefse()</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a <code><a href='microbiomeMarker-class.html'>microbiomeMarker</a></code> object.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function is only a wrapper of all differential analysis functions,
+We recommend to use the corresponding function, since it has a better default
+arguments setting.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='run_test_two_groups.html'>run_test_two_groups()</a></code>,<code><a href='run_test_multiple_groups.html'>run_test_multiple_groups()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='run_lefse.html'>run_lefse()</a></code>,<code><a href='run_simple_stat.html'>run_simple_stat()</a></code>,<code><a href='run_test_two_groups.html'>run_test_two_groups()</a></code>,
+<code><a href='run_test_multiple_groups.html'>run_test_multiple_groups()</a></code>,<code><a href='run_edger.html'>run_edger()</a></code>,<code><a href='run_deseq2.html'>run_deseq2()</a></code>,
+<code><a href='run_metagenomeseq.html'>run_metagenomeseq</a></code>,<code><a href='run_ancom.html'>run_ancom()</a></code>,<code><a href='run_ancombc.html'>run_ancombc()</a></code>,<code><a href='run_aldex.html'>run_aldex()</a></code>,
+<code><a href='run_limma_voom.html'>run_limma_voom()</a></code>,<code><a href='run_sl.html'>run_sl()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
