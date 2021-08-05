@@ -124,7 +124,7 @@ using <strong>edgeR</strong>.</p>
 
     <pre class="usage"><span class='fu'>run_edger</span><span class='op'>(</span>
   <span class='va'>ps</span>,
-  <span class='va'>group_var</span>,
+  <span class='va'>group</span>,
   <span class='va'>contrast</span>,
   taxa_rank <span class='op'>=</span> <span class='st'>"all"</span>,
   method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"LRT"</span>, <span class='st'>"QLFT"</span><span class='op'>)</span>,
@@ -145,7 +145,7 @@ using <strong>edgeR</strong>.</p>
       <td><p>ps a <code><a href='https://rdrr.io/pkg/phyloseq/man/phyloseq-class.html'>phyloseq::phyloseq</a></code> object.</p></td>
     </tr>
     <tr>
-      <th>group_var</th>
+      <th>group</th>
       <td><p>character, the variable to set the group, must be one of
 the var of the sample metadata.</p></td>
     </tr>

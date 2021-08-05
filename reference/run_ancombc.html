@@ -127,7 +127,7 @@ function is a wrapper of <code><a href='https://rdrr.io/pkg/ANCOMBC/man/ancombc.
 
     <pre class="usage"><span class='fu'>run_ancombc</span><span class='op'>(</span>
   <span class='va'>ps</span>,
-  <span class='va'>group_var</span>,
+  <span class='va'>group</span>,
   <span class='va'>formula</span>,
   taxa_rank <span class='op'>=</span> <span class='st'>"all"</span>,
   transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
@@ -153,9 +153,9 @@ function is a wrapper of <code><a href='https://rdrr.io/pkg/ANCOMBC/man/ancombc.
 table, a sample metadata and a taxonomy table.</p></td>
     </tr>
     <tr>
-      <th>group_var</th>
+      <th>group</th>
       <td><p>the name of the group variable in metadata. Specifying
-<code>group_var</code> is required for detecting structural zeros and performing
+<code>group</code> is required for detecting structural zeros and performing
 global test.</p></td>
     </tr>
     <tr>

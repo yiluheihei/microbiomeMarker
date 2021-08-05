@@ -122,8 +122,8 @@
 
     <pre class="usage"><span class='fu'>run_lefse</span><span class='op'>(</span>
   <span class='va'>ps</span>,
-  <span class='va'>class</span>,
-  subclass <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>group</span>,
+  subgroup <span class='op'>=</span> <span class='cn'>NULL</span>,
   taxa_rank <span class='op'>=</span> <span class='st'>"all"</span>,
   transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
   norm <span class='op'>=</span> <span class='st'>"CPM"</span>,
@@ -133,10 +133,10 @@
   bootstrap_n <span class='op'>=</span> <span class='fl'>30</span>,
   bootstrap_fraction <span class='op'>=</span> <span class='fl'>2</span><span class='op'>/</span><span class='fl'>3</span>,
   wilcoxon_cutoff <span class='op'>=</span> <span class='fl'>0.05</span>,
-  multicls_strat <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  multigrp_strat <span class='op'>=</span> <span class='cn'>FALSE</span>,
   correct <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"0"</span>, <span class='st'>"1"</span>, <span class='st'>"2"</span><span class='op'>)</span>,
   sample_min <span class='op'>=</span> <span class='fl'>10</span>,
-  only_same_subcls <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  only_same_subgrp <span class='op'>=</span> <span class='cn'>FALSE</span>,
   curv <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
@@ -148,12 +148,12 @@
       <td><p>a <code><a href='https://rdrr.io/pkg/phyloseq/man/phyloseq-class.html'>phyloseq-class</a></code> object</p></td>
     </tr>
     <tr>
-      <th>class</th>
-      <td><p>character, the column name to set the class</p></td>
+      <th>group</th>
+      <td><p>character, the column name to set the group</p></td>
     </tr>
     <tr>
-      <th>subclass</th>
-      <td><p>character, the column name to set the subclass</p></td>
+      <th>subgroup</th>
+      <td><p>character, the column name to set the subgroup</p></td>
     </tr>
     <tr>
       <th>taxa_rank</th>
@@ -229,8 +229,8 @@ bootstrap iteration, default <code>2/3</code></p></td>
       <td><p>numeric, p value cutoff of wilcoxon test, default 0.05</p></td>
     </tr>
     <tr>
-      <th>multicls_strat</th>
-      <td><p>logical, for multiple class tasks, whether the test is
+      <th>multigrp_strat</th>
+      <td><p>logical, for multiple group tasks, whether the test is
 performed in a one-against one (more strict) or in a one-against all
 setting, default <code>FALSE</code>.</p></td>
     </tr>
@@ -245,9 +245,9 @@ independent comparisons, 2 for independent comparison</p></td>
 performing wilcoxon test, default 10</p></td>
     </tr>
     <tr>
-      <th>only_same_subcls</th>
+      <th>only_same_subgrp</th>
       <td><p>logical, whether perform the wilcoxon test only
-among the subclasses with the same name, default <code>FALSE</code></p></td>
+among the subgroups with the same name, default <code>FALSE</code></p></td>
     </tr>
     <tr>
       <th>curv</th>
