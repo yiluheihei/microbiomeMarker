@@ -4,7 +4,7 @@
 #' vector machine.
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object.
-#' @param group_var character, the variable to set the group.
+#' @param group character, the variable to set the group.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
 #'   or "all" means to summarize the taxa by the top taxa ranks
@@ -76,7 +76,7 @@
 #' @author Yang Cao
 #' @export
 run_sl <- function(ps,
-                   group_var,
+                   group,
                    taxa_rank = "all",
                    transform = c("identity", "log10", "log10p"),
                    norm = "none",
@@ -90,15 +90,15 @@ run_sl <- function(ps,
                    ...) {
   sample_meta <- sample_data(ps)
   meta_nms <- names(sample_meta)
-  if (!group_var %in% meta_nms) {
+  if (!group %in% meta_nms) {
     stop(
-      group_var, " are not contained in the `sample_data` of `ps`",
+      group, " are not contained in the `sample_data` of `ps`",
       call. = FALSE
     )
   }
 
   # In current version, sl just for two groups comparisons
-  groups <- sample_meta[[group_var]]
+  groups <- sample_meta[[group]]
   group_n <- length(unique(groups))
   if (group_n != 2) {
     stop(

@@ -6,7 +6,7 @@
 \usage{
 run_simple_stat(
   ps,
-  group_var,
+  group,
   taxa_rank = "all",
   transform = c("identity", "log10", "log10p"),
   norm = "TSS",
@@ -25,7 +25,7 @@ run_simple_stat(
 \arguments{
 \item{ps}{a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object}
 
-\item{group_var}{character, the variable to set the group}
+\item{group}{character, the variable to set the group}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
 differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},

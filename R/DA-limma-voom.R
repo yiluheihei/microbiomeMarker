@@ -1,7 +1,7 @@
 #' Differential analysis using limma-voom
 #'
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
-#' @param group_var  character, the variable to set the group, must be one of
+#' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
 #' @param contrast a two length vector,  The order determines the direction of
 #'   fold change, the first element is the numerator for the fold change, and
@@ -53,7 +53,7 @@
 #'   voom: Precision weights unlock linear model analysis tools for RNA-seq read
 #'   counts. Genome biology, 15(2), 1-17.
 run_limma_voom <- function(ps,
-                           group_var,
+                           group,
                            contrast,
                            taxa_rank = "all",
                            transform = c("identity", "log10", "log10p"),
@@ -71,16 +71,16 @@ run_limma_voom <- function(ps,
       "hochberg", "hommel", "BH", "BY")
   )
 
-  # check whether group_var is valid, write a function
+  # check whether group is valid, write a function
   sample_meta <- sample_data(ps)
   meta_nms <- names(sample_meta)
-  if (!group_var %in% meta_nms) {
+  if (!group %in% meta_nms) {
     stop(
-      group_var, " are not contained in the `sample_data` of `ps`",
+      group, " are not contained in the `sample_data` of `ps`",
       call. = FALSE
     )
   }
-  groups <- sample_meta[[group_var]]
+  groups <- sample_meta[[group]]
   n_group <- length(unique(groups))
   if (! missing(contrast) && n_group > 2) {
     warning(
@@ -118,7 +118,7 @@ run_limma_voom <- function(ps,
 
   # design matrix
   # design <- model.matrix(
-  #   stats::as.formula(paste("~", group_var)),
+  #   stats::as.formula(paste("~", group)),
   #   data.frame(sample_meta)
   # )
   design <- model.matrix(~0+groups)

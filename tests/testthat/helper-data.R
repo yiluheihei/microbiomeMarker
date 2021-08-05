@@ -2,9 +2,9 @@
 mm_lefse <- run_lefse(
   kostic_crc,
   wilcoxon_cutoff = 0.01,
-  class = "DIAGNOSIS",
+  group = "DIAGNOSIS",
   kw_cutoff = 0.01,
-  multicls_strat = TRUE,
+  multigrp_strat = TRUE,
   lda_cutoff = 4,
 )
 

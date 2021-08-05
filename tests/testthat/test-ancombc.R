@@ -82,7 +82,7 @@ test_that("ancombc works correctly", {
       p_adjust = "holm",
       zero_cut = 0.90,
       lib_cut = 1000,
-      group_var = "nation",
+      group = "nation",
       struc_zero = FALSE,
       neg_lb = FALSE,
       tol = 1e-5,
@@ -99,7 +99,7 @@ test_that("ancombc works correctly", {
   mm_ancombc <- run_ancombc(
     ecam,
     "delivery",
-    group_var = "delivery",
+    group = "delivery",
     p_adjust = "holm"
   )
   expect_known_output(

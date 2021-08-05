@@ -434,20 +434,20 @@ test_rep_wilcoxon <- function(subcls,
 #' @noRd
 #'
 #' @return  a list, contains class, subclass, and class hierarchy
-lefse_format_class <- function(sample_meta, cls, subcls = NULL) {
-  cls <- sample_meta[[cls]]
-  cls_nms <- unique(cls)
+lefse_format_grp <- function(sample_meta, group, subgroup = NULL) {
+  groups <- sample_meta[[group]]
+  group_nms <- unique(groups)
 
-  if (is.null(subcls)) {
-    subcls <- paste0(cls, "_subcls")
+  if (is.null(subgroup)) {
+    subgroup <- paste0(group, "_subgrp")
   } else {
-    subcls <- sample_meta[[subcls]]
+    subgroup <- sample_meta[[subgroup]]
   }
 
-  cls_hie <- split(subcls, cls) %>%
+  group_hie <- split(subgroup, groups) %>%
     purrr::map(unique)
 
-  return(list(cls = cls, subcls = subcls, cls_hie = cls_hie))
+  return(list(group = groups, subgroup = subgroup, group_hie = group_hie))
 }
 
 #' add missing levels, used for summarized taxa

@@ -6,7 +6,7 @@
 \usage{
 run_edger(
   ps,
-  group_var,
+  group,
   contrast,
   taxa_rank = "all",
   method = c("LRT", "QLFT"),
@@ -22,7 +22,7 @@ run_edger(
 \arguments{
 \item{ps}{ps a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object.}
 
-\item{group_var}{character, the variable to set the group, must be one of
+\item{group}{character, the variable to set the group, must be one of
 the var of the sample metadata.}
 
 \item{contrast}{a two length vector,  The order determines the direction of

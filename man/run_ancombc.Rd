@@ -7,7 +7,7 @@
 \usage{
 run_ancombc(
   ps,
-  group_var,
+  group,
   formula,
   taxa_rank = "all",
   transform = c("identity", "log10", "log10p"),
@@ -28,8 +28,8 @@ run_ancombc(
 \item{ps}{a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object, which consists of a feature
 table, a sample metadata and a taxonomy table.}
 
-\item{group_var}{the name of the group variable in metadata. Specifying
-\code{group_var} is required for detecting structural zeros and performing
+\item{group}{the name of the group variable in metadata. Specifying
+\code{group} is required for detecting structural zeros and performing
 global test.}
 
 \item{formula}{the character string expresses how the microbial absolute

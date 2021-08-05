@@ -26,7 +26,7 @@ plot_heatmap <- function(mm,
                          label_level = 1,
                          max_label_len = 60,
                          sample_label = FALSE,
-                         group_var,
+                         group,
                          ...) {
   stopifnot(inherits(mm, c("microbiomeMarker", "marker_table")))
   stopifnot(is.logical(sample_label))
@@ -69,7 +69,7 @@ plot_heatmap <- function(mm,
   )
   row.names(marker_abd) <- labels
 
-  groups <- sample_data(mm)[[group_var]]
+  groups <- sample_data(mm)[[group]]
   group_lvl <- unique(groups)
   idx <- lapply(group_lvl, function(x)which(groups == x))
   marker_abd <- marker_abd[, unlist(idx)]

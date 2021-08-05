@@ -4,7 +4,7 @@
 #' using **edgeR**.
 #'
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
-#' @param group_var  character, the variable to set the group, must be one of
+#' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
@@ -88,7 +88,7 @@
 #' Bioconductor package for differential expression analysis of digital
 #' gene expression data." Bioinformatics 26.1 (2010): 139-140.
 run_edger <- function(ps,
-                      group_var,
+                      group,
                       contrast,
                       taxa_rank = "all",
                       method = c("LRT", "QLFT"),
@@ -108,7 +108,7 @@ run_edger <- function(ps,
       "hochberg", "hommel", "BH", "BY")
   )
 
-  groups <- sample_data(ps)[[group_var]]
+  groups <- sample_data(ps)[[group]]
   groups <- factor(groups)
 
   # contrast must be a two-length vector, only used for two groups comparison

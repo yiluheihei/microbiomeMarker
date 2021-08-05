@@ -16,7 +16,7 @@
 #' mixture model or Zero-inflated Gaussian mixture model using metagenomeSeq.
 #'
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
-#' @param group_var  character, the variable to set the group, must be one of
+#' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
@@ -98,7 +98,7 @@
 #' Paulson, Joseph N., et al. "Differential abundance analysis for microbial
 #' marker-gene surveys." Nature methods 10.12 (2013): 1200-1202.
 run_metagenomeseq <- function(ps,
-                              group_var,
+                              group,
                               contrast,
                               taxa_rank = "all",
                               transform = c("identity", "log10", "log10p"),
@@ -125,7 +125,7 @@ run_metagenomeseq <- function(ps,
   # The levels must by syntactically valid names in R, makeContrast
   if (!missing(contrast)) contrast <- make.names(contrast)
 
-  groups <- sample_data(ps)[[group_var]]
+  groups <- sample_data(ps)[[group]]
   groups <- factor(groups)
   # The levels must by syntactically valid names in R, makeContrast
   levels(groups) <- make.names(levels(groups))

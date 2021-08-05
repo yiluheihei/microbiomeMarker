@@ -19,7 +19,7 @@
 #' using **DESeq2**.
 #'
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
-#' @param group_var  character, the variable to set the group, must be one of
+#' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
@@ -120,7 +120,7 @@
 #' of fold change and dispersion for RNA-seq data with DESeq2." Genome
 #' biology 15.12 (2014): 1-21.
 run_deseq2 <- function(ps,
-                      group_var,
+                      group,
                       contrast,
                       taxa_rank = "all",
                       norm = "RLE",
@@ -147,13 +147,13 @@ run_deseq2 <- function(ps,
 
   # groups
   sam_tab <- sample_data(ps)
-  if (! group_var %in% names(sam_tab)) {
+  if (! group %in% names(sam_tab)) {
     stop(
-      "`group_var` should one of the variable in the `sample_data` of ps",
+      "`group` should one of the variable in the `sample_data` of ps",
       call. = FALSE
     )
   }
-  groups <- sam_tab[[group_var]]
+  groups <- sam_tab[[group]]
   lvl <- unique(groups)
   n_lvl <- length(lvl)
 
@@ -177,7 +177,7 @@ run_deseq2 <- function(ps,
         )
       }
     }
-    contrast <- c(group_var, contrast)
+    contrast <- c(group, contrast)
   } else {
     if (n_lvl == 2) {
       stop("`contrast` is requried for two groups comparison.")
@@ -222,7 +222,7 @@ run_deseq2 <- function(ps,
       extract_rank(taxa_rank)
   }
 
-  dsg <- formula(paste("~ ", group_var))
+  dsg <- formula(paste("~ ", group))
   suppressWarnings(dds_summarized <- phyloseq2DESeq2(
     ps_summarized,
     design = dsg

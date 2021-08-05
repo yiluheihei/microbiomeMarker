@@ -4,13 +4,7 @@
 \alias{plot_abundance}
 \title{plot the abundances of markers}
 \usage{
-plot_abundance(
-  mm,
-  label_level = 1,
-  max_label_len = 60,
-  markers = NULL,
-  group_var
-)
+plot_abundance(mm, label_level = 1, max_label_len = 60, markers = NULL, group)
 }
 \arguments{
 \item{mm}{a \linkS4class{microbiomeMarker} object}
@@ -24,7 +18,7 @@ default \code{60}}
 \item{markers}{character vector, markers to display, default \code{NULL},
 indicating plot all markers.}
 
-\item{group_var}{character, the variable to set the group}
+\item{group}{character, the variable to set the group}
 }
 \value{
 a \code{\link[ggplot2:ggplot]{ggplot2::ggplot}} object.

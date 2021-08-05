@@ -4,7 +4,7 @@
 #' features.
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object.
-#' @param group_var character, the variable to set the group.
+#' @param group character, the variable to set the group.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
 #'   or "all" means to summarize the taxa by the top taxa ranks
@@ -82,7 +82,7 @@
 #'
 #' @export
 run_ancom <- function(ps,
-                      group_var,
+                      group,
                       taxa_rank = "all",
                       transform = c("identity", "log10", "log10p"),
                       norm = "TSS",
@@ -96,12 +96,12 @@ run_ancom <- function(ps,
   stopifnot(inherits(ps, "phyloseq"))
   test <- match.arg(test, c("aov", "wilcox.test", "kruskal.test"))
 
-  # check whether group_var is valid, write a function
+  # check whether group is valid, write a function
   sample_meta <- sample_data(ps)
   meta_nms <- names(sample_meta)
-  if (!group_var %in% meta_nms) {
+  if (!group %in% meta_nms) {
     stop(
-      group_var, " are not contained in the `sample_data` of `ps`",
+      group, " are not contained in the `sample_data` of `ps`",
       call. = FALSE
     )
   }
@@ -136,7 +136,7 @@ run_ancom <- function(ps,
 
   feature_table <- abundances(ps_summarized, norm = TRUE)
   meta_data <- data.frame(sample_data(ps_summarized))
-  cls_full <- meta_data[[group_var]]
+  cls_full <- meta_data[[group]]
   cls_n <- length(unique(cls_full))
 
   # effect size: CLR mean_difference or aov f statistic
@@ -291,36 +291,36 @@ calc_ancom_p <- function(log_ratio, classes, test, ...) {
 #' @author Huang Lin, Yang Cao
 #' @references \url{https://github.com/FrederickHuangLin/ANCOMBC/blob/master/R/get_struc_zero.R}
 #' @noRd
-get_struc_zero <- function(ps, group_var, neg_lb) {
+get_struc_zero <- function(ps, group, neg_lb) {
   stopifnot(inherits(ps, "phyloseq"))
   stopifnot(is.logical(neg_lb))
-  stopifnot(length(group_var) == 1 & is.character(group_var))
+  stopifnot(length(group) == 1 & is.character(group))
 
   meta_tab <- sample_data(ps)
-  check_var_in_meta(group_var, meta_tab)
-  group <- factor(meta_tab[[group_var]])
+  check_var_in_meta(group, meta_tab)
+  groups <- factor(meta_tab[[group]])
 
   feature_tab <- as(otu_table(ps), "matrix")
   present_tab <- feature_tab
   present_tab[is.na(present_tab)] <- 0
   present_tab[present_tab != 0] <- 1
   n_taxa <- nrow(feature_tab)
-  n_group <- nlevels(group)
+  n_group <- nlevels(groups)
 
   p_hat <- matrix(NA, nrow = n_taxa, ncol = n_group)
   rownames(p_hat) <- rownames(feature_tab)
-  colnames(p_hat) <- levels(group)
+  colnames(p_hat) <- levels(groups)
   samp_size <- p_hat
 
   for (i in seq_len(n_taxa)) {
     p_hat[i, ] <- tapply(
       present_tab[i, ],
-      group,
+      groups,
       function(x) mean(x, na.rm = TRUE)
     )
     samp_size[i, ] <- tapply(
       feature_tab[i, ],
-      group,
+      groups,
       function(x) length(x[!is.na(x)])
     )
   }
@@ -333,7 +333,7 @@ get_struc_zero <- function(ps, group_var, neg_lb) {
     zero_ind[p_hat_lo <= 0] <- TRUE
   }
   colnames(zero_ind) <- paste0(
-    "structural_zero (", group_var, " = ",colnames(zero_ind), ")"
+    "structural_zero (", group, " = ",colnames(zero_ind), ")"
   )
 
   data.frame(zero_ind)
@@ -376,7 +376,7 @@ get_ancom_enrich_group <- function(feature_abd, group) {
 preprocess_ancom <- function(feature_table,
                              meta_data,
                              sample_var,
-                             group_var = NULL,
+                             group = NULL,
                              out_cut = 0.05,
                              zero_cut = 0.90,
                              lib_cut,
@@ -391,18 +391,20 @@ preprocess_ancom <- function(feature_table,
   meta_data = meta_data[match(sample_ID, meta_data[, sample_var]), ]
 
   # 1. Identify outliers within each taxon
-  if (!is.null(group_var)) {
-    group = meta_data[, group_var]
+  if (!is.null(group)) {
+    groups = meta_data[, group]
     z = feature_table + 1 # Add pseudo-count (1)
     f = log(z); f[f == 0] = NA; f = colMeans(f, na.rm = T)
-    f_fit = lm(f ~ group)
-    e = rep(0, length(f)); e[!is.na(group)] = residuals(f_fit)
+    f_fit = lm(f ~ groups)
+    e = rep(0, length(f))
+    e[!is.na(groups)] = residuals(f_fit)
     y = t(t(z) - e)
 
     outlier_check = function(x){
       # Fitting the mixture model using the algorithm of Peddada, S. Das, and JT Gene Hwang (2002)
       mu1 = quantile(x, 0.25, na.rm = T); mu2 = quantile(x, 0.75, na.rm = T)
-      sigma1 = quantile(x, 0.75, na.rm = T) - quantile(x, 0.25, na.rm = T); sigma2 = sigma1
+      sigma1 = quantile(x, 0.75, na.rm = T) - quantile(x, 0.25, na.rm = T)
+      sigma2 = sigma1
       pi = 0.75
       n = length(x)
       epsilon = 100
@@ -440,8 +442,8 @@ preprocess_ancom <- function(feature_table,
       return(out_ind)
     }
     out_ind = matrix(FALSE, nrow = nrow(feature_table), ncol = ncol(feature_table))
-    out_ind[, !is.na(group)] = t(apply(y, 1, function(i)
-      unlist(tapply(i, group, function(j) outlier_check(j)))))
+    out_ind[, !is.na(groups)] = t(apply(y, 1, function(i)
+      unlist(tapply(i, groups, function(j) outlier_check(j)))))
 
     feature_table[out_ind] = NA
   }
@@ -462,16 +464,16 @@ preprocess_ancom <- function(feature_table,
   }
 
   # 4. Identify taxa with structure zeros
-  if (!is.null(group_var)) {
-    group = factor(meta_data[, group_var])
+  if (!is.null(group)) {
+    groups = factor(meta_data[, group])
     present_table = as.matrix(feature_table)
     present_table[is.na(present_table)] = 0
     present_table[present_table != 0] = 1
 
     p_hat = t(apply(present_table, 1, function(x)
-      unlist(tapply(x, group, function(y) mean(y, na.rm = T)))))
+      unlist(tapply(x, groups, function(y) mean(y, na.rm = T)))))
     samp_size = t(apply(feature_table, 1, function(x)
-      unlist(tapply(x, group, function(y) length(y[!is.na(y)])))))
+      unlist(tapply(x, groups, function(y) length(y[!is.na(y)])))))
     p_hat_lo = p_hat - 1.96 * sqrt(p_hat * (1 - p_hat)/samp_size)
 
     struc_zero = (p_hat == 0) * 1
@@ -479,7 +481,7 @@ preprocess_ancom <- function(feature_table,
     if(neg_lb) struc_zero[p_hat_lo <= 0] = 1
 
     # Entries considered to be structural zeros are set to be 0s
-    struc_ind = struc_zero[, group]
+    struc_ind = struc_zero[, groups]
     feature_table = feature_table * (1 - struc_ind)
 
     colnames(struc_zero) = paste0("structural_zero (", colnames(struc_zero), ")")

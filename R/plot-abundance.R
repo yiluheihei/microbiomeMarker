@@ -1,7 +1,7 @@
 #' plot the abundances of markers
 #'
 #' @inheritParams plot_ef_bar
-#' @param group_var character, the variable to set the group
+#' @param group character, the variable to set the group
 #' @return a [`ggplot2::ggplot`] object.
 #' @importFrom ggplot2 ggplot aes geom_boxplot theme_bw element_text
 #' @export
@@ -9,12 +9,12 @@ plot_abundance <- function(mm,
                            label_level = 1,
                            max_label_len = 60,
                            markers = NULL,
-                           group_var) {
+                           group) {
   stopifnot(inherits(mm, c("microbiomeMarker", "marker_table")))
 
   sample_meta <- sample_data(mm)
   sample_meta_nms <- names(sample_meta)
-  if (!group_var %in% sample_meta_nms) {
+  if (!group %in% sample_meta_nms) {
     stop("`group_var` must be one of the sample-level variables", call. = FALSE)
   }
 
@@ -45,7 +45,7 @@ plot_abundance <- function(mm,
   marker_abd <- abd[match(marker$feature, row.names(abd)), ] %>%
     as.data.frame()
 
-  groups <- sample_meta[[group_var]]
+  groups <- sample_meta[[group]]
   names(groups) <- names(marker_abd)
 
   marker_abd$feature <- row.names(marker_abd)
@@ -55,11 +55,11 @@ plot_abundance <- function(mm,
     names_to = "sample",
     values_to = "abd"
   )
-  marker_abd[[group_var]] <- groups[match(marker_abd$sample, names(groups))]
+  marker_abd[[group]] <- groups[match(marker_abd$sample, names(groups))]
 
   p <- ggplot(
     marker_abd,
-    aes(x = .data$abd, y = .data$feature, fill = .data[[group_var]])) +
+    aes(x = .data$abd, y = .data$feature, fill = .data[[group]])) +
     geom_boxplot() +
     labs(x = "Abundance", y = NULL) +
     scale_x_continuous(expand = c(0, 0)) +

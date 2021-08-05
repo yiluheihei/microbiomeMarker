@@ -6,8 +6,8 @@
 \usage{
 run_lefse(
   ps,
-  class,
-  subclass = NULL,
+  group,
+  subgroup = NULL,
   taxa_rank = "all",
   transform = c("identity", "log10", "log10p"),
   norm = "CPM",
@@ -17,19 +17,19 @@ run_lefse(
   bootstrap_n = 30,
   bootstrap_fraction = 2/3,
   wilcoxon_cutoff = 0.05,
-  multicls_strat = FALSE,
+  multigrp_strat = FALSE,
   correct = c("0", "1", "2"),
   sample_min = 10,
-  only_same_subcls = FALSE,
+  only_same_subgrp = FALSE,
   curv = FALSE
 )
 }
 \arguments{
 \item{ps}{a \code{\link[phyloseq]{phyloseq-class}} object}
 
-\item{class}{character, the column name to set the class}
+\item{group}{character, the column name to set the group}
 
-\item{subclass}{character, the column name to set the subclass}
+\item{subgroup}{character, the column name to set the subgroup}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
 differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
@@ -88,7 +88,7 @@ bootstrap iteration, default \code{2/3}}
 
 \item{wilcoxon_cutoff}{numeric, p value cutoff of wilcoxon test, default 0.05}
 
-\item{multicls_strat}{logical, for multiple class tasks, whether the test is
+\item{multigrp_strat}{logical, for multiple group tasks, whether the test is
 performed in a one-against one (more strict) or in a one-against all
 setting, default \code{FALSE}.}
 
@@ -98,8 +98,8 @@ independent comparisons, 2 for independent comparison}
 \item{sample_min}{integer, minimum number of samples per subclass for
 performing wilcoxon test, default 10}
 
-\item{only_same_subcls}{logical, whether perform the wilcoxon test only
-among the subclasses with the same name, default \code{FALSE}}
+\item{only_same_subgrp}{logical, whether perform the wilcoxon test only
+among the subgroups with the same name, default \code{FALSE}}
 
 \item{curv}{logical, whether perform the wilcoxon test using the
 Curtis's approach, defalt \code{FALSE}}

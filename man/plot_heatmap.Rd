@@ -13,7 +13,7 @@ plot_heatmap(
   label_level = 1,
   max_label_len = 60,
   sample_label = FALSE,
-  group_var,
+  group,
   ...
 )
 }
@@ -44,7 +44,7 @@ default \code{60}}
 \item{sample_label}{logical, controls whether to show the sample labels in
 the heatmap, default \code{FALSE}.}
 
-\item{group_var}{character, the variable to set the group}
+\item{group}{character, the variable to set the group}
 
 \item{...}{extra arguments passed to \code{\link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap()}}.}
 }

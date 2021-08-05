@@ -198,9 +198,9 @@ data("spontaneous_colitis")
 mm_lefse <- run_lefse(
   kostic_crc,
   wilcoxon_cutoff = 0.01,
-  class = "DIAGNOSIS",
+  group = "DIAGNOSIS",
   kw_cutoff = 0.01,
-  multicls_strat = TRUE,
+  multigrp_strat = TRUE,
   lda_cutoff = 4,
 )
 # lefse return a microbioMarker class inherits from phyloseq
@@ -378,7 +378,7 @@ marker_table(mm_ancom)
 ## ANCOMBC
 
 ```{r ancombc, warning=FALSE}
-mm_ancombc <- run_ancombc(ecam, "delivery", group_var = "delivery")
+mm_ancombc <- run_ancombc(ecam, "delivery", group = "delivery")
 marker_table(mm_ancombc)
 ```
 

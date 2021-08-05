@@ -1,7 +1,7 @@
 #' Perform differential analysis using ALDEx2
 #'
 #' @param ps a [`phyloseq::phyloseq-class`] object
-#' @param group_var character, the variable to set the group
+#' @param group character, the variable to set the group
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
 #'   or "all" means to summarize the taxa by the top taxa ranks
@@ -64,7 +64,7 @@
 #' @seealso [`ALDEx2::aldex()`]
 #' @return a [`microbiomeMarker-class`] object.
 run_aldex <- function(ps,
-                      group_var,
+                      group,
                       taxa_rank = "all",
                       transform = c("identity", "log10", "log10p"),
                       norm = "none",
@@ -95,12 +95,12 @@ run_aldex <- function(ps,
     test <- "kw"
   }
 
-  # check whether group_var is valid, write a function
+  # check whether group is valid, write a function
   sample_meta <- sample_data(ps)
   meta_nms <- names(sample_meta)
-  if (!group_var %in% meta_nms) {
+  if (!group %in% meta_nms) {
     stop(
-      group_var, " are not contained in the `sample_data` of `ps`",
+      group, " are not contained in the `sample_data` of `ps`",
       call. = FALSE
     )
   }
@@ -127,7 +127,7 @@ run_aldex <- function(ps,
     ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
       extract_rank(taxa_rank)
   }
-  groups <- sample_meta[[group_var]]
+  groups <- sample_meta[[group]]
   abd <- abundances(ps_summarized, norm = TRUE)
 
   test_fun <- ifelse(test == "t", aldex_t, aldex_kw)

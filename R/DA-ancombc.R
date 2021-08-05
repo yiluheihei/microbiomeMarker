@@ -54,8 +54,8 @@
 #' @param lib_cut a numerical threshold for filtering samples based on library
 #'   sizes. Samples with library sizes less than `lib_cut` will be excluded
 #'   in the analysis. Default is 0, i.e. do not filter any sample.
-#' @param group_var the name of the group variable in metadata. Specifying
-#'   `group_var` is required for detecting structural zeros and performing
+#' @param group the name of the group variable in metadata. Specifying
+#'   `group` is required for detecting structural zeros and performing
 #'   global test.
 #' @param struc_zero whether to detect structural zeros. Default is FALSE.
 #' @param neg_lb whether to classify a taxon as a structural zero in the
@@ -80,7 +80,7 @@
 #' @importFrom ANCOMBC ancombc
 #' @export
 run_ancombc <- function(ps,
-                        group_var,
+                        group,
                         formula,
                         taxa_rank = "all",
                         transform = c("identity", "log10", "log10p"),
@@ -98,13 +98,13 @@ run_ancombc <- function(ps,
                         pvalue_cutoff = 0.05) {
   stopifnot(inherits(ps, "phyloseq"))
 
-  # check whether group_var is valid, write a function
+  # check whether group is valid, write a function
   sample_meta <- sample_data(ps)
   meta_nms <- names(sample_meta)
-  if (!is.null(group_var)) {
-    if (!group_var %in% meta_nms) {
+  if (!is.null(group)) {
+    if (!group %in% meta_nms) {
       stop(
-        group_var, " are not contained in the `sample_data` of `ps`",
+        group, " are not contained in the `sample_data` of `ps`",
         call. = FALSE
       )
     }
@@ -153,7 +153,7 @@ run_ancombc <- function(ps,
     p_adj_method = p_adjust,
     zero_cut = zero_cut,
     lib_cut = lib_cut,
-    group = group_var,
+    group = group,
     struc_zero = struc_zero,
     neg_lb = neg_lb,
     tol = tol,
@@ -163,7 +163,7 @@ run_ancombc <- function(ps,
     global = TRUE
   )
 
-  groups <- sample_data(ps_summarized)[[group_var]]
+  groups <- sample_data(ps_summarized)[[group]]
   n_group <- length(unique(groups))
 
   # multiple-group comparison will be performed while the group
@@ -183,7 +183,7 @@ run_ancombc <- function(ps,
   }
 
   # enriched group
-  enrich_abd <- get_ancombc_enrich_group(ps_summarized, ancombc_out, group_var)
+  enrich_abd <- get_ancombc_enrich_group(ps_summarized, ancombc_out, group)
   norm_abd <- enrich_abd$abd
   group_enrich <- enrich_abd$group_enrich
   idx <- match(group_enrich$feature, rownames(mtab))
@@ -207,7 +207,7 @@ run_ancombc <- function(ps,
   marker
 }
 
-get_ancombc_enrich_group <- function(ps, ancombc_out, group_var) {
+get_ancombc_enrich_group <- function(ps, ancombc_out, group) {
   samp_frac <- ancombc_out$samp_frac
   # As shown in the ancombc vignette: if it contains missing values for any
   # variable specified in the formula, the corresponding sampling fraction
@@ -221,7 +221,7 @@ get_ancombc_enrich_group <- function(ps, ancombc_out, group_var) {
   # Adjust the log observed abundances
   log_abd_adj <- sweep(log_abd, 2, samp_frac)
 
-  groups <- sample_data(ps)[[group_var]]
+  groups <- sample_data(ps)[[group]]
   # remove groups with NA
   na_idx <- is.na(groups)
   log_abd_adj <- log_abd_adj[, !na_idx]
