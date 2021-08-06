@@ -86,7 +86,7 @@ round_DF <- function(DF) {
     )
   }
 
-  df_rounded <- purrr::map_if(as.data.frame(DF), is.numeric, round2) %>%
+  df_rounded <- purrr::map_if(data.frame(DF), is.numeric, round2) %>%
     dplyr::bind_cols() %>%
     as.data.frame()
   row.names(df_rounded) <- row.names(DF)
