@@ -48,13 +48,16 @@ setMethod("marker_table", "microbiomeMarker", function(object) {
   if (!inherits(value, "marker_table")) {
     value <- marker_table(value)
   }
+
   microbiomeMarker(
-    value,
+    marker_table = value,
     # object@summary_tax_table,
-    object@otu_table,
-    object@tax_table,
-    object@phy_tree,
-    object@refseq
+    norm_method = object@norm_method,
+    diff_method = object@diff_method,
+    otu_table = object@otu_table,
+    tax_table = object@tax_table,
+    phy_tree = object@phy_tree,
+    refseq = object@refseq
   )
 }
 # microbiomeMarker class ------------------------------------------------------
