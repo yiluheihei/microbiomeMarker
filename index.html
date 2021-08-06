@@ -69,14 +69,18 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-
-
+<div id="microbiomemarker" class="section level1">
+<div class="page-header"><h1 class="hasAnchor">
+<a href="#microbiomemarker" class="anchor"></a>microbiomeMarker</h1></div>
+<p><a href="https://github.com/yiluheihei/microbiomeMarker"></a><img src="reference/figures/microbiomeMarker.png" height="150" align="right"></p>
+<!-- badges: start -->
+<p><a href="https://github.com/yiluheihei/microbiomeMarker/actions"><img src="https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check-bioc/badge.svg" alt="R build status"></a> <a href="https://github.com/yiluheihei/microbiomeMarker/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a> <a href="https://codecov.io/gh/yiluheihei/microbiomeMarker?branch=master"><img src="https://codecov.io/gh/yiluheihei/microbiomeMarker/branch/master/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://zenodo.org/badge/latestdoi/215731961"><img src="https://zenodo.org/badge/215731961.svg" alt="DOI"></a> <!-- badges: end --></p>
 <p><strong>If you think this project is helpful to you, you can give this project a star</strong> <span class="emoji" data-emoji="star">⭐</span></p>
 <div id="motivation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#motivation" class="anchor"></a>Motivation</h2>
 <p><strong>The aim of this package is to build a unified toolbox in R for mcirobiome biomarker discovery by integrating various existing methods.</strong></p>
-<p>Many statistical methods have been proposed to discovery the microbiome biomaker by compare the taxon abundance between different classes. Some methods developed specifically for microbial community, such as linear discriminant analysis (LDA) effect size (LEfSe) (Segata et al. 2011), metagenomeSeq (Paulson et al. 2013); and some methods developed specifically for RNA-Seq data, such as DESeq2 (Love, Huber, and Anders 2014) and edgeR <br><span class="math display">$$@{Robinson\_2009$$</span><br>, have been proposed for microbiome biomarker discovery. We usually use several methods for microbiome biomarker discovery and compare the results, which requires multiple tools developed in different programming, even in different OS.</p>
+<p>Many statistical methods have been proposed to discovery the microbiome biomaker by compare the taxon abundance between different classes. Some methods developed specifically for microbial community, such as linear discriminant analysis (LDA) effect size (LEfSe) (Segata et al. 2011), metagenomeSeq (Paulson et al. 2013); and some methods developed specifically for RNA-Seq data, such as DESeq2 (Love, Huber, and Anders 2014) and edgeR (Robinson, McCarthy, and Smyth 2009), have been proposed for microbiome biomarker discovery. We usually use several methods for microbiome biomarker discovery and compare the results, which requires multiple tools developed in different programming, even in different OS.</p>
 <p><strong>microbiomeMarker</strong> take the <code>phyloseq-class</code> object in package <a href="https://github.com/joey711/phyloseq">phyloseq</a> as input, since <strong>phyloseq</strong> is the most popular R package in microbiome analysis and with phyloseq you can easily import taxon abundance and phylogenetic tree of taxon output from common microbiome bioinformatics platforms, such as <a href="https://benjjneb.github.io/dada2/">DADA2</a> and <a href="https://qiime2.org/">qiime2</a>.</p>
 </div>
 <div id="citation" class="section level2">
@@ -87,10 +91,10 @@
 <h3 class="hasAnchor">
 <a href="#publications-citing-microbiomemarker" class="anchor"></a>Publications citing microbiomeMarker</h3>
 <ul>
-<li><a href="https://doi.org/10.1186/s12859-021-04106-7">Shanmugam, Gnanendra, Song Hee Lee, and Junhyun Jeon. “EzMAP: Easy Microbiome Analysis Platform.” BMC bioinformatics 22.1 (2021): 1-10.</a></li>
-<li><a href="https://doi.org/10.3390/microorganisms9020378">Altaib, Hend, et al. “Differences in the Concentration of the Fecal Neurotransmitters GABA and Glutamate Are Associated with Microbial Composition among Healthy Human Subjects.” Microorganisms 9.2 (2021): 378.</a></li>
-<li><a href="https://doi.org/10.1101/2021.02.19.21252040">Ingham, Anna Cäcilia, et al. “Microbiota long-term dynamics and prediction of acute graft-versus-host-disease in pediatric allogeneic stem cell transplantation.” medRxiv (2021).</a></li>
-<li><a href="https://doi.org/10.3390/cells10061292">Künstner, Axel, et al. “Effect of Differences in the Microbiome of Cyp17a1-Deficient Mice on Atherosclerotic Background.” Cells 10.6 (2021): 1292.</a></li>
+<li><a href="https://doi.org/10.1186/s12859-021-04106-7">Shanmugam G, Lee SH, Jeon J. EzMAP: Easy Microbiome Analysis Platform. BMC bioinformatics. 2021 Dec;22(1):1-0</a></li>
+<li><a href="https://doi.org/10.3390/microorganisms9020378">Altaib H, Nakamura K, Abe M, Badr Y, Yanase E, Nomura I, Suzuki T. Differences in the concentration of the fecal neurotransmitters GABA and glutamate are associated with microbial composition among healthy human subjects. Microorganisms. 2021 Feb;9(2):378</a></li>
+<li><a href="https://doi.org/10.1101/2021.02.19.21252040">Ingham AC, Kielsen K, Mordhorst H, Ifversen M, Aarestrup FM, Müller KG, Pamp SJ. Microbiota long-term dynamics and prediction of acute graft-versus-host-disease in pediatric allogeneic stem cell transplantation. medRxiv. 2021 Jan 1</a></li>
+<li><a href="https://doi.org/10.3390/cells10061292">Künstner A, Aherrahrou R, Hirose M, Bruse P, Ibrahim SM, Busch H, Erdmann J, Aherrahrou Z. Effect of Differences in the Microbiome of Cyp17a1-Deficient Mice on Atherosclerotic Background. Cells. 2021 Jun;10(6):1292</a></li>
 </ul>
 </div>
 </div>
@@ -213,9 +217,9 @@
 <span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
   <span class="va">kostic_crc</span>,
   wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
-  class <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,
+  group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,
   kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
-  multicls_strat <span class="op">=</span> <span class="cn">TRUE</span>,
+  multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,
   lda_cutoff <span class="op">=</span> <span class="fl">4</span>,
 <span class="op">)</span>
 <span class="co"># lefse return a microbioMarker class inherits from phyloseq</span>
@@ -519,47 +523,93 @@
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mm_ancom</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_ancom.html">run_ancom</a></span><span class="op">(</span><span class="va">ecam</span>, <span class="st">"delivery"</span>, p_adjust <span class="op">=</span> <span class="st">"none"</span>, theta <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span>
 <span class="fu"><a href="reference/marker_table.html">marker_table</a></span><span class="op">(</span><span class="va">mm_ancom</span><span class="op">)</span>
-<span class="co">#&gt;                                                                                                                feature</span>
-<span class="co">#&gt; marker1                                                                                  k__Bacteria|p__Actinobacteria</span>
-<span class="co">#&gt; marker2                                                                k__Bacteria|p__Actinobacteria|c__Actinobacteria</span>
-<span class="co">#&gt; marker3                                           k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales</span>
-<span class="co">#&gt; marker4                                        k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales</span>
-<span class="co">#&gt; marker5                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae</span>
-<span class="co">#&gt; marker6                                 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae</span>
-<span class="co">#&gt; marker7                    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae</span>
-<span class="co">#&gt; marker8  k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium</span>
-<span class="co">#&gt; marker9                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella</span>
-<span class="co">#&gt; marker10    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae|g__Pseudomonas</span>
-<span class="co">#&gt;          enrich_group ef_CLR_diff_mean   W</span>
-<span class="co">#&gt; marker1      Cesarean       0.29031730 105</span>
-<span class="co">#&gt; marker2      Cesarean       0.30478464 105</span>
-<span class="co">#&gt; marker3      Cesarean       0.37595028 106</span>
-<span class="co">#&gt; marker4      Cesarean       0.08923968  73</span>
-<span class="co">#&gt; marker5      Cesarean       0.37595028 106</span>
-<span class="co">#&gt; marker6      Cesarean       0.20208170  83</span>
-<span class="co">#&gt; marker7       Vaginal       0.03589234  70</span>
-<span class="co">#&gt; marker8      Cesarean       0.37595028 106</span>
-<span class="co">#&gt; marker9      Cesarean       0.20208170  83</span>
-<span class="co">#&gt; marker10      Vaginal       0.03589234  70</span></code></pre></div>
+<span class="co">#&gt;                                                                                                               feature</span>
+<span class="co">#&gt; marker1                                                                                 k__Bacteria|p__Actinobacteria</span>
+<span class="co">#&gt; marker2                                                               k__Bacteria|p__Actinobacteria|c__Actinobacteria</span>
+<span class="co">#&gt; marker3                                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales</span>
+<span class="co">#&gt; marker4                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae</span>
+<span class="co">#&gt; marker5 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium</span>
+<span class="co">#&gt;         enrich_group ef_CLR_diff_mean   W</span>
+<span class="co">#&gt; marker1     Cesarean        0.2903173 105</span>
+<span class="co">#&gt; marker2     Cesarean        0.3047846 105</span>
+<span class="co">#&gt; marker3     Cesarean        0.3759503 106</span>
+<span class="co">#&gt; marker4     Cesarean        0.3759503 106</span>
+<span class="co">#&gt; marker5     Cesarean        0.3759503 106</span></code></pre></div>
 </div>
 <div id="ancombc" class="section level2">
 <h2 class="hasAnchor">
 <a href="#ancombc" class="anchor"></a>ANCOMBC</h2>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mm_ancombc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_ancombc.html">run_ancombc</a></span><span class="op">(</span><span class="va">ecam</span>, <span class="st">"delivery"</span>, group_var <span class="op">=</span> <span class="st">"delivery"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">mm_ancombc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_ancombc.html">run_ancombc</a></span><span class="op">(</span><span class="va">ecam</span>, <span class="st">"delivery"</span>, group <span class="op">=</span> <span class="st">"delivery"</span><span class="op">)</span>
 <span class="fu"><a href="reference/marker_table.html">marker_table</a></span><span class="op">(</span><span class="va">mm_ancombc</span><span class="op">)</span>
-<span class="co">#&gt;                                                                                                               feature</span>
-<span class="co">#&gt; marker1                                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales</span>
-<span class="co">#&gt; marker2                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae</span>
-<span class="co">#&gt; marker3                                k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae</span>
-<span class="co">#&gt; marker4 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium</span>
-<span class="co">#&gt; marker5                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella</span>
-<span class="co">#&gt;         enrich_group      ef_W       pvalue       padj</span>
-<span class="co">#&gt; marker1     Cesarean -3.518274 0.0004343629 0.04908301</span>
-<span class="co">#&gt; marker2     Cesarean -3.518274 0.0004343629 0.04908301</span>
-<span class="co">#&gt; marker3      Vaginal  3.674617 0.0002382063 0.02739372</span>
-<span class="co">#&gt; marker4     Cesarean -3.518274 0.0004343629 0.04908301</span>
-<span class="co">#&gt; marker5      Vaginal  3.674617 0.0002382063 0.02739372</span></code></pre></div>
+<span class="co">#&gt;                                                                                                                 feature</span>
+<span class="co">#&gt; marker1                                                                                   k__Bacteria|p__Actinobacteria</span>
+<span class="co">#&gt; marker2                                                                                  k__Bacteria|p__Verrucomicrobia</span>
+<span class="co">#&gt; marker3                                                                 k__Bacteria|p__Actinobacteria|c__Actinobacteria</span>
+<span class="co">#&gt; marker4                                                             k__Bacteria|p__Proteobacteria|c__Betaproteobacteria</span>
+<span class="co">#&gt; marker5                                                            k__Bacteria|p__Proteobacteria|c__Deltaproteobacteria</span>
+<span class="co">#&gt; marker6                                                              k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae</span>
+<span class="co">#&gt; marker7                                              k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales</span>
+<span class="co">#&gt; marker8                                            k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales</span>
+<span class="co">#&gt; marker9                                                         k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales</span>
+<span class="co">#&gt; marker10                                         k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales</span>
+<span class="co">#&gt; marker11                                     k__Bacteria|p__Proteobacteria|c__Deltaproteobacteria|o__Desulfovibrionales</span>
+<span class="co">#&gt; marker12                                        k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales</span>
+<span class="co">#&gt; marker13                                       k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae|o__Verrucomicrobiales</span>
+<span class="co">#&gt; marker14                         k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Actinomycetaceae</span>
+<span class="co">#&gt; marker15                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae</span>
+<span class="co">#&gt; marker16                                 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae</span>
+<span class="co">#&gt; marker17                                    k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Streptococcaceae</span>
+<span class="co">#&gt; marker18                       k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Alcaligenaceae</span>
+<span class="co">#&gt; marker19              k__Bacteria|p__Proteobacteria|c__Deltaproteobacteria|o__Desulfovibrionales|f__Desulfovibrionaceae</span>
+<span class="co">#&gt; marker20                    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae</span>
+<span class="co">#&gt; marker21                k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae|o__Verrucomicrobiales|f__Verrucomicrobiaceae</span>
+<span class="co">#&gt; marker22          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Actinomycetaceae|g__Actinomyces</span>
+<span class="co">#&gt; marker23  k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium</span>
+<span class="co">#&gt; marker24                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella</span>
+<span class="co">#&gt; marker25                   k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Streptococcaceae|g__Streptococcus</span>
+<span class="co">#&gt; marker26                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__[Ruminococcus]</span>
+<span class="co">#&gt; marker27                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Coprococcus</span>
+<span class="co">#&gt; marker28                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Oscillospira</span>
+<span class="co">#&gt; marker29                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Veillonellaceae|g__Dialister</span>
+<span class="co">#&gt; marker30         k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Alcaligenaceae|g__Sutterella</span>
+<span class="co">#&gt; marker31 k__Bacteria|p__Proteobacteria|c__Deltaproteobacteria|o__Desulfovibrionales|f__Desulfovibrionaceae|g__Bilophila</span>
+<span class="co">#&gt; marker32     k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae|g__Pseudomonas</span>
+<span class="co">#&gt; marker33 k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae|o__Verrucomicrobiales|f__Verrucomicrobiaceae|g__Akkermansia</span>
+<span class="co">#&gt;          enrich_group      ef_W       pvalue         padj</span>
+<span class="co">#&gt; marker1      Cesarean -3.344472 0.0008243933 0.0008243933</span>
+<span class="co">#&gt; marker2       Vaginal  2.039939 0.0413564022 0.0413564022</span>
+<span class="co">#&gt; marker3      Cesarean -3.330633 0.0008664864 0.0008664864</span>
+<span class="co">#&gt; marker4      Cesarean -2.294782 0.0217456056 0.0217456056</span>
+<span class="co">#&gt; marker5      Cesarean -3.488293 0.0004861155 0.0004861155</span>
+<span class="co">#&gt; marker6       Vaginal  2.039939 0.0413564022 0.0413564022</span>
+<span class="co">#&gt; marker7       Vaginal  1.967299 0.0491488066 0.0491488066</span>
+<span class="co">#&gt; marker8      Cesarean -3.518274 0.0004343629 0.0004343629</span>
+<span class="co">#&gt; marker9      Cesarean -2.116808 0.0342761767 0.0342761767</span>
+<span class="co">#&gt; marker10     Cesarean -2.294782 0.0217456056 0.0217456056</span>
+<span class="co">#&gt; marker11     Cesarean -3.488293 0.0004861155 0.0004861155</span>
+<span class="co">#&gt; marker12     Cesarean -2.259407 0.0238580789 0.0238580789</span>
+<span class="co">#&gt; marker13      Vaginal  2.039939 0.0413564022 0.0413564022</span>
+<span class="co">#&gt; marker14      Vaginal  2.391804 0.0167658080 0.0167658080</span>
+<span class="co">#&gt; marker15     Cesarean -3.518274 0.0004343629 0.0004343629</span>
+<span class="co">#&gt; marker16      Vaginal  3.674617 0.0002382063 0.0002382063</span>
+<span class="co">#&gt; marker17     Cesarean -2.022194 0.0431563503 0.0431563503</span>
+<span class="co">#&gt; marker18     Cesarean -2.294782 0.0217456056 0.0217456056</span>
+<span class="co">#&gt; marker19     Cesarean -3.488293 0.0004861155 0.0004861155</span>
+<span class="co">#&gt; marker20     Cesarean -2.231962 0.0256174686 0.0256174686</span>
+<span class="co">#&gt; marker21      Vaginal  2.039939 0.0413564022 0.0413564022</span>
+<span class="co">#&gt; marker22      Vaginal  2.391804 0.0167658080 0.0167658080</span>
+<span class="co">#&gt; marker23     Cesarean -3.518274 0.0004343629 0.0004343629</span>
+<span class="co">#&gt; marker24      Vaginal  3.674617 0.0002382063 0.0002382063</span>
+<span class="co">#&gt; marker25     Cesarean -2.022194 0.0431563503 0.0431563503</span>
+<span class="co">#&gt; marker26     Cesarean -1.988102 0.0468003786 0.0468003786</span>
+<span class="co">#&gt; marker27      Vaginal  2.482640 0.0130412723 0.0130412723</span>
+<span class="co">#&gt; marker28     Cesarean -2.141495 0.0322341803 0.0322341803</span>
+<span class="co">#&gt; marker29      Vaginal  3.074502 0.0021085463 0.0021085463</span>
+<span class="co">#&gt; marker30     Cesarean -2.294782 0.0217456056 0.0217456056</span>
+<span class="co">#&gt; marker31     Cesarean -3.488293 0.0004861155 0.0004861155</span>
+<span class="co">#&gt; marker32     Cesarean -2.231962 0.0256174686 0.0256174686</span>
+<span class="co">#&gt; marker33      Vaginal  2.039939 0.0413564022 0.0413564022</span></code></pre></div>
 </div>
 <div id="superivised-learning" class="section level2">
 <h2 class="hasAnchor">
@@ -688,12 +738,15 @@
 <li>“Differential Abundance Analysis for Microbial Marker-Gene Surveys.” <em>Nature Methods</em> 10 (12): 1200–1202. <a href="https://doi.org/10.1038/nmeth.2658" class="uri">https://doi.org/10.1038/nmeth.2658</a>.</li>
 </ol>
 </div>
+<div id="ref-Robinson_2009" class="csl-entry">
+<p>Robinson, M. D., D. J. McCarthy, and G. K. Smyth. 2009. “<span class="nocase">edgeR</span>: A Bioconductor Package for Differential Expression Analysis of Digital Gene Expression Data.” <em>Bioinformatics</em> 26 (1): 139–40. <a href="https://doi.org/10.1093/bioinformatics/btp616" class="uri">https://doi.org/10.1093/bioinformatics/btp616</a>.</p>
+</div>
 <div id="ref-Segata_2011" class="csl-entry">
 <p>Segata, Nicola, Jacques Izard, Levi Waldron, Dirk Gevers, Larisa Miropolsky, Wendy S Garrett, and Curtis Huttenhower. 2011. “Metagenomic Biomarker Discovery and Explanation.” <em>Genome Biology</em> 12 (6): R60. <a href="https://doi.org/10.1186/gb-2011-12-6-r60" class="uri">https://doi.org/10.1186/gb-2011-12-6-r60</a>.</p>
 </div>
 </div>
 </div>
-
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -720,16 +773,7 @@
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://github.com/yiluheihei/microbiomeMarker/actions"><img src="https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check-bioc/badge.svg" alt="R build status"></a></li>
-<li><a href="https://github.com/yiluheihei/microbiomeMarker/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a></li>
-<li><a href="https://codecov.io/gh/yiluheihei/microbiomeMarker?branch=master"><img src="https://codecov.io/gh/yiluheihei/microbiomeMarker/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://zenodo.org/badge/latestdoi/215731961"><img src="https://zenodo.org/badge/215731961.svg" alt="DOI"></a></li>
-</ul>
-</div>
-</div>
+  </div>
 </div>
 
 
