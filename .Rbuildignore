@@ -13,3 +13,4 @@ references.bib
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^man/figures/micribiome.png$

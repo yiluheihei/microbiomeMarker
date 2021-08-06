@@ -6,6 +6,10 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+# microbiomeMarker
+
+<a href='https://github.com/yiluheihei/microbiomeMarker'/><img src='man/figures/microbiomeMarker.png' height="150" align="right" />
+
 ```{r set, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -38,7 +42,7 @@ by compare the taxon abundance between different classes. Some methods developed
 specifically for microbial community, such as  linear discriminant analysis 
 (LDA) effect size (LEfSe) [@Segata_2011], metagenomeSeq [@Paulson_2013]; and 
 some methods developed specifically for RNA-Seq data, such as DESeq2 
-[@Love_2014] and edgeR [@{Robinson_2009], have been proposed for microbiome 
+[@Love_2014] and edgeR [@Robinson_2009], have been proposed for microbiome 
 biomarker discovery. We usually use several methods for microbiome biomarker 
 discovery and compare the results, which requires multiple tools developed in 
 different programming, even in different OS.
@@ -58,20 +62,10 @@ DOI: [10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
 
 ### Publications citing microbiomeMarker
 
-- [Shanmugam, Gnanendra, Song Hee Lee, and Junhyun Jeon. "EzMAP: Easy Microbiome
-  Analysis Platform." BMC bioinformatics 22.1 (2021):
-  1-10.](https://doi.org/10.1186/s12859-021-04106-7)
-- [Altaib, Hend, et al. "Differences in the Concentration of the Fecal
-  Neurotransmitters GABA and Glutamate Are Associated with Microbial Composition
-  among Healthy Human Subjects." Microorganisms 9.2 (2021): 
-  378.](https://doi.org/10.3390/microorganisms9020378)
-- [Ingham, Anna Cäcilia, et al. "Microbiota long-term dynamics and prediction of
-  acute graft-versus-host-disease in pediatric allogeneic stem cell 
-  transplantation." medRxiv 
-  (2021).](https://doi.org/10.1101/2021.02.19.21252040)
-- [Künstner, Axel, et al. "Effect of Differences in the Microbiome of
-  Cyp17a1-Deficient Mice on Atherosclerotic Background." Cells 10.6 (2021):
-  1292.](https://doi.org/10.3390/cells10061292)
+- [Shanmugam G, Lee SH, Jeon J. EzMAP: Easy Microbiome Analysis Platform. BMC bioinformatics. 2021 Dec;22(1):1-0](https://doi.org/10.1186/s12859-021-04106-7)
+- [Altaib H, Nakamura K, Abe M, Badr Y, Yanase E, Nomura I, Suzuki T. Differences in the concentration of the fecal neurotransmitters GABA and glutamate are associated with microbial composition among healthy human subjects. Microorganisms. 2021 Feb;9(2):378](https://doi.org/10.3390/microorganisms9020378)
+- [Ingham AC, Kielsen K, Mordhorst H, Ifversen M, Aarestrup FM, Müller KG, Pamp SJ. Microbiota long-term dynamics and prediction of acute graft-versus-host-disease in pediatric allogeneic stem cell transplantation. medRxiv. 2021 Jan 1](https://doi.org/10.1101/2021.02.19.21252040)
+- [Künstner A, Aherrahrou R, Hirose M, Bruse P, Ibrahim SM, Busch H, Erdmann J, Aherrahrou Z. Effect of Differences in the Microbiome of Cyp17a1-Deficient Mice on Atherosclerotic Background. Cells. 2021 Jun;10(6):1292](https://doi.org/10.3390/cells10061292)
 
 ## Installation
 

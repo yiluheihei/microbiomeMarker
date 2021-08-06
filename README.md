@@ -1,5 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# microbiomeMarker
+
+<a href='https://github.com/yiluheihei/microbiomeMarker'/><img src='man/figures/microbiomeMarker.png' height="150" align="right" />
+
 <!-- badges: start -->
 
 [![R build
@@ -26,10 +31,10 @@ methods developed specifically for microbial community, such as linear
 discriminant analysis (LDA) effect size (LEfSe) (Segata et al. 2011),
 metagenomeSeq (Paulson et al. 2013); and some methods developed
 specifically for RNA-Seq data, such as DESeq2 (Love, Huber, and Anders
-2014) and edgeR \[@{Robinson\_2009\], have been proposed for microbiome
-biomarker discovery. We usually use several methods for microbiome
-biomarker discovery and compare the results, which requires multiple
-tools developed in different programming, even in different OS.
+2014) and edgeR (Robinson, McCarthy, and Smyth 2009), have been proposed
+for microbiome biomarker discovery. We usually use several methods for
+microbiome biomarker discovery and compare the results, which requires
+multiple tools developed in different programming, even in different OS.
 
 **microbiomeMarker** take the `phyloseq-class` object in package
 [phyloseq](https://github.com/joey711/phyloseq) as input, since
@@ -48,20 +53,23 @@ biomarker analysis. R package version 0.0.1.9000.
 
 ### Publications citing microbiomeMarker
 
--   [Shanmugam, Gnanendra, Song Hee Lee, and Junhyun Jeon. “EzMAP: Easy
-    Microbiome Analysis Platform.” BMC bioinformatics 22.1 (2021):
-    1-10.](https://doi.org/10.1186/s12859-021-04106-7)
--   [Altaib, Hend, et al. “Differences in the Concentration of the Fecal
-    Neurotransmitters GABA and Glutamate Are Associated with Microbial
-    Composition among Healthy Human Subjects.” Microorganisms 9.2
-    (2021): 378.](https://doi.org/10.3390/microorganisms9020378)
--   [Ingham, Anna Cäcilia, et al. “Microbiota long-term dynamics and
-    prediction of acute graft-versus-host-disease in pediatric
-    allogeneic stem cell transplantation.” medRxiv
-    (2021).](https://doi.org/10.1101/2021.02.19.21252040)
--   [Künstner, Axel, et al. “Effect of Differences in the Microbiome of
-    Cyp17a1-Deficient Mice on Atherosclerotic Background.” Cells 10.6
-    (2021): 1292.](https://doi.org/10.3390/cells10061292)
+-   [Shanmugam G, Lee SH, Jeon J. EzMAP: Easy Microbiome Analysis
+    Platform. BMC bioinformatics. 2021
+    Dec;22(1):1-0](https://doi.org/10.1186/s12859-021-04106-7)
+-   [Altaib H, Nakamura K, Abe M, Badr Y, Yanase E, Nomura I, Suzuki T.
+    Differences in the concentration of the fecal neurotransmitters GABA
+    and glutamate are associated with microbial composition among
+    healthy human subjects. Microorganisms. 2021
+    Feb;9(2):378](https://doi.org/10.3390/microorganisms9020378)
+-   [Ingham AC, Kielsen K, Mordhorst H, Ifversen M, Aarestrup FM, Müller
+    KG, Pamp SJ. Microbiota long-term dynamics and prediction of acute
+    graft-versus-host-disease in pediatric allogeneic stem cell
+    transplantation. medRxiv. 2021 Jan
+    1](https://doi.org/10.1101/2021.02.19.21252040)
+-   [Künstner A, Aherrahrou R, Hirose M, Bruse P, Ibrahim SM, Busch H,
+    Erdmann J, Aherrahrou Z. Effect of Differences in the Microbiome of
+    Cyp17a1-Deficient Mice on Atherosclerotic Background. Cells. 2021
+    Jun;10(6):1292](https://doi.org/10.3390/cells10061292)
 
 ## Installation
 
@@ -221,9 +229,9 @@ data("spontaneous_colitis")
 mm_lefse <- run_lefse(
   kostic_crc,
   wilcoxon_cutoff = 0.01,
-  class = "DIAGNOSIS",
+  group = "DIAGNOSIS",
   kw_cutoff = 0.01,
-  multicls_strat = TRUE,
+  multigrp_strat = TRUE,
   lda_cutoff = 4,
 )
 # lefse return a microbioMarker class inherits from phyloseq
@@ -554,47 +562,93 @@ mm_edger_multiple
 ``` r
 mm_ancom <- run_ancom(ecam, "delivery", p_adjust = "none", theta = 0.6)
 marker_table(mm_ancom)
-#>                                                                                                                feature
-#> marker1                                                                                  k__Bacteria|p__Actinobacteria
-#> marker2                                                                k__Bacteria|p__Actinobacteria|c__Actinobacteria
-#> marker3                                           k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
-#> marker4                                        k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales
-#> marker5                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
-#> marker6                                 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae
-#> marker7                    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae
-#> marker8  k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
-#> marker9                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella
-#> marker10    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae|g__Pseudomonas
-#>          enrich_group ef_CLR_diff_mean   W
-#> marker1      Cesarean       0.29031730 105
-#> marker2      Cesarean       0.30478464 105
-#> marker3      Cesarean       0.37595028 106
-#> marker4      Cesarean       0.08923968  73
-#> marker5      Cesarean       0.37595028 106
-#> marker6      Cesarean       0.20208170  83
-#> marker7       Vaginal       0.03589234  70
-#> marker8      Cesarean       0.37595028 106
-#> marker9      Cesarean       0.20208170  83
-#> marker10      Vaginal       0.03589234  70
+#>                                                                                                               feature
+#> marker1                                                                                 k__Bacteria|p__Actinobacteria
+#> marker2                                                               k__Bacteria|p__Actinobacteria|c__Actinobacteria
+#> marker3                                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
+#> marker4                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
+#> marker5 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+#>         enrich_group ef_CLR_diff_mean   W
+#> marker1     Cesarean        0.2903173 105
+#> marker2     Cesarean        0.3047846 105
+#> marker3     Cesarean        0.3759503 106
+#> marker4     Cesarean        0.3759503 106
+#> marker5     Cesarean        0.3759503 106
 ```
 
 ## ANCOMBC
 
 ``` r
-mm_ancombc <- run_ancombc(ecam, "delivery", group_var = "delivery")
+mm_ancombc <- run_ancombc(ecam, "delivery", group = "delivery")
 marker_table(mm_ancombc)
-#>                                                                                                               feature
-#> marker1                                          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
-#> marker2                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
-#> marker3                                k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae
-#> marker4 k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
-#> marker5                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella
-#>         enrich_group      ef_W       pvalue       padj
-#> marker1     Cesarean -3.518274 0.0004343629 0.04908301
-#> marker2     Cesarean -3.518274 0.0004343629 0.04908301
-#> marker3      Vaginal  3.674617 0.0002382063 0.02739372
-#> marker4     Cesarean -3.518274 0.0004343629 0.04908301
-#> marker5      Vaginal  3.674617 0.0002382063 0.02739372
+#>                                                                                                                 feature
+#> marker1                                                                                   k__Bacteria|p__Actinobacteria
+#> marker2                                                                                  k__Bacteria|p__Verrucomicrobia
+#> marker3                                                                 k__Bacteria|p__Actinobacteria|c__Actinobacteria
+#> marker4                                                             k__Bacteria|p__Proteobacteria|c__Betaproteobacteria
+#> marker5                                                            k__Bacteria|p__Proteobacteria|c__Deltaproteobacteria
+#> marker6                                                              k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae
+#> marker7                                              k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales
+#> marker8                                            k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
+#> marker9                                                         k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales
+#> marker10                                         k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales
+#> marker11                                     k__Bacteria|p__Proteobacteria|c__Deltaproteobacteria|o__Desulfovibrionales
+#> marker12                                        k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales
+#> marker13                                       k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae|o__Verrucomicrobiales
+#> marker14                         k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Actinomycetaceae
+#> marker15                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
+#> marker16                                 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae
+#> marker17                                    k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Streptococcaceae
+#> marker18                       k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Alcaligenaceae
+#> marker19              k__Bacteria|p__Proteobacteria|c__Deltaproteobacteria|o__Desulfovibrionales|f__Desulfovibrionaceae
+#> marker20                    k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae
+#> marker21                k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae|o__Verrucomicrobiales|f__Verrucomicrobiaceae
+#> marker22          k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Actinomycetales|f__Actinomycetaceae|g__Actinomyces
+#> marker23  k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
+#> marker24                   k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella
+#> marker25                   k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Streptococcaceae|g__Streptococcus
+#> marker26                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__[Ruminococcus]
+#> marker27                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Coprococcus
+#> marker28                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Oscillospira
+#> marker29                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Veillonellaceae|g__Dialister
+#> marker30         k__Bacteria|p__Proteobacteria|c__Betaproteobacteria|o__Burkholderiales|f__Alcaligenaceae|g__Sutterella
+#> marker31 k__Bacteria|p__Proteobacteria|c__Deltaproteobacteria|o__Desulfovibrionales|f__Desulfovibrionaceae|g__Bilophila
+#> marker32     k__Bacteria|p__Proteobacteria|c__Gammaproteobacteria|o__Pseudomonadales|f__Pseudomonadaceae|g__Pseudomonas
+#> marker33 k__Bacteria|p__Verrucomicrobia|c__Verrucomicrobiae|o__Verrucomicrobiales|f__Verrucomicrobiaceae|g__Akkermansia
+#>          enrich_group      ef_W       pvalue         padj
+#> marker1      Cesarean -3.344472 0.0008243933 0.0008243933
+#> marker2       Vaginal  2.039939 0.0413564022 0.0413564022
+#> marker3      Cesarean -3.330633 0.0008664864 0.0008664864
+#> marker4      Cesarean -2.294782 0.0217456056 0.0217456056
+#> marker5      Cesarean -3.488293 0.0004861155 0.0004861155
+#> marker6       Vaginal  2.039939 0.0413564022 0.0413564022
+#> marker7       Vaginal  1.967299 0.0491488066 0.0491488066
+#> marker8      Cesarean -3.518274 0.0004343629 0.0004343629
+#> marker9      Cesarean -2.116808 0.0342761767 0.0342761767
+#> marker10     Cesarean -2.294782 0.0217456056 0.0217456056
+#> marker11     Cesarean -3.488293 0.0004861155 0.0004861155
+#> marker12     Cesarean -2.259407 0.0238580789 0.0238580789
+#> marker13      Vaginal  2.039939 0.0413564022 0.0413564022
+#> marker14      Vaginal  2.391804 0.0167658080 0.0167658080
+#> marker15     Cesarean -3.518274 0.0004343629 0.0004343629
+#> marker16      Vaginal  3.674617 0.0002382063 0.0002382063
+#> marker17     Cesarean -2.022194 0.0431563503 0.0431563503
+#> marker18     Cesarean -2.294782 0.0217456056 0.0217456056
+#> marker19     Cesarean -3.488293 0.0004861155 0.0004861155
+#> marker20     Cesarean -2.231962 0.0256174686 0.0256174686
+#> marker21      Vaginal  2.039939 0.0413564022 0.0413564022
+#> marker22      Vaginal  2.391804 0.0167658080 0.0167658080
+#> marker23     Cesarean -3.518274 0.0004343629 0.0004343629
+#> marker24      Vaginal  3.674617 0.0002382063 0.0002382063
+#> marker25     Cesarean -2.022194 0.0431563503 0.0431563503
+#> marker26     Cesarean -1.988102 0.0468003786 0.0468003786
+#> marker27      Vaginal  2.482640 0.0130412723 0.0130412723
+#> marker28     Cesarean -2.141495 0.0322341803 0.0322341803
+#> marker29      Vaginal  3.074502 0.0021085463 0.0021085463
+#> marker30     Cesarean -2.294782 0.0217456056 0.0217456056
+#> marker31     Cesarean -3.488293 0.0004861155 0.0004861155
+#> marker32     Cesarean -2.231962 0.0256174686 0.0256174686
+#> marker33      Vaginal  2.039939 0.0413564022 0.0413564022
 ```
 
 ## Superivised learning
@@ -745,6 +799,15 @@ Paulson, Joseph N, O Colin Stine, H’ector Corrada Bravo, and Mihai Pop.
 2013. “Differential Abundance Analysis for Microbial Marker-Gene
 Surveys.” *Nature Methods* 10 (12): 1200–1202.
 <https://doi.org/10.1038/nmeth.2658>.
+
+</div>
+
+<div id="ref-Robinson_2009" class="csl-entry">
+
+Robinson, M. D., D. J. McCarthy, and G. K. Smyth. 2009. “<span
+class="nocase">edgeR</span>: A Bioconductor Package for Differential
+Expression Analysis of Digital Gene Expression Data.” *Bioinformatics*
+26 (1): 139–40. <https://doi.org/10.1093/bioinformatics/btp616>.
 
 </div>
 
