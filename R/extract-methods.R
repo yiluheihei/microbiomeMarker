@@ -2,6 +2,7 @@
 #'
 #' Operators acting on `marker_table` to extract parts.
 #'
+#' @name [
 #' @inheritParams base::Extract
 #' @param ... see [`base::Extract()`].
 #' @param drop ignored now.

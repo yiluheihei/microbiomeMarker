@@ -5,11 +5,12 @@ reference:
       as phyloseq or reverse converting
     contents:
       - starts_with("import")
+      - import_biom
       - phyloseq2DESeq2
       - phyloseq2edgeR
       - phyloseq2metagenomeSeq
       - otu_table2metagenomeSeq
-  - title: "microbiome marker"
+  - title: "Microbiome marker"
     desc: S4 class and methods for microbiomeMarker
     contents:
       - microbiomeMarker
@@ -22,6 +23,15 @@ reference:
       - nclass
       - nmarker
       - starts_with("postHocTest-class")
+  - title: Functions reexports from phyloseq
+    contents: reexports
+      # - nsamples
+      # - ntaxa
+      # - otu_table
+      # - sample_data
+      # - sample_names
+      # - tax_table
+      # - taxa_names
   - title: "Normalization"
     contents:
       - abundances
@@ -46,3 +56,4 @@ reference:
       - summarize_taxa
       - get_norm_factors
       - get_treedata_phyloseq
+      - '['
