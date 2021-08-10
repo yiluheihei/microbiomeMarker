@@ -1,0 +1,523 @@
+---
+title: "Tools for microbiome marker identification"
+author: 
+  - name: Yang  Cao
+    affiliation: Department of Environmental Medicine, Tianjin Institute of
+      Environmental and Operational Medicine
+    email: caoyang.name@gmail.com
+output: 
+  BiocStyle::html_document:
+    toc: true
+bibliography: vignette.bib
+vignette: >
+  %\VignetteIndexEntry{Tools for microbiome marker identification}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+library(BiocStyle)
+```
+
+
+# Introduction
+
+It is well established that the microbiome play a key role in human health and 
+disease, due to its function such as host nutrition production (e.g. short-chain
+fatty acids, SCFA), defense against pathogens, and development of immunity 
+[@gilbert2018current]. The microbiome provide novel biomarkers for many disease,
+and characterizing biomarkers based on microbiome profiles has great potential
+for translational medicine and precision medicine [@manor2020health]. 
+
+Differential analysis (DA) is a widely used approach to identify biomarkers. To
+date, a number of methods have been developed for microbiome marker discovery
+based on metagenomic profiles, e.g. simple statistical analysis methods STAMP 
+[@parks2014stamp], RNA-seq based methods such as edgeR [@robinson2010edger] and 
+DESeq2 [@love2014moderated], metagenomeSeq [@paulson2013differential], and 
+Linear Discriminant Analysis Effect Size (LEfSe) [@segata2011metagenomic].
+However, all of these methods have its own advantages and disadvantages, and 
+none of them is considered standard or universal. Moreover, the 
+programs/softwares for different DA methods may be development using different 
+programming languages, even in different operating systems. Here, we have 
+developed an all-in-one R/Bioconductor package 
+[`microbiomeMarker`](https://yiluheihei.github.io/microbiomeMarker) 
+that integrates commonly used differential analysis methods as well as three machine learning-based approaches (Logistic regression, Random forest, and 
+Support vector machine) to facilitate the identification of microbiome markers.
+
+# Installation
+
+Install the package from Bioconductor directly:
+
+```{r install-bioc,eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("microbiomeMarker")
+```
+
+Or install the development version of the package from
+[Github](https://github.com/yiluheihei/microbiomeMarker). 
+
+```{r install-gh,eval=FALSE}
+if (!requireNamespace("remotes", quietly=TRUE))
+  install.packages("remotes")
+remotes::install_github("yiluheihei/microbiomeMarker")
+```
+
+# Package loading
+
+Load the `microbiomeMarker` into the R session:
+
+```{r load}
+library(microbiomeMarker)
+```
+
+# Data structure
+
+## Input phyloseq-class object
+
+`r Biocpkg("phyloseq")` is the most popular
+[Biocondcutor](https://bioconductor.org/) package used by the microbiome 
+research community, and `phyloseq-class` objects are a great 
+data-standard for microbiome data in R. Therefore, the core functions in 
+`microbiomeMarker` take `phyloseq-class` object as input. 
+Conveniently, `microbiomeMarker` provides features to import external metagenomic abundance profiles from two popular microbiome analysis pipelines,
+[qiime2](http://qiime.org/) [@bolyen2019reproducible] and
+[dada2](https://benjjneb.github.io/dada2) [@callahan2016dada2], and return a
+`phyloseq-class` object.
+
+### Import from dada2
+
+The output of the [dada2](https://benjjneb.github.io/dada2) pipeline is a 
+feature table of amplicon sequence variants (an ASV table): A matrix with rows 
+corresponding to samples and columns to ASVs, in which the value of each entry 
+is the number of times that ASV was observed in that sample. This table is 
+analogous to the traditional OTU table. Conveniently, taxa names are saved as 
+
+```{r import-dada2}
+seq_tab <- readRDS(
+  system.file(
+    "extdata", "dada2_seqtab.rds",
+    package= "microbiomeMarker"
+  )
+)
+tax_tab <- readRDS(
+  system.file(
+    "extdata", "dada2_taxtab.rds",
+    package= "microbiomeMarker"
+  )
+)
+sam_tab <- read.table(
+  system.file(
+    "extdata", "dada2_samdata.txt", 
+    package= "microbiomeMarker"
+  ), 
+  sep = "\t", 
+  header = TRUE, 
+  row.names = 1
+)
+ps <- import_dada2(seq_tab = seq_tab, tax_tab = tax_tab, sam_tab = sam_tab)
+ps
+```
+
+### Import from qiime2
+
+[qiime2](http://qiime.org/) is the most widely used software for metagenomic
+analysis. User can import the feature table, taxonomic table, phylogenetic 
+tree, representative sequence and sample metadata from qiime2 using
+`import_qiime2()`.
+
+```{r import-qiime2,message=FALSE}
+otuqza_file <- system.file(
+  "extdata", "table.qza",
+  package = "microbiomeMarker"
+)
+taxaqza_file <- system.file(
+  "extdata", "taxonomy.qza",
+  package = "microbiomeMarker"
+)
+sample_file <- system.file(
+  "extdata", "sample-metadata.tsv",
+  package = "microbiomeMarker"
+)
+treeqza_file <- system.file(
+  "extdata", "tree.qza",
+  package = "microbiomeMarker"
+)
+
+ps <- import_qiime2(
+  otu_qza = otuqza_file, taxa_qza = taxaqza_file,
+  sam_tab = sample_file, tree_qza = treeqza_file
+)
+ps
+```
+
+### Other import functions reexport from phyloseq
+
+Moreover, `microbiomeMarker` reexports three import functions from 
+`r Biocpkg("phyloseq")`, including `import_biom()`, `import_qiime()` and 
+`import_mothur()`, to help users to import abundance data from 
+[biom file](http://biom-format.org/), [qiime1](http://www.qiime.org/), and 
+[mothur](http://www.mothur.org/). More details on these three import functions 
+can be see from 
+[here](https://joey711.github.io/phyloseq/import-data.html#the_import_family_of_functions).
+
+Users can also import the external files into `phyloseq-class` object manually.
+For more details on how to create `phyloseq-class` object from manually 
+imported data, please see [this tutorial](http://joey711.github.io/phyloseq/import-data.html#manual).
+
+## Output microbiomeMaker-class object
+
+The object class used by the `microbiomeMarker` package to store the result of
+microbiome marker analysis (also referred as DA) is the 
+`microbiomeMarker-class` object. The `microbiomeMarker-class` extends the 
+`phyloseq-class` by adding three custom slots:
+
+- `marker_table`: also a new S4 class to store the markers, which is inherit 
+  from `data.frame`. Rows represent the microbiome markers and variables
+  represents feature of the marker, such as feature names, effect size and
+  p value.
+- `norm_method`: normalization method.
+- `diff_method`: DA method.
+
+Once users have a `microbiomeMarker-class` object, many accessor functions are 
+available to query aspects of the data set. The function name and its purpose 
+can be seen [here](https://yiluheihei.github.io/microbiomeMarker/reference/index.html#section-microbiome-marker).
+
+# Diferential analysis
+
+A number of methods have been developed for identifying differentially 
+metagenomic features. `microbiomeMarker` provides the most commonly used DA 
+methods which can be divided into three main categories: a) simple statistical 
+tests; b) RNA-seq based methods; c) metagenomic based methods. All the names of
+DA functions in `microbiomeMarker` are prefixed with `run_` (the `run_*` family
+of functions).
+
+By default, all the methods will perform DA on all levels of features 
+(`taxa_rank = "all"` in DA functions) like LEfSe [@segata2011metagenomic], 
+therefore, the corrected p value in the result (var `padj` in the
+`marker_table` object) may be over-corrected. Users can change the para 
+`taxa_rank` to a specific level of interest, and the DA will only perform in 
+the specified level. For simplicity, DA on a specific level of feature is not 
+contained in this vignette.
+
+## Normalization
+
+It is critical to normalize the metagenomic data to eliminate artifactual bias
+in the original measurements prior to DA [@weiss2017normalization]. Here in
+`microbiomeMarker`, we provides seven popular normalization methods, including:
+
+- `rarefy`: random subsampling counts to the smallest library size in the data 
+  set.
+- `TSS`: total sum scaling, also referred to as "relative abundance", the
+  abundances were normalized by dividing the corresponding sample library
+  size.
+- `TMM`: trimmed mean of m-values. First, a sample
+  is chosen as reference. The scaling factor is then derived using a weighted    trimmed mean over the differences of the log-transformed gene-count         
+  fold-change between the sample and the reference.
+- `RLE`: relative log expression, RLE uses a pseudo-reference calculated
+  using the geometric mean of the gene-specific abundances over all
+  samples. The scaling factors are then calculated as the median of the
+  gene counts ratios between the samples and the reference.
+- `CSS`: cumulative sum scaling, calculates scaling factors as the
+  cumulative sum of gene abundances up to a data-derived threshold.
+- `CLR`: centered log-ratio normalization.
+- `CPM`: pre-sample normalization of the sum of the values to 1e+06.
+
+We can use `norm_*()` family of functions or a wrapper function `normalize()` 
+to normalize the original metagenomic abundance data.
+
+```{r norm}
+# take tss as example
+norm_tss(ps)
+
+normalize(ps, method = "TSS")
+```
+
+**Note: all the DA functions provides a para to specify the normalization 
+method. We emphasize that users should specify the normalization method
+in the DA functions rather than normalize the input data using `norm_*()` 
+or `normalize()`.**
+
+## Simple statitical tests {#simple-stat}
+
+In practice, simple statitical tests such as t-test (for two groups 
+comparison) and Kruskal-Wallis rank sum test (for multiple groups comparison) are frequently used for metagenomic differential analysis. STAMP 
+[parks2014stamp] is a widely-used graphical software package that provides 
+"best pratices" in choose appropriate statistical methods for metagenomic analysis. Here in `microbiomeMarker`, `t-test`, Welch’s `t-test`, and White’s
+non-parametric `t-test` are provided for two groups comparison, and  ANOVA and
+Kruskal–Wallis test for multiple groups comparions.
+
+We can use `test_two_groups()` to perferm simple statistical differential test 
+between two groups.
+
+```{r two-group-test}
+tg_welch <- run_test_two_groups(
+  enterotypes_arumugam, 
+  group = "Gender", 
+  method = "welch.test"
+)
+
+# three significantly differential genera (marker)
+tg_welch
+
+# details of result of the three markers
+head(marker_table(tg_welch))
+```
+
+Function `run_test_multiple_groups()` is constructed for statistical 
+differential test for multiple groups.
+
+```{r multi-group-test}
+# three groups
+ps <- phyloseq::subset_samples(
+  enterotypes_arumugam,
+  Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+)
+mg_anova <-  run_test_multiple_groups(
+  ps,
+  group = "Enterotype", 
+  method = "anova"
+)
+
+# 24 markers
+mg_anova
+
+head(marker_table(mg_anova))
+```
+
+The result of multiple group statistic from the above specified whether the 
+means of all groups is equal or not. To identify which pairs of groups may 
+differ from each other, post-hoc test must be performed.
+
+```{r post-hoc-test}
+pht <- run_posthoc_test(ps, group = "Enterotype")
+pht
+
+# 24 significantly differential genera
+markers <- marker_table(mg_anova)$feature
+markers
+
+# take a marker "p__Bacteroidetes|g__Bacteroides"  
+# for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from 
+# between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
+pht@result$"p__Bacteroidetes|g__Bacteroides"
+```
+
+Moreover, a wrapper of `run_test_two_groups()` and `run_test_multiple_groups()`
+named `run_simple_stat()` is provided for simple statistical differential 
+analysis.
+
+## RNA-seq based DA methods
+
+Some models developed specifically for RNA-Seq data have been proposed for 
+metagenomic differential analysis. Three popular methods, including DESeq2 
+[@love2014moderated] (`run_deseq2()`), edgeR [@robinson2010edger] 
+(`run_edger()`), and Voom [@law2014voom] (`run_limma_voom()`) are provided in `microbiomeMarker`.
+
+Here we take edgeR method as an example.
+
+```{r edger}
+# contrast must be specified for two groups comparison
+mm_edger <- run_edger(
+  pediatric_ibd,
+  group = "Class",
+  contrast = c("CD", "Control"),
+  pvalue_cutoff = 0.1,
+  p_adjust = "fdr"
+)
+mm_edger
+
+# multiple groups
+ps <- phyloseq::subset_samples(
+  cid_ying,
+  Consistency %in% c("formed stool", "liquid", "semi-formed")
+)
+mm_edger_mg <- run_edger(
+  ps,
+  group = "Consistency",
+  method  = "QLFT",
+  pvalue_cutoff = 0.05,
+  p_adjust = "fdr"
+)
+mm_edger_mg
+```
+
+## metagenomic based methods
+
+Five methods, LEfSe [@segata2011metagenomic], metagenomeSeq 
+[@paulson2013differential], ALDEx2 [@fernandes2014unifying], ANCOM
+[@mandal2015analysis], and ANCOMBC [@lin2020analysis], which were developed
+specifically for microbiome data (contain many more zeros that RNA-seq data), 
+are also provided in our package. All these methods have greater power to 
+detect differentially features than simple statistical tests by incorporating 
+more sensitive tests.
+
+Curently, LEfSe is the most popular tool for microbiome biomarker discovery. Here we take LEfSe method for example:
+
+```{r lefse}
+mm_lefse <- run_lefse(
+  kostic_crc,
+  wilcoxon_cutoff = 0.01,
+  group = "DIAGNOSIS",
+  kw_cutoff = 0.01,
+  multigrp_strat = TRUE,
+  lda_cutoff = 4,
+)
+mm_lefse
+
+head(marker_table(mm_lefse))
+```
+
+## Supervised machine learning methods
+
+Given that supervised learning (SL) methods can be used to predict 
+differentiate samples based on there metagenomic profiles efficiently 
+[@knights2011supervised]. `microbiomeMarker` also provides three SL 
+classification models, random forest, logistic regression, and support vector
+machine, to identify microbiome biomarkers. In addition, the feature importance
+score for each marker will be provided too.
+
+Here we take random forest for example:
+
+```{r rf}
+# must specify the importance para for random forest
+mm_rf <- run_sl(
+  enterotypes_arumugam, 
+  group = "Gender", 
+  method = "RF", 
+  importance = "impurity"
+)
+
+marker_table(mm_rf)
+```
+
+**Please note that SL methods can be biased for data with sample size due to 
+the model overfitting. Thus, we advise users to use these SL methods with 
+caution for a smaller dataset.**
+
+# Visualization
+
+In `microbiomeMarker`, users can visualize the microbiome biomarker in
+different ways, such as box plot, bar plot, dot plot, heatmap, and cladogram.
+Except for heatmap,  all these plots are generated using the most flexible and
+popular data visualization package `r CRANpkg("ggplot2")`. Therefore, these plots can be easily customized before they are generated using the build-in 
+functions of `r CRANpkg("ggplot2")`, e.g. using `theme()` to modify the titles 
+and labels. Heatmap is generated using a fantastic Bioconductor package 
+`r Biocpkg("ComplexHeatmap")` package.
+
+## Abundance box plot
+
+First of all, users can visualize the abundances of markers using box plots 
+with function `plot_abundance()`. We emphasize a concern that the `group` para
+for `plot_abunance()` must be keep same with the `group` para in the 
+differential analysis function. By default, `plot_abundance()` will plot all 
+the markers, users can plot the specificity markers using para `markers`.
+
+```{r plot-abundance}
+p_abd <- plot_abundance(mm_lefse, group = "DIAGNOSIS")
+p_abd
+
+# customize the plot with ggplot2, modify the fill color manually
+library(ggplot2)
+p_abd + scale_fill_manual(values = c("Healthy" = "grey", "Tumor" = "red"))
+```
+
+## Heat map
+
+Moreover, users can also visualize the abundances of markers using heatmap, in
+which rows represents the markers and columns represents the samples. Like the 
+above abundance box plot, users should pay attention to the para `group`, and 
+control which markers to display by setting para `markers`.
+
+```{r heatmap}
+plot_heatmap(mm_edger, transform = "log10p", group = "Class")
+```
+
+## Bar plot or dot plot for effect size
+
+We also estimate the effect size to measure the magnitude the observed 
+phenomenon due to each characterizing marker.
+
+`plot_ef_bar()` and `plot_ef_dot()` were used to show the bar and dot plot of 
+the effect sizes of markers.
+
+```{r ef-plot}
+# bar plot
+plot_ef_bar(mm_lefse)
+
+# dot plot
+plot_ef_dot(mm_lefse)
+```
+
+Different effect size measures can be calculated for different DA methods, e.g.
+`lda` (linear discriminant analysis) for LEfSe, `imp` (importance) for SL 
+methods. `plot_ef_bar()` and `plot_ef_dot()` can set the axis label of effect
+size correctly without manual intervention.
+
+```{r ef-plot-diff}
+# set the x axis to log2 Fold Change automatically without manual intervention
+plot_ef_bar(mm_edger)
+```
+
+## Cladogram
+
+As mentioned above, the microbiome marker analysis will run on all levels of 
+features by default. Users can plot a LEfSe cladogram using function 
+`plot_cladogram()`.
+
+```{r cladogram,fig.width=7,fig.height=7}
+plot_cladogram(mm_lefse, color = c(Healthy = "darkgreen", Tumor = "red")) +
+  theme(plot.margin = margin(0,0,0,0))
+```
+
+## Visualization for post-hoc test 
+
+As shown in \@ref(simple-stat),  post-hoc test can be used to identify which 
+pairs of groups may differ from each other. `plot_postHocTest()` was provided
+to allow users visualize the post-hoc test result.
+
+```{r plot-pht}
+p_pht <- plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
+p_pht
+```
+
+The pot-hoc plots were wrapped using `r CRANpkg("patchwork")`, and users can modifying the themes of all subplots using `&`.
+
+```{r customize-p-pht}
+p_pht & theme_bw()
+```
+
+
+# Citation
+
+Kindly cite as follows:  Yang Cao (2020). microbiomeMarker: microbiome 
+biomarker analysis. R package version 0.0.1.9000. https://github.com/yiluheihei/microbiomeMarker. DOI: [10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
+
+# Question
+
+If you have any question, please file an issue on the issue tracker following
+the instructions in the issue template:
+
+Please briefly describe your problem, what output actually happened, and what 
+output you expect.
+
+Please provide a minimal reproducible example. For more details on how to make 
+a great minimal reproducible example, see [how to make a great r reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example) and https://www.tidyverse.org/help/#reprex.
+
+# Session information {-}
+
+This vignette was created under the following conditions:
+
+```{r}
+sessionInfo()
+```
+
+# References {-}

@@ -41,7 +41,6 @@ Imports:
     S4Vectors,
     Biobase,
     ComplexHeatmap,
-    nlme,
     ANCOMBC,
     caret,
     limma,
@@ -58,4 +57,8 @@ Suggests:
     Matrix,
     kernlab,
     e1071,
-    ranger
+    ranger,
+    knitr,
+    rmarkdown,
+    BiocStyle
+VignetteBuilder: knitr
