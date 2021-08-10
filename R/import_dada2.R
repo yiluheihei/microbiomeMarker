@@ -6,9 +6,9 @@
 #' Import the output of dada2 into phyloseq object
 #'
 #' @param seq_tab matrix-like, ASV table, the output of
-#' [`dada2::removeBimeraDenovo()`].
+#' `dada2::removeBimeraDenovo`.
 #' @param tax_tab matrix, taxonomy table, the output of
-#' [`dada2::assignTaxonomy()`] or [`dada2::addSpecies()`].
+#' `dada2::assignTaxonomy` or `dada2::addSpecies`.
 #' @param sam_tab data.frame or [`phyloseq::sample_data-class`], sample data
 #' @param phy_tree [`ape::phylo`] class or character represents the path of
 #'   the tree file

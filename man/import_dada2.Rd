@@ -14,10 +14,10 @@ import_dada2(
 }
 \arguments{
 \item{seq_tab}{matrix-like, ASV table, the output of
-\code{\link[dada2:removeBimeraDenovo]{dada2::removeBimeraDenovo()}}.}
+\code{dada2::removeBimeraDenovo}.}
 
 \item{tax_tab}{matrix, taxonomy table, the output of
-\code{\link[dada2:assignTaxonomy]{dada2::assignTaxonomy()}} or \code{\link[dada2:addSpecies]{dada2::addSpecies()}}.}
+\code{dada2::assignTaxonomy} or \code{dada2::addSpecies}.}
 
 \item{sam_tab}{data.frame or \code{\link[phyloseq:sample_data-class]{phyloseq::sample_data}}, sample data}
 

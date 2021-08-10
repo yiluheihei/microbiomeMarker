@@ -54,8 +54,8 @@
 #'   according the importance score.
 #' @param method supervised learning method, options are "LR" (logistic
 #'   regression), "RF" (rando forest), or "SVM" (support vector machine).
-#' @param ... extra arguments passed to the classification, e.g., `importance`
-#'   for [`randomForest::randomForest()`]).
+#' @param ... extra arguments passed to the classification. e.g., `importance`
+#'   for `randomForest::randomForest`.
 #'
 #' @details Only support two groups comparison in the current version. And the
 #'  marker was selected based on its importance score. Moreover, The

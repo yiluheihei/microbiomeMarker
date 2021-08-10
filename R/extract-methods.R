@@ -3,6 +3,7 @@
 #' Operators acting on `marker_table` to extract parts.
 #'
 #' @name [
+#' @aliases [,marker_table,ANY,ANY,ANY-method
 #' @inheritParams base::Extract
 #' @param ... see [`base::Extract()`].
 #' @param drop ignored now.

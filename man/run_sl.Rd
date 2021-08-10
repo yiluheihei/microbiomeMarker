@@ -88,8 +88,8 @@ according the importance score.}
 \item{method}{supervised learning method, options are "LR" (logistic
 regression), "RF" (rando forest), or "SVM" (support vector machine).}
 
-\item{...}{extra arguments passed to the classification, e.g., \code{importance}
-for \code{\link[randomForest:randomForest]{randomForest::randomForest()}}).}
+\item{...}{extra arguments passed to the classification. e.g., \code{importance}
+for \code{randomForest::randomForest}.}
 }
 \value{
 a \linkS4class{microbiomeMarker} object.

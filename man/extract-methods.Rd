@@ -2,6 +2,7 @@
 % Please edit documentation in R/extract-methods.R
 \name{[}
 \alias{[}
+\alias{[,marker_table,ANY,ANY,ANY-method}
 \title{Extract \code{marker_table} object}
 \usage{
 \S4method{[}{marker_table,ANY,ANY,ANY}(x, i, j, ..., drop = TRUE)
