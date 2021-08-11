@@ -439,7 +439,7 @@ lefse_format_grp <- function(sample_meta, group, subgroup = NULL) {
   group_nms <- unique(groups)
 
   if (is.null(subgroup)) {
-    subgroup <- paste0(group, "_subgrp")
+    subgroup <- paste0(groups, "_subgrp")
   } else {
     subgroup <- sample_meta[[subgroup]]
   }

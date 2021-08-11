@@ -232,7 +232,7 @@ in the original measurements prior to DA [@weiss2017normalization]. Here in
 - `CLR`: centered log-ratio normalization.
 - `CPM`: pre-sample normalization of the sum of the values to 1e+06.
 
-We can use `norm_*()` family of functions or a wrapper function `normalize()` 
+We can use `norm_*()` family of functions or a wrapper function `normalize` 
 to normalize the original metagenomic abundance data.
 
 ```{r norm}
@@ -242,10 +242,37 @@ norm_tss(ps)
 normalize(ps, method = "TSS")
 ```
 
-**Note: all the DA functions provides a para to specify the normalization 
+---------------
+***Note***: all the DA functions provides a para to specify the normalization 
 method. We emphasize that users should specify the normalization method
-in the DA functions rather than normalize the input data using `norm_*()` 
-or `normalize()`.**
+in the DA functions rather than using these normalization functions directly.
+If you use normalize data first and then perform DA, you should set the 
+`norm_method` manually. We recommend to use the default normalization methods 
+for the corresponding DA methods, e.g. "CPM" for LEfSe and "CSS" for 
+metagenomeSeq, and the default values of `norm` in the DA functions is set
+their default normalization methods.
+
+```{r norm-note,eval=FALSE}
+# equivalent to 
+# run_lefse(
+#   wilcoxon_cutoff = 0.01, 
+#   norm = "CPM", 
+#   group = "DIAGNOSIS",
+#   kw_cutoff = 0.01,
+#   multigrp_strat = TRUE,
+#   lda_cutoff = 4
+# )
+mm_test <- normalize(kostic_crc, method = "CPM") %>% 
+  run_lefse(
+    wilcoxon_cutoff = 0.01, 
+    norm = "none", # must be "none" since the input has been normalized
+    group = "DIAGNOSIS",
+    kw_cutoff = 0.01,
+    multigrp_strat = TRUE,
+    lda_cutoff = 4
+  )
+mm_test@norm_method <- "CPM"
+```
 
 ## Simple statitical tests {#simple-stat}
 
