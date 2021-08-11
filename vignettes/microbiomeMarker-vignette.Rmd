@@ -21,7 +21,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   message = FALSE,
   warning = FALSE,
-  fig.align = "center"
+  fig.align = "center",
+  crop = NULL
 )
 library(BiocStyle)
 ```
