@@ -246,7 +246,7 @@ fold-change between the sample and the reference.</li>
 <li>
 <code>CPM</code>: pre-sample normalization of the sum of the values to 1e+06.</li>
 </ul>
-<p>We can use <code>norm_*()</code> family of functions or a wrapper function <code><a href="../reference/normalize,phyloseq-method.html">normalize()</a></code> to normalize the original metagenomic abundance data.</p>
+<p>We can use <code>norm_*()</code> family of functions or a wrapper function <code>normalize</code> to normalize the original metagenomic abundance data.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># take tss as example</span>
 <span class="fu"><a href="../reference/normalize,phyloseq-method.html">norm_tss</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span>
@@ -262,14 +262,35 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; sample_data() Sample Data:       [ 34 samples by 9 sample variables ]</span>
 <span class="co">#&gt; tax_table()   Taxonomy Table:    [ 770 taxa by 7 taxonomic ranks ]</span>
 <span class="co">#&gt; phy_tree()    Phylogenetic Tree: [ 770 tips and 768 internal nodes ]</span></code></pre></div>
-<p><strong>Note: all the DA functions provides a para to specify the normalization method. We emphasize that users should specify the normalization method in the DA functions rather than normalize the input data using <code>norm_*()</code> or <code><a href="../reference/normalize,phyloseq-method.html">normalize()</a></code>.</strong></p>
+<hr>
+<p><strong><em>Note</em></strong>: all the DA functions provides a para to specify the normalization method. We emphasize that users should specify the normalization method in the DA functions rather than using these normalization functions directly. If you use normalize data first and then perform DA, you should set the <code>norm_method</code> manually. We recommend to use the default normalization methods for the corresponding DA methods, e.g. “CPM” for LEfSe and “CSS” for metagenomeSeq, and the default values of <code>norm</code> in the DA functions is set their default normalization methods.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># equivalent to </span>
+<span class="co"># run_lefse(</span>
+<span class="co">#   wilcoxon_cutoff = 0.01, </span>
+<span class="co">#   norm = "CPM", </span>
+<span class="co">#   group = "DIAGNOSIS",</span>
+<span class="co">#   kw_cutoff = 0.01,</span>
+<span class="co">#   multigrp_strat = TRUE,</span>
+<span class="co">#   lda_cutoff = 4</span>
+<span class="co"># )</span>
+<span class="va">mm_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalize,phyloseq-method.html">normalize</a></span><span class="op">(</span><span class="va">kostic_crc</span>, method <span class="op">=</span> <span class="st">"CPM"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
+    wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>, 
+    norm <span class="op">=</span> <span class="st">"none"</span>, <span class="co"># must be "none" since the input has been normalized</span>
+    group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,
+    kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
+    multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,
+    lda_cutoff <span class="op">=</span> <span class="fl">4</span>
+  <span class="op">)</span>
+<span class="va">mm_test</span><span class="op">@</span><span class="va">norm_method</span> <span class="op">&lt;-</span> <span class="st">"CPM"</span></code></pre></div>
 </div>
 <div id="simple-stat" class="section level2">
 <h2 class="hasAnchor">
 <a href="#simple-stat" class="anchor"></a>Simple statitical tests</h2>
 <p>In practice, simple statitical tests such as t-test (for two groups comparison) and Kruskal-Wallis rank sum test (for multiple groups comparison) are frequently used for metagenomic differential analysis. STAMP [parks2014stamp] is a widely-used graphical software package that provides “best pratices” in choose appropriate statistical methods for metagenomic analysis. Here in <code>microbiomeMarker</code>, <code>t-test</code>, Welch’s <code>t-test</code>, and White’s non-parametric <code>t-test</code> are provided for two groups comparison, and ANOVA and Kruskal–Wallis test for multiple groups comparions.</p>
 <p>We can use <code>test_two_groups()</code> to perferm simple statistical differential test between two groups.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tg_welch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_test_two_groups.html">run_test_two_groups</a></span><span class="op">(</span>
   <span class="va">enterotypes_arumugam</span>, 
   group <span class="op">=</span> <span class="st">"Gender"</span>, 
@@ -297,7 +318,7 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; marker2 0.03281399 0.03281399</span>
 <span class="co">#&gt; marker3 0.01714937 0.01714937</span></code></pre></div>
 <p>Function <code><a href="../reference/run_test_multiple_groups.html">run_test_multiple_groups()</a></code> is constructed for statistical differential test for multiple groups.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># three groups</span>
 <span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html">subset_samples</a></span><span class="op">(</span>
   <span class="va">enterotypes_arumugam</span>,
@@ -335,7 +356,7 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; marker5 8.396825e-10 8.396825e-10</span>
 <span class="co">#&gt; marker6 1.314233e-02 1.314233e-02</span></code></pre></div>
 <p>The result of multiple group statistic from the above specified whether the means of all groups is equal or not. To identify which pairs of groups may differ from each other, post-hoc test must be performed.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pht</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_posthoc_test.html">run_posthoc_test</a></span><span class="op">(</span><span class="va">ps</span>, group <span class="op">=</span> <span class="st">"Enterotype"</span><span class="op">)</span>
 <span class="va">pht</span>
 <span class="co">#&gt; postHocTest-class object</span>
@@ -397,7 +418,7 @@ fold-change between the sample and the reference.</li>
 <a href="#rna-seq-based-da-methods" class="anchor"></a>RNA-seq based DA methods</h2>
 <p>Some models developed specifically for RNA-Seq data have been proposed for metagenomic differential analysis. Three popular methods, including DESeq2 <span class="citation">(Love, Huber, and Anders 2014)</span> (<code><a href="../reference/run_deseq2.html">run_deseq2()</a></code>), edgeR <span class="citation">(Robinson, McCarthy, and Smyth 2010)</span> (<code><a href="../reference/run_edger.html">run_edger()</a></code>), and Voom <span class="citation">(Law et al. 2014)</span> (<code><a href="../reference/run_limma_voom.html">run_limma_voom()</a></code>) are provided in <code>microbiomeMarker</code>.</p>
 <p>Here we take edgeR method as an example.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># contrast must be specified for two groups comparison</span>
 <span class="va">mm_edger</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_edger.html">run_edger</a></span><span class="op">(</span>
   <span class="va">pediatric_ibd</span>,
@@ -441,7 +462,7 @@ fold-change between the sample and the reference.</li>
 <a href="#metagenomic-based-methods" class="anchor"></a>metagenomic based methods</h2>
 <p>Five methods, LEfSe <span class="citation">(Segata et al. 2011)</span>, metagenomeSeq <span class="citation">(Paulson et al. 2013)</span>, ALDEx2 <span class="citation">(Fernandes et al. 2014)</span>, ANCOM <span class="citation">(Mandal et al. 2015)</span>, and ANCOMBC <span class="citation">(Lin and Peddada 2020)</span>, which were developed specifically for microbiome data (contain many more zeros that RNA-seq data), are also provided in our package. All these methods have greater power to detect differentially features than simple statistical tests by incorporating more sensitive tests.</p>
 <p>Curently, LEfSe is the most popular tool for microbiome biomarker discovery. Here we take LEfSe method for example:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
   <span class="va">kostic_crc</span>,
   wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
@@ -480,7 +501,7 @@ fold-change between the sample and the reference.</li>
 <a href="#supervised-machine-learning-methods" class="anchor"></a>Supervised machine learning methods</h2>
 <p>Given that supervised learning (SL) methods can be used to predict differentiate samples based on there metagenomic profiles efficiently <span class="citation">(Knights et al. 2011)</span>. <code>microbiomeMarker</code> also provides three SL classification models, random forest, logistic regression, and support vector machine, to identify microbiome biomarkers. In addition, the feature importance score for each marker will be provided too.</p>
 <p>Here we take random forest for example:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># must specify the importance para for random forest</span>
 <span class="va">mm_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_sl.html">run_sl</a></span><span class="op">(</span>
   <span class="va">enterotypes_arumugam</span>, 
@@ -512,11 +533,11 @@ fold-change between the sample and the reference.</li>
 <h2 class="hasAnchor">
 <a href="#abundance-box-plot" class="anchor"></a>Abundance box plot</h2>
 <p>First of all, users can visualize the abundances of markers using box plots with function <code><a href="../reference/plot_abundance.html">plot_abundance()</a></code>. We emphasize a concern that the <code>group</code> para for <code>plot_abunance()</code> must be keep same with the <code>group</code> para in the differential analysis function. By default, <code><a href="../reference/plot_abundance.html">plot_abundance()</a></code> will plot all the markers, users can plot the specificity markers using para <code>markers</code>.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p_abd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_abundance.html">plot_abundance</a></span><span class="op">(</span><span class="va">mm_lefse</span>, group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span><span class="op">)</span>
 <span class="va">p_abd</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/plot-abundance-1.png" width="700" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># customize the plot with ggplot2, modify the fill color manually</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
@@ -527,7 +548,7 @@ fold-change between the sample and the reference.</li>
 <h2 class="hasAnchor">
 <a href="#heat-map" class="anchor"></a>Heat map</h2>
 <p>Moreover, users can also visualize the abundances of markers using heatmap, in which rows represents the markers and columns represents the samples. Like the above abundance box plot, users should pay attention to the para <code>group</code>, and control which markers to display by setting para <code>markers</code>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_heatmap.html">plot_heatmap</a></span><span class="op">(</span><span class="va">mm_edger</span>, transform <span class="op">=</span> <span class="st">"log10p"</span>, group <span class="op">=</span> <span class="st">"Class"</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/heatmap-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
@@ -536,17 +557,17 @@ fold-change between the sample and the reference.</li>
 <a href="#bar-plot-or-dot-plot-for-effect-size" class="anchor"></a>Bar plot or dot plot for effect size</h2>
 <p>We also estimate the effect size to measure the magnitude the observed phenomenon due to each characterizing marker.</p>
 <p><code><a href="../reference/plot_ef_bar.html">plot_ef_bar()</a></code> and <code><a href="../reference/plot_ef_bar.html">plot_ef_dot()</a></code> were used to show the bar and dot plot of the effect sizes of markers.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># bar plot</span>
 <span class="fu"><a href="../reference/plot_ef_bar.html">plot_ef_bar</a></span><span class="op">(</span><span class="va">mm_lefse</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/ef-plot-1.png" width="700" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># dot plot</span>
 <span class="fu"><a href="../reference/plot_ef_bar.html">plot_ef_dot</a></span><span class="op">(</span><span class="va">mm_lefse</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/ef-plot-2.png" width="700" style="display: block; margin: auto;"></p>
 <p>Different effect size measures can be calculated for different DA methods, e.g. <code>lda</code> (linear discriminant analysis) for LEfSe, <code>imp</code> (importance) for SL methods. <code><a href="../reference/plot_ef_bar.html">plot_ef_bar()</a></code> and <code><a href="../reference/plot_ef_bar.html">plot_ef_dot()</a></code> can set the axis label of effect size correctly without manual intervention.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># set the x axis to log2 Fold Change automatically without manual intervention</span>
 <span class="fu"><a href="../reference/plot_ef_bar.html">plot_ef_bar</a></span><span class="op">(</span><span class="va">mm_edger</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/ef-plot-diff-1.png" width="700" style="display: block; margin: auto;"></p>
@@ -555,7 +576,7 @@ fold-change between the sample and the reference.</li>
 <h2 class="hasAnchor">
 <a href="#cladogram" class="anchor"></a>Cladogram</h2>
 <p>As mentioned above, the microbiome marker analysis will run on all levels of features by default. Users can plot a LEfSe cladogram using function <code><a href="../reference/plot_cladogram.html">plot_cladogram()</a></code>.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_cladogram.html">plot_cladogram</a></span><span class="op">(</span><span class="va">mm_lefse</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Healthy <span class="op">=</span> <span class="st">"darkgreen"</span>, Tumor <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/cladogram-1.png" width="672" style="display: block; margin: auto;"></p>
@@ -564,12 +585,12 @@ fold-change between the sample and the reference.</li>
 <h2 class="hasAnchor">
 <a href="#visualization-for-post-hoc-test" class="anchor"></a>Visualization for post-hoc test</h2>
 <p>As shown in @ref(simple-stat), post-hoc test can be used to identify which pairs of groups may differ from each other. <code><a href="../reference/plot_postHocTest.html">plot_postHocTest()</a></code> was provided to allow users visualize the post-hoc test result.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p_pht</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_postHocTest.html">plot_postHocTest</a></span><span class="op">(</span><span class="va">pht</span>, feature <span class="op">=</span> <span class="st">"p__Bacteroidetes|g__Bacteroides"</span><span class="op">)</span>
 <span class="va">p_pht</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/plot-pht-1.png" width="700" style="display: block; margin: auto;"></p>
 <p>The pot-hoc plots were wrapped using <em><a href="https://CRAN.R-project.org/package=patchwork">patchwork</a></em>, and users can modifying the themes of all subplots using <code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code>.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p_pht</span> <span class="op">&amp;</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/customize-p-pht-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
@@ -590,7 +611,7 @@ fold-change between the sample and the reference.</li>
 <h1 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session information</h1>
 <p>This vignette was created under the following conditions:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.1.0 (2021-05-18)</span>
 <span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
