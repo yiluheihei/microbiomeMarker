@@ -8,7 +8,6 @@
 ^\.github/workflows/R-CMD-check\.yaml$
 ^\.github$
 ^LICENSE\.md$
-references.bib
 ^codecov\.yml$
 ^_pkgdown\.yml$
 ^docs$
