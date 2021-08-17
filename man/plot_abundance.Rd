@@ -7,7 +7,7 @@
 plot_abundance(mm, label_level = 1, max_label_len = 60, markers = NULL, group)
 }
 \arguments{
-\item{mm}{a \linkS4class{microbiomeMarker} object}
+\item{mm}{a \code{\linkS4class{microbiomeMarker}} object}
 
 \item{label_level}{integer, number of label levels to be displayed, default
 \code{1}, \code{0} means display the full name of the feature}

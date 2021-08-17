@@ -108,7 +108,7 @@ run_sl <- function(ps,
   }
 
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
-  method <- match.arg(method, choices = c("LR", "RF", "GBM", "SVM"))
+  method <- match.arg(method, choices = c("LR", "RF", "SVM"))
   full_method <- switch(method,
     LR = "logistic regression",
     RF = "random forest",

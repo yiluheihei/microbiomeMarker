@@ -32,7 +32,7 @@
 #' [metagenomeSeq::cumNorm()]
 #' @importMethodsFrom BiocGenerics normalize
 #' @importFrom phyloseq sample_data<-
-#' @exportMethod
+#' @exportMethod normalize
 #' @aliases normalize,phyloseq-method
 #' @rdname normalize-methods
 setMethod("normalize", "phyloseq",

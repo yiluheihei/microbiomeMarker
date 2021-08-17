@@ -18,7 +18,7 @@ plot_heatmap(
 )
 }
 \arguments{
-\item{mm}{a \linkS4class{microbiomeMarker} object}
+\item{mm}{a \code{\linkS4class{microbiomeMarker}} object}
 
 \item{transform}{transformation to apply, for more details see
 \code{\link[=transform_abundances]{transform_abundances()}}:

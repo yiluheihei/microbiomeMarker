@@ -417,9 +417,13 @@ Here we take random forest for example:
 
 ```{r rf}
 # must specify the importance para for random forest
+set.seed(2021)
 mm_rf <- run_sl(
   enterotypes_arumugam, 
   group = "Gender", 
+  taxa_rank = "Genus",
+  top_n = 8,
+  norm = "TSS",
   method = "RF", 
   importance = "impurity"
 )
@@ -504,6 +508,19 @@ features by default. Users can plot a LEfSe cladogram using function
 ```{r cladogram,fig.width=7,fig.height=7}
 plot_cladogram(mm_lefse, color = c(Healthy = "darkgreen", Tumor = "red")) +
   theme(plot.margin = margin(0,0,0,0))
+```
+
+## AUC-ROC curve from SL methods
+
+ROC (receiver operating characteristic) curve can be used to show the prediction
+performance of the identified marker. And AUC (area under the ROC curve) 
+measures the ability of the identified marker to classify the samples. 
+`plot_sl_roc()` was provided to show ROC curve and AUC value to evaluate 
+marker prediction performance.
+
+```{r auc-roc}
+set.seed(2021)
+plot_sl_roc(mm_rf, group = "Gender", importance = "impurity")
 ```
 
 ## Visualization for post-hoc test 
