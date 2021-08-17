@@ -113,8 +113,7 @@ Please cite the corresponding methods paper too:
 -   Shibata T, Nakagawa M, Coleman HN, et al. Evaluation of DNA
     extraction protocols from liquid-based cytology specimens for
     studying cervical microbiota. bioRxiv. 2021 Jan 1:2020-01.
-    <doi:%5B10.1101/2020.01.27.921619>\]
-    (<https://doi.org/10.1101/2020.01.27.921619>)
+    <doi:%5B10.1101/2020.01.27.921619>\](<https://doi.org/10.1101/2020.01.27.921619>)
 
 ## Question
 

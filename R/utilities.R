@@ -379,6 +379,11 @@ extract_rank <- function(ps, taxa_rank) {
 
   tax_table(ps) <- new_tax_table
 
+  # set the taxa names as the corresponding names
+  if (taxa_rank != "none") {
+    taxa_names(ps) <- new_tax_table[, 1]
+  }
+
   ps
 }
 

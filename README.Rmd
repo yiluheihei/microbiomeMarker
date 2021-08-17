@@ -103,7 +103,7 @@ Please cite the corresponding methods paper too:
   and Environmental Microbiology. 2021 Jun 30:AEM-01225.
   doi: [10.1128/AEM.01225-21](https://doi.org/10.1128/AEM.01225-21)
 - Shibata T, Nakagawa M, Coleman HN, et al. Evaluation of DNA extraction protocols from
-  liquid-based cytology specimens for studying cervical microbiota. bioRxiv. 2021 Jan     1:2020-01. doi:[10.1101/2020.01.27.921619] (https://doi.org/10.1101/2020.01.27.921619)
+  liquid-based cytology specimens for studying cervical microbiota. bioRxiv. 2021 Jan     1:2020-01. doi:[10.1101/2020.01.27.921619](https://doi.org/10.1101/2020.01.27.921619)
 
 ## Question
 

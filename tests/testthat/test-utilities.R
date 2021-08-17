@@ -104,3 +104,32 @@ test_that("marker_table, if no significant marker return all the features", {
   expect_equal(marker_table(sig_ft2), return_marker(sig_ft2, ft))
 
 })
+
+
+# extract the specific taxa rank
+test_that("extract the specific taxa rank", {
+  otu <- otu_table(
+    data.frame(
+      s1 = runif(10),
+      s2 = runif(10),
+      s3 = runif(10)
+    ),
+    taxa_are_rows = TRUE
+  )
+  tax <- tax_table(
+    data.frame(
+      rank1 = paste0("rank1", 1:10),
+      rank2 = paste0("rank2", 1:10)) %>%
+    as.matrix())
+  test_ps <- phyloseq(otu, tax)
+
+  # taxa names keep inconsistent with the taxa_rank
+  expect_identical(
+    taxa_names(extract_rank(test_ps, "rank2")),
+    paste0("rank2", 1:10)
+  )
+  expect_identical(
+    taxa_names(extract_rank(test_ps, "none")),
+    paste0("sp", 1:10)
+  )
+})
