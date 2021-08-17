@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Heatmap of microbiome marker — plot_heatmap • microbiomeMarker</title>
+<title>ROC curve of microbiome marker from supervised learning methods — plot_sl_roc • microbiomeMarker</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Heatmap of microbiome marker — plot_heatmap" />
-<meta property="og:description" content="Display the microbiome marker using heatmap, in which rows represents the
-marker and columns represents the samples." />
+<meta property="og:title" content="ROC curve of microbiome marker from supervised learning methods — plot_sl_roc" />
+<meta property="og:description" content="Show the ROC curve of the microbiome marker calculated by run_sl." />
 
 
 
@@ -124,84 +123,36 @@ marker and columns represents the samples." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Heatmap of microbiome marker</h1>
-    <small class="dont-index">Source: <a href='https://github.com/yiluheihei/microbiomeMarker/blob/master/R/plot-heatmap.R'><code>R/plot-heatmap.R</code></a></small>
-    <div class="hidden name"><code>plot_heatmap.Rd</code></div>
+    <h1>ROC curve of microbiome marker from supervised learning methods</h1>
+    <small class="dont-index">Source: <a href='https://github.com/yiluheihei/microbiomeMarker/blob/master/R/plot-sl-roc.R'><code>R/plot-sl-roc.R</code></a></small>
+    <div class="hidden name"><code>plot_sl_roc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Display the microbiome marker using heatmap, in which rows represents the
-marker and columns represents the samples.</p>
+    <p>Show the ROC curve of the microbiome marker calculated by <code>run_sl</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_heatmap</span><span class='op'>(</span>
-  <span class='va'>mm</span>,
-  transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"log10"</span>, <span class='st'>"log10p"</span>, <span class='st'>"identity"</span><span class='op'>)</span>,
-  cluster_marker <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  cluster_sample <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  markers <span class='op'>=</span> <span class='cn'>NULL</span>,
-  label_level <span class='op'>=</span> <span class='fl'>1</span>,
-  max_label_len <span class='op'>=</span> <span class='fl'>60</span>,
-  sample_label <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  <span class='va'>group</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_sl_roc</span><span class='op'>(</span><span class='va'>mm</span>, <span class='va'>group</span>, nfolds <span class='op'>=</span> <span class='fl'>3</span>, nrepeats <span class='op'>=</span> <span class='fl'>3</span>, tune_length <span class='op'>=</span> <span class='fl'>5</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mm</th>
-      <td><p>a <code><a href='microbiomeMarker-class.html'>microbiomeMarker</a></code> object</p></td>
+      <td><p>a <a href='microbiomeMarker-class.html'>microbiomeMarker</a> object.</p></td>
     </tr>
     <tr>
-      <th>transform</th>
-      <td><p>transformation to apply, for more details see
-<code><a href='transform_abundances.html'>transform_abundances()</a></code>:</p><ul>
-<li><p>"identity", return the original data without any transformation.</p></li>
-<li><p>"log10", the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(object)</a></code>, and if the data contains
-zeros the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(1 + object)</a></code>.</p></li>
-<li><p>"log10p", the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(1 + object)</a></code>.</p></li>
-</ul></td>
-    </tr>
-    <tr>
-      <th>cluster_marker, cluster_sample</th>
-      <td><p>logical, controls whether to perform
-clustering in markers (rows) and samples (cols), default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>markers</th>
-      <td><p>character vector, markers to display, default <code>NULL</code>,
-indicating plot all markers.</p></td>
-    </tr>
-    <tr>
-      <th>label_level</th>
-      <td><p>integer, number of label levels to be displayed, default
-<code>1</code>, <code>0</code> means display the full name of the feature</p></td>
-    </tr>
-    <tr>
-      <th>max_label_len</th>
-      <td><p>integer, maximum number of characters of feature label,
-default <code>60</code></p></td>
-    </tr>
-    <tr>
-      <th>sample_label</th>
-      <td><p>logical, controls whether to show the sample labels in
-the heatmap, default <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>group</th>
-      <td><p>character, the variable to set the group</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>extra arguments passed to <code><a href='https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html'>ComplexHeatmap::Heatmap()</a></code>.</p></td>
+      <th>group, nfolds, nrepeats, tune_length, ...</th>
+      <td><p>same with the <code><a href='run_sl.html'>run_sl()</a></code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a <code><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot2::ggplot</a></code> object.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='transform_abundances.html'>transform_abundances</a></code>,<code><a href='https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html'>ComplexHeatmap::Heatmap()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='run_sl.html'>run_sl()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
