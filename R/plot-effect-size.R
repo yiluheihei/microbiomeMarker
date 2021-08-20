@@ -69,10 +69,14 @@ plot_ef_dot <- function(mm,
     label_x <- "W"
   } else if (orig_ef_nm == "imp") {
     label_x <- "Importance score"
+  } else if (orig_ef_nm == "LR") {
+    label_x <- "Likelhood ratio statistic"
+  } else if (orig_ef_nm == "F") {
+    label_x <- "F statistic"
   } else {
     stop(
       "The effect size must be one of lda, diff_mean, eat_squared, ",
-      "logFC, clr_diff_mean, clr_F_statistic, W, or imp"
+      "logFC, clr_diff_mean, clr_F_statistic, W, imp, LR or F"
     )
   }
 

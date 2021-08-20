@@ -83,13 +83,9 @@ test_that("create contrast", {
   expect_identical(create_pairwise_contrast(levels(groups)), mat)
 
   # create contrast
-  expect_identical(create_contrast(groups, c("a", "b")), c(1, -1, 0))
+  groups_two <- factor(rep(c("a", "b"), each = 3))
+  expect_identical(create_contrast(groups_two), c(-1, 1))
   expect_identical(create_contrast(groups), mat)
-
-  expect_error(create_contrast(c("a", "b")), "`contrast` is required")
-  expect_error(create_contrast(groups, c("a", "b", "c")), "must be length 2")
-  expect_error(create_contrast(c("a", "b"), c("b", "c")), "one of a, b")
-
 })
 
 

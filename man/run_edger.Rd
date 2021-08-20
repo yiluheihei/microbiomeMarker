@@ -7,7 +7,6 @@
 run_edger(
   ps,
   group,
-  contrast,
   taxa_rank = "all",
   method = c("LRT", "QLFT"),
   transform = c("identity", "log10", "log10p"),
@@ -24,11 +23,6 @@ run_edger(
 
 \item{group}{character, the variable to set the group, must be one of
 the var of the sample metadata.}
-
-\item{contrast}{a two length vector,  The order determines the direction of
-fold change, the first element is the numerator for the fold change, and
-the second element is used as baseline (denominator for fold change), this
-parameter only for two groups comparison.}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
 differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
@@ -105,11 +99,6 @@ There are two test methods for differential analysis in \strong{edgeR},
 likelihood ratio test (LRT) and quasi-likelihood F-test (QLFT). The QLFT
 method is recommended as it allows stricter error rate control by
 accounting for the uncertainty in dispersion estimation.
-
-The para \code{contrast} is used to specify contrast of the linear model
-coefficients to be tested equal to zero. \code{NULL} means performing multiple
-groups comparisons. This is done by creating a matrix of all
-pairwise independent contrasts. In this manner, users can
 }
 \references{
 Robinson, Mark D., and Alicia Oshlack. "A scaling normalization method for

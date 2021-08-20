@@ -285,52 +285,18 @@ remove_na_samples <- function(ps, group) {
 #
 # For multiple groups, return a matrix, consists of all pair-wise comparisons
 # (contrasts) for anova-like test.
-create_contrast <- function(groups, contrast) {
+create_contrast <- function(groups) {
   groups <- factor(groups)
   lvl <- levels(groups)
   n <- length(lvl)
   if (n < 2) {
     stop("Differential analysis requires at least two groups.")
-  }
-
-  # if (any(duplicated(lvl))) {
-  #   stop(
-  #     "\nFind duplicated elements in `levles.\n",
-  #     "`levels` denotes the levels of a factor and must be unique.",
-  #     call. = FALSE
-  #   )
-  # }
-  if (!missing(contrast)) {
-    if (length(contrast) != 2) {
-      stop(
-        "`contrast` must be length 2 for two groups comparison.",
-        call. = FALSE
-      )
-    }
-
-    for (cont in contrast) {
-      if (! cont %in% lvl) {
-        stop(
-          "The element of `contrast` should be one of ",
-          paste(unique(lvl), collapse = ", "),
-          call. = FALSE
-        )
-      }
-    }
-
-    idx <- match(contrast, lvl)
+  } else if (n == 2) {
     design <- rep(0, n)
-    design[idx[1]] <- 1
-    design[idx[2]] <- -1
+    design[1] <- -1
+    design[2] <- 1
   } else {
-    if (n > 2) {
-      design <- create_pairwise_contrast(levels(groups))
-    } else {
-      stop(
-        "`contrast` is required for two groups comparison",
-        call. = FALSE
-      )
-    }
+    design <- create_pairwise_contrast(lvl)
   }
 
   design

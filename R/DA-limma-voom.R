@@ -89,7 +89,7 @@ run_limma_voom <- function(ps,
     )
   }
   # contrast must be a two-length vector, only used for two groups comparison
-  contrast_new <- create_contrast(groups, contrast)
+  contrast_new <- create_contrast(groups)
 
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
 

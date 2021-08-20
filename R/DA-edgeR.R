@@ -12,10 +12,6 @@
 #'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
 #'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
 #'   OTU or ASV).
-#' @param contrast  a two length vector,  The order determines the direction of
-#'   fold change, the first element is the numerator for the fold change, and
-#'   the second element is used as baseline (denominator for fold change), this
-#'   parameter only for two groups comparison.
 #' @param method character, used for differential analysis, please see details
 #'   below for more info.
 #' @param transform character, the methods used to transform the microbial
@@ -68,13 +64,6 @@
 #' method is recommended as it allows stricter error rate control by
 #' accounting for the uncertainty in dispersion estimation.
 #'
-#' The para `contrast` is used to specify contrast of the linear model
-#' coefficients to be tested equal to zero. `NULL` means performing multiple
-#' groups comparisons. This is done by creating a matrix of all
-#' pairwise independent contrasts. In this manner, users can
-#  perform a ANOVA-like test to find features that are differential between
-#  any of the groups.
-#'
 #' @export
 #' @seealso [`edgeR::glmFit()`],[`edgeR::glmQLFit()`],[`edgeR::estimateDisp()`]
 #'   ,[`normalize()`]
@@ -89,7 +78,6 @@
 #' gene expression data." Bioinformatics 26.1 (2010): 139-140.
 run_edger <- function(ps,
                       group,
-                      contrast,
                       taxa_rank = "all",
                       method = c("LRT", "QLFT"),
                       transform = c("identity", "log10", "log10p"),
@@ -109,10 +97,10 @@ run_edger <- function(ps,
   )
 
   groups <- sample_data(ps)[[group]]
-  groups <- factor(groups)
-
-  # contrast must be a two-length vector, only used for two groups comparison
-  contrast_new <- create_contrast(groups, contrast)
+  if (!is.factor(groups)) {
+    groups <- factor(groups)
+  }
+  lvl <- levels(groups)
 
   # preprocess phyloseq object
   ps <- preprocess_ps(ps)
@@ -158,7 +146,8 @@ run_edger <- function(ps,
   fit_fun <- ifelse(method == "LRT", edgeR::glmFit, edgeR::glmQLFit)
   test_fun <- ifelse(method == "LRT", edgeR::glmLRT, edgeR::glmQLFTest)
   fit <- fit_fun(dge_summarized, design, ...)
-  lrt <- test_fun(fit, contrast = contrast_new)
+  contrast <- create_contrast(groups)
+  lrt <- test_fun(fit, contrast = contrast)
   res <- edgeR::topTags(
     lrt,
     n = ntaxa(ps_summarized),
@@ -189,11 +178,16 @@ run_edger <- function(ps,
   row.names(counts_normalized) <- row.names(tax_table(ps_summarized))
 
   # enrich group
-  if (!is.matrix(contrast_new)) {
-    enrich_group <- ifelse(res$logFC > 0, contrast[1], contrast[2])
-  } else {
-    enrich_group <- get_sl_enrich_group(counts_normalized, groups)
-  }
+  # if (length(lvl) == 2) {
+  #   enrich_group <- ifelse(res$logFC > 0, lvl[2], lvl[1])
+  # } else {
+  #   enrich_group <- get_sl_enrich_group(counts_normalized, groups)
+  # }
+  coef <- fit$coefficients
+  enrich_group <- lvl[apply(coef, 1, which.max)]
+  # sort the enrich_group according to the DE of topTags
+  de_idx <- match(row.names(res), row.names(coef))
+  enrich_group <- enrich_group[de_idx]
   res$enrich_group <- enrich_group
 
   res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
@@ -211,10 +205,15 @@ run_edger <- function(ps,
   other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
   sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
   row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
-  # var of effect size: named as ef_<name of the actual effect size>,
-  # e.g. ef_F, ef_LR
-  ef_name <- ifelse(method == "LRT", "logFC", "F")
 
+  # var of effect size: named as ef_<name> of the actual effect size,
+  # two groups: logFC, multiple groups: F for QLFT method, LR for LFT method
+  n_lvl <- length(lvl)
+  if (n_lvl == 2) {
+    ef_name <- "logFC"
+  } else {
+    ef_name <- ifelse(method == "LRT", "LR", "F")
+  }
 
   # only keep five variables: feature, enrich_group, effect_size (LR for LRT
   # F for QLFT), pvalue, and padj, write a function? select_marker_var
