@@ -58,9 +58,9 @@
 #'   "t.test" and "wilcox.test".
 #' @export
 #' @references Fernandes, A.D., Reid, J.N., Macklaim, J.M. et al. Unifying the
-#'   analysis of high-throughput sequencing datasets: characterizing RNA-seq, 16S
-#'   rRNA gene sequencing and selective growth experiments by compositional data
-#'   analysis. Microbiome 2, 15 (2014).
+#'   analysis of high-throughput sequencing datasets: characterizing RNA-seq,
+#'   16S rRNA gene sequencing and selective growth experiments by compositional
+#'   data analysis. Microbiome 2, 15 (2014).
 #' @seealso [`ALDEx2::aldex()`]
 #' @return a [`microbiomeMarker-class`] object.
 run_aldex <- function(ps,
@@ -149,7 +149,7 @@ run_aldex <- function(ps,
   )
 
   # check whether counts are integers
-  if (conditionMessage(test_out) == "not all reads are integers") {
+  if (inherits(test_out, "error") && conditionMessage(test_out) == "not all reads are integers") {
     warning(
       "Not all reads are integers, the reads are `ceiling` to integers.\n",
       "   Raw reads is recommended from the ALDEx2 paper.",

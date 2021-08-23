@@ -7,7 +7,7 @@
 run_deseq2(
   ps,
   group,
-  contrast,
+  contrast = NULL,
   taxa_rank = "all",
   norm = "RLE",
   norm_para = list(),
@@ -29,10 +29,8 @@ run_deseq2(
 \item{group}{character, the variable to set the group, must be one of
 the var of the sample metadata.}
 
-\item{contrast}{a two length vector,  The order determines the direction of
-fold change, the first element is the numerator for the fold change, and
-the second element is used as baseline (denominator for fold change), this
-parameter only for two groups comparison.}
+\item{contrast}{this parameter only used for two groups comparison while
+there are multiple groups. For more please see the following details.}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
 differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
@@ -115,11 +113,11 @@ For more details see the \href{http://bioconductor.org/packages/devel/bioc/vigne
 
 Thus, this function only supports "none", "rarefy", "RLE", "CSS", and
 "TMM" normalization methods. We strongly recommend using the "RLE" method
-(default normalization method in the DESeq2 package). The other normalization
-methods are used for expert users and comparisons among different
-normalization methods.
+(default normalization method in the DESeq2 package). The other
+normalization methods are used for expert users and comparisons among
+different normalization methods.
 
-For two groups comparisons, this function utilizes the Wald test (defined by
+For two groups comparison, this function utilizes the Wald test (defined by
 \code{\link[DESeq2:nbinomWaldTest]{DESeq2::nbinomWaldTest()}}) for hypothesis testing. A Wald test statistic
 is computed along with a probability (p-value) that a test statistic at least
 as extreme as the observed value were selected at random. \code{contrasts} are
@@ -130,11 +128,18 @@ Likelihood ratio test (LRT) is used to identify the genes that significantly
 changed across all the different levels for multiple groups comparisons. The
 LRT identified the significant features by comparing the full model to the
 reduced model. It is testing whether a feature removed in the reduced
-model explains a significant variation in the data. Please \strong{NOTE} argument
-\code{reduced} is required for LRT test. However, \code{reduced} is set as
-\code{reduced = ~ 1} in the internal, as this function is for one variable
-comparison (in the current version). Thus, users do not need to set argument
-\code{reduced} in this function.
+model explains a significant variation in the data.
+
+\code{contrast} must be a two length character or \code{NULL} (default). It is only
+required to set manually for two groups comparison when there are multiple
+groups. The order determines the direction of comparison, the first element
+is used to specify the reference group (control). This means that, the first
+element is the denominator for the fold change, and the second element is
+used as baseline (numerator for fold change). Otherwise, users do required
+to concern this parameter (set as default \code{NULL}), and if there are
+two groups, the first level of groups will set as the reference group; if
+there are multiple groups, it will perform an ANOVA-like testing to find
+markers which difference in any of the groups.
 }
 \references{
 Love, Michael I., Wolfgang Huber, and Simon Anders. "Moderated estimation

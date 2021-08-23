@@ -21,16 +21,14 @@
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
+#' @param contrast this parameter only used for two groups comparison while
+#'   there are multiple groups. For more please see the following details.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
 #'   or "all" means to summarize the taxa by the top taxa ranks
 #'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
 #'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
 #'   OTU or ASV).
-#' @param contrast a two length vector,  The order determines the direction of
-#'   fold change, the first element is the numerator for the fold change, and
-#'   the second element is used as baseline (denominator for fold change), this
-#'   parameter only for two groups comparison.
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
@@ -87,11 +85,11 @@
 #'
 #' Thus, this function only supports "none", "rarefy", "RLE", "CSS", and
 #' "TMM" normalization methods. We strongly recommend using the "RLE" method
-#' (default normalization method in the DESeq2 package). The other normalization
-#' methods are used for expert users and comparisons among different
-#' normalization methods.
+#' (default normalization method in the DESeq2 package). The other
+#' normalization methods are used for expert users and comparisons among
+#' different normalization methods.
 #'
-#' For two groups comparisons, this function utilizes the Wald test (defined by
+#' For two groups comparison, this function utilizes the Wald test (defined by
 #' [`DESeq2::nbinomWaldTest()`]) for hypothesis testing. A Wald test statistic
 #' is computed along with a probability (p-value) that a test statistic at least
 #' as extreme as the observed value were selected at random. `contrasts` are
@@ -102,16 +100,23 @@
 #' changed across all the different levels for multiple groups comparisons. The
 #' LRT identified the significant features by comparing the full model to the
 #' reduced model. It is testing whether a feature removed in the reduced
-#' model explains a significant variation in the data. Please **NOTE** argument
-#' `reduced` is required for LRT test. However, `reduced` is set as
-#' `reduced = ~ 1` in the internal, as this function is for one variable
-#' comparison (in the current version). Thus, users do not need to set argument
-#' `reduced` in this function.
+#' model explains a significant variation in the data.
+#'
+#' `contrast` must be a two length character or `NULL` (default). It is only
+#' required to set manually for two groups comparison when there are multiple
+#' groups. The order determines the direction of comparison, the first element
+#' is used to specify the reference group (control). This means that, the first
+#' element is the denominator for the fold change, and the second element is
+#' used as baseline (numerator for fold change). Otherwise, users do required
+#' to concern this parameter (set as default `NULL`), and if there are
+#' two groups, the first level of groups will set as the reference group; if
+#' there are multiple groups, it will perform an ANOVA-like testing to find
+#' markers which difference in any of the groups.
 #'
 #' @export
 #' @return a [`microbiomeMarker-class`] object.
 #' @seealso [`DESeq2::results()`],[`DESeq2::DESeq()`]
-#' @importFrom stats formula
+#' @importFrom stats formula coef
 #' @importFrom DESeq2 dispersions<-
 #' @importMethodsFrom S4Vectors mcols
 #' @importMethodsFrom BiocGenerics sizeFactors<- counts
@@ -121,7 +126,7 @@
 #' biology 15.12 (2014): 1-21.
 run_deseq2 <- function(ps,
                       group,
-                      contrast,
+                      contrast = NULL,
                       taxa_rank = "all",
                       norm = "RLE",
                       norm_para = list(),
@@ -154,35 +159,42 @@ run_deseq2 <- function(ps,
     )
   }
   groups <- sam_tab[[group]]
-  lvl <- unique(groups)
+  if (!is.factor(groups)) {
+    groups <- factor(groups)
+  }
+  lvl <- levels(groups)
   n_lvl <- length(lvl)
 
   if (n_lvl < 2) {
     stop("Differential analysis requires at least two groups.")
   }
 
-  # contrast is only used for two-groups comparison
-  # did not required contrast for multiple groups comparison
-  if (!missing(contrast)) {
-    if (length(contrast) != 2) {
-      stop("`contrast` must be length 2.", call. = FALSE)
+  # contrast, test method, name of effect size
+  if (n_lvl == 2) {# two groups
+    if (!is.null(contrast)) {
+      warning(
+        "`contrast` is ignored, you do not need to set it",
+        call. = FALSE
+      )
     }
-
-    for (cont in contrast) {
-      if (! cont %in% groups) {
+    contrast_new <- c(group, lvl[2], lvl[1])
+  } else {
+    if (!is.null(contrast)) {
+      if (!is.character(contrast) || length(contrast) != 2) {
+        stop("`contrast` must be a two length character", call. = FALSE)
+      }
+      idx <- match(contrast, lvl, nomatch = 0L)
+      if (!all(idx)) {
         stop(
-          "The element of `contrast` should be one of ",
-          paste(unique(groups), collapse = ", "),
+          "all elements of `contrast` must be contained in `groups`",
           call. = FALSE
         )
       }
-    }
-    contrast <- c(group, contrast)
-  } else {
-    if (n_lvl == 2) {
-      stop("`contrast` is requried for two groups comparison.")
+      contrast_new <- c(group, contrast[2], contrast[1])
     }
   }
+  test <- ifelse(n_lvl > 2 && is.null(contrast), "LRT", "Wald")
+  ef_name <- ifelse(test == "Wald", "logFC", "F")
 
   fitType <- match.arg(fitType, c("parametric", "local", "mean", "glmGamPoi"))
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
@@ -222,7 +234,7 @@ run_deseq2 <- function(ps,
       extract_rank(taxa_rank)
   }
 
-  dsg <- formula(paste("~ ", group))
+  dsg <- formula(paste("~", group))
   suppressWarnings(dds_summarized <- phyloseq2DESeq2(
     ps_summarized,
     design = dsg
@@ -234,7 +246,8 @@ run_deseq2 <- function(ps,
 
 
   # error: all gene-wise dispersion estimates are within 2 orders of magnitude
-  # from the minimum value, which indicates that the count are not overdispersed
+  # from the minimum value, which indicates that the count are not
+  # overdispersed
   #
   # If dispersion values are less than 1e-6  (minimal value is 1e-8),
   # it would be problematic to fit a dispersion trend in DESeq2.
@@ -247,10 +260,25 @@ run_deseq2 <- function(ps,
   # if (! missing(contrast) && n_lvl = 3) {
   #   stop("`contrast` is used for Wald test", call. = FALSE)
   # }
-  #
-  test <- ifelse(!missing(contrast), "Wald", "LRT")
 
-  if (test == "Wald") {
+  # LRT is used to analyze all levels of a factor at once, and the
+  # The p values are determined solely by the difference in deviance between
+  # the "full" and "reduced" model formula (not log2 fold changes). Only Wast
+  # method was used for pair-wise comparison. Thus, for pair-wise comparison,
+  # we use Wald test. Moreover, you can set the argument `test` in `results()`
+  # when extract the results from LRT, and it is equivalent to Wast test.
+  #
+  # ds1 <- DESeq(dds, test = "LRT")
+  # results(ds1, test = "Wald")
+  #
+  # ds2 <- DESeq(dds, test = "Wald")
+  # results(ds2)
+  #
+  # However, even though there are fold changes  present in the results of
+  # LRT, they are not directly associated with the actual hypothesis test (
+  # actually determined by the arguments name or contrast).
+  # test <- ifelse(n_lvl == 2, "Wald", "LRT")
+  if (test == "Wald") { # two groups comparison
     res_deseq <- try(
       DESeq2::DESeq(
         dds_summarized,
@@ -283,6 +311,7 @@ run_deseq2 <- function(ps,
         silent = TRUE
       )
     }
+
     if (inherits(res_deseq, "try-error") && fitType != "mean") {
       warning("data is not overdispered, try `fitType = 'mean'`")
       res_deseq <- try(
@@ -323,10 +352,12 @@ run_deseq2 <- function(ps,
 
     res <- DESeq2::results(
       object = dds_summarized,
-      contrast = contrast,
-      alpha = pvalue_cutoff,
+      contrast = contrast_new,
+      # alpha = pvalue_cutoff,
       pAdjustMethod = p_adjust
     )
+    # rename log2FoldChange to logFC, use base R rather than dplyr::rename
+    names(res)[names(res) == "log2FoldChange"] <- "logFC"
   } else {
       dds_summarized <- DESeq2::DESeq(
         dds_summarized,
@@ -340,43 +371,55 @@ run_deseq2 <- function(ps,
       )
       res <- DESeq2::results(
         object = dds_summarized,
-        alpha = pvalue_cutoff,
+        # alpha = pvalue_cutoff,
         pAdjustMethod = p_adjust
       )
   }
 
+  # Why p value is NA?
   # By default, independent filtering is performed to select a set of genes
-  # for multiple test correction which maximizes the number of adjusted p-values
-  # less than a given critical value alpha (by default 0.1).
+  # for multiple test correction which maximizes the number of adjusted p
+  # values less than a given critical value alpha (by default 0.1).
   # The adjusted p-values for the genes which do not pass the filter threshold
   # are set to NA.
   # By default, results assigns a p-value of NA to genes containing count
   # outliers, as identified using Cook's distance.
-  # res <- DESeq2::results(
-  #   object = dds_summarized,
-  #   contrast = contrast,
-  #   alpha = pvalue_cutoff,
-  #   pAdjustMethod = p_adjust
-  # )
-
-  # rename log2FoldChange to logFC, use base R rather than dplyr::rename
-  names(res)[names(res) == "log2FoldChange"] <- "ef_logFC"
 
   # normalized counts
   # https://bioinformatics.stackexchange.com/questions/193/how-can-i-extract-normalized-read-count-values-from-deseq2-results
   counts_normalized <- DESeq2::counts(dds_summarized, normalized = TRUE)
 
+  # one way anova f statistic for LRT
+  if (test == "LRT") {
+    temp_count <- data.frame(t(counts_normalized))
+    f_stat <-  vapply(
+      temp_count,
+      calc_ef_md_f,
+      FUN.VALUE = 0.0,
+      group = groups
+    )
+    res$F <- f_stat
+  }
+
+  res <- data.frame(res)
   # enrich group
-  if (!missing(contrast)) {
-    enrich_group <- ifelse(res$ef_logFC > 0, contrast[2], contrast[3])
+  if (test == "Wald") {
+    enrich_group <- ifelse(res$logFC > 0, contrast_new[2], contrast_new[3])
   } else {
-    enrich_group <- get_sl_enrich_group(counts_normalized, groups)
+    cf <- coef(dds_summarized)
+    # the first coef is intercept, we set the coef of the reference group as 0
+    cf[, 1] <- 0
+    enrich_idx <- apply(
+      cf, 1,
+      function(x) ifelse(any(is.na(x)), NA, which.max(x))
+    )
+    enrich_group <- lvl[enrich_idx]
+    enrich_group <- enrich_group[match(row.names(res), row.names(cf))]
   }
   res$enrich_group <- enrich_group
-
-  res_ordered <- res[order(res$padj), ] %>%
-    as.data.frame()
-
+  # order according to padj
+  res_ordered <- res[order(res$padj), ]
+  # filter sig feature
   padj <- res_ordered$padj
   res_filtered <- res_ordered[!is.na(padj) & padj < pvalue_cutoff, ]
 
@@ -396,8 +439,9 @@ run_deseq2 <- function(ps,
 
   # only keep five variables: feature, enrich_group, effect_size (logFC),
   # pvalue, and padj
-  sig_feature <- sig_feature[, c("feature", "enrich_group",
-                                 "ef_logFC", "pvalue", "padj")]
+  keep_var <- c("feature", "enrich_group", ef_name, "pvalue", "padj")
+  sig_feature <- sig_feature[keep_var]
+  names(sig_feature)[3] <- paste0("ef_", ef_name)
 
   marker <- microbiomeMarker(
     marker_table = marker_table(sig_feature),
@@ -445,12 +489,30 @@ phyloseq2DESeq2 <- function(ps, design, ...) {
   # count data
   ct <- as(otu_table(ps), "matrix")
 
- dds <- DESeq2::DESeqDataSetFromMatrix(
-    countData = ct,
-    colData = data.frame(samp),
-    design = design,
-    ...
+  # deseq2 requires raw counts, means the counts must be integer
+  dds <- tryCatch(
+    DESeq2::DESeqDataSetFromMatrix(
+      countData = ct,
+      colData = data.frame(samp),
+      design = design,
+      ...
+    ),
+    error = function(e) e
   )
+  if (inherits(dds, "error") && conditionMessage(dds) == "some values in assay are not integers") {
+    warning(
+      "Not all reads are integers, the reads are `ceiling` to integers.\n",
+      "   Raw reads is recommended from the ALDEx2 paper.",
+      call. = FALSE
+    )
+    dds <- DESeq2::DESeqDataSetFromMatrix(
+        countData = ceiling(ct),
+        colData = data.frame(samp),
+        design = design,
+        ...
+      )
+  }
+
 
  dds
 }

@@ -102,9 +102,9 @@ Perform differential analysis using ALDEx2
 }
 \references{
 Fernandes, A.D., Reid, J.N., Macklaim, J.M. et al. Unifying the
-analysis of high-throughput sequencing datasets: characterizing RNA-seq, 16S
-rRNA gene sequencing and selective growth experiments by compositional data
-analysis. Microbiome 2, 15 (2014).
+analysis of high-throughput sequencing datasets: characterizing RNA-seq,
+16S rRNA gene sequencing and selective growth experiments by compositional
+data analysis. Microbiome 2, 15 (2014).
 }
 \seealso{
 \code{\link[ALDEx2:aldex]{ALDEx2::aldex()}}

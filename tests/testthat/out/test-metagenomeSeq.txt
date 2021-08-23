@@ -1,24 +1,36 @@
                                                                                                                                                   feature
-marker1                                                          k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia
-marker2                                         k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia|g__Roseburia_s__
-marker3  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Clostridiaceae|f__Clostridiaceae_g__Clostridium|f__Clostridiaceae_g__Clostridium_s__
-marker4                                         k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__fragilis
-marker5                                                              k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__[Paraprevotellaceae]
-marker6                                   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus|g__Ruminococcus_s__
-marker7                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium|s__adolescentis
-marker8                                                                              k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales
-marker9                                                        k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae
-marker10                                    k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium
-marker11                                                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcus
-         enrich_group ef_logFC     pvalue       padj
-marker1            CD  1.86779 2.3698e-09 1.8627e-06
-marker2            CD  1.79860 2.3899e-08 9.3924e-06
-marker3            CD  2.50558 1.9000e-04 3.9370e-02
-marker4       Control -2.30400 2.6000e-04 3.9370e-02
-marker5            CD  3.72001 3.5000e-04 3.9370e-02
-marker6            CD  1.47787 3.5000e-04 3.9370e-02
-marker7            CD  2.19004 3.7000e-04 3.9370e-02
-marker8            CD  1.65394 4.5000e-04 3.9370e-02
-marker9            CD  1.65394 4.5000e-04 3.9370e-02
-marker10           CD  1.61363 7.5000e-04 5.8920e-02
-marker11           CD  1.49855 8.6000e-04 6.1130e-02
+marker1                     k__Bacteria|p__Actinobacteria|c__Actinobacteria|o__Bifidobacteriales|f__Bifidobacteriaceae|g__Bifidobacterium|s__adolescentis
+marker2                                                          k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia
+marker3                                         k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Roseburia|g__Roseburia_s__
+marker4                                        k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae|g__Coprobacillus
+marker5                   k__Bacteria|p__Firmicutes|c__Erysipelotrichi|o__Erysipelotrichales|f__Erysipelotrichaceae|g__Coprobacillus|g__Coprobacillus_s__
+marker6                                                                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae
+marker7  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Clostridiaceae|f__Clostridiaceae_g__Clostridium|f__Clostridiaceae_g__Clostridium_s__
+marker8                                                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Lachnospira
+marker9                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Lachnospira|g__Lachnospira_s__
+marker10                                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Pseudoramibacter_Eubacterium
+marker11   k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Eubacteriaceae|g__Pseudoramibacter_Eubacterium|g__Pseudoramibacter_Eubacterium_s__
+marker12                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Clostridiaceae|f__Clostridiaceae_g__Clostridium|s__perfringens
+marker13                                           k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__[Paraprevotellaceae]|g__Paraprevotella
+marker14                     k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__[Paraprevotellaceae]|g__Paraprevotella|g__Paraprevotella_s__
+marker15                                       k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella|s__nigrescens
+marker16                                                                                                   k__Bacteria|p__Bacteroidetes|c__Flavobacteriia
+marker17                                                                               k__Bacteria|p__Bacteroidetes|c__Flavobacteriia|o__Flavobacteriales
+         enrich_group ef_logFC     pvalue    padj
+marker1       Control  2.12780 1.1219e-06 0.00088
+marker2       Control  1.18123 1.0000e-05 0.00496
+marker3       Control  1.15145 3.0000e-05 0.00614
+marker4       Control  0.77132 4.0000e-05 0.00614
+marker5       Control  0.77132 4.0000e-05 0.00614
+marker6       Control  0.72983 9.0000e-05 0.01235
+marker7       Control  1.34175 1.8000e-04 0.01980
+marker8       Control  1.24730 3.6000e-04 0.02983
+marker9       Control  1.24730 3.6000e-04 0.02983
+marker10      Control  0.65065 4.2000e-04 0.02983
+marker11      Control  0.65065 4.2000e-04 0.02983
+marker12           CD -2.37550 6.3000e-04 0.04121
+marker13      Control  1.06257 8.6000e-04 0.04853
+marker14      Control  1.06257 8.6000e-04 0.04853
+marker15      Control  0.35193 1.8900e-03 0.09468
+marker16           CD -1.90150 2.0500e-03 0.09468
+marker17           CD -1.90150 2.0500e-03 0.09468

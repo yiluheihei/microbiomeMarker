@@ -34,10 +34,10 @@ test_that("result of metagenomeSeq", {
     print = TRUE
   )
 
-  expect_error(
-    run_metagenomeseq(pediatric_ibd, "Class"),
-    "`contrast` is required"
-  )
+  # expect_error(
+  #   run_metagenomeseq(pediatric_ibd, "Class"),
+  #   "`contrast` is required"
+  # )
 
   expect_error(
     run_metagenomeseq(ps, "Consistency"),

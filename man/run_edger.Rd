@@ -7,6 +7,7 @@
 run_edger(
   ps,
   group,
+  contrast = NULL,
   taxa_rank = "all",
   method = c("LRT", "QLFT"),
   transform = c("identity", "log10", "log10p"),
@@ -23,6 +24,9 @@ run_edger(
 
 \item{group}{character, the variable to set the group, must be one of
 the var of the sample metadata.}
+
+\item{contrast}{this parameter only used for two groups comparison while
+there are multiple groups. For more please see the following details.}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
 differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
@@ -99,6 +103,17 @@ There are two test methods for differential analysis in \strong{edgeR},
 likelihood ratio test (LRT) and quasi-likelihood F-test (QLFT). The QLFT
 method is recommended as it allows stricter error rate control by
 accounting for the uncertainty in dispersion estimation.
+
+\code{contrast} must be a two length character or \code{NULL} (default). It is only
+required to set manually for two groups comparison when there are multiple
+groups. The order determines the direction of comparison, the first element
+is used to specify the reference group (control). This means that, the first
+element is the denominator for the fold change, and the second element is
+used as baseline (numerator for fold change). Otherwise, users do required
+to concern this parameter (set as default \code{NULL}), and if there are
+two groups, the first level of groups will set as the reference group; if
+there are multiple groups, it will perform an ANOVA-like testing to find
+markers which difference in any of the groups.
 }
 \references{
 Robinson, Mark D., and Alicia Oshlack. "A scaling normalization method for

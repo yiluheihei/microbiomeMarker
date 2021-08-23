@@ -7,7 +7,7 @@
 run_limma_voom(
   ps,
   group,
-  contrast,
+  contrast = NULL,
   taxa_rank = "all",
   transform = c("identity", "log10", "log10p"),
   norm = "none",
@@ -24,10 +24,8 @@ run_limma_voom(
 \item{group}{character, the variable to set the group, must be one of
 the var of the sample metadata.}
 
-\item{contrast}{a two length vector,  The order determines the direction of
-fold change, the first element is the numerator for the fold change, and
-the second element is used as baseline (denominator for fold change), this
-parameter only for two groups comparison.}
+\item{contrast}{this parameter only used for two groups comparison while
+there are multiple groups. For more please see the following details.}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
 differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
@@ -85,6 +83,18 @@ a \code{\linkS4class{microbiomeMarker}} object.
 }
 \description{
 Differential analysis using limma-voom
+}
+\details{
+\code{contrast} must be a two length character or \code{NULL} (default). It is only
+required to set manually for two groups comparison when there are multiple
+groups. The order determines the direction of comparison, the first element
+is used to specify the reference group (control). This means that, the first
+element is the denominator for the fold change, and the second element is
+used as baseline (numerator for fold change). Otherwise, users do required
+to concern this parameter (set as default \code{NULL}), and if there are
+two groups, the first level of groups will set as the reference group; if
+there are multiple groups, it will perform an ANOVA-like testing to find
+markers which difference in any of the groups.
 }
 \references{
 Law, C. W., Chen, Y., Shi, W., & Smyth, G. K. (2014).

@@ -3,10 +3,8 @@
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
-#' @param contrast a two length vector,  The order determines the direction of
-#'   fold change, the first element is the numerator for the fold change, and
-#'   the second element is used as baseline (denominator for fold change), this
-#'   parameter only for two groups comparison.
+#' @param contrast this parameter only used for two groups comparison while
+#'   there are multiple groups. For more please see the following details.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
 #'   or "all" means to summarize the taxa by the top taxa ranks
@@ -52,9 +50,21 @@
 #' @references Law, C. W., Chen, Y., Shi, W., & Smyth, G. K. (2014).
 #'   voom: Precision weights unlock linear model analysis tools for RNA-seq read
 #'   counts. Genome biology, 15(2), 1-17.
+#'
+#' @details
+#' `contrast` must be a two length character or `NULL` (default). It is only
+#' required to set manually for two groups comparison when there are multiple
+#' groups. The order determines the direction of comparison, the first element
+#' is used to specify the reference group (control). This means that, the first
+#' element is the denominator for the fold change, and the second element is
+#' used as baseline (numerator for fold change). Otherwise, users do required
+#' to concern this parameter (set as default `NULL`), and if there are
+#' two groups, the first level of groups will set as the reference group; if
+#' there are multiple groups, it will perform an ANOVA-like testing to find
+#' markers which difference in any of the groups.
 run_limma_voom <- function(ps,
                            group,
-                           contrast,
+                           contrast = NULL,
                            taxa_rank = "all",
                            transform = c("identity", "log10", "log10p"),
                            norm = "none",
@@ -81,15 +91,14 @@ run_limma_voom <- function(ps,
     )
   }
   groups <- sample_meta[[group]]
-  n_group <- length(unique(groups))
-  if (! missing(contrast) && n_group > 2) {
-    warning(
-      "`contrast` is ignored, since it only used for two groups comparison",
-      call. = FALSE
-    )
+  if(!is.factor(groups)) {
+    groups <- factor(groups)
   }
-  # contrast must be a two-length vector, only used for two groups comparison
-  contrast_new <- create_contrast(groups)
+  lvl <- levels(groups)
+  n_lvl <- length(lvl)
+
+  contrast_new <- create_contrast(groups, contrast)
+
 
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
 
@@ -137,8 +146,10 @@ run_limma_voom <- function(ps,
     span = voom_span
   )
   fit_out <- limma::lmFit(voom_out, design = design)
-  if (n_group == 2) {
-    fit_out <- limma::contrasts.fit(fit_out, contrast_new)
+
+  if (length(contrast_new) == n_lvl) {
+    # warning: row names of contrasts don't match col names of coefficients
+    fit_out <- suppressWarnings(limma::contrasts.fit(fit_out, contrast_new))
   }
   test_out <- limma::eBayes(fit_out, ...)
   test_df <- limma::topTable(
@@ -148,14 +159,18 @@ run_limma_voom <- function(ps,
   )
 
   counts_normed <- abundances(ps_summarized, norm = TRUE)
-  if (n_group == 2) {
-    enrich_group <- ifelse(test_df$logFC > 0, contrast[1], contrast[2])
+  if (length(contrast_new) == n_lvl) {
+    exp_lvl <- lvl[contrast_new == 1]
+    ref_lvl <- lvl[contrast_new == -1]
+    enrich_group <- ifelse(test_df$logFC > 0, exp_lvl, ref_lvl)
   } else {
-    enrich_idx <- apply(test_df[1:3], 1, which.max)
-    enrich_group <- levels(factor(groups))[enrich_idx]
+    cf <- fit_out$coefficients
+    enrich_idx <- apply(cf, 1, which.max)
+    enrich_group <- lvl[enrich_idx]
+    enrich_group <- enrich_group[match(row.names(test_df), row.names(cf))]
   }
 
-  if (n_group == 2) {
+  if (length(contrast_new) == n_lvl) {
     ef <- test_df[["logFC"]]
     ef_name <- "ef_logFC"
   } else {
@@ -184,5 +199,4 @@ run_limma_voom <- function(ps,
   )
 
   mm
-
 }

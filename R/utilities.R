@@ -285,18 +285,48 @@ remove_na_samples <- function(ps, group) {
 #
 # For multiple groups, return a matrix, consists of all pair-wise comparisons
 # (contrasts) for anova-like test.
-create_contrast <- function(groups) {
-  groups <- factor(groups)
+create_contrast <- function(groups, contrast = NULL) {
+  if (!is.factor(groups)) {
+    groups <- factor(groups)
+  }
   lvl <- levels(groups)
-  n <- length(lvl)
-  if (n < 2) {
+  n_lvl <- length(lvl)
+  if (n_lvl < 2) {
     stop("Differential analysis requires at least two groups.")
-  } else if (n == 2) {
-    design <- rep(0, n)
+  }
+
+  if (n_lvl == 2) {# two groups
+    if (!is.null(contrast)) {
+      warning(
+        "`contrast` is ignored, you do not need to set it",
+        call. = FALSE
+      )
+    }
+    design <- rep(0, n_lvl)
     design[1] <- -1
     design[2] <- 1
-  } else {
-    design <- create_pairwise_contrast(lvl)
+  } else { # multiple groups
+    if (!is.null(contrast)) {
+      if (!is.character(contrast) || length(contrast) != 2) {
+        stop("`contrast` must be a two length character", call. = FALSE)
+      }
+
+      idx <- match(contrast, lvl, nomatch = 0L)
+      if (!all(idx)) {
+        stop(
+          "all elements of `contrast` must be contained in `groups`",
+          call. = FALSE
+        )
+      }
+      design <- rep(0, n_lvl)
+      design[idx[1]] <- -1
+      design[idx[2]] <- 1
+      design <- matrix(design)
+      row.names(design) <- lvl
+      colnames(design) <- paste0(contrast[2], "-", contrast[1])
+    } else {
+        design <- create_pairwise_contrast(lvl)
+    }
   }
 
   design
@@ -391,3 +421,28 @@ return_marker <- function(sig_feature, all_feature) {
   marker
 }
 
+
+# For multiple groups comparison of LRT test of DESeq2.
+# Only fold changes of pair-wise comparisons are supported in DESse2.
+# https://support.bioconductor.org/p/131272/#131450
+# https://github1s.com/qiime2/q2-composition/blob/HEAD/q2_composition/_ancom.py
+#'
+#' Calculate effect size, mean differences for two groups, and f statistic of
+#' one-way anova for multiple groups.
+#' @noRd
+#' @importFrom stats lm aov
+calc_ef_md_f <- function(feature_abd, group) {
+  group_n <- length(unique(group))
+  if (group_n < 2) {
+    stop("The number of group must be greater than 2", call. = FALSE)
+  }
+
+  if (group_n == 2) {
+    ef <- abs(lm(feature_abd ~ group)$coefficients[2])
+  } else if (group_n > 2) {
+    # f statistic from aov
+    ef <- summary(aov(feature_abd ~ group))[[1]]$`F value`[1]
+  }
+
+  ef
+}

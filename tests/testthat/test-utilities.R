@@ -81,11 +81,27 @@ test_that("create contrast", {
   row.names(mat) <- c("a", "b", "c")
   colnames(mat) <- c("b-a", "c-a", "c-b")
   expect_identical(create_pairwise_contrast(levels(groups)), mat)
+  expect_error(create_contrast(groups, c("a", "d")), "contained in `groups`")
+  expect_error(create_contrast(groups, "a"), "two length")
+  expect_identical(
+    create_contrast(groups, c("a", "b")),
+    matrix(c(-1, 1, 0), dimnames = list(c("a", "b", "c"), "b-a"))
+  )
+  expect_identical(
+    create_contrast(groups, c("b", "c")),
+    matrix(c(0, -1, 1), dimnames =  list(c("a", "b", "c"), "c-b"))
+  )
 
   # create contrast
   groups_two <- factor(rep(c("a", "b"), each = 3))
   expect_identical(create_contrast(groups_two), c(-1, 1))
   expect_identical(create_contrast(groups), mat)
+  expect_warning(
+    ctra <- create_contrast(groups_two, c("a", "b")),
+    "`contrast` is ignored"
+  )
+  expect_identical(ctra, c(-1, 1))
+  expect_identical(ctra, create_contrast(groups_two))
 })
 
 

@@ -55,7 +55,7 @@ mm_kruskal <-  run_test_multiple_groups(
 mm_mgs <- run_metagenomeseq(
   pediatric_ibd,
   "Class",
-  contrast = c("CD","Control"),
+  # contrast = c("CD","Control"),
   pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )
@@ -63,7 +63,7 @@ mm_mgs <- run_metagenomeseq(
 mm_des <- run_deseq2(
   pediatric_ibd,
   "Class",
-  contrast = c("Control", "CD"),
+  # contrast = c("Control", "CD"),
   pvalue_cutoff = 0.05,
   p_adjust = "fdr"
 )

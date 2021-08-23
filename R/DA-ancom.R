@@ -149,7 +149,7 @@ run_ancom <- function(ps,
   feature_table_clr <- data.frame(t(feature_table_clr))
   ef <- vapply(
     feature_table_clr,
-    calc_ancom_ef,
+    calc_ef_md_f,
     FUN.VALUE = 0.0,
     group = cls_full
   )
@@ -337,26 +337,6 @@ get_struc_zero <- function(ps, group, neg_lb) {
   )
 
   data.frame(zero_ind)
-}
-
-
-#' calculate effect size, mean differences for two groups, and f statistic for
-#' three groups
-#' https://github1s.com/qiime2/q2-composition/blob/HEAD/q2_composition/_ancom.py
-#' @noRd
-#' @importFrom stats lm aov
-calc_ancom_ef <- function(feature_abd, group) {
-  group_n <- length(unique(group))
-  if (group_n == 2) {
-    ef <- abs(lm(feature_abd ~ group)$coefficients[2])
-  } else if (group_n > 2) {
-    # f statistic from aov
-    ef <- summary(aov(feature_abd ~ group))[[1]]$`F value`[1]
-  } else {
-    stop("The number of group must be greater than 2", call. = FALSE)
-  }
-
-  ef
 }
 
 #' enrich group for ancom, rewrite this function in the later

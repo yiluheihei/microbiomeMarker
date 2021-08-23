@@ -6,6 +6,8 @@
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
+#' @param contrast this parameter only used for two groups comparison while
+#'   there are multiple groups. For more please see the following details.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
 #'   or "all" means to summarize the taxa by the top taxa ranks
@@ -64,6 +66,17 @@
 #' method is recommended as it allows stricter error rate control by
 #' accounting for the uncertainty in dispersion estimation.
 #'
+#' `contrast` must be a two length character or `NULL` (default). It is only
+#' required to set manually for two groups comparison when there are multiple
+#' groups. The order determines the direction of comparison, the first element
+#' is used to specify the reference group (control). This means that, the first
+#' element is the denominator for the fold change, and the second element is
+#' used as baseline (numerator for fold change). Otherwise, users do required
+#' to concern this parameter (set as default `NULL`), and if there are
+#' two groups, the first level of groups will set as the reference group; if
+#' there are multiple groups, it will perform an ANOVA-like testing to find
+#' markers which difference in any of the groups.
+#'
 #' @export
 #' @seealso [`edgeR::glmFit()`],[`edgeR::glmQLFit()`],[`edgeR::estimateDisp()`]
 #'   ,[`normalize()`]
@@ -78,6 +91,7 @@
 #' gene expression data." Bioinformatics 26.1 (2010): 139-140.
 run_edger <- function(ps,
                       group,
+                      contrast = NULL,
                       taxa_rank = "all",
                       method = c("LRT", "QLFT"),
                       transform = c("identity", "log10", "log10p"),
@@ -101,6 +115,9 @@ run_edger <- function(ps,
     groups <- factor(groups)
   }
   lvl <- levels(groups)
+  n_lvl <- length(lvl)
+  # create contrast
+  contrast_new <- create_contrast(groups, contrast)
 
   # preprocess phyloseq object
   ps <- preprocess_ps(ps)
@@ -134,7 +151,6 @@ run_edger <- function(ps,
   }
 
   # estimate dispersion
-
   design <- stats::model.matrix(~0+groups)
   disp_para <- c(disp_para, y = list(dge_summarized), design = list(design))
   dge_summarized <- do.call(edgeR::estimateDisp, disp_para)
@@ -146,8 +162,8 @@ run_edger <- function(ps,
   fit_fun <- ifelse(method == "LRT", edgeR::glmFit, edgeR::glmQLFit)
   test_fun <- ifelse(method == "LRT", edgeR::glmLRT, edgeR::glmQLFTest)
   fit <- fit_fun(dge_summarized, design, ...)
-  contrast <- create_contrast(groups)
-  lrt <- test_fun(fit, contrast = contrast)
+  # contrast <- create_contrast(groups)
+  lrt <- test_fun(fit, contrast = contrast_new)
   res <- edgeR::topTags(
     lrt,
     n = ntaxa(ps_summarized),
@@ -183,11 +199,20 @@ run_edger <- function(ps,
   # } else {
   #   enrich_group <- get_sl_enrich_group(counts_normalized, groups)
   # }
-  coef <- fit$coefficients
-  enrich_group <- lvl[apply(coef, 1, which.max)]
-  # sort the enrich_group according to the DE of topTags
-  de_idx <- match(row.names(res), row.names(coef))
-  enrich_group <- enrich_group[de_idx]
+  if (n_lvl > 2) {
+    if (is.null(contrast)) {
+      coef <- fit$coefficients
+      enrich_group <- lvl[apply(coef, 1, which.max)]
+      # sort the enrich_group according to the DE of topTags
+      de_idx <- match(row.names(res), row.names(coef))
+      enrich_group <- enrich_group[de_idx]
+    } else {
+      enrich_group <- ifelse(res$logFC > 0, contrast[2], contrast[1])
+    }
+  } else {
+    enrich_group <- ifelse(res$logFC > 0, lvl[2], lvl[1])
+  }
+
   res$enrich_group <- enrich_group
 
   res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
@@ -208,11 +233,14 @@ run_edger <- function(ps,
 
   # var of effect size: named as ef_<name> of the actual effect size,
   # two groups: logFC, multiple groups: F for QLFT method, LR for LFT method
-  n_lvl <- length(lvl)
-  if (n_lvl == 2) {
+  if (n_lvl == 2) { # two groups
     ef_name <- "logFC"
-  } else {
-    ef_name <- ifelse(method == "LRT", "LR", "F")
+  } else { # multiple groups
+    if (!is.null(contrast)) { # two groups comparison from multiple groups
+      ef_name = "logFC"
+    } else {
+      ef_name <- ifelse(method == "LRT", "LR", "F")
+    }
   }
 
   # only keep five variables: feature, enrich_group, effect_size (LR for LRT

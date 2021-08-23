@@ -7,7 +7,7 @@
 run_metagenomeseq(
   ps,
   group,
-  contrast,
+  contrast = NULL,
   taxa_rank = "all",
   transform = c("identity", "log10", "log10p"),
   norm = "CSS",
@@ -24,16 +24,14 @@ run_metagenomeseq(
 \item{group}{character, the variable to set the group, must be one of
 the var of the sample metadata.}
 
-\item{contrast}{a two length vector,  The order determines the direction of
-fold change, the first element is the numerator for the fold change, and
-the second element is used as baseline (denominator for fold change), this
-parameter only for two groups comparison.}
+\item{contrast}{this parameter only used for two groups comparison while
+there are multiple groups. For more please see the following details.}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
-differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
+differential analysis on. Should be one of \code{phyloseq::rank_names(ps)},
 or "all" means to summarize the taxa by the top taxa ranks
 (\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or "none" means perform
-differential analysis on the original taxa (\code{taxa_names(phyloseq)}, e.g.,
+differential analysis on the original taxa (\code{taxa_names(ps)}, e.g.,
 OTU or ASV).}
 
 \item{transform}{character, the methods used to transform the microbial
@@ -105,12 +103,23 @@ the abundance profiles before normalization.
 
 For \code{\link[metagenomeSeq:fitZig]{metagenomeSeq::fitZig()}}, the output column is the coefficient of
 interest, and logFC column in the output of
-\code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}} is anologous to coefficient. Thus,
+\code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}} is analogous to coefficient. Thus,
 logFC is really just the estimate the coefficient of interest in
 \code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}}. For more details see
 these question \href{https://support.bioconductor.org/p/94138/}{Difference between fitFeatureModel and fitZIG in metagenomeSeq}.
 
-Of note, \code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}} ae not allows for multiple
+\code{contrast} must be a two length character or \code{NULL} (default). It is only
+required to set manually for two groups comparison when there are multiple
+groups. The order determines the direction of comparison, the first element
+is used to specify the reference group (control). This means that, the first
+element is the denominator for the fold change, and the second element is
+used as baseline (numerator for fold change). Otherwise, users do required
+to concern this paramerter (set as default \code{NULL}), and if there are
+two groups, the first level of groups will set as the reference group; if
+there are multiple groups, it will perform an ANOVA-like testing to find
+markers which difference in any of the groups.
+
+Of note, \code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}} is not allows for multiple
 groups comparison.
 }
 \references{

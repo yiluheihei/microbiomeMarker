@@ -9,15 +9,15 @@ test_that("deseq2 algorithm", {
     print = TRUE
   )
 
-  expect_error(
-    run_deseq2(
-      pediatric_ibd,
-      "Class",
-      pvalue_cutoff = 0.05,
-      p_adjust = "fdr"
-    ),
-    "`contrast` is requried"
-  )
+  # expect_error(
+  #   run_deseq2(
+  #     pediatric_ibd,
+  #     "Class",
+  #     pvalue_cutoff = 0.05,
+  #     p_adjust = "fdr"
+  #   ),
+  #   "`contrast` is requried"
+  # )
 
   # # test for multiple groups comparison
   # ps_test <- phyloseq::subset_samples(

@@ -19,15 +19,13 @@
 #' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
 #' @param taxa_rank character to specify taxonomic rank to perform
-#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
+#'   differential analysis on. Should be one of `phyloseq::rank_names(ps)`,
 #'   or "all" means to summarize the taxa by the top taxa ranks
 #'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
-#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
+#'   differential analysis on the original taxa (`taxa_names(ps)`, e.g.,
 #'   OTU or ASV).
-#' @param contrast a two length vector,  The order determines the direction of
-#'   fold change, the first element is the numerator for the fold change, and
-#'   the second element is used as baseline (denominator for fold change), this
-#'   parameter only for two groups comparison.
+#' @param contrast this parameter only used for two groups comparison while
+#'   there are multiple groups. For more please see the following details.
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
@@ -80,12 +78,23 @@
 #'
 #' For [`metagenomeSeq::fitZig()`], the output column is the coefficient of
 #' interest, and logFC column in the output of
-#' [`metagenomeSeq::fitFeatureModel()`] is anologous to coefficient. Thus,
+#' [`metagenomeSeq::fitFeatureModel()`] is analogous to coefficient. Thus,
 #' logFC is really just the estimate the coefficient of interest in
 #' [`metagenomeSeq::fitFeatureModel()`]. For more details see
 #' these question [Difference between fitFeatureModel and fitZIG in metagenomeSeq](https://support.bioconductor.org/p/94138/).
 #'
-#' Of note, [`metagenomeSeq::fitFeatureModel()`] ae not allows for multiple
+#' `contrast` must be a two length character or `NULL` (default). It is only
+#' required to set manually for two groups comparison when there are multiple
+#' groups. The order determines the direction of comparison, the first element
+#' is used to specify the reference group (control). This means that, the first
+#' element is the denominator for the fold change, and the second element is
+#' used as baseline (numerator for fold change). Otherwise, users do required
+#' to concern this paramerter (set as default `NULL`), and if there are
+#' two groups, the first level of groups will set as the reference group; if
+#' there are multiple groups, it will perform an ANOVA-like testing to find
+#' markers which difference in any of the groups.
+#'
+#' Of note, [`metagenomeSeq::fitFeatureModel()`] is not allows for multiple
 #' groups comparison.
 #'
 #' @return  a [`microbiomeMarker-class`] object.
@@ -99,7 +108,7 @@
 #' marker-gene surveys." Nature methods 10.12 (2013): 1200-1202.
 run_metagenomeseq <- function(ps,
                               group,
-                              contrast,
+                              contrast = NULL,
                               taxa_rank = "all",
                               transform = c("identity", "log10", "log10p"),
                               norm = "CSS",
@@ -123,57 +132,31 @@ run_metagenomeseq <- function(ps,
   )
 
   # The levels must by syntactically valid names in R, makeContrast
-  if (!missing(contrast)) contrast <- make.names(contrast)
+  # if (!missing(contrast)) contrast <- make.names(contrast)
 
   groups <- sample_data(ps)[[group]]
   groups <- factor(groups)
   # The levels must by syntactically valid names in R, makeContrast
-  levels(groups) <- make.names(levels(groups))
-  n_lvl <- length(levels(groups))
+  # levels(groups) <- make.names(levels(groups))
+  lvl <- levels(groups)
+  n_lvl <- length(lvl)
 
   if (n_lvl > 2 && method == "ZILN") {
     stop(
-      "ZILN method do not allows for multiple groups comparison.",
+      "ZILN method do not allows for multiple groups comparison,\n",
+      "please try set method = `ZIG`",
       call. = FALSE
     )
   }
 
-  if (missing(contrast)) {
-    if (n_lvl == 2) {
-      stop("`contrast` is required for two groups comparison.", call. = FALSE)
-    }
-
-    if (method == "ZILN")
-    stop(
-      "ZILN method do not allows for multiple groups comparison.",
-      call. = FALSE
-    )
-  }
-
-  if (!missing(contrast)) {
-    if (n_lvl == 2) {
-      levels(groups) <- rev(contrast)
-    } else {
-      contrast_new <- limma::makeContrasts(
-        paste(contrast[1], "-", contrast[2]),
-        levels = levels(groups)
-      )
-      # add var scalingFactor
-      old_contrast_nms <- row.names(contrast_new)
-      contrast_new <- rbind(contrast_new, rep(0, ncol(contrast_new)))
-      row.names(contrast_new) <- c(old_contrast_nms, "scalingFactor")
-    }
-  } else {
-    if (n_lvl < 3) {
-      stop("`contrast` is required for two groups comparions.")
-    }
-    contrast_new <- create_contrast(groups)
-    # add var scalingFactor
+  contrast_new <- create_contrast(groups, contrast)
+  # When running fitZig by default there is an additional covariate added to
+  # the design matrix (scalingFactor), add var scalingFactor (set as zero)
+  if (n_lvl > 2) {
     old_contrast_nms <- row.names(contrast_new)
     contrast_new <- rbind(contrast_new, rep(0, ncol(contrast_new)))
     row.names(contrast_new) <- c(old_contrast_nms, "scalingFactor")
   }
-
 
   # preprocess phyloseq object
   ps <- preprocess_ps(ps)
@@ -219,8 +202,8 @@ run_metagenomeseq <- function(ps,
     sl = sl
   )
 
-  mod <- model.matrix(~groups)
-  colnames(mod) <- levels(groups)
+  mod <- model.matrix(~0+groups)
+  # colnames(mod) <- levels(groups)
 
 
   if (n_lvl == 2) {
@@ -248,7 +231,7 @@ run_metagenomeseq <- function(ps,
 
     # metagenomeSeq vignette: We recommend the user remove features based on the
     # number of estimated effective samples, please see
-    # calculateEffectiveSamples.We recommend removing features with less than
+    # calculateEffectiveSamples. We recommend removing features with less than
     # the average number of effective samples in all features. In essence,
     # setting eff = .5 when using MRcoefs, MRfulltable, or MRtable.
     res <- metagenomeSeq::MRcoefs(
@@ -263,38 +246,47 @@ run_metagenomeseq <- function(ps,
     # For fitZig, the output var is the coefficient of interest (effect size),
     # For fitFeaturemodel, logFC is anologous to coefficient of fitZig
     # (as logFC is really just the estimate the coefficient of interest).
-    ef_var <- ifelse(method == "ZILN", "logFC", contrast[1])
-    res$enrich_group <- ifelse(res[[ef_var]] > 0, contrast[1], contrast[2])
-
+    # Thus, we change the var of coefficent of interest to logFC for fitZig
+    # https://support.bioconductor.org/p/94138/
+    if (method == "ZIG") {
+      names(res)[2] <- "logFC"
+    }
+    ef_var <- "logFC"
+    res$enrich_group <- ifelse(res[[ef_var]] > 0, lvl[2], lvl[1])
   } else {
     fit <- metagenomeSeq::fitZig(mgs_summarized, mod, ...)
     zigfit <- slot(fit, "fit")
-    new_fit <- limma::contrasts.fit(zigfit, contrasts = contrast_new)
+    # warning: row names of contrasts don't match col names of coefficients
+    suppressWarnings(
+      new_fit <- limma::contrasts.fit(zigfit, contrasts = contrast_new)
+    )
     new_fit <- limma::eBayes(new_fit)
     res <- limma::topTable(
       new_fit,
       number = Inf,
       adjust.method = p_adjust,
-      p.value = pvalue_cutoff
     )
-    res <- dplyr::rename(res, pvalue = .data$P.Value, padj = .data$adj.P.Val)
-    # enrich_group
-    if (missing(contrast)) { # multiple groups comparison
-      n_pairs <- ncol(contrast_new)
-      contrasts_pairs <- colnames(contrast_new)
-      names(res)[1:n_pairs] <- contrasts_pairs
-      group_pairs <- strsplit(contrasts_pairs, "-")
-      logFCs <- res[, 1:n_pairs]
-      enrich_group <- apply(
-        logFCs,
-        1,
-        get_mgs_enrich_group,
-        group_pairs = group_pairs
-      )
+    res <- dplyr::filter(res, .data$adj.P.Val <= pvalue_cutoff) %>%
+      dplyr::rename(pvalue = .data$P.Value, padj = .data$adj.P.Val)
+
+    ef_var = ifelse(
+      is.matrix(contrast_new) && ncol(contrast_new) > 2,
+      "F", "logFC"
+    )
+
+    # enrich group
+    if (ef_var == "logFC") {
+      exp_lvl <- lvl[contrast_new == 1]
+      ref_lvl <- lvl[contrast_new == -1]
+      enrich_group <- ifelse(res$logFC > 0, exp_lvl, ref_lvl)
     } else {
-      enrich_group <- ifelse(res$logFC > 0, contrast[1], contrast[2])
+      coef <- zigfit$coefficients
+      enrich_group <- lvl[apply(coef[, 1:n_lvl], 1, which.max)]
+      # sort the enrich_group according to the DE of topTags
+      de_idx <- match(row.names(res), row.names(coef))
+      enrich_group <- enrich_group[de_idx]
     }
-    ef_var <- ifelse(missing(contrast), "F", "logFC")
+    # ef_var <- ifelse(is.matrix(contrast_new), "F", "logFC")
     res$enrich_group <- enrich_group
   }
 
