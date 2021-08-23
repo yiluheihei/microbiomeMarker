@@ -135,7 +135,7 @@
     <pre class="usage"><span class='fu'>run_limma_voom</span><span class='op'>(</span>
   <span class='va'>ps</span>,
   <span class='va'>group</span>,
-  <span class='va'>contrast</span>,
+  contrast <span class='op'>=</span> <span class='cn'>NULL</span>,
   taxa_rank <span class='op'>=</span> <span class='st'>"all"</span>,
   transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
   norm <span class='op'>=</span> <span class='st'>"none"</span>,
@@ -160,10 +160,8 @@ the var of the sample metadata.</p></td>
     </tr>
     <tr>
       <th>contrast</th>
-      <td><p>a two length vector,  The order determines the direction of
-fold change, the first element is the numerator for the fold change, and
-the second element is used as baseline (denominator for fold change), this
-parameter only for two groups comparison.</p></td>
+      <td><p>this parameter only used for two groups comparison while
+there are multiple groups. For more please see the following details.</p></td>
     </tr>
     <tr>
       <th>taxa_rank</th>
@@ -235,6 +233,18 @@ for more details see <a href='https://rdrr.io/r/stats/p.adjust.html'>stats::p.ad
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a <code><a href='microbiomeMarker-class.html'>microbiomeMarker</a></code> object.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>contrast</code> must be a two length character or <code>NULL</code> (default). It is only
+required to set manually for two groups comparison when there are multiple
+groups. The order determines the direction of comparison, the first element
+is used to specify the reference group (control). This means that, the first
+element is the denominator for the fold change, and the second element is
+used as baseline (numerator for fold change). Otherwise, users do required
+to concern this parameter (set as default <code>NULL</code>), and if there are
+two groups, the first level of groups will set as the reference group; if
+there are multiple groups, it will perform an ANOVA-like testing to find
+markers which difference in any of the groups.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Law, C. W., Chen, Y., Shi, W., &amp; Smyth, G. K. (2014).
