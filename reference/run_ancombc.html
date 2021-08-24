@@ -141,6 +141,7 @@ function is a wrapper of <code><a href='https://rdrr.io/pkg/ANCOMBC/man/ancombc.
   <span class='va'>ps</span>,
   <span class='va'>group</span>,
   <span class='va'>formula</span>,
+  contrast <span class='op'>=</span> <span class='cn'>NULL</span>,
   taxa_rank <span class='op'>=</span> <span class='st'>"all"</span>,
   transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
   norm <span class='op'>=</span> <span class='st'>"none"</span>,
@@ -174,6 +175,11 @@ global test.</p></td>
       <th>formula</th>
       <td><p>the character string expresses how the microbial absolute
 abundances for each taxon depend on the variables in metadata.</p></td>
+    </tr>
+    <tr>
+      <th>contrast</th>
+      <td><p>this parameter only used for two groups comparison while
+there are multiple groups. For more please see the following details.</p></td>
     </tr>
     <tr>
       <th>taxa_rank</th>
@@ -277,6 +283,18 @@ Default is FALSE.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>contrast</code> must be a two length character or <code>NULL</code> (default). It is only
+required to set manually for two groups comparison when there are multiple
+groups. The order determines the direction of comparison, the first element
+is used to specify the reference group (control). This means that, the first
+element is the denominator for the fold change, and the second element is
+used as baseline (numerator for fold change). Otherwise, users do required
+to concern this parameter (set as default <code>NULL</code>), and if there are
+two groups, the first level of groups will set as the reference group; if
+there are multiple groups, it will perform an ANOVA-like testing to find
+markers which difference in any of the groups.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Lin, Huang, and Shyamal Das Peddada. "Analysis of compositions of microbiomes
