@@ -9,6 +9,7 @@ run_ancombc(
   ps,
   group,
   formula,
+  contrast = NULL,
   taxa_rank = "all",
   transform = c("identity", "log10", "log10p"),
   norm = "none",
@@ -34,6 +35,9 @@ global test.}
 
 \item{formula}{the character string expresses how the microbial absolute
 abundances for each taxon depend on the variables in metadata.}
+
+\item{contrast}{this parameter only used for two groups comparison while
+there are multiple groups. For more please see the following details.}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
 differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
@@ -114,6 +118,18 @@ Default is FALSE.}
 \description{
 Differential abundance analysis for microbial absolute abundance data. This
 function is a wrapper of \code{\link[ANCOMBC:ancombc]{ANCOMBC::ancombc()}}.
+}
+\details{
+\code{contrast} must be a two length character or \code{NULL} (default). It is only
+required to set manually for two groups comparison when there are multiple
+groups. The order determines the direction of comparison, the first element
+is used to specify the reference group (control). This means that, the first
+element is the denominator for the fold change, and the second element is
+used as baseline (numerator for fold change). Otherwise, users do required
+to concern this parameter (set as default \code{NULL}), and if there are
+two groups, the first level of groups will set as the reference group; if
+there are multiple groups, it will perform an ANOVA-like testing to find
+markers which difference in any of the groups.
 }
 \references{
 Lin, Huang, and Shyamal Das Peddada. "Analysis of compositions of microbiomes

@@ -6,6 +6,11 @@
 #'
 #' @param ps  a [`phyloseq::phyloseq-class`] object, which consists of a feature
 #'   table, a sample metadata and a taxonomy table.
+#' @param group the name of the group variable in metadata. Specifying
+#'   `group` is required for detecting structural zeros and performing
+#'   global test.
+#' @param contrast this parameter only used for two groups comparison while
+#'   there are multiple groups. For more please see the following details.
 #' @param formula the character string expresses how the microbial absolute
 #'   abundances for each taxon depend on the variables in metadata.
 #' @param taxa_rank character to specify taxonomic rank to perform
@@ -54,9 +59,6 @@
 #' @param lib_cut a numerical threshold for filtering samples based on library
 #'   sizes. Samples with library sizes less than `lib_cut` will be excluded
 #'   in the analysis. Default is 0, i.e. do not filter any sample.
-#' @param group the name of the group variable in metadata. Specifying
-#'   `group` is required for detecting structural zeros and performing
-#'   global test.
 #' @param struc_zero whether to detect structural zeros. Default is FALSE.
 #' @param neg_lb whether to classify a taxon as a structural zero in the
 #'   corresponding study group using its asymptotic lower bound.
@@ -71,6 +73,18 @@
 #'   Default is FALSE.
 #' @param pvalue_cutoff level of significance. Default is 0.05.
 #'
+#' @details
+#' `contrast` must be a two length character or `NULL` (default). It is only
+#' required to set manually for two groups comparison when there are multiple
+#' groups. The order determines the direction of comparison, the first element
+#' is used to specify the reference group (control). This means that, the first
+#' element is the denominator for the fold change, and the second element is
+#' used as baseline (numerator for fold change). Otherwise, users do required
+#' to concern this parameter (set as default `NULL`), and if there are
+#' two groups, the first level of groups will set as the reference group; if
+#' there are multiple groups, it will perform an ANOVA-like testing to find
+#' markers which difference in any of the groups.
+#'
 #' @references
 #' Lin, Huang, and Shyamal Das Peddada. "Analysis of compositions of microbiomes
 #' with bias correction." Nature communications 11.1 (2020): 1-11.
@@ -78,10 +92,12 @@
 #' @seealso [`ANCOMBC::ancombc`]
 #'
 #' @importFrom ANCOMBC ancombc
+#' @importFrom stats relevel
 #' @export
 run_ancombc <- function(ps,
                         group,
                         formula,
+                        contrast = NULL,
                         taxa_rank = "all",
                         transform = c("identity", "log10", "log10p"),
                         norm = "none",
@@ -127,6 +143,22 @@ run_ancombc <- function(ps,
       "hochberg", "hommel", "BH", "BY")
   )
 
+  groups <- sample_data(ps)[[group]]
+  if (!is.factor(groups)) {
+    groups <- factor(groups)
+  }
+  lvl <- levels(groups)
+  n_lvl <- length(lvl)
+  # just for check the argument contrast, contrast_new is useless in ANCOMBC
+  contrast_new <- create_contrast(groups, contrast)
+
+  # set the reference level for pair-wise comparison from mutliple groups
+  if (!is.null(contrast) && n_lvl >2) {
+    groups <- relevel(groups, ref = contrast[1])
+    sample_data(ps)[[group]] <- groups
+  }
+
+
   # preprocess phyloseq object
   ps <- preprocess_ps(ps)
   ps <- transform_abundances(ps, transform = transform)
@@ -146,6 +178,7 @@ run_ancombc <- function(ps,
       extract_rank(taxa_rank)
   }
 
+  global <- ifelse(n_lvl > 2, TRUE, FALSE)
   # ancombc differential abundance analysis
   ancombc_out <- ANCOMBC::ancombc(
     ps_summarized,
@@ -160,36 +193,55 @@ run_ancombc <- function(ps,
     max_iter = max_iter,
     conserve = conserve,
     alpha = pvalue_cutoff,
-    global = TRUE
+    global = global
   )
-
-  groups <- sample_data(ps_summarized)[[group]]
-  n_group <- length(unique(groups))
 
   # multiple-group comparison will be performed while the group
   # variable has > 2 levels
-  if (n_group > 2) {
+  keep_var <- c("W", "p_val", "q_val", "diff_abn")
+  if (n_lvl > 2) {
     # ANCOM-BC global test to determine taxa that are differentially abundant
     # between three or more groups of multiple samples.
     # global result to marker_table
-    mtab <- ancombc_out$res_global
+    if (is.null(contrast)) {
+      mtab <- ancombc_out$res_global
+    } else {
+      exp_lvl <- paste0(group, contrast[2])
+      ancombc_res <- ancombc_out$res
+      mtab <- lapply(keep_var, function(x) ancombc_res[[x]][exp_lvl])
+      mtab <- do.call(cbind, mtab)
+    }
   } else {
     ancombc_out_res <- ancombc_out$res
     mtab <- do.call(
       cbind,
       ancombc_out_res[c("W", "p_val", "q_val", "diff_abn")]
     )
-    names(mtab) <- c("W", "p_val", "q_val", "diff_abn")
+  }
+  names(mtab) <- keep_var
+
+  # determine enrich group based on coefficients
+  cf <- ancombc_out$res$beta
+  if (n_lvl > 2) {
+    if (!is.null(contrast)) {
+      cf <- cf[exp_lvl]
+      enrich_group <- ifelse(cf[[1]] > 0, contrast[2], contrast[1])
+    } else {
+      cf <- cbind(0, cf)
+      enrich_group <- lvl[apply(cf, 1, which.max)]
+    }
+  } else {
+    enrich_group <- ifelse(cf[[1]] > 0, lvl[2], lvl[1])
   }
 
-  # enriched group
+  # # enriched group
   enrich_abd <- get_ancombc_enrich_group(ps_summarized, ancombc_out, group)
   norm_abd <- enrich_abd$abd
-  group_enrich <- enrich_abd$group_enrich
-  idx <- match(group_enrich$feature, rownames(mtab))
-  group_enrich <- group_enrich[idx, ]
+  # group_enrich <- enrich_abd$group_enrich
+  # idx <- match(group_enrich$feature, rownames(mtab))
+  # group_enrich <- group_enrich[idx, ]
 
-  mtab <- cbind(mtab, group_enrich)
+  mtab <- cbind(feature = row.names(mtab), mtab, enrich_group)
   mtab_sig <- mtab[mtab$diff_abn, ]
   mtab_sig <- mtab_sig[c("feature", "enrich_group", "W", "p_val", "q_val")]
   names(mtab_sig) <- c("feature", "enrich_group", "ef_W", "pvalue", "padj")

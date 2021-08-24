@@ -9,10 +9,28 @@
 # normalized values such as counts scaled by library size should not be used
 # as input.
 #
+# DESeq2 contrast: https://github.com/tavareshugo/tutorial_DESeq2_contrasts
+#
 # reference source code:
 # https://github.com/biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
 # https://github.com/hbctraining/DGE_workshop/blob/master/schedule/1.5-day.md
-
+#
+#
+## p value and logFC from LRT
+# From https://hbctraining.github.io/DGE_workshop/lessons/08_DGE_LRT.html
+# https://support.bioconductor.org/p/133804/#133856
+# By default the Wald test is used to generate the results table, but DESeq2
+# also offers the LRT which is used to identify any genes that show change in
+# expression across the different levels. The LRT is comparing the full model
+# to the reduced model to identify significant genes. The p-values are
+# determined solely by the difference in deviance between the ‘full’ and
+# "reduced" model formula (not log2 fold changes).
+#
+# The log2 fold change LRT results  is calculated using Wald (two groups
+# comparison).
+#
+#
+#
 #' Perform DESeq differential analysis
 #'
 #' Differential expression analysis based on the Negative Binomial distribution

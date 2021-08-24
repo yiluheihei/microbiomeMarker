@@ -321,24 +321,6 @@ mg_anova
 head(marker_table(mg_anova))
 ```
 
-The result of multiple group statistic from the above specified whether the 
-means of all groups is equal or not. To identify which pairs of groups may 
-differ from each other, post-hoc test must be performed.
-
-```{r post-hoc-test}
-pht <- run_posthoc_test(ps, group = "Enterotype")
-pht
-
-# 24 significantly differential genera
-markers <- marker_table(mg_anova)$feature
-markers
-
-# take a marker "p__Bacteroidetes|g__Bacteroides"  
-# for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from 
-# between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
-pht@result$"p__Bacteroidetes|g__Bacteroides"
-```
-
 Moreover, a wrapper of `run_test_two_groups()` and `run_test_multiple_groups()`
 named `run_simple_stat()` is provided for simple statistical differential 
 analysis.
@@ -357,19 +339,18 @@ Here we take edgeR method as an example.
 mm_edger <- run_edger(
   pediatric_ibd,
   group = "Class",
-  contrast = c("CD", "Control"),
   pvalue_cutoff = 0.1,
   p_adjust = "fdr"
 )
 mm_edger
 
 # multiple groups
-ps <- phyloseq::subset_samples(
+cid <- phyloseq::subset_samples(
   cid_ying,
   Consistency %in% c("formed stool", "liquid", "semi-formed")
 )
 mm_edger_mg <- run_edger(
-  ps,
+  cid,
   group = "Consistency",
   method  = "QLFT",
   pvalue_cutoff = 0.05,
@@ -434,6 +415,48 @@ marker_table(mm_rf)
 **Please note that SL methods can be biased for data with sample size due to 
 the model overfitting. Thus, we advise users to use these SL methods with 
 caution for a smaller dataset.**
+
+## Pair-wise comparison of multiple groups 
+
+All the DE methods in ***microbiomeMarker***, except for simple statistical 
+tests for two groups comparison (`test_mulitple_groups()`), can be used for
+multiple groups comparison, that is to find markers that differ between any of the groups by analyze all groups at once. Users can perform post-hoc test to 
+identify which pairs of groups may differ from each other using 
+`run_posthoc_test()`. Apparently, the mutliple groups comparison will result in
+a larger number of genes than the individual pair-wise comparisons.
+
+```{r post-hoc-test}
+pht <- run_posthoc_test(ps, group = "Enterotype")
+pht
+
+# 24 significantly differential genera
+markers <- marker_table(mg_anova)$feature
+markers
+
+# take a marker "p__Bacteroidetes|g__Bacteroides"  
+# for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from 
+# between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
+pht@result$"p__Bacteroidetes|g__Bacteroides"
+```
+
+In addition, for the five linear models-based methods, including edgeR, DESeq2, 
+metagenoSeq, limma-voom, and ANCOMBC, users can perform pair-wise comparisons by
+setting the argument `contrast`, a two length character in which the first 
+element is the reference level (donominator of the logFC) and the second element
+is used as baseline (numerator for fold change). For more details on `contrast` argument, please see the help page of the corresponding functions. Here we take
+limma-voom method as example:
+
+```{r pair-wise-linear}
+# comparison between Enterotype 3 and Enterotype 2
+mm_lv_pair <- run_limma_voom(
+  ps,
+  "Enterotype",
+  contrast = c("Enterotype 3", "Enterotype 2"),
+  pvalue_cutoff = 0.05,
+  p_adjust = "fdr"
+)
+
+```
 
 # Visualization
 
