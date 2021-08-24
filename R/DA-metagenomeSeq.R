@@ -135,9 +135,7 @@ run_metagenomeseq <- function(ps,
   # if (!missing(contrast)) contrast <- make.names(contrast)
 
   groups <- sample_data(ps)[[group]]
-  if (!is.factor(groups)) {
-    groups <- factor(groups)
-  }
+  groups <- factor(groups)
   # The levels must by syntactically valid names in R, makeContrast
   # levels(groups) <- make.names(levels(groups))
   lvl <- levels(groups)
@@ -204,7 +202,7 @@ run_metagenomeseq <- function(ps,
     sl = sl
   )
 
-  mod <- model.matrix(~groups) # ~1+groups
+  mod <- model.matrix(~0+groups)
   # colnames(mod) <- levels(groups)
 
 
@@ -282,12 +280,8 @@ run_metagenomeseq <- function(ps,
       ref_lvl <- lvl[contrast_new == -1]
       enrich_group <- ifelse(res$logFC > 0, exp_lvl, ref_lvl)
     } else {
-      cf <- zigfit$coefficients
-      # replace the first var (intercept) as 0 (reference level)
-      # and remove the extra var scalingFactor
-      cf <- cf[, 1:n_lvl]
-      cf[, 1] <- 0
-      enrich_group <- lvl[apply(cf, 1, which.max)]
+      coef <- zigfit$coefficients
+      enrich_group <- lvl[apply(coef[, 1:n_lvl], 1, which.max)]
       # sort the enrich_group according to the DE of topTags
       de_idx <- match(row.names(res), row.names(coef))
       enrich_group <- enrich_group[de_idx]
