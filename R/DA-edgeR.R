@@ -151,7 +151,7 @@ run_edger <- function(ps,
   }
 
   # estimate dispersion
-  design <- stats::model.matrix(~0+groups)
+  design <- stats::model.matrix(~groups)
   disp_para <- c(disp_para, y = list(dge_summarized), design = list(design))
   dge_summarized <- do.call(edgeR::estimateDisp, disp_para)
 
@@ -201,10 +201,12 @@ run_edger <- function(ps,
   # }
   if (n_lvl > 2) {
     if (is.null(contrast)) {
-      coef <- fit$coefficients
-      enrich_group <- lvl[apply(coef, 1, which.max)]
+      cf <- fit$coefficients
+      # replace the first var (intercept) as 0 (reference level)
+      cf[, 1] <- 0
+      enrich_group <- lvl[apply(cf, 1, which.max)]
       # sort the enrich_group according to the DE of topTags
-      de_idx <- match(row.names(res), row.names(coef))
+      de_idx <- match(row.names(res), row.names(cf))
       enrich_group <- enrich_group[de_idx]
     } else {
       enrich_group <- ifelse(res$logFC > 0, contrast[2], contrast[1])

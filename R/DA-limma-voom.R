@@ -130,7 +130,7 @@ run_limma_voom <- function(ps,
   #   stats::as.formula(paste("~", group)),
   #   data.frame(sample_meta)
   # )
-  design <- model.matrix(~0+groups)
+  design <- model.matrix(~groups)
 
   # library size
   nf <- get_norm_factors(ps_normed)
@@ -165,6 +165,8 @@ run_limma_voom <- function(ps,
     enrich_group <- ifelse(test_df$logFC > 0, exp_lvl, ref_lvl)
   } else {
     cf <- fit_out$coefficients
+    # replace intercept as 0 (reference level)
+    cf[, 1] <- 0
     enrich_idx <- apply(cf, 1, which.max)
     enrich_group <- lvl[enrich_idx]
     enrich_group <- enrich_group[match(row.names(test_df), row.names(cf))]
