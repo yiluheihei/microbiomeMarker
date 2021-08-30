@@ -21,3 +21,7 @@ This function convert \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} 
 \code{\link[edgeR:DGEList-class]{edgeR::DGEList}} object, can then can be used to perform
 differential analysis using the methods in \strong{edgeR}.
 }
+\examples{
+data(caporaso)
+dge <- phyloseq2edgeR(caporaso)
+}

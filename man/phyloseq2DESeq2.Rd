@@ -23,6 +23,10 @@ a \code{\link[DESeq2:DESeqDataSet]{DESeq2::DESeqDataSet}} object.
 \description{
 This function convert [phyloseq::phyloseq-class\verb{] to [}DESeq2::DESeqDataSet-class\verb{], which can then be tested using [}DESeq2::DESeq()`].
 }
+\examples{
+data(caporaso)
+phyloseq2DESeq2(caporaso, ~ SampleType)
+}
 \seealso{
 \code{\link[DESeq2:DESeqDataSet]{DESeq2::DESeqDataSetFromMatrix()}},\code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}
 }

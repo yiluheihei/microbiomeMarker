@@ -106,6 +106,13 @@
 #' @references
 #' Paulson, Joseph N., et al. "Differential abundance analysis for microbial
 #' marker-gene surveys." Nature methods 10.12 (2013): 1200-1202.
+#' @examples
+#' data(enterotypes_arumugam)
+#' ps <- phyloseq::subset_samples(
+#'   enterotypes_arumugam,
+#'   Enterotype %in% c("Enterotype 3", "Enterotype 2")
+#' )
+#' run_metagenomeseq(ps, group = "Enterotype")
 run_metagenomeseq <- function(ps,
                               group,
                               contrast = NULL,
@@ -281,7 +288,7 @@ run_metagenomeseq <- function(ps,
       enrich_group <- ifelse(res$logFC > 0, exp_lvl, ref_lvl)
     } else {
       coef <- zigfit$coefficients
-      enrich_group <- lvl[apply(coef[, 1:n_lvl], 1, which.max)]
+      enrich_group <- lvl[apply(coef[, seq_len(n_lvl)], 1, which.max)]
       # sort the enrich_group according to the DE of topTags
       de_idx <- match(row.names(res), row.names(coef))
       enrich_group <- enrich_group[de_idx]
@@ -353,6 +360,9 @@ run_metagenomeseq <- function(ps,
 #' @export
 #' @importFrom Biobase AnnotatedDataFrame
 #' @importMethodsFrom phyloseq t
+#' @examples
+#' data(caporaso)
+#' phyloseq2metagenomeSeq(caporaso)
 phyloseq2metagenomeSeq <- function(ps, ...) {
   # Enforce orientation. Samples are columns
   if (!taxa_are_rows(ps) ) {
@@ -405,7 +415,7 @@ phyloseq2metagenomeSeq <- function(ps, ...) {
 otu_table2metagenomeSeq <- function(ps, ...) {
   stopifnot(inherits(ps, "otu_table"))
   # create a sample data with only one var "sample": sam1, sam2
-  sdf <- sample_data(data.frame(sample = paste0("sam", 1:ncol(ps))))
+  sdf <- sample_data(data.frame(sample = paste0("sam", seq_len(ncol(ps)))))
   row.names(sdf) <- colnames(ps)
 
   ps <- phyloseq(

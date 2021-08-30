@@ -10,6 +10,20 @@
 #' @return  a [`ggplot2::ggplot`] object.
 #' @seealso [`run_sl()`]
 #' @export
+#' @examples
+#' data(enterotypes_arumugam)
+#' set.seed(2021)
+#' mm_rf <- run_sl(
+#'   enterotypes_arumugam,
+#'   group = "Gender",
+#'   taxa_rank = "Genus",
+#'   top_n = 8,
+#'   norm = "TSS",
+#'   method = "RF",
+#'   importance = "impurity"
+#' )
+#' plot_sl_roc(mm_rf, group = "Gender", importance = "impurity")
+#'
 plot_sl_roc <- function(mm,
                         group,
                         nfolds = 3,

@@ -122,6 +122,14 @@ markers which difference in any of the groups.
 Of note, \code{\link[metagenomeSeq:fitFeatureModel]{metagenomeSeq::fitFeatureModel()}} is not allows for multiple
 groups comparison.
 }
+\examples{
+data(enterotypes_arumugam)
+ps <- phyloseq::subset_samples(
+  enterotypes_arumugam,
+  Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
+)
+run_metagenomeseq(ps, group = "Enterotype")
+}
 \references{
 Paulson, Joseph N., et al. "Differential abundance analysis for microbial
 marker-gene surveys." Nature methods 10.12 (2013): 1200-1202.

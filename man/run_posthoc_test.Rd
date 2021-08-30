@@ -70,6 +70,15 @@ Multiple group test, such as anova and Kruskal-Wallis rank sum test, can be
 used to uncover the significant feature among all groups. Post hoc tests are
 used to uncover specific mean differences between pair of groups.
 }
+\examples{
+data(enterotypes_arumugam)
+ps <- phyloseq::subset_samples(
+  enterotypes_arumugam,
+  Enterotype \%in\% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+)
+pht <- run_posthoc_test(ps, group = "Enterotype")
+pht
+}
 \seealso{
 \linkS4class{postHocTest}, \code{\link[=run_test_multiple_groups]{run_test_multiple_groups()}}
 }

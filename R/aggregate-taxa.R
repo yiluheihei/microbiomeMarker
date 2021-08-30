@@ -13,7 +13,7 @@
 #' @return Summarized phyloseq object
 #' @examples
 #' data(caporaso)
-#' s <- aggregate_taxa(caporaso, 'Phylum')
+#' caporaso_phylum <- aggregate_taxa(caporaso, 'Phylum')
 #' @importFrom phyloseq taxa_are_rows<- merge_phyloseq
 #' @export
 #' @references See citation('microbiome')

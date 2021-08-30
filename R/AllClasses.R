@@ -73,6 +73,7 @@ setClassUnion("numericOrNULL", c("numeric", "NULL"))
 #' @slot diff_method character, method used for microbiome marker identification.
 #' @seealso [`phyloseq::phyloseq-class`], [`marker_table-class`], [summarize_taxa()]
 #' @exportClass microbiomeMarker
+#' @return a [`microbiomeMarker-class`] object.
 `microbiomeMarker-class` <- setClass("microbiomeMarker",
   slots = c(
     marker_table = "marker_tableOrNULL",
@@ -102,6 +103,29 @@ setClassUnion("numericOrNULL", c("numeric", "NULL"))
 #' @references [Is it bad practice to access S4 objects slots directly using @?](https://stackoverflow.com/questions/9900134/is-it-bad-practice-to-access-s4-objects-slots-directly-using/9900822#9900822)
 #' @name microbiomeMarker
 #' @export
+#' @return  a [`microbiomeMarker-class`] object.
+#' @examples
+#' microbiomeMarker(
+#'   marker_table = marker_table(data.frame(
+#'     feature = c("speciesA", "speciesB"),
+#'     enrich_group = c("groupA", "groupB"),
+#'     ef_logFC = c(-2, 2),
+#'     pvalue = c(0.01, 0.01),
+#'     padj = c(0.01, 0.01),
+#'     row.names = c("marker1", "marker2"))),
+#'  norm_method = "TSS",
+#'  diff_method = "DESeq2",
+#'  otu_table = otu_table(matrix(
+#'    c(4, 1, 1, 4), nrow = 2, byrow = TRUE,
+#'    dimnames = list(c("speciesA", "speciesB"), c("sample1", "sample2"))),
+#'    taxa_are_rows = TRUE),
+#'  tax_table = tax_table(matrix(
+#'    c("speciesA", "speciesB"), nrow = 2,
+#'    dimnames = list(c("speciesA", "speciesB"), "Species"))),
+#'  sam_data = sample_data(data.frame(
+#'    group = c("groupA", "groupB"),
+#'    row.names = c("sample1", "sample2")))
+#' )
 microbiomeMarker <- function(marker_table = NULL,
                              norm_method = NULL,
                              # norm_factor = NULL,
@@ -220,6 +244,7 @@ setValidity("microbiomeMarker", validity_microbiomeMarker)
 #' @author Yang Cao
 #' @exportClass postHocTest
 #' @importClassesFrom IRanges DataFrameList
+#' @return a [`postHocTest-class`] object.
 setClass("postHocTest",
   slots = c(
     result = "DataFrameList",

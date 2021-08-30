@@ -76,8 +76,23 @@ for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 which means no effect size filter. The eta squared is used to measure the
 effect size for anova/kruskal test.}
 }
+\value{
+a \code{\linkS4class{microbiomeMarker}} object.
+}
 \description{
 Statistical test for multiple groups
+}
+\examples{
+data(enterotypes_arumugam)
+ps <- phyloseq::subset_samples(
+  enterotypes_arumugam,
+  Enterotype \%in\% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+)
+mm_anova <-  run_test_multiple_groups(
+  ps,
+  group = "Enterotype",
+  method = "anova"
+)
 }
 \seealso{
 \code{\link[=run_posthoc_test]{run_posthoc_test()}},\code{\link[=run_test_two_groups]{run_test_two_groups()}},\code{\link[=run_simple_stat]{run_simple_stat()}}

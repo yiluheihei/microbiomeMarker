@@ -4,10 +4,20 @@
 #'
 #' This is the recommended function for both building and accessing microbiome
 #' marker table ([`marker_table-class`]).
-#' @param object an object among the set of classes difined by the
+#' @param object an object among the set of classes defined by the
 #' microbiomeMarker package that contain `marker_table`
 #' @export
 #' @rdname marker_table-methods
+#' @return a [`marker_table-class`] object.
+#' @examples
+#' mm <- run_limma_voom(
+#'   enterotypes_arumugam,
+#'   "Enterotype",
+#'   contrast = c("Enterotype 3", "Enterotype 2"),
+#'   pvalue_cutoff = 0.05,
+#'   p_adjust = "fdr"
+#' )
+#' marker_table(mm)
 setGeneric(
   "marker_table",
   function(object)standardGeneric("marker_table")
@@ -44,6 +54,19 @@ setMethod("marker_table", "microbiomeMarker", function(object) {
 #' @export
 #' @rdname assign-marker_table
 #' @aliases assign-marker_table marker_table<-
+#' @return a [`microbiomeMarker-class`] object.
+#' @examples
+#' mm <- run_limma_voom(
+#'   enterotypes_arumugam,
+#'   "Enterotype",
+#'   contrast = c("Enterotype 3", "Enterotype 2"),
+#'   pvalue_cutoff = 0.1,
+#'   p_adjust = "fdr"
+#' )
+#' mm_marker <- marker_table(mm)
+#' mm_marker
+#' marker_table(mm) <- mm_marker[1:2, ]
+#' marker_table(mm)
 "marker_table<-" <- function(object, value) {
   if (!inherits(value, "marker_table")) {
     value <- marker_table(value)
@@ -157,6 +180,16 @@ setMethod("show", "microbiomeMarker", function(object){
 #' @rdname nmarker-methods
 #' @return an integer, the number of microbiome markers
 #' @export
+#' @examples
+#' mt <- marker_table(data.frame(
+#'   feature = c("speciesA", "speciesB"),
+#'   enrich_group = c("groupA", "groupB"),
+#'   ef_logFC = c(-2, 2),
+#'   pvalue = c(0.01, 0.01),
+#'   padj = c(0.01, 0.01),
+#'   row.names = c("marker1", "marker2")
+#' ))
+#' nmarker(mt)
 setGeneric("nmarker", function(object) standardGeneric("nmarker"))
 
 #' @rdname nmarker-methods
@@ -170,30 +203,6 @@ setMethod("nmarker", "microbiomeMarker", function(object) {
 setMethod("nmarker", "marker_table", function(object) {
   nrow(object)
 })
-
-
-# get the number of classes for microbiome discorvery ---------------------
-
-#' Get the number of classes for microbiome discovery
-#' @inheritParams nmarker
-#' @docType methods
-#' @rdname nclass-methods
-#' @return an integer
-#' @export
-setGeneric("nclass", function(object) standardGeneric("nclass"))
-
-#' @rdname nclass-methods
-#' @aliases nclass,microbiomeMarker-method
-setMethod("nclass", "microbiomeMarker", function(object) {
-  length(unique(marker_table(object)$enrich_group))
-})
-
-#' @rdname nclass-methods
-#' @aliases nclass,marker_table-method
-setMethod("nclass", "marker_table", function(object) {
-  length(unique(object$enrich_group))
-})
-
 
 # postHocTest class -------------------------------------------------------
 #' @rdname postHocTest-class

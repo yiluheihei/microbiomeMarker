@@ -24,17 +24,17 @@ run_ancom(
 \item{group}{character, the variable to set the group.}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
-differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
-or "all" means to summarize the taxa by the top taxa ranks
-(\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or "none" means perform
-differential analysis on the original taxa (\code{taxa_names(phyloseq)}, e.g.,
-OTU or ASV).}
+differential analysis on. Should be one of
+\code{phyloseq::rank_names(phyloseq)}, or "all" means to summarize the taxa by
+the top taxa ranks (\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or
+"none" means perform differential analysis on the original taxa
+(\code{taxa_names(phyloseq)}, e.g., OTU or ASV).}
 
 \item{transform}{character, the methods used to transform the microbial
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
 options include:
 \itemize{
-\item "identity", return the original data without any transformation (default).
+\item "identity", return the original data without any transformation.
 \item "log10", the transformation is \code{log10(object)}, and if the data contains
 zeros the transformation is \code{log10(1 + object)}.
 \item "log10p", the transformation is \code{log10(1 + object)}.
@@ -51,9 +51,9 @@ data set.
 abundances were normalized by dividing the corresponding sample library
 size.
 \item "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
-The scaling factor is then derived using a weighted trimmed mean over the
-differences of the log-transformed gene-count fold-change between the
-sample and the reference.
+The scaling factor is then derived using a weighted trimmed mean over
+the differences of the log-transformed gene-count fold-change between
+the sample and the reference.
 \item "RLE", relative log expression, RLE uses a pseudo-reference calculated
 using the geometric mean of the gene-specific abundances over all
 samples. The scaling factors are then calculated as the median of the
@@ -74,7 +74,8 @@ for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 \item{pvalue_cutoff}{significance level for each of the statistical tests,
 default 0.05.}
 
-\item{W_cutoff}{lower bound for the proportion for the W-statistic, default 0.7.}
+\item{W_cutoff}{lower bound for the proportion for the W-statistic, default
+0.7.}
 
 \item{test}{character, the test to dtermine the p value of log ratio,
 one of "aov", "wilcox.test",  "kruskal.test".}
@@ -88,9 +89,9 @@ contains four variables:
 \item \code{feature}, significantly different features.
 \item \code{enrich_group}, the class of the differential features enriched.
 \item \code{effect_size}, differential means for two groups, or F statistic for more
-than two groups
-\item \code{W}, the W-statistic, number of features that a single feature is tested to
-be significantly different against.
+than two groups.
+\item \code{W}, the W-statistic, number of features that a single feature is tested
+to be significantly different against.
 }
 }
 \description{
@@ -110,6 +111,16 @@ The developers of this method recommend the following significance tests
 if there are 2 groups, use non-parametric Wilcoxon rank sum test
 \code{\link[stats:wilcox.test]{stats::wilcox.test()}}. If there are more than 2 groups, use nonparametric
 \code{\link[stats:kruskal.test]{stats::kruskal.test()}} or one-way ANOVA \code{\link[stats:aov]{stats::aov()}}.
+}
+\examples{
+\donttest{
+data(enterotypes_arumugam)
+ps <- phyloseq::subset_samples(
+  enterotypes_arumugam,
+  Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
+)
+run_ancom(ps, group = "Enterotype")
+}
 }
 \references{
 Mandal et al. "Analysis of composition of microbiomes: a novel

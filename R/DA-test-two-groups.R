@@ -55,6 +55,14 @@
 #' @author Yang Cao
 #' @return a [`microbiomeMarker-class`] object.
 #' @seealso [`run_test_multiple_groups()`],[`run_simple_stat`]
+#' @examples
+#' data(enterotypes_arumugam)
+#' mm_welch <- run_test_two_groups(
+#'   enterotypes_arumugam,
+#'   group = "Gender",
+#'   method = "welch.test"
+#' )
+#' mm_welch
 run_test_two_groups <- function(ps,
                               group,
                               taxa_rank = "all",
@@ -402,7 +410,7 @@ calc_permute_p <- function(norm_group1,
       one_side <- 0
       two_side <- 0
 
-      for (i in 1:nperm) {
+      for (i in seq_len(nperm)) {
         for (hf_index2 in high_freq_indices) {
           # one side
           if (cleaned_permuted_ttests[i, hf_index2] > t_statistic[hf_index]) {
@@ -530,7 +538,7 @@ calc_permute_ts <- function(norm_group1, norm_group2) {
    prop_group_permute <- prop_group[perm, ]
 
    calc_twosample_ts(
-     prop_group_permute[1:n1, ],
+     prop_group_permute[seq_len(n1), ],
      prop_group_permute[(n1 + 1):(n1 + n2), ]
    )
 }

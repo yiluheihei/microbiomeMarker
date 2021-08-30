@@ -17,6 +17,16 @@
 #' @export
 #' @rdname effect_size-plot
 #' @aliases ef-barplot,ef-dotplot
+#' @examples
+#' data(enterotypes_arumugam)
+#' mm <- run_limma_voom(
+#'   enterotypes_arumugam,
+#'   "Enterotype",
+#'   contrast = c("Enterotype 3", "Enterotype 2"),
+#'   pvalue_cutoff = 0.01,
+#'   p_adjust = "none"
+#' )
+#' plot_ef_bar(mm)
 plot_ef_bar <- function(mm,
                         label_level = 1,
                         max_label_len = 60,
@@ -70,12 +80,12 @@ plot_ef_dot <- function(mm,
   } else if (orig_ef_nm == "imp") {
     label_x <- "Importance score"
   } else if (orig_ef_nm == "LR") {
-    label_x <- "Likelhood ratio statistic"
+    label_x <- "Likelihood ratio statistic"
   } else if (orig_ef_nm == "F") {
     label_x <- "F statistic"
   } else {
     stop(
-      "The effect size must be one of lda, diff_mean, eat_squared, ",
+      "The effect size must be one of lda, diff_mean, eta_squared, ",
       "logFC, clr_diff_mean, clr_F_statistic, W, imp, LR or F"
     )
   }
@@ -181,8 +191,8 @@ get_feature_label <- function(feature,
     feature_level <- length(feature)
     feature <- ifelse(
       label_level > feature_level,
-      paste(rev(feature[1:feature_level]), collapse = sep),
-      paste(rev(feature[1:label_level]), collapse = sep)
+      paste(rev(feature[seq_len(feature_level)]), collapse = sep),
+      paste(rev(feature[seq_len(label_level)]), collapse = sep)
     )
   }
 
@@ -190,7 +200,7 @@ get_feature_label <- function(feature,
   if (feature_len > max_label_len) {
     feature_letters <- unlist(strsplit(feature, ""))
     feature <- paste(
-      paste(feature_letters[1:(max_label_len/2-2)], collapse = ""),
+      paste(feature_letters[seq_len(max_label_len/2-2)], collapse = ""),
       "..",
       paste(
         feature_letters[(feature_len - max_label_len/2 + 3):feature_len],

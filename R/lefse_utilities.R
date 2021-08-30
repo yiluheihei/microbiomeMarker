@@ -85,7 +85,8 @@ bootstap_lda <- function(feature_abundance,
                          class,
                          sample_fract,
                          seed = 2020) {
-  set.seed(seed)
+  # Bioconductor not allows set.seed
+  # set.seed(seed)
   ldas <- purrr::rerun(
     boot_n,
     bootstap_lda_one(
@@ -528,7 +529,7 @@ check_tax_prefix <- function(taxa_nms) {
 #   taxa_split <- strsplit(taxa_nms,,split = sep, fixed = TRUE)
 #   nms <- purrr::map_chr(
 #     taxa_split,
-#     ~ paste0(prefixes[1:length(.x)], .x) %>% paste(collapse = sep)
+#     ~ paste0(prefixes[seq_along(.x)], .x) %>% paste(collapse = sep)
 #   )
 #
 #   nms

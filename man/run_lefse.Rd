@@ -117,6 +117,17 @@ contains four variables:
 \description{
 Perform Metagenomic LEFSe analysis based on phyloseq object.
 }
+\examples{
+data(kostic_crc)
+mm_lefse <- run_lefse(
+  kostic_crc,
+  wilcoxon_cutoff = 0.01,
+  group = "DIAGNOSIS",
+  kw_cutoff = 0.01,
+  multigrp_strat = TRUE,
+  lda_cutoff = 4
+)
+}
 \references{
 Segata, Nicola, et al. Metagenomic biomarker discovery and
 explanation. Genome biology 12.6 (2011): R60.

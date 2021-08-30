@@ -34,26 +34,92 @@ test_that("feature label in bar plot", {
   )
 })
 
-p_lda <- plot_ef_bar(mm_lefse)
+mm <- microbiomeMarker(
+  marker_table = marker_table(data.frame(
+    feature = c("speciesA", "speciesB"),
+    enrich_group = c("groupA", "groupB"),
+    ef_logFC = c(-2, 2),
+    pvalue = c(0.01, 0.01),
+    padj = c(0.01, 0.01),
+    row.names = c("marker1", "marker2"))),
+ otu_table = otu_table(matrix(
+   c(4, 1, 1, 4), nrow = 2, byrow = TRUE,
+   dimnames = list(c("speciesA", "speciesB"), c("sample1", "sample2"))),
+   taxa_are_rows = TRUE),
+ tax_table = tax_table(matrix(
+   c("speciesA", "speciesB"), nrow = 2,
+   dimnames = list(c("speciesA", "speciesB"), "Species")))
+)
 
-test_that("label of x", {
+
+test_that("label of x, and effect size in descending order", {
+  # logFC, such as edgeR, DESeq2 for two groups comparison
+  p_logfc <- plot_ef_bar(mm)
+  expect_identical(p_logfc$labels$x, "log2 Fold Change")
+
+  # lefse - lda
+  mt <-  marker_table(data.frame(
+    feature = c("speciesA", "speciesB"),
+    enrich_group = c("groupA", "groupA"),
+    ef_lda = c(2, 3),
+    pvalue = c(0.01, 0.01),
+    padj = c(0.01, 0.01),
+    row.names = c("marker1", "marker2")
+  ))
+  marker_table(mm) <- mt
+  p_lda <- plot_ef_bar(mm)
   expect_identical(p_lda$labels$x, "LDA score (log10)")
+  # descending order
+  ef <- p_lda$data$effect_size
+  expect_true(all(diff(ef) >= 0))
 
-  p_diff_mean <- plot_ef_bar(mm_welch)
+  # two groups test, diff_mean
+  names(mt)[3] <- "ef_diff_mean"
+  marker_table(mm) <- mt
+  p_diff_mean <- plot_ef_bar(mm)
   expect_identical(p_diff_mean$labels$x, "Differential means")
 
-  p_eta_squared <- plot_ef_bar(mm_anova)
+  # multiple group
+  names(mt)[3] <- "ef_eta_squared"
+  marker_table(mm) <- mt
+  p_eta_squared <- plot_ef_bar(mm)
   expect_identical(p_eta_squared$labels$x, "Eta squared")
 
-  p_logfc <- plot_ef_bar(mm_des)
-  expect_identical(p_logfc$labels$x, "log2 Fold Change")
-})
+  # CLR diff mean
+  names(mt)[3] <- "ef_CLR_diff_mean"
+  marker_table(mm) <- mt
+  p_clr_diff <- plot_ef_bar(mm)
+  expect_identical(p_clr_diff$labels$x, "CLR differential means")
 
-test_that("effect size in descending order", {
-  ef <- p_lda$data$effect_size
-  ef1 <- ef[p_lda$data$enrich_group == "Healthy"]
-  ef2 <- ef[p_lda$data$enrich_group == "Tumor"]
-  expect_true(all(diff(ef1) >= 0))
-  expect_true(all(diff(ef2) >= 0))
+  # CLR F statistic
+  names(mt)[3] <- "ef_CLR_F_statistic"
+  marker_table(mm) <- mt
+  p_clr_f <- plot_ef_bar(mm)
+  expect_identical(p_clr_f$labels$x, "CLR F statistic")
+
+  # W statistic
+  names(mt)[3] <- "ef_W"
+  marker_table(mm) <- mt
+  p_w <- plot_ef_bar(mm)
+  expect_identical(p_w$labels$x, "W")
+
+  # importance
+  names(mt)[3] <- "ef_imp"
+  marker_table(mm) <- mt
+  p_imp <- plot_ef_bar(mm)
+  expect_identical(p_imp$labels$x, "Importance score")
+
+  # likelihood ratio statistic
+  names(mt)[3] <- "ef_LR"
+  marker_table(mm) <- mt
+  p_lr <- plot_ef_bar(mm)
+  expect_identical(p_lr$labels$x, "Likelihood ratio statistic")
+
+  # F statistic
+  names(mt)[3] <- "ef_F"
+  marker_table(mm) <- mt
+  p_f <- plot_ef_bar(mm)
+  expect_identical(p_f$labels$x, "F statistic")
+
 
 })

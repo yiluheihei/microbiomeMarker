@@ -115,6 +115,9 @@ used for size factor estimation (e.g. core taxa).}
 
 \item{Acutoff}{cutoff on "A" values to use before trimming}
 }
+\value{
+the same class with \code{object}.
+}
 \description{
 It is critical to normalize the feature table to eliminate any bias due to
 differences in the sampling sequencing depth.This function implements six
@@ -149,6 +152,10 @@ features.
 
 \code{norm_cpm}: This normalization method is from the original LEfSe algorithm,
 recommended when very low values are present (as shown in the LEfSe galaxy).
+}
+\examples{
+data(caporaso)
+normalize(caporaso, "TSS")
 }
 \seealso{
 \code{\link[edgeR:calcNormFactors]{edgeR::calcNormFactors()}},\code{\link[DESeq2:estimateSizeFactorsForMatrix]{DESeq2::estimateSizeFactorsForMatrix()}},

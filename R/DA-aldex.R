@@ -63,6 +63,13 @@
 #'   data analysis. Microbiome 2, 15 (2014).
 #' @seealso [`ALDEx2::aldex()`]
 #' @return a [`microbiomeMarker-class`] object.
+#' @examples
+#' data(enterotypes_arumugam)
+#' ps <- phyloseq::subset_samples(
+#'   enterotypes_arumugam,
+#'   Enterotype %in% c("Enterotype 3", "Enterotype 2")
+#' )
+#' run_aldex(ps, group = "Enterotype")
 run_aldex <- function(ps,
                       group,
                       taxa_rank = "all",
@@ -405,7 +412,7 @@ t_fast <- function(x, group, paired = FALSE){
     idx2 <- which(grp2)
     paired_order <- unlist(
       lapply(
-        1:length(idx1),
+        seq_along(idx1),
         function(i) c(idx1[i], idx2[i])
       )
     )

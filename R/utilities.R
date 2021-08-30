@@ -57,7 +57,7 @@ add_prefix_summarized <- function(ps, ranks_prefix, sep = "|") {
 
   tax_prefix <- purrr::map(
     tax_split,
-    ~ paste0(ranks_prefix[1:length(.x)], "__", .x) %>%
+    ~ paste0(ranks_prefix[seq_along(.x)], "__", .x) %>%
       paste0(collapse = sep))
   tax_prefix <- do.call(rbind, tax_prefix)
   # row.names(tax_prefix) <- tax_prefix
@@ -138,6 +138,7 @@ phyloseq_qc <- function(ps) {
 #' @param ps a [phyloseq::phyloseq-class] object
 #' @importMethodsFrom phyloseq t
 #' @keywords internal
+#' @noRd
 keep_taxa_in_rows <- function(ps) {
   if (!taxa_are_rows(ps)) {
     ps <- t(ps)
@@ -166,7 +167,7 @@ fix_duplicate_tax <- function(ps) {
 
   for(i in 2:ncol(tax)) {
     tax_uniq <-  unique(tax[, i])
-    for(j in 1:length(tax_uniq)) {
+    for(j in seq_along(tax_uniq)) {
       if(is.na(tax_uniq[j])) next
       ind <-  which(tax[, i] == as.character(tax_uniq[j]))
       if(length(unique(tax[ind, i - 1])) > 1) {

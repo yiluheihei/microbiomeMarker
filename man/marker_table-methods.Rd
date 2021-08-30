@@ -13,10 +13,23 @@ marker_table(object)
 \S4method{marker_table}{microbiomeMarker}(object)
 }
 \arguments{
-\item{object}{an object among the set of classes difined by the
+\item{object}{an object among the set of classes defined by the
 microbiomeMarker package that contain \code{marker_table}}
+}
+\value{
+a \code{\linkS4class{marker_table}} object.
 }
 \description{
 This is the recommended function for both building and accessing microbiome
 marker table (\code{\linkS4class{marker_table}}).
+}
+\examples{
+mm <- run_limma_voom(
+  enterotypes_arumugam,
+  "Enterotype",
+  contrast = c("Enterotype 3", "Enterotype 2"),
+  pvalue_cutoff = 0.05,
+  p_adjust = "fdr"
+)
+marker_table(mm)
 }

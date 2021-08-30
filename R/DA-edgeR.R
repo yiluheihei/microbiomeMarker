@@ -89,6 +89,13 @@
 #' Robinson, Mark D., Davis J. McCarthy, and Gordon K. Smyth. "edgeR: a
 #' Bioconductor package for differential expression analysis of digital
 #' gene expression data." Bioinformatics 26.1 (2010): 139-140.
+#' @examples
+#' data(enterotypes_arumugam)
+#' ps <- phyloseq::subset_samples(
+#'   enterotypes_arumugam,
+#'   Enterotype %in% c("Enterotype 3", "Enterotype 2")
+#' )
+#' run_edger(ps, group = "Enterotype")
 run_edger <- function(ps,
                       group,
                       contrast = NULL,
@@ -275,6 +282,9 @@ run_edger <- function(ps,
 #'   arguments here.
 #' @return A [`edgeR::DGEList-class`] object.
 #' @export
+#' @examples
+#' data(caporaso)
+#' dge <- phyloseq2edgeR(caporaso)
 phyloseq2edgeR <- function(ps, ...) {
   ps <- keep_taxa_in_rows(ps)
   abd <- as(otu_table(ps), "matrix")

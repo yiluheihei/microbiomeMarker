@@ -36,7 +36,6 @@ phylogenetic tree, representative sequence and sample metadata into
 phyloseq object.
 }
 \examples{
-\dontrun{
 otuqza_file <- system.file(
   "extdata", "table.qza",
   package = "microbiomeMarker"
@@ -58,5 +57,4 @@ ps <- import_qiime2(
   sam_tab = sample_file, tree_qza = treeqza_file
 )
 ps
-}
 }

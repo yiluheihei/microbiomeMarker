@@ -75,6 +75,19 @@
 #'
 #' @author Yang Cao
 #' @export
+#' @examples
+#' data(enterotypes_arumugam)
+#' set.seed(2021)
+#' mm_rf <- run_sl(
+#'   enterotypes_arumugam,
+#'   group = "Gender",
+#'   taxa_rank = "Genus",
+#'   top_n = 8,
+#'   norm = "TSS",
+#'   method = "RF",
+#'   importance = "impurity"
+#' )
+#' mm_rf
 run_sl <- function(ps,
                    group,
                    taxa_rank = "all",
@@ -207,7 +220,7 @@ run_sl <- function(ps,
     imp = imp_df[, 1]
   )
   imp_df <- imp_df[order(imp_df$imp, decreasing = TRUE), ]
-  marker <- imp_df[1:top_n, ]
+  marker <- imp_df[seq_len(top_n), ]
 
   # remove target variable
   counts_tab$y <- NULL

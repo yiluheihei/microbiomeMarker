@@ -1,15 +1,3 @@
-# lefse - lda
-mm_lefse <- run_lefse(
-  kostic_crc,
-  wilcoxon_cutoff = 0.01,
-  group = "DIAGNOSIS",
-  kw_cutoff = 0.01,
-  multigrp_strat = TRUE,
-  lda_cutoff = 4,
-)
-
-set.seed(2020)
-
 # two groups --------------------------------------------------------------
 
 # welch test - diff_mean

@@ -1,17 +1,26 @@
 Package: microbiomeMarker
 Title: microbiome biomarker analysis
-Version: 0.0.1.9000
+Version: 0.99.0
 Authors@R: 
     person(given = "Yang",
            family = "Cao",
            role = c("aut", "cre"),
            email = "caoyang.name@gmail.com")
-biocViews: Metagenomics, Microbiome, Sequencing, Software, DifferentialExpression
-Description: microbiome biomarker analysis.
+Description: To date, a number of methods have been developed for microbiome 
+    marker discovery based on metagenomic profiles, e.g. LEfSe. However, all of 
+    these methods have its own advantages and disadvantages, and none of them is 
+    considered standard or universal. Moreover, different programs or softwares 
+    may be development using different programming languages, even in different 
+    operating systems. Here, we have developed an all-in-one R package 
+    microbiomeMarker that integrates commonly used differential analysis 
+    methods as well as three machine learning-based approaches, including 
+    Logistic regression, Random forest, and Support vector machine, to 
+    facilitate the identification of microbiome markers.
 License: GPL-3
+biocViews: Metagenomics, Microbiome, DifferentialExpression
 URL: https://github.com/yiluheihei/microbiomeMarker
 BugReports: https://github.com/yiluheihei/microbiomeMarker/issues
-Depends: R (>= 2.10)
+Depends: R (>= 4.1.0)
 Imports: 
     dplyr,
     phyloseq,

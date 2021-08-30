@@ -61,6 +61,13 @@
 #' @return a [`microbiomeMarker-class`] object.
 #' @seealso [`run_test_two_groups()`],[`run_test_multiple_groups()`]
 #' @export
+#' @examples
+#' data(enterotypes_arumugam)
+#' ps <- phyloseq::subset_samples(
+#'   enterotypes_arumugam,
+#'   Enterotype %in% c("Enterotype 3", "Enterotype 2")
+#' )
+#' run_simple_stat(ps, group = "Enterotype")
 run_simple_stat <- function(ps,
                             group,
                             taxa_rank = "all",

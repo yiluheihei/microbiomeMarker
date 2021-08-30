@@ -103,6 +103,14 @@ a \code{\linkS4class{microbiomeMarker}} object.
 Perform simple statistical analysis of metagenomic profiles. This function
 is a wrapper of \code{run_test_two_groups} and \code{run_test_multiple_groups}.
 }
+\examples{
+data(enterotypes_arumugam)
+ps <- phyloseq::subset_samples(
+  enterotypes_arumugam,
+  Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
+)
+run_simple_stat(ps, group = "Enterotype")
+}
 \seealso{
 \code{\link[=run_test_two_groups]{run_test_two_groups()}},\code{\link[=run_test_multiple_groups]{run_test_multiple_groups()}}
 }

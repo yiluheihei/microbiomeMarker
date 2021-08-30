@@ -13,6 +13,9 @@
 #' @return a [`phyloseq::phyloseq-class`] object, where each row represents a
 #'   taxa, and each col represents the taxa abundance of each sample.
 #' @export
+#' @examples
+#' data(enterotypes_arumugam)
+#' summarize_taxa(enterotypes_arumugam)
 summarize_taxa <- function(ps,
                            level = rank_names(ps)[1],
                            absolute = TRUE,
@@ -105,7 +108,7 @@ extract_prefix <- function(ranks) {
 
   ranks <- setdiff(available_ranks, "Summarize")
   rank_level <- match(rank_name, ranks)
-  select_ranks <- intersect(ranks[1:rank_level], rank_names(ps))
+  select_ranks <- intersect(ranks[seq_len(rank_level)], rank_names(ps))
 
   consensus <- taxas[, select_ranks]  %>%
     purrr::pmap_chr(paste, sep = sep)

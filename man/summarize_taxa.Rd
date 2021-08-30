@@ -26,3 +26,7 @@ taxa, and each col represents the taxa abundance of each sample.
 Provides summary information of the representation of a taxonomic levels
 within each sample.
 }
+\examples{
+data(enterotypes_arumugam)
+summarize_taxa(enterotypes_arumugam)
+}

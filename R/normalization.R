@@ -35,6 +35,10 @@
 #' @exportMethod normalize
 #' @aliases normalize,phyloseq-method
 #' @rdname normalize-methods
+#' @return the same class with `object`.
+#' @examples
+#' data(caporaso)
+#' normalize(caporaso, "TSS")
 setMethod("normalize", "phyloseq",
   function(object,
            method = "TSS",
@@ -500,9 +504,9 @@ set_nf <- function(object, nf) {
 #'
 #' @param object a [`phyloseq::phyloseq-class`], [phyloseq::otu_table-class]
 #'   object.
-#' @export
 #' @return a numeric vector with the length equal to the number of samples, or
 #'  `NULL` if the `object` has not been normalized.
+#' @noRd
 get_norm_factors <- function(object) {
   if (inherits(object, "phyloseq")) {
     nf <- sample_data(object)$norm_factor

@@ -94,6 +94,15 @@ a \code{\linkS4class{microbiomeMarker}} object.
 \description{
 Statistical test between two groups
 }
+\examples{
+data(enterotypes_arumugam)
+mm_welch <- run_test_two_groups(
+  enterotypes_arumugam,
+  group = "Gender",
+  method = "welch.test"
+)
+mm_welch
+}
 \seealso{
 \code{\link[=run_test_multiple_groups]{run_test_multiple_groups()}},\code{\link{run_simple_stat}}
 }

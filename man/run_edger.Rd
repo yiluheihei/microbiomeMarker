@@ -115,6 +115,14 @@ two groups, the first level of groups will set as the reference group; if
 there are multiple groups, it will perform an ANOVA-like testing to find
 markers which difference in any of the groups.
 }
+\examples{
+data(enterotypes_arumugam)
+ps <- phyloseq::subset_samples(
+  enterotypes_arumugam,
+  Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
+)
+run_edger(ps, group = "Enterotype")
+}
 \references{
 Robinson, Mark D., and Alicia Oshlack. "A scaling normalization method for
 differential expression analysis of RNA-seq data." Genome biology 11.3

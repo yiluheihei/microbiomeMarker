@@ -20,6 +20,9 @@
 \item{value}{\code{\linkS4class{otu_table}}, \code{\linkS4class{phyloseq}},
 or \code{\linkS4class{microbiomeMarker}}}
 }
+\value{
+a \code{\linkS4class{microbiomeMarker}} object.
+}
 \description{
 Assign a new OTU table in microbiomeMarker object
 }

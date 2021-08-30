@@ -7,6 +7,16 @@
 #' @param ... the subsetting expression passed to [`base::subset()`].
 #' @return a subset object in the same class with `mm`.
 #' @export
+#' @examples
+#' data(enterotypes_arumugam)
+#' mm <- run_limma_voom(
+#'   enterotypes_arumugam,
+#'   "Enterotype",
+#'   contrast = c("Enterotype 3", "Enterotype 2"),
+#'   pvalue_cutoff = 0.01,
+#'   p_adjust = "none"
+#' )
+#' subset_marker(mm, enrich_group == "Enterotype 3")
 subset_marker <- function(mm, ...) {
   if (is.null(marker_table(mm))) {
     warning("No marker_table in `mm`")

@@ -5,6 +5,16 @@
 #' @return a [`ggplot2::ggplot`] object.
 #' @importFrom ggplot2 ggplot aes geom_boxplot theme_bw element_text
 #' @export
+#' @examples
+#' data(enterotypes_arumugam)
+#' mm <- run_limma_voom(
+#'   enterotypes_arumugam,
+#'   "Enterotype",
+#'   contrast = c("Enterotype 3", "Enterotype 2"),
+#'   pvalue_cutoff = 0.01,
+#'   p_adjust = "none"
+#' )
+#' plot_abundance(mm, group = "Enterotype")
 plot_abundance <- function(mm,
                            label_level = 1,
                            max_label_len = 60,

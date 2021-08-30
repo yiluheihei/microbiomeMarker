@@ -11,6 +11,14 @@
 #' @importFrom dplyr filter
 #' @importFrom ggplot2 ggplot aes labs geom_errorbar geom_point geom_boxplot
 #' @export
+#' @examples
+#' data(enterotypes_arumugam)
+#' ps <- phyloseq::subset_samples(
+#'   enterotypes_arumugam,
+#'   Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+#' )
+#' pht <- run_posthoc_test(ps, group = "Enterotype")
+#' plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
 plot_postHocTest <- function(pht,
                              feature,
                              step_increase = 0.12
@@ -103,7 +111,7 @@ get_sig_annotation_single <- function(abd,
   start <- purrr::map_chr(comps, 1)
   end <- purrr::map_chr(comps, 2)
   y_max <- purrr::map2_dbl(start, end, ~ max(y_max[.x], y_max[.y]))
-  y_pos <- purrr::map_dbl(1:3,  ~ y_max[.x] + y_range * step_increase *(.x - 1))
+  y_pos <- purrr::map_dbl(seq_len(3),  ~ y_max[.x] + y_range * step_increase *(.x - 1))
 
   annotate_df <- data.frame(
     xmin = start,

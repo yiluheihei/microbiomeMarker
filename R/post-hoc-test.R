@@ -47,6 +47,14 @@
 #' @importFrom IRanges DataFrameList
 #' @importFrom dplyr mutate
 #' @export
+#' @examples
+#' data(enterotypes_arumugam)
+#' ps <- phyloseq::subset_samples(
+#'   enterotypes_arumugam,
+#'   Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+#' )
+#' pht <- run_posthoc_test(ps, group = "Enterotype")
+#' pht
 run_posthoc_test <- function(ps,
                           group,
                           transform = c("identity", "log10", "log10p"),
@@ -315,7 +323,7 @@ calc_scheffe_test<- function(obs, groups, conf_level=0.95){
 Contrasts <- function (levs) {
   k = length(levs)
   M = data.frame(levs = levs)
-  for (i in 1:(k - 1)) {
+  for (i in seq_len(k - 1)) {
     for (j in (i + 1):k) {
       con = rep(0, k)
       con[i] = -1

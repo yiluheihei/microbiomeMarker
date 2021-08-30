@@ -249,7 +249,7 @@ in the DA functions rather than using these normalization functions directly.
 If you use normalize data first and then perform DA, you should set the 
 `norm_method` manually. We recommend to use the default normalization methods 
 for the corresponding DA methods, e.g. "CPM" for LEfSe and "CSS" for 
-metagenomeSeq, and the default values of `norm` in the DA functions is set
+metagenomeSeq, and the default values of `norm` in the DA functions is set as
 their default normalization methods.
 
 ```{r norm-note,eval=FALSE}
@@ -271,7 +271,6 @@ mm_test <- normalize(kostic_crc, method = "CPM") %>%
     multigrp_strat = TRUE,
     lda_cutoff = 4
   )
-mm_test@norm_method <- "CPM"
 ```
 
 ## Simple statitical tests {#simple-stat}
@@ -455,7 +454,8 @@ mm_lv_pair <- run_limma_voom(
   pvalue_cutoff = 0.05,
   p_adjust = "fdr"
 )
-
+mm_lv_pair
+marker_table(mm_lv_pair)
 ```
 
 # Visualization

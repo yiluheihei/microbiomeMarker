@@ -48,9 +48,24 @@ the heatmap, default \code{FALSE}.}
 
 \item{...}{extra arguments passed to \code{\link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap()}}.}
 }
+\value{
+a \code{\link[ComplexHeatmap:Heatmap-class]{ComplexHeatmap::Heatmap}} object.
+}
 \description{
 Display the microbiome marker using heatmap, in which rows represents the
 marker and columns represents the samples.
+}
+\examples{
+data(kostic_crc)
+mm_lefse <- run_lefse(
+  kostic_crc,
+  wilcoxon_cutoff = 0.01,
+  group = "DIAGNOSIS",
+  kw_cutoff = 0.01,
+  multigrp_strat = TRUE,
+  lda_cutoff = 4
+)
+plot_heatmap(mm_lefse, group = "DIAGNOSIS")
 }
 \seealso{
 \code{\link{transform_abundances}},\code{\link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap()}}

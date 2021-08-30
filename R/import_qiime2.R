@@ -20,7 +20,6 @@
 #' @export
 #' @return [`phyloseq::phyloseq-class`] object.
 #' @examples
-#' \dontrun{
 #' otuqza_file <- system.file(
 #'   "extdata", "table.qza",
 #'   package = "microbiomeMarker"
@@ -42,7 +41,6 @@
 #'   sam_tab = sample_file, tree_qza = treeqza_file
 #' )
 #' ps
-#' }
 import_qiime2 <- function(otu_qza,
                           taxa_qza = NULL,
                           sam_tab = NULL,
@@ -121,7 +119,7 @@ import_qiime2 <- function(otu_qza,
 #'   [`phyloseq::taxonomyTable-class`] object for taxonomic table,
 #'   [`ape::phylo`] object for phylogenetic tree,
 #'   [`Biostrings::DNAStringSet-class`] for representative sequences of taxa.
-#' @export
+#' @noRd
 read_qza <- function(file, temp = tempdir()) {
   unzipped_file <- utils::unzip(file, exdir = temp)
   meta_file <- grep("metadata.yaml", unzipped_file, value = TRUE)
@@ -158,7 +156,7 @@ read_qza <- function(file, temp = tempdir()) {
 #' @param file character, file name of the biom file.
 #' @importFrom biomformat read_biom biom_data
 #' @return [`phyloseq::otu_table-class`] object.
-#' @export
+#' @noRd
 read_q2biom <- function(file) {
   biomobj <- suppressWarnings(read_biom(file))
   feature_tab <- as(biom_data(biomobj),"matrix")
@@ -168,6 +166,7 @@ read_q2biom <- function(file) {
 
 #' Read qiime2 taxa file
 #' @keywords internal
+#' @noRd
 read_q2taxa <- function(file) {
   taxa <- utils::read.table(file, sep = '\t', header = TRUE)
   if ("Confidence" %in% names(taxa)) {
@@ -179,12 +178,14 @@ read_q2taxa <- function(file) {
 
 #' Read qiime2 sample meta data file
 #' @keywords internal
+#' @noRd
 read_q2sample_meta <- function(file) {
   phyloseq::import_qiime_sample_data(file)
 }
 
 #' Subset taxa according to the taxa in feature table
 #' @keywords internal
+#' @noRd
 subset_taxa_in_feature <- function(taxa_tab, feature_tab) {
   idx <- match(row.names(feature_tab), taxa_tab[, "Feature.ID"])
   taxa_tab <- taxa_tab[idx, , drop = FALSE]
@@ -229,6 +230,7 @@ parse_q2taxonomy <- function(taxa, sep = "; |;", trim_rank_prefix = TRUE) {
 #' check the row.names of feature table is DNA sequence or not
 #' This function is from https://github.com/YuLab-SMU/MicrobiotaProcess/blob/master/R/import_qiime2.R#L169-L177
 #' @keywords internal
+#' @noRd
 is_dna_seq <- function(names){
   x <- unlist(strsplit(toupper(names[1]), split = ""))
   freq <- mean(x %in% c("A", "G","T","C", "N", "X", "-"))

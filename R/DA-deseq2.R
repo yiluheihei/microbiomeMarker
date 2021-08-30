@@ -142,6 +142,13 @@
 #' Love, Michael I., Wolfgang Huber, and Simon Anders. "Moderated estimation
 #' of fold change and dispersion for RNA-seq data with DESeq2." Genome
 #' biology 15.12 (2014): 1-21.
+#' @examples
+#' data(enterotypes_arumugam)
+#' ps <- phyloseq::subset_samples(
+#'   enterotypes_arumugam,
+#'   Enterotype %in% c("Enterotype 3", "Enterotype 2")
+#' )
+#' run_deseq2(ps, group = "Enterotype")
 run_deseq2 <- function(ps,
                       group,
                       contrast = NULL,
@@ -416,7 +423,7 @@ run_deseq2 <- function(ps,
       FUN.VALUE = 0.0,
       group = groups
     )
-    res$F <- f_stat
+    res[["F"]] <- f_stat
   }
 
   res <- data.frame(res)
@@ -491,6 +498,9 @@ run_deseq2 <- function(ps,
 #' @export
 #' @return a [`DESeq2::DESeqDataSet-class`] object.
 #' @seealso [`DESeq2::DESeqDataSetFromMatrix()`],[`DESeq2::DESeq()`]
+#' @examples
+#' data(caporaso)
+#' phyloseq2DESeq2(caporaso, ~ SampleType)
 phyloseq2DESeq2 <- function(ps, design, ...) {
   stopifnot(inherits(ps, "phyloseq"))
   ps <- keep_taxa_in_rows(ps)

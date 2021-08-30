@@ -17,6 +17,21 @@ a \code{\link[ggplot2:ggplot]{ggplot2::ggplot}} object.
 \description{
 Show the ROC curve of the microbiome marker calculated by \code{run_sl}.
 }
+\examples{
+data(enterotypes_arumugam)
+set.seed(2021)
+mm_rf <- run_sl(
+  enterotypes_arumugam,
+  group = "Gender",
+  taxa_rank = "Genus",
+  top_n = 8,
+  norm = "TSS",
+  method = "RF",
+  importance = "impurity"
+)
+plot_sl_roc(mm_rf, group = "Gender", importance = "impurity")
+
+}
 \seealso{
 \code{\link[=run_sl]{run_sl()}}
 }

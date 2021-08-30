@@ -11,6 +11,9 @@
 \arguments{
 \item{object}{a \code{microbiomeMarker-class} object}
 }
+\value{
+a \code{\linkS4class{microbiomeMarker}} object.
+}
 \description{
 \code{microbiomeMarker-class} is inherited from the \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}
 by adding a custom slot \code{microbiome_marker} to save the differential analysis

@@ -14,6 +14,9 @@ multiple groups}
 \arguments{
 \item{object}{a \code{postHocTest-class} object}
 }
+\value{
+a \code{\linkS4class{postHocTest}} object.
+}
 \description{
 The postHocTest Class, represents the result of post-hoc test result among
 multiple groups

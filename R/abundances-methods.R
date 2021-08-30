@@ -4,7 +4,8 @@
 #'
 #' Extract taxa abundances from phyloseq objects.
 #'
-#' @param object [`otu_table-class`], [`phyloseq-class`], or [`microbiomeMarker-class`].
+#' @param object [`otu_table-class`], [`phyloseq-class`], or
+#'   [`microbiomeMarker-class`].
 #' @param transform transformation to apply, the options inclulde:
 #' * "identity", return the original data without any transformation.
 #' * "log10", the transformation is `log10(object)`, and if the data contains
@@ -19,10 +20,8 @@
 #' @rdname abundances-methods
 #' @export
 #' @examples
-#' \dontrun{
-#' data(oxygen)
-#' abundances(oxygen)
-#' }
+#' data(caporaso)
+#' abd <- abundances(caporaso)
 setGeneric("abundances",
   function(object,
            transform = c("identity", "log10", "log10p"),

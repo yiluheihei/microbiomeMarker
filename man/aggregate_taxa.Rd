@@ -28,7 +28,7 @@ phyloseq object with the summarized abundances.
 }
 \examples{
 data(caporaso)
-s <- aggregate_taxa(caporaso, 'Phylum')
+caporaso_phylum <- aggregate_taxa(caporaso, 'Phylum')
 }
 \references{
 See citation('microbiome')

@@ -48,6 +48,18 @@
 #' @importFrom stats p.adjust
 #' @seealso [run_posthoc_test()],[`run_test_two_groups()`],[`run_simple_stat()`]
 #' @export
+#' @return a [`microbiomeMarker-class`] object.
+#' @examples
+#' data(enterotypes_arumugam)
+#' ps <- phyloseq::subset_samples(
+#'   enterotypes_arumugam,
+#'   Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+#' )
+#' mm_anova <-  run_test_multiple_groups(
+#'   ps,
+#'   group = "Enterotype",
+#'   method = "anova"
+#' )
 run_test_multiple_groups <- function(ps,
                                   group,
                                   taxa_rank = "all",

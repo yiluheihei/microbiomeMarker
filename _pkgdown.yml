@@ -50,10 +50,6 @@ reference:
   - title: Miscellaneous
     contents:
       - aggregate_taxa
-      - starts_with("read")
-      - set_marker_annotation
       - subset_marker
       - summarize_taxa
-      - get_norm_factors
-      - get_treedata_phyloseq
-      - '['
+

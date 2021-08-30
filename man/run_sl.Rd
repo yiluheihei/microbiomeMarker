@@ -111,6 +111,20 @@ importance score. There is no rule or principle on how to select \code{top_n},
 however, usually it is very useful to try a different \code{top_n} and compare
 the performance of the marker predictions for the testing data.
 }
+\examples{
+data(enterotypes_arumugam)
+set.seed(2021)
+mm_rf <- run_sl(
+  enterotypes_arumugam,
+  group = "Gender",
+  taxa_rank = "Genus",
+  top_n = 8,
+  norm = "TSS",
+  method = "RF",
+  importance = "impurity"
+)
+mm_rf
+}
 \seealso{
 \code{\link[caret:train]{caret::train()}},\code{\link[caret:trainControl]{caret::trainControl()}}
 }

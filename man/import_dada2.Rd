@@ -43,7 +43,6 @@ OTU table. Conveniently, taxa names are saved as ASV1, ASV2, ..., in the
 returned phyloseq object.
 }
 \examples{
-\dontrun{
 seq_tab <- readRDS(system.file("extdata", "dada2_seqtab.rds",
   package= "microbiomeMarker"))
 tax_tab <- readRDS(system.file("extdata", "dada2_taxtab.rds",
@@ -52,6 +51,4 @@ sam_tab <- read.table(system.file("extdata", "dada2_samdata.txt",
  package= "microbiomeMarker"), sep = "\t", header = TRUE, row.names = 1)
 ps <- import_dada2(seq_tab = seq_tab, tax_tab = tax_tab, sam_tab = sam_tab)
 ps
-}
-
 }

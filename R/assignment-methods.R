@@ -8,6 +8,7 @@
 #' @name assign-otu_table
 #' @importMethodsFrom phyloseq otu_table<-
 #' @importClassesFrom phyloseq otu_table
+#' @return a [`microbiomeMarker-class`] object.
 NULL
 
 #' @rdname assign-otu_table

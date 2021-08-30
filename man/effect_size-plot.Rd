@@ -30,3 +30,14 @@ bar and dot plot of effect size microbiomeMarker data. This function returns
 a \code{ggplot2} object that can be saved or further customized using \strong{ggplot2}
 package.
 }
+\examples{
+data(enterotypes_arumugam)
+mm <- run_limma_voom(
+  enterotypes_arumugam,
+  "Enterotype",
+  contrast = c("Enterotype 3", "Enterotype 2"),
+  pvalue_cutoff = 0.01,
+  p_adjust = "none"
+)
+plot_ef_bar(mm)
+}

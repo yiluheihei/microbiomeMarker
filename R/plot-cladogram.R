@@ -28,10 +28,21 @@
 #' guide_legend aes_ scale_shape_manual
 #' @importFrom ggtree ggtree geom_hilight geom_point2 geom_cladelabel
 #' @author Chenhao Li, Guangchuang Yu, Chenghao Zhu, Yang Cao
-#' @seealso [ggtree::ggtree()], [set_marker_annotation()]
+#' @seealso [ggtree::ggtree()]
 #' @export
 #' @references This function is modified from `clada.anno` from microbiomeViz.
-#' \url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}
+#' \url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}i
+#' @examples
+#' data(kostic_crc)
+#' mm_lefse <- run_lefse(
+#'   kostic_crc,
+#'   wilcoxon_cutoff = 0.01,
+#'   group = "DIAGNOSIS",
+#'   kw_cutoff = 0.01,
+#'   multigrp_strat = TRUE,
+#'   lda_cutoff = 4
+#' )
+#' plot_cladogram(mm_lefse, color = c("darkgreen", "red"))
 plot_cladogram <- function(mm,
                             color,
                             branch_size = 0.2,
@@ -154,10 +165,11 @@ plot_cladogram <- function(mm,
 
 #' Get short label id
 #' @keywords internal
+#' @noRd
 get_short_label_id <- function(clade_label, clade_label_level) {
   ind <- clade_label$level < clade_label_level
   unique_id <- get_unique_id(sum(ind))
-  short_label <- unique_id[1:sum(ind)]
+  short_label <- unique_id[seq_len(sum(ind))]
 
   short_label
 }
@@ -165,13 +177,14 @@ get_short_label_id <- function(clade_label, clade_label_level) {
 #' Get unique id for short label annotation
 #' @references https://stackoverflow.com/questions/21681785/repeating-vector-of-letters/21689613#21689613
 #' @keywords internal
+#' @noRd
 get_unique_id <- function(n, depth =  1) {
-  args <- lapply(1:depth, FUN = function(x) letters)
-  x <- do.call(expand.grid, args = list(args, stringsAsFactors = F))
+  args <- lapply(seq_len(depth), FUN = function(x) letters)
+  x <- do.call(expand.grid, args = list(args, stringsAsFactors = FALSE))
   x <- x[, rev(names(x)), drop = FALSE]
   x <- do.call(paste0, x)
   if (n <= length(x)) {
-    return(x[1:n])
+    return(x[seq_len(n)])
   }
 
   return(c(x, get_unique_id(n - length(x), depth = depth + 1)))
@@ -255,7 +268,7 @@ get_treedata_phyloseq <- function(ps, sep = "|") {
   ## tips comes first ?
   is_tip <- !nodes %in% nodes_parent
   index <- vector("integer", length(is_tip))
-  index[is_tip] <- 1:sum(is_tip)
+  index[is_tip] <- seq_len(sum(is_tip))
   index[!is_tip] <- (sum(is_tip)+1):length(is_tip)
 
   edges <- cbind(
@@ -382,7 +395,7 @@ get_angle <- function(tree, node){
 #' @seealso [ggplot2::guide_legend()]
 #' @return an updated `ggtree` object
 #' @importFrom ggplot2 geom_point aes_ scale_shape_manual guides guide_legend
-#' @export
+#' @noRd
 set_marker_annotation <- function(p,
                                   color,
                                   label,

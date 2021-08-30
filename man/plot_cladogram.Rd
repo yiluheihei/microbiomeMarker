@@ -54,12 +54,24 @@ a ggtree object
 \description{
 plot cladogram of micobiomeMaker results
 }
+\examples{
+data(kostic_crc)
+mm_lefse <- run_lefse(
+  kostic_crc,
+  wilcoxon_cutoff = 0.01,
+  group = "DIAGNOSIS",
+  kw_cutoff = 0.01,
+  multigrp_strat = TRUE,
+  lda_cutoff = 4
+)
+plot_cladogram(mm_lefse, color = c("darkgreen", "red"))
+}
 \references{
 This function is modified from \code{clada.anno} from microbiomeViz.
-\url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}
+\url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}i
 }
 \seealso{
-\code{\link[ggtree:ggtree]{ggtree::ggtree()}}, \code{\link[=set_marker_annotation]{set_marker_annotation()}}
+\code{\link[ggtree:ggtree]{ggtree::ggtree()}}
 }
 \author{
 Chenhao Li, Guangchuang Yu, Chenghao Zhu, Yang Cao

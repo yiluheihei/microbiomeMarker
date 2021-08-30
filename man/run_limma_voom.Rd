@@ -96,6 +96,17 @@ two groups, the first level of groups will set as the reference group; if
 there are multiple groups, it will perform an ANOVA-like testing to find
 markers which difference in any of the groups.
 }
+\examples{
+data(enterotypes_arumugam)
+mm <- run_limma_voom(
+  enterotypes_arumugam,
+  "Enterotype",
+  contrast = c("Enterotype 3", "Enterotype 2"),
+  pvalue_cutoff = 0.01,
+  p_adjust = "none"
+)
+mm
+}
 \references{
 Law, C. W., Chen, Y., Shi, W., & Smyth, G. K. (2014).
 voom: Precision weights unlock linear model analysis tools for RNA-seq read

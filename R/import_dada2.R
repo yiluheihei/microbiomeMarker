@@ -28,7 +28,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' seq_tab <- readRDS(system.file("extdata", "dada2_seqtab.rds",
 #'   package= "microbiomeMarker"))
 #' tax_tab <- readRDS(system.file("extdata", "dada2_taxtab.rds",
@@ -37,8 +36,6 @@
 #'  package= "microbiomeMarker"), sep = "\t", header = TRUE, row.names = 1)
 #' ps <- import_dada2(seq_tab = seq_tab, tax_tab = tax_tab, sam_tab = sam_tab)
 #' ps
-#' }
-#'
 import_dada2 <- function(seq_tab,
                         tax_tab = NULL,
                         sam_tab = NULL,
