@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -150,8 +150,9 @@ This argument is passed to <code><a href='https://rdrr.io/pkg/DESeq2/man/DESeqDa
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments passed to <code><a href='https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html'>DESeq2::DESeqDataSetFromMatrix()</a></code>,
-Most users will not need to pass any additional arguments here.</p></td>
+      <td><p>additional arguments passed to
+<code><a href='https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html'>DESeq2::DESeqDataSetFromMatrix()</a></code>, Most users will not need to pass any
+additional arguments here.</p></td>
     </tr>
     </table>
 
@@ -162,6 +163,21 @@ Most users will not need to pass any additional arguments here.</p></td>
 
     <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html'>DESeq2::DESeqDataSetFromMatrix()</a></code>,<code><a href='https://rdrr.io/pkg/DESeq2/man/DESeq.html'>DESeq2::DESeq()</a></code></p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>caporaso</span><span class='op'>)</span>
+<span class='fu'>phyloseq2DESeq2</span><span class='op'>(</span><span class='va'>caporaso</span>, <span class='op'>~</span> <span class='va'>SampleType</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>converting counts to integer mode</span></div><div class='output co'>#&gt; <span class='warning'>Warning: some variables in design formula are characters, converting to factors</span></div><div class='output co'>#&gt; <span class='message'>  Note: levels of factors in the design contain characters other than</span>
+#&gt; <span class='message'>  letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
+#&gt; <span class='message'>  only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
+#&gt; <span class='message'>  for column names in R. [This is a message, not a warning or an error]</span></div><div class='output co'>#&gt; class: DESeqDataSet 
+#&gt; dim: 3426 34 
+#&gt; metadata(1): version
+#&gt; assays(1): counts
+#&gt; rownames(3426): New.CleanUp.ReferenceOTU647 14030 ... 189548 3769033
+#&gt; rowData names(0):
+#&gt; colnames(34): L1S140 L1S208 ... L3S313 L2S240
+#&gt; colData names(8): SampleType Year ... DaysSinceExperimentStart
+#&gt;   Description</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

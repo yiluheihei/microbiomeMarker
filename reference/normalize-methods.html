@@ -97,7 +97,7 @@ recommended when very low values are present (as shown in the LEfSe galaxy)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -317,6 +317,9 @@ used for size factor estimation (e.g. core taxa).</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>the same class with <code>object</code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/edgeR/man/calcNormFactors.html'>edgeR::calcNormFactors()</a></code>,<code><a href='https://rdrr.io/pkg/DESeq2/man/estimateSizeFactorsForMatrix.html'>DESeq2::estimateSizeFactorsForMatrix()</a></code>,
@@ -326,6 +329,14 @@ used for size factor estimation (e.g. core taxa).</p></td>
 <p><code><a href='https://rdrr.io/pkg/DESeq2/man/estimateSizeFactorsForMatrix.html'>DESeq2::estimateSizeFactorsForMatrix()</a></code></p>
 <p><code><a href='https://rdrr.io/pkg/edgeR/man/calcNormFactors.html'>edgeR::calcNormFactors()</a></code></p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>caporaso</span><span class='op'>)</span>
+<span class='fu'>normalize</span><span class='op'>(</span><span class='va'>caporaso</span>, <span class='st'>"TSS"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘tidytree’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘tidytree’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘tidytree’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘tidytree’</span></div><div class='output co'>#&gt; phyloseq-class experiment-level object
+#&gt; otu_table()   OTU Table:         [ 3426 taxa and 34 samples ]
+#&gt; sample_data() Sample Data:       [ 34 samples by 8 sample variables ]
+#&gt; tax_table()   Taxonomy Table:    [ 3426 taxa by 7 taxonomic ranks ]
+#&gt; phy_tree()    Phylogenetic Tree: [ 3426 tips and 3424 internal nodes ]</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

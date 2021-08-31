@@ -73,7 +73,7 @@ within each sample." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -151,8 +151,7 @@ within each sample.</p>
     <tr>
       <th>absolute</th>
       <td><p>logical, whether return the absolute abundance or
-relative abundance, default <code>FALSE</code>
-FALSE.</p></td>
+relative abundance, default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>sep</th>
@@ -165,6 +164,13 @@ FALSE.</p></td>
     <p>a <code><a href='https://rdrr.io/pkg/phyloseq/man/phyloseq-class.html'>phyloseq::phyloseq</a></code> object, where each row represents a
 taxa, and each col represents the taxa abundance of each sample.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
+<span class='fu'>summarize_taxa</span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; phyloseq-class experiment-level object
+#&gt; otu_table()   OTU Table:         [ 244 taxa and 39 samples ]
+#&gt; sample_data() Sample Data:       [ 39 samples by 9 sample variables ]
+#&gt; tax_table()   Taxonomy Table:    [ 244 taxa by 1 taxonomic ranks ]</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -205,15 +205,26 @@ legends). See <code><a href='https://ggplot2.tidyverse.org/reference/guide_legen
     <p>a ggtree object</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>This function is modified from <code>clada.anno</code> from microbiomeViz.
-<a href='https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R'>https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R</a></p>
+    <p>This function is modified from <code>clada.anno</code> from microbiomeViz.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/ggtree/man/ggtree.html'>ggtree::ggtree()</a></code>, <code><a href='set_marker_annotation.html'>set_marker_annotation()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/ggtree/man/ggtree.html'>ggtree::ggtree()</a></code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Chenhao Li, Guangchuang Yu, Chenghao Zhu, Yang Cao</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>kostic_crc</span><span class='op'>)</span>
+<span class='va'>mm_lefse</span> <span class='op'>&lt;-</span> <span class='fu'><a href='run_lefse.html'>run_lefse</a></span><span class='op'>(</span>
+  <span class='va'>kostic_crc</span>,
+  wilcoxon_cutoff <span class='op'>=</span> <span class='fl'>0.01</span>,
+  group <span class='op'>=</span> <span class='st'>"DIAGNOSIS"</span>,
+  kw_cutoff <span class='op'>=</span> <span class='fl'>0.01</span>,
+  multigrp_strat <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  lda_cutoff <span class='op'>=</span> <span class='fl'>4</span>
+<span class='op'>)</span>
+<span class='fu'>plot_cladogram</span><span class='op'>(</span><span class='va'>mm_lefse</span>, color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"darkgreen"</span>, <span class='st'>"red"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_cladogram-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -166,11 +166,11 @@ there are multiple groups. For more please see the following details.</p></td>
     <tr>
       <th>taxa_rank</th>
       <td><p>character to specify taxonomic rank to perform
-differential analysis on. Should be one of <code><a href='https://rdrr.io/pkg/phyloseq/man/rank_names.html'>phyloseq::rank_names(phyloseq)</a></code>,
-or "all" means to summarize the taxa by the top taxa ranks
-(<code><a href='summarize_taxa.html'>summarize_taxa(ps, level = rank_names(ps)[1])</a></code>), or "none" means perform
-differential analysis on the original taxa (<code><a href='https://rdrr.io/pkg/phyloseq/man/taxa_names-methods.html'>taxa_names(phyloseq)</a></code>, e.g.,
-OTU or ASV).</p></td>
+differential analysis on. Should be one of
+<code><a href='https://rdrr.io/pkg/phyloseq/man/rank_names.html'>phyloseq::rank_names(phyloseq)</a></code>, or "all" means to summarize the taxa by
+the top taxa ranks (<code><a href='summarize_taxa.html'>summarize_taxa(ps, level = rank_names(ps)[1])</a></code>), or
+"none" means perform differential analysis on the original taxa
+(<code><a href='https://rdrr.io/pkg/phyloseq/man/taxa_names-methods.html'>taxa_names(phyloseq)</a></code>, e.g., OTU or ASV).</p></td>
     </tr>
     <tr>
       <th>transform</th>
@@ -251,6 +251,23 @@ markers which difference in any of the groups.</p>
 voom: Precision weights unlock linear model analysis tools for RNA-seq read
 counts. Genome biology, 15(2), 1-17.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
+<span class='va'>mm</span> <span class='op'>&lt;-</span> <span class='fu'>run_limma_voom</span><span class='op'>(</span>
+  <span class='va'>enterotypes_arumugam</span>,
+  <span class='st'>"Enterotype"</span>,
+  contrast <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span><span class='op'>)</span>,
+  pvalue_cutoff <span class='op'>=</span> <span class='fl'>0.01</span>,
+  p_adjust <span class='op'>=</span> <span class='st'>"none"</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: row names of contrasts don't match col names of coefficients</span></div><div class='input'><span class='va'>mm</span>
+</div><div class='output co'>#&gt; microbiomeMarker-class inherited from phyloseq-class
+#&gt; normalization method:              [ none ]
+#&gt; microbiome marker identity method: [ limma_voom ]
+#&gt; marker_table() Marker Table:       [ 14 microbiome markers with 5 variables ]
+#&gt; otu_table()    OTU Table:          [ 244 taxa and  39 samples ]
+#&gt; sample_data()  Sample Data:        [ 39 samples by  9 sample variables ]
+#&gt; tax_table()    Taxonomy Table:     [ 244 taxa by 1 taxonomic ranks ]</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

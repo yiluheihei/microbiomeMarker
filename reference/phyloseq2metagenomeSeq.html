@@ -74,7 +74,7 @@ the zero-inflated mixture model framework in the metagenomeSeq package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -162,10 +162,28 @@ any additional arguments here.</p></td>
     <p>A <code><a href='https://rdrr.io/pkg/metagenomeSeq/man/MRexperiment-class.html'>metagenomeSeq::MRexperiment</a></code> object.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/metagenomeSeq/man/fitTimeSeries.html'>metagenomeSeq::fitTimeSeries()</a></code>,<code><a href='https://rdrr.io/pkg/metagenomeSeq/man/fitLogNormal.html'>metagenomeSeq::fitLogNormal()</a></code>,
-<code><a href='https://rdrr.io/pkg/metagenomeSeq/man/fitZig.html'>metagenomeSeq::fitZig()</a></code>,<code><a href='https://rdrr.io/pkg/metagenomeSeq/man/MRtable.html'>metagenomeSeq::MRtable()</a></code>,
-<code><a href='https://rdrr.io/pkg/metagenomeSeq/man/MRfulltable.html'>metagenomeSeq::MRfulltable()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/metagenomeSeq/man/fitTimeSeries.html'>metagenomeSeq::fitTimeSeries()</a></code>,
+<code><a href='https://rdrr.io/pkg/metagenomeSeq/man/fitLogNormal.html'>metagenomeSeq::fitLogNormal()</a></code>,<code><a href='https://rdrr.io/pkg/metagenomeSeq/man/fitZig.html'>metagenomeSeq::fitZig()</a></code>,
+<code><a href='https://rdrr.io/pkg/metagenomeSeq/man/MRtable.html'>metagenomeSeq::MRtable()</a></code>,<code><a href='https://rdrr.io/pkg/metagenomeSeq/man/MRfulltable.html'>metagenomeSeq::MRfulltable()</a></code></p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>caporaso</span><span class='op'>)</span>
+<span class='fu'>phyloseq2metagenomeSeq</span><span class='op'>(</span><span class='va'>caporaso</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; MRexperiment (storageMode: environment)
+#&gt; assayData: 3426 features, 34 samples 
+#&gt;   element names: counts 
+#&gt; protocolData: none
+#&gt; phenoData
+#&gt;   sampleNames: L1S140 L1S208 ... L2S240 (34 total)
+#&gt;   varLabels: SampleType Year ... Description (8 total)
+#&gt;   varMetadata: labelDescription
+#&gt; featureData
+#&gt;   featureNames: New.CleanUp.ReferenceOTU647 14030 ... 3769033 (3426
+#&gt;     total)
+#&gt;   fvarLabels: OTUname Kingdom ... Species (8 total)
+#&gt;   fvarMetadata: labelDescription
+#&gt; experimentData: use 'experimentData(object)'
+#&gt; Annotation:  </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

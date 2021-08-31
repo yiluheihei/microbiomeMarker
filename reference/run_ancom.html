@@ -73,7 +73,7 @@ features." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -162,18 +162,18 @@ features.</p>
     <tr>
       <th>taxa_rank</th>
       <td><p>character to specify taxonomic rank to perform
-differential analysis on. Should be one of <code><a href='https://rdrr.io/pkg/phyloseq/man/rank_names.html'>phyloseq::rank_names(phyloseq)</a></code>,
-or "all" means to summarize the taxa by the top taxa ranks
-(<code><a href='summarize_taxa.html'>summarize_taxa(ps, level = rank_names(ps)[1])</a></code>), or "none" means perform
-differential analysis on the original taxa (<code><a href='https://rdrr.io/pkg/phyloseq/man/taxa_names-methods.html'>taxa_names(phyloseq)</a></code>, e.g.,
-OTU or ASV).</p></td>
+differential analysis on. Should be one of
+<code><a href='https://rdrr.io/pkg/phyloseq/man/rank_names.html'>phyloseq::rank_names(phyloseq)</a></code>, or "all" means to summarize the taxa by
+the top taxa ranks (<code><a href='summarize_taxa.html'>summarize_taxa(ps, level = rank_names(ps)[1])</a></code>), or
+"none" means perform differential analysis on the original taxa
+(<code><a href='https://rdrr.io/pkg/phyloseq/man/taxa_names-methods.html'>taxa_names(phyloseq)</a></code>, e.g., OTU or ASV).</p></td>
     </tr>
     <tr>
       <th>transform</th>
       <td><p>character, the methods used to transform the microbial
 abundance. See <code><a href='transform_abundances.html'>transform_abundances()</a></code> for more details. The
 options include:</p><ul>
-<li><p>"identity", return the original data without any transformation (default).</p></li>
+<li><p>"identity", return the original data without any transformation.</p></li>
 <li><p>"log10", the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(object)</a></code>, and if the data contains
 zeros the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(1 + object)</a></code>.</p></li>
 <li><p>"log10p", the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(1 + object)</a></code>.</p></li>
@@ -191,9 +191,9 @@ data set.</p></li>
 abundances were normalized by dividing the corresponding sample library
 size.</p></li>
 <li><p>"TMM": trimmed mean of m-values. First, a sample is chosen as reference.
-The scaling factor is then derived using a weighted trimmed mean over the
-differences of the log-transformed gene-count fold-change between the
-sample and the reference.</p></li>
+The scaling factor is then derived using a weighted trimmed mean over
+the differences of the log-transformed gene-count fold-change between
+the sample and the reference.</p></li>
 <li><p>"RLE", relative log expression, RLE uses a pseudo-reference calculated
 using the geometric mean of the gene-specific abundances over all
 samples. The scaling factors are then calculated as the median of the
@@ -222,7 +222,8 @@ default 0.05.</p></td>
     </tr>
     <tr>
       <th>W_cutoff</th>
-      <td><p>lower bound for the proportion for the W-statistic, default 0.7.</p></td>
+      <td><p>lower bound for the proportion for the W-statistic, default
+0.7.</p></td>
     </tr>
     <tr>
       <th>test</th>
@@ -237,14 +238,14 @@ one of "aov", "wilcox.test",  "kruskal.test".</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a <a href='microbiomeMarker-class.html'>microbiomeMarker</a> object, in which the <code>slot</code> of <code>marker_table</code>
-contains four variables:</p><ul>
+    <p>a <a href='microbiomeMarker-class.html'>microbiomeMarker</a> object, in which the <code>slot</code> of
+<code>marker_table</code> contains four variables:</p><ul>
 <li><p><code>feature</code>, significantly different features.</p></li>
 <li><p><code>enrich_group</code>, the class of the differential features enriched.</p></li>
 <li><p><code>effect_size</code>, differential means for two groups, or F statistic for more
-than two groups</p></li>
-<li><p><code>W</code>, the W-statistic, number of features that a single feature is tested to
-be significantly different against.</p></li>
+than two groups.</p></li>
+<li><p><code>W</code>, the W-statistic, number of features that a single feature is tested
+to be significantly different against.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -267,6 +268,22 @@ method for studying microbial composition", Microbial Ecology in Health
 
     <p>Huang Lin, Yang Cao</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
+<span class='va'>ps</span> <span class='op'>&lt;-</span> <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html'>subset_samples</a></span><span class='op'>(</span>
+  <span class='va'>enterotypes_arumugam</span>,
+  <span class='va'>Enterotype</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span><span class='op'>)</span>
+<span class='op'>)</span>
+<span class='fu'>run_ancom</span><span class='op'>(</span><span class='va'>ps</span>, group <span class='op'>=</span> <span class='st'>"Enterotype"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; microbiomeMarker-class inherited from phyloseq-class
+#&gt; normalization method:              [ TSS ]
+#&gt; microbiome marker identity method: [ ANCOM ]
+#&gt; marker_table() Marker Table:       [ 8 microbiome markers with 4 variables ]
+#&gt; otu_table()    OTU Table:          [ 235 taxa and  24 samples ]
+#&gt; sample_data()  Sample Data:        [ 24 samples by  9 sample variables ]
+#&gt; tax_table()    Taxonomy Table:     [ 235 taxa by 1 taxonomic ranks ]</div><div class='input'><span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

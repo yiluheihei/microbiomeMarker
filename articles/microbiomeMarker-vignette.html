@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -263,7 +263,7 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; tax_table()   Taxonomy Table:    [ 770 taxa by 7 taxonomic ranks ]</span>
 <span class="co">#&gt; phy_tree()    Phylogenetic Tree: [ 770 tips and 768 internal nodes ]</span></code></pre></div>
 <hr>
-<p><strong><em>Note</em></strong>: all the DA functions provides a para to specify the normalization method. We emphasize that users should specify the normalization method in the DA functions rather than using these normalization functions directly. If you use normalize data first and then perform DA, you should set the <code>norm_method</code> manually. We recommend to use the default normalization methods for the corresponding DA methods, e.g. “CPM” for LEfSe and “CSS” for metagenomeSeq, and the default values of <code>norm</code> in the DA functions is set their default normalization methods.</p>
+<p><strong><em>Note</em></strong>: all the DA functions provides a para to specify the normalization method. We emphasize that users should specify the normalization method in the DA functions rather than using these normalization functions directly. If you use normalize data first and then perform DA, you should set the <code>norm_method</code> manually. We recommend to use the default normalization methods for the corresponding DA methods, e.g. “CPM” for LEfSe and “CSS” for metagenomeSeq, and the default values of <code>norm</code> in the DA functions is set as their default normalization methods.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># equivalent to </span>
 <span class="co"># run_lefse(</span>
@@ -274,6 +274,7 @@ fold-change between the sample and the reference.</li>
 <span class="co">#   multigrp_strat = TRUE,</span>
 <span class="co">#   lda_cutoff = 4</span>
 <span class="co"># )</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span>
 <span class="va">mm_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalize,phyloseq-method.html">normalize</a></span><span class="op">(</span><span class="va">kostic_crc</span>, method <span class="op">=</span> <span class="st">"CPM"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
     wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>, 
@@ -282,8 +283,7 @@ fold-change between the sample and the reference.</li>
     kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
     multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,
     lda_cutoff <span class="op">=</span> <span class="fl">4</span>
-  <span class="op">)</span>
-<span class="va">mm_test</span><span class="op">@</span><span class="va">norm_method</span> <span class="op">&lt;-</span> <span class="st">"CPM"</span></code></pre></div>
+  <span class="op">)</span></code></pre></div>
 </div>
 <div id="simple-stat" class="section level2">
 <h2 class="hasAnchor">
@@ -291,7 +291,8 @@ fold-change between the sample and the reference.</li>
 <p>In practice, simple statitical tests such as t-test (for two groups comparison) and Kruskal-Wallis rank sum test (for multiple groups comparison) are frequently used for metagenomic differential analysis. STAMP [parks2014stamp] is a widely-used graphical software package that provides “best pratices” in choose appropriate statistical methods for metagenomic analysis. Here in <code>microbiomeMarker</code>, <code>t-test</code>, Welch’s <code>t-test</code>, and White’s non-parametric <code>t-test</code> are provided for two groups comparison, and ANOVA and Kruskal–Wallis test for multiple groups comparions.</p>
 <p>We can use <code>test_two_groups()</code> to perferm simple statistical differential test between two groups.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tg_welch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_test_two_groups.html">run_test_two_groups</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">enterotypes_arumugam</span><span class="op">)</span>
+<span class="va">tg_welch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_test_two_groups.html">run_test_two_groups</a></span><span class="op">(</span>
   <span class="va">enterotypes_arumugam</span>, 
   group <span class="op">=</span> <span class="st">"Gender"</span>, 
   method <span class="op">=</span> <span class="st">"welch.test"</span>
@@ -364,6 +365,7 @@ fold-change between the sample and the reference.</li>
 <p>Here we take edgeR method as an example.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># contrast must be specified for two groups comparison</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">pediatric_ibd</span><span class="op">)</span>
 <span class="va">mm_edger</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_edger.html">run_edger</a></span><span class="op">(</span>
   <span class="va">pediatric_ibd</span>,
   group <span class="op">=</span> <span class="st">"Class"</span>,
@@ -380,6 +382,7 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; tax_table()    Taxonomy Table:     [ 786 taxa by 1 taxonomic ranks ]</span>
 
 <span class="co"># multiple groups</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">cid_ying</span><span class="op">)</span>
 <span class="va">cid</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html">subset_samples</a></span><span class="op">(</span>
   <span class="va">cid_ying</span>,
   <span class="va">Consistency</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"formed stool"</span>, <span class="st">"liquid"</span>, <span class="st">"semi-formed"</span><span class="op">)</span>
@@ -406,7 +409,8 @@ fold-change between the sample and the reference.</li>
 <p>Five methods, LEfSe <span class="citation">(Segata et al. 2011)</span>, metagenomeSeq <span class="citation">(Paulson et al. 2013)</span>, ALDEx2 <span class="citation">(Fernandes et al. 2014)</span>, ANCOM <span class="citation">(Mandal et al. 2015)</span>, and ANCOMBC <span class="citation">(Lin and Peddada 2020)</span>, which were developed specifically for microbiome data (contain many more zeros that RNA-seq data), are also provided in our package. All these methods have greater power to detect differentially features than simple statistical tests by incorporating more sensitive tests.</p>
 <p>Curently, LEfSe is the most popular tool for microbiome biomarker discovery. Here we take LEfSe method for example:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span>
+<span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
   <span class="va">kostic_crc</span>,
   wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
   group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,
@@ -432,12 +436,12 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; marker5 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroidaceae_Bacteroides</span>
 <span class="co">#&gt; marker6                                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae</span>
 <span class="co">#&gt;         enrich_group   ef_lda       pvalue         padj</span>
-<span class="co">#&gt; marker1      Healthy 4.938091 2.577541e-06 2.577541e-06</span>
-<span class="co">#&gt; marker2      Healthy 4.938091 2.577541e-06 2.577541e-06</span>
-<span class="co">#&gt; marker3      Healthy 4.842391 1.425032e-04 1.425032e-04</span>
-<span class="co">#&gt; marker4      Healthy 4.820702 3.706059e-04 3.706059e-04</span>
-<span class="co">#&gt; marker5      Healthy 4.820702 3.706059e-04 3.706059e-04</span>
-<span class="co">#&gt; marker6      Healthy 4.727401 6.529659e-07 6.529659e-07</span></code></pre></div>
+<span class="co">#&gt; marker1      Healthy 4.886346 2.577541e-06 2.577541e-06</span>
+<span class="co">#&gt; marker2      Healthy 4.886346 2.577541e-06 2.577541e-06</span>
+<span class="co">#&gt; marker3      Healthy 4.851866 1.425032e-04 1.425032e-04</span>
+<span class="co">#&gt; marker4      Healthy 4.789828 3.706059e-04 3.706059e-04</span>
+<span class="co">#&gt; marker5      Healthy 4.789828 3.706059e-04 3.706059e-04</span>
+<span class="co">#&gt; marker6      Healthy 4.705845 6.529659e-07 6.529659e-07</span></code></pre></div>
 </div>
 <div id="supervised-machine-learning-methods" class="section level2">
 <h2 class="hasAnchor">
@@ -516,7 +520,7 @@ fold-change between the sample and the reference.</li>
 <span class="co"># take a marker "p__Bacteroidetes|g__Bacteroides"  </span>
 <span class="co"># for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from </span>
 <span class="co"># between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.</span>
-<span class="va">pht</span><span class="op">@</span><span class="va">result</span><span class="op">$</span><span class="st">"p__Bacteroidetes|g__Bacteroides"</span>
+<span class="fu"><a href="../reference/extract_posthoc_res.html">extract_posthoc_res</a></span><span class="op">(</span><span class="va">pht</span>, <span class="st">"p__Bacteroidetes|g__Bacteroides"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; DataFrame with 3 rows and 5 columns</span>
 <span class="co">#&gt;                                       comparions  diff_mean      pvalue</span>
 <span class="co">#&gt;                                      &lt;character&gt;  &lt;numeric&gt;   &lt;numeric&gt;</span>
@@ -537,7 +541,24 @@ fold-change between the sample and the reference.</li>
   contrast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span><span class="op">)</span>,
   pvalue_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
   p_adjust <span class="op">=</span> <span class="st">"fdr"</span>
-<span class="op">)</span></code></pre></div>
+<span class="op">)</span>
+<span class="va">mm_lv_pair</span>
+<span class="co">#&gt; microbiomeMarker-class inherited from phyloseq-class</span>
+<span class="co">#&gt; normalization method:              [ none ]</span>
+<span class="co">#&gt; microbiome marker identity method: [ limma_voom ]</span>
+<span class="co">#&gt; marker_table() Marker Table:       [ 3 microbiome markers with 5 variables ]</span>
+<span class="co">#&gt; otu_table()    OTU Table:          [ 238 taxa and  32 samples ]</span>
+<span class="co">#&gt; sample_data()  Sample Data:        [ 32 samples by  9 sample variables ]</span>
+<span class="co">#&gt; tax_table()    Taxonomy Table:     [ 238 taxa by 1 taxonomic ranks ]</span>
+<span class="fu"><a href="../reference/marker_table.html">marker_table</a></span><span class="op">(</span><span class="va">mm_lv_pair</span><span class="op">)</span>
+<span class="co">#&gt;                                   feature enrich_group  ef_logFC       pvalue</span>
+<span class="co">#&gt; marker1    p__Bacteroidetes|g__Prevotella Enterotype 2  5.853735 1.051399e-12</span>
+<span class="co">#&gt; marker2 p__Verrucomicrobia|g__Akkermansia Enterotype 3 -8.651612 3.104720e-04</span>
+<span class="co">#&gt; marker3                p__Verrucomicrobia Enterotype 3 -8.299989 5.426191e-04</span>
+<span class="co">#&gt;                 padj</span>
+<span class="co">#&gt; marker1 2.502331e-10</span>
+<span class="co">#&gt; marker2 3.694617e-02</span>
+<span class="co">#&gt; marker3 4.304778e-02</span></code></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level1">
@@ -652,17 +673,16 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt; [1] caret_6.0-88                ggplot2_3.3.5              </span>
-<span class="co">#&gt; [3] lattice_0.20-44             microbiomeMarker_0.0.1.9000</span>
-<span class="co">#&gt; [5] BiocStyle_2.20.2           </span>
+<span class="co">#&gt; [1] caret_6.0-88            ggplot2_3.3.5           lattice_0.20-44        </span>
+<span class="co">#&gt; [4] microbiomeMarker_0.99.0 BiocStyle_2.20.2       </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;   [1] circlize_0.4.13             systemfonts_1.0.2          </span>
 <span class="co">#&gt;   [3] plyr_1.8.6                  igraph_1.2.6               </span>
 <span class="co">#&gt;   [5] lazyeval_0.2.2              splines_4.1.1              </span>
-<span class="co">#&gt;   [7] BiocParallel_1.26.2         GenomeInfoDb_1.28.1        </span>
+<span class="co">#&gt;   [7] BiocParallel_1.26.2         GenomeInfoDb_1.28.2        </span>
 <span class="co">#&gt;   [9] digest_0.6.27               yulab.utils_0.0.2          </span>
-<span class="co">#&gt;  [11] foreach_1.5.1               htmltools_0.5.1.1          </span>
+<span class="co">#&gt;  [11] foreach_1.5.1               htmltools_0.5.2            </span>
 <span class="co">#&gt;  [13] fansi_0.5.0                 magrittr_2.0.1             </span>
 <span class="co">#&gt;  [15] memoise_2.0.0               cluster_2.1.2              </span>
 <span class="co">#&gt;  [17] doParallel_1.0.16           limma_3.48.3               </span>
@@ -711,9 +731,9 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; [103] nlme_3.1-152                aplot_0.0.6                </span>
 <span class="co">#&gt; [105] compiler_4.1.1              png_0.1-7                  </span>
 <span class="co">#&gt; [107] ggsignif_0.6.2              e1071_1.7-8                </span>
-<span class="co">#&gt; [109] treeio_1.16.2               tibble_3.1.3               </span>
+<span class="co">#&gt; [109] treeio_1.16.2               tibble_3.1.4               </span>
 <span class="co">#&gt; [111] geneplotter_1.70.0          bslib_0.2.5.1              </span>
-<span class="co">#&gt; [113] stringi_1.7.3               highr_0.9                  </span>
+<span class="co">#&gt; [113] stringi_1.7.4               highr_0.9                  </span>
 <span class="co">#&gt; [115] desc_1.3.0                  Matrix_1.3-4               </span>
 <span class="co">#&gt; [117] nloptr_1.2.2.2              vegan_2.5-7                </span>
 <span class="co">#&gt; [119] microbiome_1.14.0           permute_0.9-5              </span>
@@ -736,7 +756,7 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; [153] timeDate_3043.102           grid_4.1.1                 </span>
 <span class="co">#&gt; [155] ggfun_0.0.3                 class_7.3-19               </span>
 <span class="co">#&gt; [157] tidyr_1.1.3                 rmarkdown_2.10             </span>
-<span class="co">#&gt; [159] MatrixGenerics_1.4.2        Cairo_1.5-12.2             </span>
+<span class="co">#&gt; [159] MatrixGenerics_1.4.3        Cairo_1.5-12.2             </span>
 <span class="co">#&gt; [161] Rtsne_0.15                  pROC_1.17.0.1              </span>
 <span class="co">#&gt; [163] lubridate_1.7.10            Biobase_2.52.0</span></code></pre></div>
 </div>
