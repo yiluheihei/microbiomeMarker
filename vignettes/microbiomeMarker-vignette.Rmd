@@ -262,6 +262,7 @@ their default normalization methods.
 #   multigrp_strat = TRUE,
 #   lda_cutoff = 4
 # )
+data(kostic_crc)
 mm_test <- normalize(kostic_crc, method = "CPM") %>% 
   run_lefse(
     wilcoxon_cutoff = 0.01, 
@@ -286,6 +287,7 @@ We can use `test_two_groups()` to perferm simple statistical differential test
 between two groups.
 
 ```{r two-group-test}
+data(enterotypes_arumugam)
 tg_welch <- run_test_two_groups(
   enterotypes_arumugam, 
   group = "Gender", 
@@ -335,6 +337,7 @@ Here we take edgeR method as an example.
 
 ```{r edger}
 # contrast must be specified for two groups comparison
+data(pediatric_ibd)
 mm_edger <- run_edger(
   pediatric_ibd,
   group = "Class",
@@ -344,6 +347,7 @@ mm_edger <- run_edger(
 mm_edger
 
 # multiple groups
+data(cid_ying)
 cid <- phyloseq::subset_samples(
   cid_ying,
   Consistency %in% c("formed stool", "liquid", "semi-formed")

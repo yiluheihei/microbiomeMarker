@@ -7,9 +7,36 @@ test_that("check upper first letter", {
   )
 })
 
-test_that(" check whether all names of taxonomic ranks include in available_ranks", {
-  expect_true(check_rank_names(oxygen))
-  expect_true(check_rank_names(caporaso))
+test_that("check whether taxonomic ranks include in available_ranks", {
+  ps <- phyloseq::phyloseq(
+    otu_table = otu_table(
+      matrix(
+        sample(100, 40), nrow = 4,
+        dimnames = list(
+          paste0("otu", 1:4),
+          paste0("sample", 1:10))),
+      taxa_are_rows = TRUE),
+    tax_table = tax_table(
+      matrix(
+        c(rep("g1", 4), rep(c("s1", "s2"), 2)), nrow = 4, byrow = FALSE,
+        dimnames = list(paste0("otu", 1:4), c("Genus", "Species"))))
+  )
+  ps2 <- phyloseq::phyloseq(
+    otu_table = otu_table(
+      matrix(
+        sample(100, 40), nrow = 4,
+        dimnames = list(
+          paste0("otu", 1:4),
+          paste0("sample", 1:10))),
+      taxa_are_rows = TRUE),
+    tax_table = tax_table(
+      matrix(
+        c(rep("g1", 4), rep(c("s1", "s2"), 2)), nrow = 4, byrow = FALSE,
+        dimnames = list(paste0("otu", 1:4), c("xxx", "Species"))))
+  )
+  expect_true(check_rank_names(ps))
+
+  expect_false(check_rank_names(ps2))
 })
 
 test_that("taxa prefix",

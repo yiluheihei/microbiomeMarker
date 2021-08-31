@@ -78,11 +78,8 @@
 #' @references Mandal et al. "Analysis of composition of microbiomes: a novel
 #' method for studying microbial composition", Microbial Ecology in Health
 #' & Disease, (2015), 26.
-#'
 #' @author Huang Lin, Yang Cao
-#'
 #' @export
-#'
 #' @examples
 #' \donttest{
 #' data(enterotypes_arumugam)

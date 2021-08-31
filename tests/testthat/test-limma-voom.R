@@ -1,4 +1,9 @@
 test_that("limma voom", {
+  data(enterotypes_arumugam)
+  enterotype <- phyloseq::subset_samples(
+    enterotypes_arumugam,
+    Enterotype %in% c("Enterotype 1", "Enterotype 2", "Enterotype 3")
+  )
   mm_lv <- run_limma_voom(
     enterotype,
     "Enterotype",
@@ -8,7 +13,7 @@ test_that("limma voom", {
   )
 
   expect_output_file(
-    round_DF(marker_table(mm_lv)),
+    print(marker_table(mm_lv), digits = 5),
     test_path("out/test-lv.txt"),
     print = TRUE
   )

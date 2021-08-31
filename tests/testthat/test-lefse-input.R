@@ -1,6 +1,7 @@
 context("lefse input preprocessing")
 
 test_that("add missing levels: keep abundance is lower than 1", {
+  data(oxygen)
   oxygen_feature <- otu_table(oxygen)
   feature <- add_missing_levels(oxygen_feature)
 

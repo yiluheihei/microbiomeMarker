@@ -26,14 +26,13 @@ Transform the taxa abundances in \code{otu_table} sample by sample, which means
 the counts of each sample will be transformed individually.
 }
 \examples{
-\dontrun{
-x1 <- transform_abundance(oxygen)
+data(oxygen)
+x1 <- transform_abundances(oxygen)
 head(otu_table(x1), 10)
-x2 <- transform_abundance(oxygen, "log10")
+x2 <- transform_abundances(oxygen, "log10")
 head(otu_table(x2), 10)
-x3 <- transform_abundance(oxygen, "log10p")
+x3 <- transform_abundances(oxygen, "log10p")
 head(otu_table(x3), 10)
-}
 }
 \seealso{
 \code{\link[=abundances]{abundances()}}

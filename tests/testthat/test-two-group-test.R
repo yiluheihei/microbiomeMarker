@@ -14,7 +14,14 @@ test_that("ration", {
 })
 
 test_that("test two group result", {
-  skip_on_cran()
+  data(enterotypes_arumugam)
+  mm_welch <- run_test_two_groups(enterotypes_arumugam, "Gender")
+  mm_t <- run_test_two_groups(
+    enterotypes_arumugam,
+    group = "Gender",
+    method = "t.test"
+  )
+
 
   expect_known_output(
     mm_welch,
@@ -28,6 +35,13 @@ test_that("test two group result", {
     print = TRUE
   )
 
+  # white test - diff_mean
+  # mm_white <- test_two_groups(
+  #   enterotypes_arumugam,
+  #   group = "Gender",
+  #   method = "white.test",
+  #   nperm = 50
+  # )
   # expect_known_output(
   #   mm_white,
   #   test_path("out/test-two-group-test-white.txt"),

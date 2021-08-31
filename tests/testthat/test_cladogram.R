@@ -18,6 +18,7 @@ test_that("drop the levels of groups (no marker) if the enrich_group is a factor
 })
 
 test_that("generate tree data from phyloseq", {
+  data(pediatric_ibd)
   td <- get_treedata_phyloseq(pediatric_ibd)
   # all node classes must be in r, k,p, c,o, f, g, s
   expect_true(

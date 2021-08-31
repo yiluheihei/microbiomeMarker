@@ -1,10 +1,17 @@
 context("deseq2 algorithm")
 
 test_that("deseq2 algorithm", {
-  skip_on_bioc()
+  data(pediatric_ibd)
+  mm_des <- run_deseq2(
+    pediatric_ibd,
+    "Class",
+    # contrast = c("Control", "CD"),
+    pvalue_cutoff = 0.05,
+    p_adjust = "fdr"
+  )
 
   expect_output_file(
-    round_DF(marker_table(mm_des)),
+    print(marker_table(mm_des), digits = 5),
     test_path("out/test-deseq2.txt"),
     print = TRUE
   )

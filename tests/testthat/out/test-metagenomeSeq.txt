@@ -16,21 +16,21 @@ marker14                     k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bact
 marker15                                       k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Prevotellaceae|g__Prevotella|s__nigrescens
 marker16                                                                                                   k__Bacteria|p__Bacteroidetes|c__Flavobacteriia
 marker17                                                                               k__Bacteria|p__Bacteroidetes|c__Flavobacteriia|o__Flavobacteriales
-         enrich_group ef_logFC     pvalue    padj
-marker1       Control  2.12780 1.1219e-06 0.00088
-marker2       Control  1.18123 1.0000e-05 0.00496
-marker3       Control  1.15145 3.0000e-05 0.00614
-marker4       Control  0.77132 4.0000e-05 0.00614
-marker5       Control  0.77132 4.0000e-05 0.00614
-marker6       Control  0.72983 9.0000e-05 0.01235
-marker7       Control  1.34175 1.8000e-04 0.01980
-marker8       Control  1.24730 3.6000e-04 0.02983
-marker9       Control  1.24730 3.6000e-04 0.02983
-marker10      Control  0.65065 4.2000e-04 0.02983
-marker11      Control  0.65065 4.2000e-04 0.02983
-marker12           CD -2.37550 6.3000e-04 0.04121
-marker13      Control  1.06257 8.6000e-04 0.04853
-marker14      Control  1.06257 8.6000e-04 0.04853
-marker15      Control  0.35193 1.8900e-03 0.09468
-marker16           CD -1.90150 2.0500e-03 0.09468
-marker17           CD -1.90150 2.0500e-03 0.09468
+         enrich_group ef_logFC     pvalue      padj
+marker1       Control  2.12780 1.1219e-06 0.0008818
+marker2       Control  1.18123 1.2622e-05 0.0049605
+marker3       Control  1.15145 2.7771e-05 0.0061421
+marker4       Control  0.77132 3.9072e-05 0.0061421
+marker5       Control  0.77132 3.9072e-05 0.0061421
+marker6       Control  0.72983 9.4306e-05 0.0123541
+marker7       Control  1.34175 1.7632e-04 0.0197987
+marker8       Control  1.24730 3.5759e-04 0.0298298
+marker9       Control  1.24730 3.5759e-04 0.0298298
+marker10      Control  0.65065 4.1747e-04 0.0298298
+marker11      Control  0.65065 4.1747e-04 0.0298298
+marker12           CD -2.37553 6.2921e-04 0.0412135
+marker13      Control  1.06257 8.6433e-04 0.0485262
+marker14      Control  1.06257 8.6433e-04 0.0485262
+marker15      Control  0.35193 1.8906e-03 0.0946849
+marker16           CD -1.90148 2.0479e-03 0.0946849
+marker17           CD -1.90148 2.0479e-03 0.0946849

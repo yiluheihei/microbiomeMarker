@@ -1,19 +1,24 @@
 context("test multiple group enterotype test")
 
-tukey_res <- run_posthoc_test(enterotype, "Enterotype", method = "tukey")
 
-# round_DF <- function(DF) {
-#   round2 <- function(x) {
-#     ifelse(
-#       x <= 1e-5,
-#       as.numeric(formatC(x, format = "g", digits = 5)),
-#       as.numeric(formatC(x, format = "f", digits = 5))
-#     )
-#   }
-#   purrr::map_if(as.data.frame(DF), is.numeric, round2) %>%
-#     dplyr::bind_cols() %>%
-#     as.data.frame()
-# }
+data(enterotypes_arumugam)
+enterotype <- phyloseq::subset_samples(
+  enterotypes_arumugam,
+  Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+)
+mm_anova <- run_test_multiple_groups(
+  enterotype,
+  group = "Enterotype",
+  method = "anova",
+  effect_size_cutoff = 0.7
+)
+mm_kruskal <-  run_test_multiple_groups(
+  enterotype,
+  group = "Enterotype",
+  method = "kruskal"
+)
+
+tukey_res <- run_posthoc_test(enterotype, "Enterotype", method = "tukey")
 
 test_that("etaseq effect size", {
   etasq <- calc_etasq(c(1, 2, 1.2, 3, 4, 1.4), c("a", "b", "c", "a", "b", "c"))
@@ -21,8 +26,6 @@ test_that("etaseq effect size", {
 })
 
 test_that("test multiple group enterotype result", {
-  skip_on_cran()
-  skip_on_bioc()
 
   # error group
   expect_error(
@@ -32,13 +35,13 @@ test_that("test multiple group enterotype result", {
   )
 
   expect_known_output(
-    round_DF(marker_table(mm_anova)),
+    print(marker_table(mm_anova), digits = 5),
     test_path("out/test-multiple-group-anova.txt"),
     print = TRUE
   )
 
   expect_known_output(
-    round_DF(marker_table(mm_kruskal)),
+    print(marker_table(mm_kruskal), digits = 5),
     test_path("out/test-multiple-group-kruk.txt"),
     print = TRUE
   )
@@ -46,39 +49,50 @@ test_that("test multiple group enterotype result", {
 })
 
 test_that("test post hoc test result", {
-  skip_on_cran()
-  skip_on_bioc()
-  local_edition(3)
-
-  expect_snapshot_output(
-   print(
-     round_DF(tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
-     row.names = FALSE
-   )
+  expect_known_output(
+    print(
+      tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]],
+      digits = 5),
+    test_path("out/posthoc-turkey.txt"),
+    print = TRUE
   )
 
-  games_res <- run_posthoc_test(enterotype, "Enterotype", method = "games_howell")
-  expect_snapshot_output(
+  games_res <- run_posthoc_test(
+    enterotype, "Enterotype",
+    method = "games_howell"
+  )
+  expect_known_output(
     print(
-      round_DF(games_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
-      row.names = FALSE
-    )
+      games_res@result[["p__Bacteroidetes|g__Bacteroides"]],
+      digits = 5),
+    test_path("out/posthoc-games.txt"),
+    print = TRUE
   )
 
-  scheffe_res <- run_posthoc_test(enterotype, "Enterotype", method = "scheffe")
-  expect_snapshot_output(
+  scheffe_res <- run_posthoc_test(
+    enterotype,
+    "Enterotype",
+    method = "scheffe"
+  )
+  expect_known_output(
     print(
-      round_DF(scheffe_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
-      row.names = FALSE
-    )
+      scheffe_res@result[["p__Bacteroidetes|g__Bacteroides"]],
+      digits = 5),
+    test_path("out/posthoc-scheffe.txt"),
+    print = TRUE
   )
 
-  welch_res <- run_posthoc_test(enterotype, "Enterotype" , method = "welch_uncorrected")
-  expect_snapshot_output(
+  welch_res <- run_posthoc_test(
+    enterotype,
+    "Enterotype" ,
+    method = "welch_uncorrected"
+  )
+  expect_known_output(
     print(
-      round_DF(welch_res@result[["p__Bacteroidetes|g__Bacteroides"]]),
-      row.names = FALSE # for github action
-    )
+      welch_res@result[["p__Bacteroidetes|g__Bacteroides"]],
+      digits = 5),
+    test_path("out/posthoc-welch.txt"),
+    print = TRUE
   )
 })
 
@@ -89,7 +103,8 @@ test_that("test visualization of post hoc test, p value significance level ", {
   )
 })
 
-test_that("test visualization of post hoc test, data of signicance level annotation", {
+test_that(
+  "test visualization of posthoc test, data of signicance level annotation", {
   # single feature
   abd <- tukey_res@abundance
   group <- abd$group
@@ -112,7 +127,11 @@ test_that("test visualization of post hoc test, data of signicance level annotat
 
   # all features
   annotation_all <- get_sig_annotation(tukey_res)
-  annotation_all$y_position <- formatC(annotation_all$y_position, format = "g", digits = 5)
+  annotation_all$y_position <- formatC(
+    annotation_all$y_position,
+    format = "g",
+    digits = 5
+  )
   expect_known_output(
     head(annotation_all),
     test_path("out/test-posthoc-vis-sig_annotation.txt"),

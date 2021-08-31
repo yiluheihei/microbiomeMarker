@@ -95,6 +95,7 @@ test_that("ancombc works correctly", {
     # TRUE
     identical(marker, res)
   }
+  data(ecam)
 
   mm_ancombc <- run_ancombc(
     ecam,

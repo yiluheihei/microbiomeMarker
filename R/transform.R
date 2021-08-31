@@ -12,16 +12,16 @@
 #' @importFrom phyloseq t otu_table<-
 #' @return A object matches the class of argument `object` with the transformed
 #'   `otu_table`.
+#' @export
 #' @seealso [`abundances()`]
 #' @examples
-#' \dontrun{
-#' x1 <- transform_abundance(oxygen)
+#' data(oxygen)
+#' x1 <- transform_abundances(oxygen)
 #' head(otu_table(x1), 10)
-#' x2 <- transform_abundance(oxygen, "log10")
+#' x2 <- transform_abundances(oxygen, "log10")
 #' head(otu_table(x2), 10)
-#' x3 <- transform_abundance(oxygen, "log10p")
+#' x3 <- transform_abundances(oxygen, "log10p")
 #' head(otu_table(x3), 10)
-#' }
 transform_abundances <- function(object,
                                  transform = c("identity", "log10", "log10p")) {
   transform <- match.arg(transform, c("identity", "log10", "log10p"))

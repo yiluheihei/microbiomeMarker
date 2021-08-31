@@ -20,6 +20,7 @@ test_that("convert mc instances", {
 
 
 # fast test
+data(kostic_crc)
 x <- as(phyloseq::otu_table(kostic_crc), "matrix")[1:20, 1:20]
 groups <- phyloseq::sample_data(kostic_crc)[["DIAGNOSIS"]][1:20]
 idx1 <- groups == "Tumor"

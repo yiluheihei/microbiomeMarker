@@ -38,10 +38,21 @@ biomarker discovery by integrating existing widely used differential analysis me
 
 ## Installation
 
-You can install the package directly from github
+Install the package from Bioconductor directly:
 
-```{r install, eval=FALSE}
-if (!require(remotes)) install.packages("remotes")
+```{r install-bioc,eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("microbiomeMarker")
+```
+
+Or install the development version of the package from
+[Github](https://github.com/yiluheihei/microbiomeMarker). 
+
+```{r install-gh,eval=FALSE}
+if (!requireNamespace("remotes", quietly=TRUE))
+  install.packages("remotes")
 remotes::install_github("yiluheihei/microbiomeMarker")
 ```
 

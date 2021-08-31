@@ -21,6 +21,7 @@ if (FALSE) {
   )
 }
 
+data(ecam)
 test_that("identify structural zeros", {
   expect_identical(
     get_struc_zero(ecam, "delivery", TRUE),
@@ -34,16 +35,15 @@ test_that("identify structural zeros", {
 })
 
 test_that("ancom result", {
-  skip_on_bioc()
   ancom_res <- run_ancom(
     ecam, "delivery",
     test = "wilcox.test",
     p_adjust = "BH",
     W_cutoff = 0
   )
-  curr_marker <- round_DF(marker_table(ancom_res))
+  curr_marker <- marker_table(ancom_res)
   expect_known_output(
-    head(curr_marker),
+    print(head(curr_marker), digits = 5),
     test_path("out/test-ancom_marker.txt"),
     print = TRUE
   )

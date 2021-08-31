@@ -23,41 +23,46 @@ test_that("check the norm factors in metagenomeSeq", {
 })
 
 test_that("result of metagenomeSeq", {
-  ps <- phyloseq::subset_samples(
-    cid_ying,
-    Consistency %in% c("formed stool", "liquid", "semi-formed")
+  data(pediatric_ibd)
+  mm_mgs <- run_metagenomeseq(
+    pediatric_ibd,
+    "Class",
+    # contrast = c("CD","Control"),
+    pvalue_cutoff = 0.1,
+    p_adjust = "fdr"
   )
 
   expect_output_file(
-    round_DF(marker_table(mm_mgs)),
+    print(marker_table(mm_mgs), digits = 5),
     test_path("out/test-metagenomeSeq.txt"),
     print = TRUE
   )
 
-  # expect_error(
-  #   run_metagenomeseq(pediatric_ibd, "Class"),
-  #   "`contrast` is required"
-  # )
-
+  ps <- phyloseq::phyloseq(
+    otu_table = otu_table(
+      matrix(
+        1:12, nrow = 2,
+        dimnames = list(
+          c("feature1", "feature2"),
+          paste0("sample", 1:6))),
+      taxa_are_rows = TRUE),
+    tax_table = tax_table(
+      matrix(
+        c("taxa1", "taxa2"), nrow = 2,
+        dimnames = list(c("feature1", "feature2"), c("Species")))),
+    sam_data = sample_data(
+      data.frame(
+        group = rep(c("group1", "group2", "group3"), 2),
+        row.names = paste0("sample", 1:6)))
+  )
   expect_error(
-    run_metagenomeseq(ps, "Consistency"),
+    run_metagenomeseq(ps, "group"),
     "ZILN method do not allows"
   )
-
   expect_error(
-    run_metagenomeseq(ps, "Consistency", contrast = c("Control", "CD")),
+    run_metagenomeseq(ps, "group", contrast = c("group1", "group2")),
     "ZILN method do not allows"
   )
-
-  # run_metagenomeseq(
-  #   ps,
-  #   "Consistency",
-  #   contrast = c("Control", "CD"),
-  #   p_adjust = "fdr",
-  #   method = "ZIG"
-  # )
-
-  # run_metagenomeseq(ps, "Consistency", method = "ZIG")
 })
 
 test_that("get enrich group of a featrue of multiple groups comparison", {

@@ -17,8 +17,15 @@ test_that("check the norm factors in edgeR", {
 })
 
 test_that("result of edger",{
+  data(pediatric_ibd)
+  mm_edger <- run_edger(
+    pediatric_ibd,
+    "Class",
+    pvalue_cutoff = 0.1,
+    p_adjust = "fdr"
+  )
   expect_output_file(
-    round_DF(marker_table(mm_edger)),
+    print(marker_table(mm_edger), digits = 5),
     test_path("out/test-edger.txt"),
     print = TRUE
   )

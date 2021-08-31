@@ -1,0 +1,33 @@
+<S4 Type Object>
+attr(,"rownames")
+[1] "Enterotype 2-Enterotype 1" "Enterotype 3-Enterotype 1"
+[3] "Enterotype 3-Enterotype 2"
+attr(,"nrows")
+[1] 3
+attr(,"listData")
+attr(,"listData")$comparions
+[1] "Enterotype 2-Enterotype 1" "Enterotype 3-Enterotype 1"
+[3] "Enterotype 3-Enterotype 2"
+
+attr(,"listData")$diff_mean
+[1] -0.28139 -0.26045  0.02094
+
+attr(,"listData")$pvalue
+[1] 3.6526e-05 9.1670e-05 4.6419e-01
+
+attr(,"listData")$ci_lower
+[1] -0.376466 -0.346546 -0.042495
+
+attr(,"listData")$ci_upper
+[1] -0.186324 -0.174363  0.084375
+
+attr(,"elementType")
+[1] "ANY"
+attr(,"elementMetadata")
+`\001NULL\001`
+attr(,"metadata")
+list()
+attr(,"class")
+[1] "DFrame"
+attr(,"class")attr(,"package")
+[1] "S4Vectors"

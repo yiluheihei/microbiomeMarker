@@ -10,6 +10,7 @@
 #' @rdname marker_table-methods
 #' @return a [`marker_table-class`] object.
 #' @examples
+#' data(enterotypes_arumugam)
 #' mm <- run_limma_voom(
 #'   enterotypes_arumugam,
 #'   "Enterotype",
@@ -56,6 +57,7 @@ setMethod("marker_table", "microbiomeMarker", function(object) {
 #' @aliases assign-marker_table marker_table<-
 #' @return a [`microbiomeMarker-class`] object.
 #' @examples
+#' data(enterotypes_arumugam)
 #' mm <- run_limma_voom(
 #'   enterotypes_arumugam,
 #'   "Enterotype",

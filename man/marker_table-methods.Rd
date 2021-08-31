@@ -24,6 +24,7 @@ This is the recommended function for both building and accessing microbiome
 marker table (\code{\linkS4class{marker_table}}).
 }
 \examples{
+data(enterotypes_arumugam)
 mm <- run_limma_voom(
   enterotypes_arumugam,
   "Enterotype",
