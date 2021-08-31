@@ -1,9 +1,4 @@
-.Rproj.user
-.DS_Store
-.Rhistory
 .RData
 __MACOSX
-dev_test/
-
 docs
 inst/doc
