@@ -6,11 +6,11 @@
 #' @param contrast this parameter only used for two groups comparison while
 #'   there are multiple groups. For more please see the following details.
 #' @param taxa_rank character to specify taxonomic rank to perform
-#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
-#'   or "all" means to summarize the taxa by the top taxa ranks
-#'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
-#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
-#'   OTU or ASV).
+#'   differential analysis on. Should be one of
+#'   `phyloseq::rank_names(phyloseq)`, or "all" means to summarize the taxa by
+#'   the top taxa ranks (`summarize_taxa(ps, level = rank_names(ps)[1])`), or
+#'   "none" means perform differential analysis on the original taxa
+#'   (`taxa_names(phyloseq)`, e.g., OTU or ASV).
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
@@ -160,7 +160,7 @@ run_limma_voom <- function(ps,
 
   if (length(contrast_new) == n_lvl) {
     # warning: row names of contrasts don't match col names of coefficients
-    fit_out <- suppressWarnings(limma::contrasts.fit(fit_out, contrast_new))
+    fit_out <- limma::contrasts.fit(fit_out, contrast_new)
   }
   test_out <- limma::eBayes(fit_out, ...)
   test_df <- limma::topTable(

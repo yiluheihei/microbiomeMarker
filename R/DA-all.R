@@ -9,33 +9,34 @@
 #'   * "lefse", linear discriminant analysis (LDA) effect size (LEfSe) method,
 #'     for more details see [`run_lefse()`].
 #'   * "simple_t", "simple_welch", "simple_white", "simple_kruskal",
-#'     and "simple_anova", simple statistic methods; "simple_t", "simple_welch",
+#'     and "simple_anova", simple statistic methods; "simple_t", "simple_welch"
 #'     and "simple_white" for two groups comparison; "simple_kruskal", and
 #'     "simple_anova" for multiple groups comparison. For more details see
 #'     [`run_simple_stat()`].
 #'   * "edger", see [`run_edger()`].
-#'   "deseq2", see [`run_deseq2()`].
+#'   * "deseq2", see [`run_deseq2()`].
 #'   * "metagenomeseq", differential expression analysis based on the
 #'     Zero-inflated Log-Normal mixture model or Zero-inflated Gaussian mixture
 #'     model using metagenomeSeq, see [`run_metagenomeseq()`].
 #'   * "ancom", see [`run_ancom()`].
-#'   * "ancombc", differential analysis of compositions of microbiomes with bias
-#'     correction, see [`run_ancombc()`].
+#'   * "ancombc", differential analysis of compositions of microbiomes with
+#'     bias correction, see [`run_ancombc()`].
 #'   * "aldex", see [`run_aldex()`].
 #'   * "limma_voom", see [`run_limma_voom()`].
 #'   * "sl_lr", "sl_rf", and "sl_svm", there supervised leaning (SL) methods:
 #'     logistic regression (lr), random forest (rf), or support vector machine
 #'     (svm). For more details see [`run_sl()`].
 #' @param taxa_rank character to specify taxonomic rank to perform
-#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
-#'   or "all" means to summarize the taxa by the top taxa ranks
-#'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
-#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
-#'   OTU or ASV).
+#'   differential analysis on. Should be one of
+#'   `phyloseq::rank_names(phyloseq)`, or "all" means to summarize the taxa by
+#'   the top taxa ranks (`summarize_taxa(ps, level = rank_names(ps)[1])`), or
+#'   "none" means perform differential analysis on the original taxa
+#'   (`taxa_names(phyloseq)`, e.g., OTU or ASV).
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
-#'   * "identity", return the original data without any transformation (default).
+#'   * "identity", return the original data without any transformation
+#'     (default).
 #'   * "log10", the transformation is `log10(object)`, and if the data contains
 #'     zeros the transformation is `log10(1 + object)`.
 #'   * "log10p", the transformation is `log10(1 + object)`.
@@ -49,9 +50,9 @@
 #'     abundances were normalized by dividing the corresponding sample library
 #'     size.
 #'   * "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
-#'     The scaling factor is then derived using a weighted trimmed mean over the
-#'     differences of the log-transformed gene-count fold-change between the
-#'     sample and the reference.
+#'     The scaling factor is then derived using a weighted trimmed mean over
+#'     the differences of the log-transformed gene-count fold-change between
+#'     the sample and the reference.
 #'   * "RLE", relative log expression, RLE uses a pseudo-reference calculated
 #'     using the geometric mean of the gene-specific abundances over all
 #'     samples. The scaling factors are then calculated as the median of the
@@ -67,9 +68,9 @@
 #' @param ... extra arguments passed to the corresponding differential analysis
 #'   functions, e.g. [`run_lefse()`].
 #' @return a [`microbiomeMarker-class`] object.
-#' @details This function is only a wrapper of all differential analysis functions,
-#'   We recommend to use the corresponding function, since it has a better default
-#'   arguments setting.
+#' @details This function is only a wrapper of all differential analysis
+#'   functions, We recommend to use the corresponding function, since it has a
+#'   better default arguments setting.
 #' @export
 #' @seealso [`run_lefse()`],[`run_simple_stat()`],[`run_test_two_groups()`],
 #'   [`run_test_multiple_groups()`],[`run_edger()`],[`run_deseq2()`],

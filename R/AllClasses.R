@@ -9,8 +9,8 @@
 #' @aliases marker_table-class
 #' @field names,row.names a character vector, inherited from the input
 #' data.frame
-#' @field .data a list, each element corresponding the each column of the input
-#' data.frame
+#' @field .data a list, each element corresponding the each column of the
+#' input data.frame
 #' @field .S3Class character, the S3 class `marker_table` inherited from:
 #' "`data.frame`"
 #' @author Yang Cao
@@ -70,8 +70,9 @@ setClassUnion("numericOrNULL", c("numeric", "NULL"))
 #' @slot marker_table a data.frame, a [`marker_table-class`] object.
 #' @slot norm_method character, method used to normalize the input `phyloseq`
 #'   object.
-#' @slot diff_method character, method used for microbiome marker identification.
-#' @seealso [`phyloseq::phyloseq-class`], [`marker_table-class`], [summarize_taxa()]
+#' @slot diff_method character, method used for marker identification.
+#' @seealso [`phyloseq::phyloseq-class`], [`marker_table-class`],
+#' [summarize_taxa()]
 #' @exportClass microbiomeMarker
 #' @return a [`microbiomeMarker-class`] object.
 `microbiomeMarker-class` <- setClass("microbiomeMarker",
@@ -92,15 +93,15 @@ setClassUnion("numericOrNULL", c("numeric", "NULL"))
 
 #' Build microbiomeMarker-class objects
 #'
-#' This the constructor to build the [`microbiomeMarker-class`] object, don't use
-#' the `new()` constructor.
+#' This the constructor to build the [`microbiomeMarker-class`] object, don't
+#' use the `new()` constructor.
 #' @param marker_table a [`marker_table-class`] object differtial analysis.
 #' @param norm_method character, method used to normalize the input `phyloseq`
 #'   object.
-#' @param diff_method character, method used for microbiome marker identification.
+#' @param diff_method character, method used for microbiome marker
+#'   identification.
 #' @param ... arguments passed to [phyloseq::phyloseq()]
-#' @seealso [phyloseq::phyloseq()],
-#' @references [Is it bad practice to access S4 objects slots directly using @?](https://stackoverflow.com/questions/9900134/is-it-bad-practice-to-access-s4-objects-slots-directly-using/9900822#9900822)
+#' @seealso [phyloseq::phyloseq()]
 #' @name microbiomeMarker
 #' @export
 #' @return  a [`microbiomeMarker-class`] object.
@@ -187,7 +188,7 @@ validity_microbiomeMarker <- function(object) {
   }
 
   # if (!is.null(norm_factor) && length(norm_factor) != nsamples(object)) {
-  #   msg <- c(msg, "the length of `norm_factor` must be equal to sample numbers")
+  #   msg <- c(msg, "length of `norm_factor` must be equal to sample number")
   # }
 
   # marker in marker_table must be contained in tax_table
@@ -227,8 +228,8 @@ setValidity("microbiomeMarker", validity_microbiomeMarker)
 #' The postHocTest Class, represents the result of post-hoc test result among
 #' multiple groups
 #'
-#' @slot result  a [`IRanges::DataFrameList-class`], each `DataFrame` consists of
-#' five variables:
+#' @slot result  a [`IRanges::DataFrameList-class`], each `DataFrame` consists
+#' of five variables:
 #' * `comparisons`: character, specify which two groups to test (the group names
 #'   are separated by "_)
 #' * `diff_mean`: numeric, difference in mean abundances
@@ -303,8 +304,41 @@ validity_postHocTest <- function(object) {
 setValidity("postHocTest", validity_postHocTest)
 
 
-#' Build postHocTest
-#' @noRd
+#' Build postHocTest object
+#'
+#' This function is used for create `postHocTest` object, and is only used for
+#' developers.
+#'
+#' @param result a [`IRanges::SimpleDFrameList-class`] object.
+#' @param abundance data.frame.
+#' @param conf_level numeric, confidence level.
+#' @param method character, method for posthoc test.
+#' @param  method_str character, illustrates which method is used for posthoc
+#'   test.
+#' @return a [`postHocTest-class`] object.
+#' @export
+#' @examples
+#' require(IRanges)
+#' pht <- postHocTest(
+#'   result = DataFrameList(
+#'     featureA = DataFrame(
+#'       comparisons = c("group2-group1", "group3-group1", "group3-group2"),
+#'       diff_mean = runif(3),
+#'       pvalue = rep(0.01, 3),
+#'       ci_lower = rep(0.01, 3),
+#'       ci_upper = rep(0.011, 3)),
+#'     featureB = DataFrame(
+#'       comparisons = c("group2-group1", "group3-group1", "group3-group2"),
+#'       diff_mean = runif(3),
+#'       pvalue = rep(0.01, 3),
+#'       ci_lower = rep(0.01, 3),
+#'       ci_upper = rep(0.011, 3))),
+#'  abundance = data.frame(
+#'    featureA = runif(3),
+#'    featureB = runif(3),
+#'    group = c("group1", "group2", "grou3"))
+#' )
+#' pht
 postHocTest <- function(result,
                         abundance,
                         conf_level = 0.95,

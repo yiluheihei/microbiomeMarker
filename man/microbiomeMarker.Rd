@@ -17,7 +17,8 @@ microbiomeMarker(
 \item{norm_method}{character, method used to normalize the input \code{phyloseq}
 object.}
 
-\item{diff_method}{character, method used for microbiome marker identification.}
+\item{diff_method}{character, method used for microbiome marker
+identification.}
 
 \item{...}{arguments passed to \code{\link[phyloseq:phyloseq]{phyloseq::phyloseq()}}}
 }
@@ -25,8 +26,8 @@ object.}
 a \code{\linkS4class{microbiomeMarker}} object.
 }
 \description{
-This the constructor to build the \code{\linkS4class{microbiomeMarker}} object, don't use
-the \code{new()} constructor.
+This the constructor to build the \code{\linkS4class{microbiomeMarker}} object, don't
+use the \code{new()} constructor.
 }
 \examples{
 microbiomeMarker(
@@ -51,9 +52,6 @@ microbiomeMarker(
    row.names = c("sample1", "sample2")))
 )
 }
-\references{
-\href{https://stackoverflow.com/questions/9900134/is-it-bad-practice-to-access-s4-objects-slots-directly-using/9900822#9900822}{Is it bad practice to access S4 objects slots directly using @?}
-}
 \seealso{
-\code{\link[phyloseq:phyloseq]{phyloseq::phyloseq()}},
+\code{\link[phyloseq:phyloseq]{phyloseq::phyloseq()}}
 }

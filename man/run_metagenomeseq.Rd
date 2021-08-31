@@ -38,7 +38,8 @@ OTU or ASV).}
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
 options include:
 \itemize{
-\item "identity", return the original data without any transformation (default).
+\item "identity", return the original data without any transformation
+(default).
 \item "log10", the transformation is \code{log10(object)}, and if the data contains
 zeros the transformation is \code{log10(1 + object)}.
 \item "log10p", the transformation is \code{log10(1 + object)}.

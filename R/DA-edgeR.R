@@ -9,11 +9,11 @@
 #' @param contrast this parameter only used for two groups comparison while
 #'   there are multiple groups. For more please see the following details.
 #' @param taxa_rank character to specify taxonomic rank to perform
-#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
-#'   or "all" means to summarize the taxa by the top taxa ranks
-#'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
-#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
-#'   OTU or ASV).
+#'   differential analysis on. Should be one of
+#'   `phyloseq::rank_names(phyloseq)`, or "all" means to summarize the taxa by
+#'   the top taxa ranks (`summarize_taxa(ps, level = rank_names(ps)[1])`), or
+#'   "none" means perform differential analysis on the original taxa
+#'   (`taxa_names(phyloseq)`, e.g., OTU or ASV).
 #' @param method character, used for differential analysis, please see details
 #'   below for more info.
 #' @param transform character, the methods used to transform the microbial
@@ -51,7 +51,7 @@
 #'   used for dispersions estimation. Most users will not need to pass any
 #'   additional arguments here.
 #' @param p_adjust method for multiple test correction, default `none`,
-#' for more details see [stats::p.adjust].
+#'   for more details see [stats::p.adjust].
 #' @param pvalue_cutoff numeric, p value cutoff, default 0.05
 #' @param ... extra arguments passed to the model. See [`edgeR::glmQLFit()`]
 #'   and [`edgeR::glmFit()`] for more details.

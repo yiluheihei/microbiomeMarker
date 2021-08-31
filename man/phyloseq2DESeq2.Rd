@@ -14,8 +14,9 @@ for each gene depend on the variables in colData. Many R formula are valid,
 including designs with multiple variables, e.g., \code{~ group + condition}.
 This argument is passed to \code{\link[DESeq2:DESeqDataSet]{DESeq2::DESeqDataSetFromMatrix()}}.}
 
-\item{...}{additional arguments passed to \code{\link[DESeq2:DESeqDataSet]{DESeq2::DESeqDataSetFromMatrix()}},
-Most users will not need to pass any additional arguments here.}
+\item{...}{additional arguments passed to
+\code{\link[DESeq2:DESeqDataSet]{DESeq2::DESeqDataSetFromMatrix()}}, Most users will not need to pass any
+additional arguments here.}
 }
 \value{
 a \code{\link[DESeq2:DESeqDataSet]{DESeq2::DESeqDataSet}} object.

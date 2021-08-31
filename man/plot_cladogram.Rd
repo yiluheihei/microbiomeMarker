@@ -68,7 +68,6 @@ plot_cladogram(mm_lefse, color = c("darkgreen", "red"))
 }
 \references{
 This function is modified from \code{clada.anno} from microbiomeViz.
-\url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}i
 }
 \seealso{
 \code{\link[ggtree:ggtree]{ggtree::ggtree()}}

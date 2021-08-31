@@ -142,7 +142,8 @@ read_qza <- function(file, temp = tempdir()) {
   } else {
     stop(
       "Only files in format of 'BIOMV210DirFmt', 'TSVTaxonomyDirectoryFormat'",
-      " , 'NewickDirectoryFormat' and 'DNASequencesDirectoryFormat' are supported."
+      " , 'NewickDirectoryFormat' and 'DNASequencesDirectoryFormat'",
+      " are supported."
     )
   }
 
@@ -203,6 +204,7 @@ subset_taxa_in_feature <- function(taxa_tab, feature_tab) {
 #'   taxonomic levels, e.g. k__ or D_0__, default `TRUE`.
 #' @return [`phyloseq::taxonomyTable-class`] object.
 #' @keywords internal
+#' @noRd
 parse_q2taxonomy <- function(taxa, sep = "; |;", trim_rank_prefix = TRUE) {
   taxa <- data.frame(taxa)
   if(trim_rank_prefix){
@@ -228,7 +230,8 @@ parse_q2taxonomy <- function(taxa, sep = "; |;", trim_rank_prefix = TRUE) {
 }
 
 #' check the row.names of feature table is DNA sequence or not
-#' This function is from https://github.com/YuLab-SMU/MicrobiotaProcess/blob/master/R/import_qiime2.R#L169-L177
+#' This function is from
+#' {github}YuLab-SMU/MicrobiotaProcess/blob/master/R/import_qiime2.R#L169-L177
 #' @keywords internal
 #' @noRd
 is_dna_seq <- function(names){

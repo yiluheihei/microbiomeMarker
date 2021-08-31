@@ -3,15 +3,16 @@
 #' @param ps a [`phyloseq::phyloseq-class`] object
 #' @param group character, the variable to set the group
 #' @param taxa_rank character to specify taxonomic rank to perform
-#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
-#'   or "all" means to summarize the taxa by the top taxa ranks
-#'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
-#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
-#'   OTU or ASV).
+#'   differential analysis on. Should be one of
+#'   `phyloseq::rank_names(phyloseq)`, or "all" means to summarize the taxa by
+#'   the top taxa ranks (`summarize_taxa(ps, level = rank_names(ps)[1])`), or
+#'   "none" means perform differential analysis on the original taxa
+#'   (`taxa_names(phyloseq)`, e.g., OTU or ASV).
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
-#'   * "identity", return the original data without any transformation (default).
+#'   * "identity", return the original data without any transformation
+#'     (default).
 #'   * "log10", the transformation is `log10(object)`, and if the data contains
 #'     zeros the transformation is `log10(1 + object)`.
 #'   * "log10p", the transformation is `log10(1 + object)`.
@@ -239,7 +240,10 @@ calc_etasq <- function(feature, group) {
 
   total_ss <- sum((feature - grand_mean)^2)
   feature_split <- split(feature, group)
-  between_group_ss <- purrr::map_dbl(feature_split, ~ sum(.x)*sum(.x)/length(.x))
+  between_group_ss <- purrr::map_dbl(
+    feature_split,
+    ~ sum(.x)*sum(.x)/length(.x)
+  )
   between_group_ss <- sum(between_group_ss) - total_sum*total_sum/n
 
   etasq <- ifelse(total_ss == 0, -1, between_group_ss/total_ss)

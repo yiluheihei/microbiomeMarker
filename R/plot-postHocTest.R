@@ -91,7 +91,8 @@ get_sig_annotation <- function(pht, step_increase = 0.12) {
 #' samples
 #' @param step_increase numeric vector with the increase in fraction of total
 #' height for every additional comparison to minimize overlap, default `0.12`.
-#' @return a data frame with four variables, `start`, `end`, `y_position`, and `annotation`.
+#' @return a data frame with four variables, `start`, `end`, `y_position`,
+#' and `annotation`.
 #' @noRd
 get_sig_annotation_single <- function(abd,
                                       pht_df,
@@ -111,7 +112,10 @@ get_sig_annotation_single <- function(abd,
   start <- purrr::map_chr(comps, 1)
   end <- purrr::map_chr(comps, 2)
   y_max <- purrr::map2_dbl(start, end, ~ max(y_max[.x], y_max[.y]))
-  y_pos <- purrr::map_dbl(seq_len(3),  ~ y_max[.x] + y_range * step_increase *(.x - 1))
+  y_pos <- purrr::map_dbl(
+    seq_len(3),
+    ~ y_max[.x] + y_range * step_increase *(.x - 1)
+  )
 
   annotate_df <- data.frame(
     xmin = start,

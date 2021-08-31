@@ -25,17 +25,18 @@ run_aldex(
 \item{group}{character, the variable to set the group}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
-differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
-or "all" means to summarize the taxa by the top taxa ranks
-(\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or "none" means perform
-differential analysis on the original taxa (\code{taxa_names(phyloseq)}, e.g.,
-OTU or ASV).}
+differential analysis on. Should be one of
+\code{phyloseq::rank_names(phyloseq)}, or "all" means to summarize the taxa by
+the top taxa ranks (\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or
+"none" means perform differential analysis on the original taxa
+(\code{taxa_names(phyloseq)}, e.g., OTU or ASV).}
 
 \item{transform}{character, the methods used to transform the microbial
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
 options include:
 \itemize{
-\item "identity", return the original data without any transformation (default).
+\item "identity", return the original data without any transformation
+(default).
 \item "log10", the transformation is \code{log10(object)}, and if the data contains
 zeros the transformation is \code{log10(1 + object)}.
 \item "log10p", the transformation is \code{log10(1 + object)}.
@@ -67,8 +68,9 @@ cumulative sum of gene abundances up to a data-derived threshold.
 
 \item{norm_para}{arguments passed to specific normalization methods}
 
-\item{method}{test method, options include: "t.test" and "wilcox.test" for two
-groups comparison,  "kruskal" and "glm_anova" for multiple groups comparison.}
+\item{method}{test method, options include: "t.test" and "wilcox.test"
+for two groups comparison,  "kruskal" and "glm_anova" for multiple groups
+comparison.}
 
 \item{p_adjust}{method for multiple test correction, default \code{none},
 for more details see \link[stats:p.adjust]{stats::p.adjust}.}
@@ -91,8 +93,8 @@ of each group is calculated using the set of per-group non-zero features.
 \item "lvha", with house keeping features.
 }}
 
-\item{paired}{logical, whether to perform paired tests, only worked for method
-"t.test" and "wilcox.test".}
+\item{paired}{logical, whether to perform paired tests, only worked for
+method "t.test" and "wilcox.test".}
 }
 \value{
 a \code{\linkS4class{microbiomeMarker}} object.

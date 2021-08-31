@@ -7,12 +7,12 @@
 #'
 #' @format a [phyloseq::phyloseq] object
 #' @references
-#' Caporaso, et al. Moving pictures of the human microbiome. Genome Biol 12, R50 (2011).
+#' Caporaso, et al. Moving pictures of the human microbiome. Genome Biol 12,
+#' R50 (2011).
 #'
-#' \url{https://genomebiology.biomedcentral.com/articles/10.1186/gb-2011-12-5-r50}
+#' \url{https://doi.org/10.1186/gb-2011-12-5-r50}
 #'
-#' @source Data was downloaded from https://www.microbiomeanalyst.ca:
-#' \url{https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/treebiom.zip}
+#' @source Data was downloaded from https://www.microbiomeanalyst.ca
 #'
 #'
 #' @name data-caporaso
@@ -48,7 +48,7 @@ NA
 #' Project Consortium (iHMP). Group label: CD and Controls.
 #'
 #' @format a [`phyloseq::phyloseq-class`] object
-#' @source \url{https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/ibd_data.zip}
+#' @source \url{https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources}
 #' @name data-pediatric_ibd
 #' @aliases pediatric_ibd
 #' @docType data
@@ -90,7 +90,6 @@ NA
 #' and Spanish individuals, and 13 Japanese and 4 American.
 #'
 #' @format a [`phyloseq::phyloseq-class`] object
-#' @source \url{https://github.com/dparks1134/STAMP/tree/master/examples/EnterotypesArumugam}
 #' @references
 #' Arumugam, Manimozhiyan, et al. Enterotypes of the human gut microbiome.
 #' nature 473.7346 (2011): 174-180.
@@ -112,7 +111,6 @@ NA
 #' @references
 #' Kostic et al. Genomic analysis identifies association of Fusobacterium with
 #' colorectal carcinoma. Genome research, 2012, 22(2), 292-298.
-#' \url{https://bioconductor.org/packages/devel/bioc/vignettes/phyloseq/inst/doc/phyloseq-mixture-models.html}
 #' @name data-kostic_crc
 #' @aliases kostic_crc
 #' @docType data

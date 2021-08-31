@@ -11,7 +11,8 @@
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
-#'   * "identity", return the original data without any transformation (default).
+#'   * "identity", return the original data without any transformation
+#'     (default).
 #'   * "log10", the transformation is `log10(object)`, and if the data contains
 #'     zeros the transformation is `log10(1 + object)`.
 #'   * "log10p", the transformation is `log10(1 + object)`.
@@ -153,6 +154,48 @@ run_posthoc_test <- function(ps,
   )
 }
 
+#' Extract results from a posthoc test
+#'
+#' This function extracts the results of posthoc test.
+#'
+#' @param object a [`postHocTest-class`] object.
+#' @param features either `NULL` extracts results of all features, or a
+#'   character vector to specify the test resuts of which features are
+#'   extracted.
+#' @export
+#' @return a [`IRanges::SimpleDFrameList-class`] object.
+#' @examples
+#' require(IRanges)
+#' pht <- postHocTest(
+#'   result = DataFrameList(
+#'     featureA = DataFrame(
+#'       comparisons = c("group2-group1", "group3-group1", "group3-group2"),
+#'       diff_mean = runif(3),
+#'       pvalue = rep(0.01, 3),
+#'       ci_lower = rep(0.01, 3),
+#'       ci_upper = rep(0.011, 3)),
+#'     featureB = DataFrame(
+#'       comparisons = c("group2-group1", "group3-group1", "group3-group2"),
+#'       diff_mean = runif(3),
+#'       pvalue = rep(0.01, 3),
+#'       ci_lower = rep(0.01, 3),
+#'       ci_upper = rep(0.011, 3))),
+#'  abundance = data.frame(
+#'    featureA = runif(3),
+#'    featureB = runif(3),
+#'    group = c("group1", "group2", "grou3"))
+#' )
+#' extract_posthoc_res(pht, "featureA")[[1]]
+extract_posthoc_res <- function(object, features = NULL) {
+  stopifnot(inherits(object, "postHocTest"))
+  res <- object@result
+  if (!is.null(features)) {
+    res <- res[features]
+  }
+
+  res
+}
+
 #' Tukey Post-hoc Tests
 #' @param obs numeric vector, relative abundance of a feature
 #' @param groups character vector, the same length of the argument `obs`
@@ -177,10 +220,10 @@ calc_tukey_test <- function(obs, groups, conf_level = 0.95) {
   res
 }
 
+# https://github.com/kassambara/rstatix/blob/master/R/games_howell_test.R
 #' Games Howell Post-hoc Tests
 #' @importFrom stats var pairwise.table ptukey qtukey
 #' @inheritParams calc_tukey_test
-#' @references https://github.com/kassambara/rstatix/blob/master/R/games_howell_test.R
 #' @noRd
 calc_games_howell_test <- function(obs, groups, conf_level = 0.95) {
   groups <- factor(groups)
@@ -270,11 +313,11 @@ calc_games_howell_test <- function(obs, groups, conf_level = 0.95) {
   res
 }
 
+# https://github.com/AndriSignorell/DescTools/blob/master/R/Tests.r#L3755:1
 #' scheffe Post-hoc Tests
 #' @inheritParams calc_tukey_test
 #' @importFrom stats aov model.tables pf qf
 #' @noRd
-#' @references https://github.com/AndriSignorell/DescTools/blob/master/R/Tests.r#L3755:1
 calc_scheffe_test<- function(obs, groups, conf_level=0.95){
   x <- aov(obs ~ groups)
   mm <- model.tables(x, "means")

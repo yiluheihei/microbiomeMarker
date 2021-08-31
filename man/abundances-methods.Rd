@@ -44,6 +44,6 @@ data(caporaso)
 abd <- abundances(caporaso)
 }
 \seealso{
-\code{\linkS4class{otu_table}}, \code{\linkS4class{phyloseq}}, \code{\linkS4class{microbiomeMarker}},
-\code{\link{transform_abundances}}
+\code{\linkS4class{otu_table}}, \code{\linkS4class{phyloseq}},
+\code{\linkS4class{microbiomeMarker}},\code{\link{transform_abundances}}
 }

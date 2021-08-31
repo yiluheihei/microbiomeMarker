@@ -44,7 +44,11 @@ add_prefix_summarized <- function(ps, ranks_prefix, sep = "|") {
   tax_split <- strsplit(tax, split = sep, fixed = TRUE)
 
   if (max(lengths(tax_split)) != length(ranks_prefix)) {
-    stop("The length of `ranks_prefix` muste be equal to number of taxonomic ranks.")
+    stop(
+      "The length of `ranks_prefix` muste be",
+      " equal to number of taxonomic ranks.",
+      call. = FALSE
+    )
   }
 
   # ensure the ranks_prefix is contained in available_ranks
@@ -147,15 +151,17 @@ keep_taxa_in_rows <- function(ps) {
   ps
 }
 
+# https://github.com/lch14forever/microbiomeVizb
+# /94cbfe452a735aadf88733b27b8221a03f450a55/R/utils.R#L68-L86
+#
 #' Duplicated taxa: e.g. maybe multiple species (s__uncultured)
 #' belong to different genera. append the upper level taxa to the taxa to
 #' distinguish this duplicated taxa
-#' @param ps [phyloseq::phyloseq-class] object or [phyloseq::taxonomyTable-class]
-#'   object
+#' @param ps [phyloseq::phyloseq-class] object or
+#'   [phyloseq::taxonomyTable-class] object
 #' @importFrom phyloseq tax_table<-
 #' @keywords internal
 #' @noRd
-#' @references https://github.com/lch14forever/microbiomeViz/blob/94cbfe452a735aadf88733b27b8221a03f450a55/R/utils.R#L68-L86
 fix_duplicate_tax <- function(ps) {
   # convert na to Unknown first
   ps <- fix_na_tax(ps)
@@ -355,12 +361,14 @@ create_pairwise_contrast <- function(groups) {
 }
 
 
-# extract the specify rank of phyloseq object, return a phyloseq object with only one rank
+# extract the specify rank of phyloseq object, return a phyloseq object
+# with only one rank
 extract_rank <- function(ps, taxa_rank) {
   ranks <- rank_names(ps)
   if (! taxa_rank %in% c("none", ranks)) {
     stop(
-      "`taxa_rank` must be one of options: none, ", paste(rank_names(ps), collapse = ", "),
+      "`taxa_rank` must be one of options: none, ",
+      paste(rank_names(ps), collapse = ", "),
       call. = FALSE
     )
   }
@@ -426,7 +434,7 @@ return_marker <- function(sig_feature, all_feature) {
 # For multiple groups comparison of LRT test of DESeq2.
 # Only fold changes of pair-wise comparisons are supported in DESse2.
 # https://support.bioconductor.org/p/131272/#131450
-# https://github1s.com/qiime2/q2-composition/blob/HEAD/q2_composition/_ancom.py
+# https://github.com/qiime2/q2-composition/blob/HEAD/q2_composition/_ancom.py
 #'
 #' Calculate effect size, mean differences for two groups, and f statistic of
 #' one-way anova for multiple groups.

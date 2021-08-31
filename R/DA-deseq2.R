@@ -12,7 +12,7 @@
 # DESeq2 contrast: https://github.com/tavareshugo/tutorial_DESeq2_contrasts
 #
 # reference source code:
-# https://github.com/biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
+# biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
 # https://github.com/hbctraining/DGE_workshop/blob/master/schedule/1.5-day.md
 #
 #
@@ -42,11 +42,11 @@
 #' @param contrast this parameter only used for two groups comparison while
 #'   there are multiple groups. For more please see the following details.
 #' @param taxa_rank character to specify taxonomic rank to perform
-#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
-#'   or "all" means to summarize the taxa by the top taxa ranks
-#'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
-#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
-#'   OTU or ASV).
+#'   differential analysis on. Should be one of
+#'   `phyloseq::rank_names(phyloseq)`, or "all" means to summarize the taxa by
+#'   the top taxa ranks (`summarize_taxa(ps, level = rank_names(ps)[1])`), or
+#'   "none" means perform differential analysis on the original taxa
+#'   (`taxa_names(phyloseq)`, e.g., OTU or ASV).
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
@@ -99,7 +99,7 @@
 #' @details
 #' **Note**: DESeq2 requires the input is raw counts (un-normalized counts), as
 #' only the counts values allow assessing the measurement precision correctly.
-#' For more details see the [vignette of DESeq2](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data).
+#' For more details see the vignette of DESeq2 (`vignette("DESeq2")`).
 #'
 #' Thus, this function only supports "none", "rarefy", "RLE", "CSS", and
 #' "TMM" normalization methods. We strongly recommend using the "RLE" method
@@ -186,6 +186,8 @@ run_deseq2 <- function(ps,
   groups <- sam_tab[[group]]
   if (!is.factor(groups)) {
     groups <- factor(groups)
+    sam_tab[[group]] <- groups
+    sample_data(ps) <- sam_tab
   }
   lvl <- levels(groups)
   n_lvl <- length(lvl)
@@ -242,7 +244,7 @@ run_deseq2 <- function(ps,
   ps_normed <- do.call(normalize, norm_para)
 
   # # norm factors of RLE method
-  # suppressWarnings(dds <- phyloseq2DESeq2(ps, design = dsg))
+  # dds <- phyloseq2DESeq2(ps, design = dsg)
   # norm_para <- c(norm_para, type = sfType, counts = list(counts(dds)))
   # nf <- do.call(estimateSizeFactorsForMatrix, norm_para)
 
@@ -260,10 +262,10 @@ run_deseq2 <- function(ps,
   }
 
   dsg <- formula(paste("~", group))
-  suppressWarnings(dds_summarized <- phyloseq2DESeq2(
+  dds_summarized <- phyloseq2DESeq2(
     ps_summarized,
     design = dsg
-  ))
+  )
   nf <- get_norm_factors(ps_normed)
   if (!is.null(nf)) {
     sizeFactors(dds_summarized) <- nf
@@ -281,7 +283,7 @@ run_deseq2 <- function(ps,
   # after 1e-8)
   # https://support.bioconductor.org/p/63845/
   # https://support.bioconductor.org/p/122757/
-  # https://github.com/biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
+  # biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
   # if (! missing(contrast) && n_lvl = 3) {
   #   stop("`contrast` is used for Wald test", call. = FALSE)
   # }
@@ -411,7 +413,6 @@ run_deseq2 <- function(ps,
   # outliers, as identified using Cook's distance.
 
   # normalized counts
-  # https://bioinformatics.stackexchange.com/questions/193/how-can-i-extract-normalized-read-count-values-from-deseq2-results
   counts_normalized <- DESeq2::counts(dds_summarized, normalized = TRUE)
 
   # one way anova f statistic for LRT
@@ -493,8 +494,9 @@ run_deseq2 <- function(ps,
 #'   for each gene depend on the variables in colData. Many R formula are valid,
 #'   including designs with multiple variables, e.g., `~ group + condition`.
 #'   This argument is passed to [`DESeq2::DESeqDataSetFromMatrix()`].
-#' @param ... additional arguments passed to [`DESeq2::DESeqDataSetFromMatrix()`],
-#'   Most users will not need to pass any additional arguments here.
+#' @param ... additional arguments passed to
+#'   [`DESeq2::DESeqDataSetFromMatrix()`], Most users will not need to pass any
+#'   additional arguments here.
 #' @export
 #' @return a [`DESeq2::DESeqDataSet-class`] object.
 #' @seealso [`DESeq2::DESeqDataSetFromMatrix()`],[`DESeq2::DESeq()`]
@@ -527,7 +529,8 @@ phyloseq2DESeq2 <- function(ps, design, ...) {
     ),
     error = function(e) e
   )
-  if (inherits(dds, "error") && conditionMessage(dds) == "some values in assay are not integers") {
+  if (inherits(dds, "error") &&
+      conditionMessage(dds) == "some values in assay are not integers") {
     warning(
       "Not all reads are integers, the reads are `ceiling` to integers.\n",
       "   Raw reads is recommended from the ALDEx2 paper.",
@@ -581,7 +584,11 @@ estimateSizeFactorsForMatrix <- function(counts,
     loggeomeans <- log(geoMeans)
   }
   if (all(is.infinite(loggeomeans))) {
-    stop("every gene contains at least one zero, cannot compute log geometric means")
+    stop(
+      "every gene contains at least one zero ",
+      "cannot compute log geometric means",
+      call. = FALSE
+    )
   }
   sf <- if (missing(controlGenes)) {
     apply(counts, 2, function(cnts) {
@@ -592,9 +599,13 @@ estimateSizeFactorsForMatrix <- function(counts,
       stop("controlGenes should be either a numeric or logical vector")
     }
     loggeomeansSub <- loggeomeans[controlGenes]
-    apply(counts[controlGenes,,drop=FALSE], 2, function(cnts) {
-      exp(locfunc((log(cnts) - loggeomeansSub)[is.finite(loggeomeansSub) & cnts > 0]))
-    })
+    apply(
+      counts[controlGenes,,drop=FALSE], 2,
+      function(cnts) {
+        idx <- is.finite(loggeomeansSub) & cnts > 0
+        exp(locfunc((log(cnts) - loggeomeansSub)[idx]))
+      }
+    )
   }
   if (incomingGeoMeans | type == "poscounts") {
     # stabilize size factors to have geometric mean of 1
@@ -687,7 +698,7 @@ estimateSizeFactorsForMatrix <- function(counts,
 #'     # model not as formula, so DESeq() is using supplied model matrix
 #'     if (!quiet) message("using supplied model matrix")
 #'     if (betaPrior == TRUE) {
-#'       stop("betaPrior=TRUE is not supported for user-provided model matrices")
+#'       stop("betaPrior=TRUE is not supported for user-provided model matrix")
 #'     }
 #'     DESeq2:::checkFullRank(full)
 #'     # this will be used for dispersion estimation and testing

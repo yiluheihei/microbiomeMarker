@@ -9,7 +9,7 @@
 a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object
 }
 \source{
-\url{https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/ibd_data.zip}
+\url{https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources}
 }
 \description{
 43 pediatric IBD stool samples obtained from the Integrative Human Microbiome

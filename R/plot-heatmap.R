@@ -54,7 +54,11 @@ plot_heatmap <- function(mm,
     ind <- match(markers, marker$feature)
     ind_na <- is.na(ind)
     if (all(ind_na)) {
-      stop("all the elements of `markers` should be a contained in marker_table")
+      stop(
+        "all the elements of `markers`",
+        " should be a contained in marker_table",
+        call. = FALSE
+      )
     }
 
     if (any(ind_na)) {

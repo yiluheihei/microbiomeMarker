@@ -33,11 +33,11 @@ the var of the sample metadata.}
 there are multiple groups. For more please see the following details.}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
-differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
-or "all" means to summarize the taxa by the top taxa ranks
-(\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or "none" means perform
-differential analysis on the original taxa (\code{taxa_names(phyloseq)}, e.g.,
-OTU or ASV).}
+differential analysis on. Should be one of
+\code{phyloseq::rank_names(phyloseq)}, or "all" means to summarize the taxa by
+the top taxa ranks (\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or
+"none" means perform differential analysis on the original taxa
+(\code{taxa_names(phyloseq)}, e.g., OTU or ASV).}
 
 \item{norm}{the methods used to normalize the microbial abundance data. See
 \code{\link[=normalize]{normalize()}} for more details.
@@ -109,7 +109,7 @@ using \strong{DESeq2}.
 \details{
 \strong{Note}: DESeq2 requires the input is raw counts (un-normalized counts), as
 only the counts values allow assessing the measurement precision correctly.
-For more details see the \href{http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data}{vignette of DESeq2}.
+For more details see the vignette of DESeq2 (\code{vignette("DESeq2")}).
 
 Thus, this function only supports "none", "rarefy", "RLE", "CSS", and
 "TMM" normalization methods. We strongly recommend using the "RLE" method

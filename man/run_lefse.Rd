@@ -32,17 +32,18 @@ run_lefse(
 \item{subgroup}{character, the column name to set the subgroup}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
-differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
-or "all" means to summarize the taxa by the top taxa ranks
-(\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or "none" means perform
-differential analysis on the original taxa (\code{taxa_names(phyloseq)}, e.g.,
-OTU or ASV).}
+differential analysis on. Should be one of
+\code{phyloseq::rank_names(phyloseq)}, or "all" means to summarize the taxa by
+the top taxa ranks (\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or
+"none" means perform differential analysis on the original taxa
+(\code{taxa_names(phyloseq)}, e.g., OTU or ASV).}
 
 \item{transform}{character, the methods used to transform the microbial
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
 options include:
 \itemize{
-\item "identity", return the original data without any transformation (default).
+\item "identity", return the original data without any transformation
+(default).
 \item "log10", the transformation is \code{log10(object)}, and if the data contains
 zeros the transformation is \code{log10(1 + object)}.
 \item "log10p", the transformation is \code{log10(1 + object)}.
@@ -105,7 +106,8 @@ among the subgroups with the same name, default \code{FALSE}}
 Curtis's approach, defalt \code{FALSE}}
 }
 \value{
-a \linkS4class{microbiomeMarker} object, in which the \code{slot} of \code{marker_table}
+a \linkS4class{microbiomeMarker} object, in which the \code{slot} of
+\code{marker_table}
 contains four variables:
 \itemize{
 \item \code{feature}, significantly different features.

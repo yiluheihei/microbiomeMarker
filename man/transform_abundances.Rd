@@ -7,7 +7,8 @@
 transform_abundances(object, transform = c("identity", "log10", "log10p"))
 }
 \arguments{
-\item{object}{\code{\linkS4class{otu_table}}, \code{\linkS4class{phyloseq}}, or \code{\linkS4class{microbiomeMarker}}.}
+\item{object}{\code{\linkS4class{otu_table}}, \code{\linkS4class{phyloseq}}, or
+\code{\linkS4class{microbiomeMarker}}.}
 
 \item{transform}{transformation to apply, the options inclulde:
 \itemize{

@@ -49,7 +49,8 @@ programs/softwares for different DA methods may be development using different
 programming languages, even in different operating systems. Here, we have 
 developed an all-in-one R/Bioconductor package 
 [`microbiomeMarker`](https://yiluheihei.github.io/microbiomeMarker) 
-that integrates commonly used differential analysis methods as well as three machine learning-based approaches (Logistic regression, Random forest, and 
+that integrates commonly used differential analysis methods as well as three
+machine learning-based approaches (Logistic regression, Random forest, and 
 Support vector machine) to facilitate the identification of microbiome markers.
 
 # Installation
@@ -89,7 +90,8 @@ library(microbiomeMarker)
 research community, and `phyloseq-class` objects are a great 
 data-standard for microbiome data in R. Therefore, the core functions in 
 `microbiomeMarker` take `phyloseq-class` object as input. 
-Conveniently, `microbiomeMarker` provides features to import external metagenomic abundance profiles from two popular microbiome analysis pipelines,
+Conveniently, `microbiomeMarker` provides features to import external
+metagenomic abundance profiles from two popular microbiome analysis pipelines,
 [qiime2](http://qiime.org/) [@bolyen2019reproducible] and
 [dada2](https://benjjneb.github.io/dada2) [@callahan2016dada2], and return a
 `phyloseq-class` object.
@@ -167,12 +169,12 @@ Moreover, `microbiomeMarker` reexports three import functions from
 `import_mothur()`, to help users to import abundance data from 
 [biom file](http://biom-format.org/), [qiime1](http://www.qiime.org/), and 
 [mothur](http://www.mothur.org/). More details on these three import functions 
-can be see from 
-[here](https://joey711.github.io/phyloseq/import-data.html#the_import_family_of_functions).
+can be see from [here](https://joey711.github.io/phyloseq/import-data.html#the_import_family_of_functions).
 
 Users can also import the external files into `phyloseq-class` object manually.
 For more details on how to create `phyloseq-class` object from manually 
-imported data, please see [this tutorial](http://joey711.github.io/phyloseq/import-data.html#manual).
+imported data, please see 
+[this tutorial](http://joey711.github.io/phyloseq/import-data.html#manual).
 
 ## Output microbiomeMaker-class object
 
@@ -221,7 +223,8 @@ in the original measurements prior to DA [@weiss2017normalization]. Here in
   abundances were normalized by dividing the corresponding sample library
   size.
 - `TMM`: trimmed mean of m-values. First, a sample
-  is chosen as reference. The scaling factor is then derived using a weighted    trimmed mean over the differences of the log-transformed gene-count         
+  is chosen as reference. The scaling factor is then derived using a weighted
+  trimmed mean over the differences of the log-transformed gene-count         
   fold-change between the sample and the reference.
 - `RLE`: relative log expression, RLE uses a pseudo-reference calculated
   using the geometric mean of the gene-specific abundances over all
@@ -277,9 +280,11 @@ mm_test <- normalize(kostic_crc, method = "CPM") %>%
 ## Simple statitical tests {#simple-stat}
 
 In practice, simple statitical tests such as t-test (for two groups 
-comparison) and Kruskal-Wallis rank sum test (for multiple groups comparison) are frequently used for metagenomic differential analysis. STAMP 
+comparison) and Kruskal-Wallis rank sum test (for multiple groups comparison)
+are frequently used for metagenomic differential analysis. STAMP 
 [parks2014stamp] is a widely-used graphical software package that provides 
-"best pratices" in choose appropriate statistical methods for metagenomic analysis. Here in `microbiomeMarker`, `t-test`, Welch’s `t-test`, and White’s
+"best pratices" in choose appropriate statistical methods for metagenomic 
+analysis. Here in `microbiomeMarker`, `t-test`, Welch’s `t-test`, and White’s
 non-parametric `t-test` are provided for two groups comparison, and  ANOVA and
 Kruskal–Wallis test for multiple groups comparions.
 
@@ -331,7 +336,8 @@ analysis.
 Some models developed specifically for RNA-Seq data have been proposed for 
 metagenomic differential analysis. Three popular methods, including DESeq2 
 [@love2014moderated] (`run_deseq2()`), edgeR [@robinson2010edger] 
-(`run_edger()`), and Voom [@law2014voom] (`run_limma_voom()`) are provided in `microbiomeMarker`.
+(`run_edger()`), and Voom [@law2014voom] (`run_limma_voom()`) are provided in
+`microbiomeMarker`.
 
 Here we take edgeR method as an example.
 
@@ -372,9 +378,11 @@ are also provided in our package. All these methods have greater power to
 detect differentially features than simple statistical tests by incorporating 
 more sensitive tests.
 
-Curently, LEfSe is the most popular tool for microbiome biomarker discovery. Here we take LEfSe method for example:
+Curently, LEfSe is the most popular tool for microbiome biomarker discovery. 
+Here we take LEfSe method for example:
 
 ```{r lefse}
+data(kostic_crc)
 mm_lefse <- run_lefse(
   kostic_crc,
   wilcoxon_cutoff = 0.01,
@@ -423,7 +431,8 @@ caution for a smaller dataset.**
 
 All the DE methods in ***microbiomeMarker***, except for simple statistical 
 tests for two groups comparison (`test_mulitple_groups()`), can be used for
-multiple groups comparison, that is to find markers that differ between any of the groups by analyze all groups at once. Users can perform post-hoc test to 
+multiple groups comparison, that is to find markers that differ between any of 
+the groups by analyze all groups at once. Users can perform post-hoc test to 
 identify which pairs of groups may differ from each other using 
 `run_posthoc_test()`. Apparently, the mutliple groups comparison will result in
 a larger number of genes than the individual pair-wise comparisons.
@@ -439,14 +448,15 @@ markers
 # take a marker "p__Bacteroidetes|g__Bacteroides"  
 # for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from 
 # between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
-pht@result$"p__Bacteroidetes|g__Bacteroides"
+extract_posthoc_res(pht, "p__Bacteroidetes|g__Bacteroides")[[1]]
 ```
 
 In addition, for the five linear models-based methods, including edgeR, DESeq2, 
 metagenoSeq, limma-voom, and ANCOMBC, users can perform pair-wise comparisons by
 setting the argument `contrast`, a two length character in which the first 
 element is the reference level (donominator of the logFC) and the second element
-is used as baseline (numerator for fold change). For more details on `contrast` argument, please see the help page of the corresponding functions. Here we take
+is used as baseline (numerator for fold change). For more details on `contrast` 
+argument, please see the help page of the corresponding functions. Here we take
 limma-voom method as example:
 
 ```{r pair-wise-linear}
@@ -467,7 +477,8 @@ marker_table(mm_lv_pair)
 In `microbiomeMarker`, users can visualize the microbiome biomarker in
 different ways, such as box plot, bar plot, dot plot, heatmap, and cladogram.
 Except for heatmap,  all these plots are generated using the most flexible and
-popular data visualization package `r CRANpkg("ggplot2")`. Therefore, these plots can be easily customized before they are generated using the build-in 
+popular data visualization package `r CRANpkg("ggplot2")`. Therefore, these 
+plots can be easily customized before they are generated using the build-in 
 functions of `r CRANpkg("ggplot2")`, e.g. using `theme()` to modify the titles 
 and labels. Heatmap is generated using a fantastic Bioconductor package 
 `r Biocpkg("ComplexHeatmap")` package.
@@ -561,7 +572,8 @@ p_pht <- plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
 p_pht
 ```
 
-The pot-hoc plots were wrapped using `r CRANpkg("patchwork")`, and users can modifying the themes of all subplots using `&`.
+The pot-hoc plots were wrapped using `r CRANpkg("patchwork")`, and users can 
+modifying the themes of all subplots using `&`.
 
 ```{r customize-p-pht}
 p_pht & theme_bw()
@@ -571,7 +583,9 @@ p_pht & theme_bw()
 # Citation
 
 Kindly cite as follows:  Yang Cao (2020). microbiomeMarker: microbiome 
-biomarker analysis. R package version 0.0.1.9000. https://github.com/yiluheihei/microbiomeMarker. DOI: [10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
+biomarker analysis. R package version 0.0.1.9000. 
+https://github.com/yiluheihei/microbiomeMarker. DOI: 
+[10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
 
 # Question
 
@@ -582,7 +596,8 @@ Please briefly describe your problem, what output actually happened, and what
 output you expect.
 
 Please provide a minimal reproducible example. For more details on how to make 
-a great minimal reproducible example, see [how to make a great r reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example) and https://www.tidyverse.org/help/#reprex.
+a great minimal reproducible example, see [how to make a great r reproducible 
+example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example) and https://www.tidyverse.org/help/#reprex.
 
 # Session information {-}
 

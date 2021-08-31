@@ -9,8 +9,7 @@
 a \link[phyloseq:phyloseq]{phyloseq::phyloseq} object
 }
 \source{
-Data was downloaded from https://www.microbiomeanalyst.ca:
-\url{https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/treebiom.zip}
+Data was downloaded from https://www.microbiomeanalyst.ca
 }
 \description{
 16S read counts and phylogenetic tree file of 34 Illumina samples derived
@@ -19,9 +18,10 @@ gut, left palm, right palm, and tongue - indicating different sampled body
 sites.
 }
 \references{
-Caporaso, et al. Moving pictures of the human microbiome. Genome Biol 12, R50 (2011).
+Caporaso, et al. Moving pictures of the human microbiome. Genome Biol 12,
+R50 (2011).
 
-\url{https://genomebiology.biomedcentral.com/articles/10.1186/gb-2011-12-5-r50}
+\url{https://doi.org/10.1186/gb-2011-12-5-r50}
 }
 \author{
 Yang Cao

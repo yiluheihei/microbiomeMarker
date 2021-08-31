@@ -8,9 +8,6 @@
 \format{
 a \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}} object
 }
-\source{
-\url{https://github.com/dparks1134/STAMP/tree/master/examples/EnterotypesArumugam}
-}
 \description{
 The data contains 22 European metagenomes from Danish, French, Italian,
 and Spanish individuals, and 13 Japanese and 4 American.

@@ -16,7 +16,6 @@ attribute assigned and with less than 500 reads (counts) were removed, and
 \references{
 Kostic et al. Genomic analysis identifies association of Fusobacterium with
 colorectal carcinoma. Genome research, 2012, 22(2), 292-298.
-\url{https://bioconductor.org/packages/devel/bioc/vignettes/phyloseq/inst/doc/phyloseq-mixture-models.html}
 }
 \author{
 Yang Cao

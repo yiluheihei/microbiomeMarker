@@ -370,7 +370,7 @@ norm_clr <- function(object) {
   object
 }
 
-# reference: https://github.com/joey711/shiny-phyloseq/blob/master/panels/paneldoc/Transform.md
+# {github}/joey711/shiny-phyloseq/blob/master/panels/paneldoc/Transform.md
 gm_mean <- function(x, na.rm = TRUE){
   # The geometric mean, with some error-protection bits.
   exp(sum(log(x[x > 0 & !is.na(x)]), na.rm = na.rm) / length(x))

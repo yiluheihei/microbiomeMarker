@@ -25,7 +25,10 @@ plot_abundance <- function(mm,
   sample_meta <- sample_data(mm)
   sample_meta_nms <- names(sample_meta)
   if (!group %in% sample_meta_nms) {
-    stop("`group_var` must be one of the sample-level variables", call. = FALSE)
+    stop(
+      "`group_var` must be one of the sample-level variables",
+      call. = FALSE
+    )
   }
 
   marker <- marker_table(mm)
@@ -35,7 +38,11 @@ plot_abundance <- function(mm,
     ind <- match(markers, marker$feature)
     ind_na <- is.na(ind)
     if (all(ind_na)) {
-      stop("all the elements of `markers` should be a contained in marker_table")
+      stop(
+        "all the elements of `markers` should",
+        " be a contained in marker_table",
+        call. = FALSE
+      )
     }
 
     if (any(ind_na)) {

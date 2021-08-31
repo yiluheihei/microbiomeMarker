@@ -17,10 +17,10 @@
 #' @details
 #' The output of the dada2 pipeline is a feature table of amplicon sequence
 #' variants (an ASV table): A matrix with rows corresponding to samples and
-#' columns to ASVs, in which the value of each entry is the number of times that
-#' ASV was observed in that sample. This table is analogous to the traditional
-#' OTU table. Conveniently, taxa names are saved as ASV1, ASV2, ..., in the
-#' returned phyloseq object.
+#' columns to ASVs, in which the value of each entry is the number of times
+#' that ASV was observed in that sample. This table is analogous to the
+#' traditional OTU table. Conveniently, taxa names are saved as ASV1, ASV2,
+#' ..., in the returned phyloseq object.
 #' @importFrom phyloseq sample_data read_tree
 #' @importMethodsFrom phyloseq t
 #' @return [`phyloseq::phyloseq-class`] object hold the taxonomy info,

@@ -83,8 +83,8 @@ one of "aov", "wilcox.test",  "kruskal.test".}
 \item{...}{additional arguments passed to the test function.}
 }
 \value{
-a \linkS4class{microbiomeMarker} object, in which the \code{slot} of \code{marker_table}
-contains four variables:
+a \linkS4class{microbiomeMarker} object, in which the \code{slot} of
+\code{marker_table} contains four variables:
 \itemize{
 \item \code{feature}, significantly different features.
 \item \code{enrich_group}, the class of the differential features enriched.

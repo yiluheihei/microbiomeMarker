@@ -24,8 +24,8 @@ multiple groups
 \section{Slots}{
 
 \describe{
-\item{\code{result}}{a \code{\link[IRanges:DataFrameList-class]{IRanges::DataFrameList}}, each \code{DataFrame} consists of
-five variables:
+\item{\code{result}}{a \code{\link[IRanges:DataFrameList-class]{IRanges::DataFrameList}}, each \code{DataFrame} consists
+of five variables:
 \itemize{
 \item \code{comparisons}: character, specify which two groups to test (the group names
 are separated by "_)

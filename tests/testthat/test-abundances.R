@@ -27,13 +27,8 @@ test_that("abundances",{
 })
 
 test_that("abundances normalization", {
-  abd <- abundances(ps)
-  abd_norm <- normalize(ps, "CSS")
-  nf <- get_norm_factors(abd_norm)
-
-  expect_identical(
-    abundances(abd_norm, norm = TRUE),
-    sweep(abd, 2, nf, "/")
-  )
-  expect_identical(abd, abundances(abd_norm))
+  abd_norm <- normalize(ps, "TSS")
+  expect_true(all(colSums(otu_table(abd_norm)) == 1))
+  expect_is(abd_norm, "phyloseq")
+  expect_is(normalize(otu_table(ps)), "otu_table")
 })

@@ -31,7 +31,7 @@ data(caporaso)
 phyloseq2metagenomeSeq(caporaso)
 }
 \seealso{
-\code{\link[metagenomeSeq:fitTimeSeries]{metagenomeSeq::fitTimeSeries()}},\code{\link[metagenomeSeq:fitLogNormal]{metagenomeSeq::fitLogNormal()}},
-\code{\link[metagenomeSeq:fitZig]{metagenomeSeq::fitZig()}},\code{\link[metagenomeSeq:MRtable]{metagenomeSeq::MRtable()}},
-\code{\link[metagenomeSeq:MRfulltable]{metagenomeSeq::MRfulltable()}}
+\code{\link[metagenomeSeq:fitTimeSeries]{metagenomeSeq::fitTimeSeries()}},
+\code{\link[metagenomeSeq:fitLogNormal]{metagenomeSeq::fitLogNormal()}},\code{\link[metagenomeSeq:fitZig]{metagenomeSeq::fitZig()}},
+\code{\link[metagenomeSeq:MRtable]{metagenomeSeq::MRtable()}},\code{\link[metagenomeSeq:MRfulltable]{metagenomeSeq::MRfulltable()}}
 }

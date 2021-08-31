@@ -66,8 +66,8 @@
 #' [`stats::wilcox.test()`]. If there are more than 2 groups, use nonparametric
 #' [`stats::kruskal.test()`] or one-way ANOVA [`stats::aov()`].
 #'
-#' @return a [microbiomeMarker-class] object, in which the `slot` of `marker_table`
-#' contains four variables:
+#' @return a [microbiomeMarker-class] object, in which the `slot` of
+#' `marker_table` contains four variables:
 #' * `feature`, significantly different features.
 #' * `enrich_group`, the class of the differential features enriched.
 #' *  `effect_size`, differential means for two groups, or F statistic for more
@@ -227,7 +227,7 @@ run_ancom <- function(ps,
   mm
 }
 
-# https://github.com/biocore/scikit-bio/blob/master/skbio/stats/composition.py#L811
+# github/biocore/scikit-bio/blob/master/skbio/stats/composition.py#L811
 #' Calculates pairwise pvalues between all features
 #' @param feature_table matrix-like, logged feature table.
 #' @param classes character vector, the same length with `log_ratio`.
@@ -294,9 +294,9 @@ calc_ancom_p <- function(log_ratio, classes, test, ...) {
 
 
 #' Identify structural zeros
+#' from "FrederickHuangLin/ANCOMBC/R/get_struc_zero.R"
 #'
 #' @author Huang Lin, Yang Cao
-#' @references \url{https://github.com/FrederickHuangLin/ANCOMBC/blob/master/R/get_struc_zero.R}
 #' @noRd
 get_struc_zero <- function(ps, group, neg_lb) {
   stopifnot(inherits(ps, "phyloseq"))

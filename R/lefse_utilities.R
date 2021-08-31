@@ -69,7 +69,8 @@ check_bootstrap_sample <- function(feature_abundance,
     for (i in seq_along(ncol(cls_abundance))) {
       unique_abd <- length(unique(cls_abundance[[i]]))
 
-      if ((unique_abd <= sample_min && sample_min > 1) || (unique_abd <= 1 && sample_min == 1)) {
+      if ((unique_abd <= sample_min && sample_min > 1) ||
+          (unique_abd <= 1 && sample_min == 1)) {
         return(FALSE)
       }
     }
@@ -141,7 +142,8 @@ bootstap_lda_one <- function(feature_abundance,
   if (!is_checked) {
     stop(
       "Too small samples in each class",
-      " or the variance of feature abundances within a class too small (zero or near zero)",
+      " or the variance of feature abundances within a",
+      " class too small (zero or near zero)",
       call. = FALSE
     )
   }
@@ -200,7 +202,11 @@ cal_pair_lda <- function(feature_abundance,
   )
 
   # res <- lapply(pair,
-  #   function(x) ifelse(x %in% row.names(lda_res$means), lda_res$means[x, ], rep(0, feature_n))
+  #   function(x)
+  #     ifelse(
+  #       x %in% row.names(lda_res$means),
+  #       lda_res$means[x, ], rep(0, feature_n)
+  #     )
   # )
   names(res) <- pair
 

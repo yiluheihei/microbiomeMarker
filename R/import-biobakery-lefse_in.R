@@ -1,38 +1,39 @@
 #' @title Import function to read the tab-delimited input file of biobakery
 #' lefse
 #'
-#' @description For biobakey lefse, the input file must be a tab-delimited text,
-#' consists of a list of numerical features, the class vector and optionally the
-#' subclass and subject vectors. The features can be read counts directly or
-#' abundance floating-point values more generally, and the first field is the
-#' name of the feature. Class, subclass and subject vectors have a name (the
-#' first field) and a list of non-numerical strings. This function requires the
-#' features are organized in rows, although both column and row feature
-#' organization is accepted in biobakery lefse.
+#' @description For biobakey lefse, the input file must be a tab-delimited
+#' text, consists of a list of numerical features, the class vector and
+#' optionally the subclass and subject vectors. The features can be read counts
+#' directly or abundance floating-point values more generally, and the first
+#' field is the name of the feature. Class, subclass and subject vectors have a
+#' name (the first field) and a list of non-numerical strings. This function
+#' requires the features are organized in rows, although both column and row
+#' feature organization is accepted in biobakery lefse.
 #'
 #' @param file the file path of tab-delimited input file of biobakery lefse
 #' @param ranks_prefix character vector, prefix of taxonomic ranks to add,
 #'   e.g. "p" for "Phylum", "g" for "Genus".
 #' @param meta_rows integer vector, set which rows represent the meta data,
 #'   such as class, subclass and subject, default `1`.
-#' @param sep character, separator between different taxnomic ranks, default `|`.
-#'
+#' @param sep character, separator between different taxnomic ranks,
+#'   default `|`.
+#' @noRd
 #' @return a [`phyloseq::phyloseq-class`] object.
-#' @export
 #' @examples
-#' file <- system.file(
-#'   "extdata",
-#'   "hmp_small_aerobiosis.txt",
-#'   package = "microbiomeMarker"
-#' )
+#' # file <- system.file(
+#' #   "extdata",
+#' #   "hmp_small_aerobiosis.txt",
+#' #   package = "microbiomeMarker"
+#' # )
 #' # six level of taxonomic ranks,
 #' # meta data: row 1 represents class (oxygen_availability),
-#' # row 2 represents subclass (body_site), row 3 represents subject (subject_id)
-#' ps <- import_biobakery_lefse_in(
-#'   file,
-#'   ranks_prefix = c("k", "p", "c", "o", "f", "g"),
-#'   meta_rows = 1:3,
-#' )
+#' # row 2 represents subclass (body_site),
+#' # row 3 represents subject (subject_id)
+#' # ps <- import_biobakery_lefse_in(
+#' #   file,
+#' #   ranks_prefix = c("k", "p", "c", "o", "f", "g"),
+#' #   meta_rows = 1:3,
+#' # )
 import_biobakery_lefse_in <- function(file,
                                       ranks_prefix,
                                       meta_rows = 1,

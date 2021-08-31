@@ -31,7 +31,6 @@
 #' @seealso [ggtree::ggtree()]
 #' @export
 #' @references This function is modified from `clada.anno` from microbiomeViz.
-#' \url{https://github.com/lch14forever/microbiomeViz/blob/master/R/visualizer.R}i
 #' @examples
 #' data(kostic_crc)
 #' mm_lefse <- run_lefse(
@@ -88,7 +87,10 @@ plot_cladogram <- function(mm,
   # hilight legend
   # default: colors were matched for in alphabetical of groups, which requires
   # arrange hilights_df according to enrich_group
-  hilights_df <- dplyr::distinct(annotation_info, .data$enrich_group, .data$color) %>%
+  hilights_df <- dplyr::distinct(
+    annotation_info,
+    .data$enrich_group,
+    .data$color) %>%
     arrange(.data$enrich_group)
   hilights_df$x <- 0
   hilights_df$y <- 1
@@ -175,7 +177,7 @@ get_short_label_id <- function(clade_label, clade_label_level) {
 }
 
 #' Get unique id for short label annotation
-#' @references https://stackoverflow.com/questions/21681785/repeating-vector-of-letters/21689613#21689613
+#' {so}/questions/21681785/repeating-vector-of-letters/21689613#21689613
 #' @keywords internal
 #' @noRd
 get_unique_id <- function(n, depth =  1) {
@@ -249,7 +251,6 @@ get_treedata_phyloseq <- function(ps, sep = "|") {
     }
   }
 
-  # prefix <- ifelse(!grepl("__$", taxa_deepest), gsub("(.*)__.*", "\\1", taxa_deepest), substr()
   levels <- purrr::map_chr(nodes, ~ gsub("__.*$", "", .x)) %>%
     factor(levels = rev(prefix))
   # levels used for extend of clade label

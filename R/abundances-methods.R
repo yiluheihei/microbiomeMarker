@@ -14,8 +14,8 @@
 #' @param norm logical, indicating whether or not to return the normalized
 #'   taxa abundances.
 #' @return abundance matrix with taxa in rows and samples in columns.
-#' @seealso [`otu_table-class`], [`phyloseq-class`], [`microbiomeMarker-class`],
-#' [`transform_abundances`]
+#' @seealso [`otu_table-class`], [`phyloseq-class`],
+#' [`microbiomeMarker-class`],[`transform_abundances`]
 #' @docType methods
 #' @rdname abundances-methods
 #' @export
@@ -54,7 +54,8 @@ setMethod(abundances, "otu_table",
     # otu <- as(object, "matrix")
     #
     # # ensure taxa are on the rows
-    # if (!taxa_are_rows(object) && ntaxa(object) > 1 && nsamples(object) > 1) {
+    # if (!taxa_are_rows(object) && ntaxa(object) > 1
+    #     && nsamples(object) > 1) {
     #   otu <- t(otu)
     # }
     #

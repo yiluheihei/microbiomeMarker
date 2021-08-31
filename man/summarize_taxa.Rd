@@ -13,8 +13,7 @@ summarize_taxa(ps, level = rank_names(ps)[1], absolute = TRUE, sep = "|")
 \code{ps}.}
 
 \item{absolute}{logical, whether return the absolute abundance or
-relative abundance, default \code{FALSE}
-FALSE.}
+relative abundance, default \code{FALSE}.}
 
 \item{sep}{a character string to separate the taxonomic levels.}
 }

@@ -14,8 +14,8 @@ markers and variables represents feature of the marker.
 \item{\code{names,row.names}}{a character vector, inherited from the input
 data.frame}
 
-\item{\code{.data}}{a list, each element corresponding the each column of the input
-data.frame}
+\item{\code{.data}}{a list, each element corresponding the each column of the
+input data.frame}
 
 \item{\code{.S3Class}}{character, the S3 class \code{marker_table} inherited from:
 "\code{data.frame}"}

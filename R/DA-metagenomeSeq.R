@@ -2,11 +2,12 @@
 # are useful summary tables of the model outputs. We currently recommend using
 # the zero-inflated log-normal model as implemented in fitFeatureModel.
 #
-# https://github.com/biocore/qiime/blob/master/qiime/support_files/R/fitZIG.r
-# https://github.com/xia-lab/MicrobiomeAnalystR/blob/master/R/general_anal.R#L505
+# biocore/qiime/blob/master/qiime/support_files/R/fitZIG.r
+# /xia-lab/MicrobiomeAnalystR/blob/master/R/general_anal.R#L505
 # https://support.bioconductor.org/p/78230/
 
-# Difference between fitFeatureModel and fitZIG in metagenomeSeq, https://support.bioconductor.org/p/94138/.
+# Difference between fitFeatureModel and fitZIG in metagenomeSeq,
+# https://support.bioconductor.org/p/94138/.
 #
 # fitFeatureModel doesn't seem to allow for multiple comparisons.
 
@@ -29,7 +30,8 @@
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
-#'   * "identity", return the original data without any transformation (default).
+#'   * "identity", return the original data without any transformation
+#'     (default).
 #'   * "log10", the transformation is `log10(object)`, and if the data contains
 #'     zeros the transformation is `log10(1 + object)`.
 #'   * "log10p", the transformation is `log10(1 + object)`.
@@ -81,7 +83,8 @@
 #' [`metagenomeSeq::fitFeatureModel()`] is analogous to coefficient. Thus,
 #' logFC is really just the estimate the coefficient of interest in
 #' [`metagenomeSeq::fitFeatureModel()`]. For more details see
-#' these question [Difference between fitFeatureModel and fitZIG in metagenomeSeq](https://support.bioconductor.org/p/94138/).
+#' these question [Difference between fitFeatureModel and fitZIG
+#' in metagenomeSeq](https://support.bioconductor.org/p/94138/).
 #'
 #' `contrast` must be a two length character or `NULL` (default). It is only
 #' required to set manually for two groups comparison when there are multiple
@@ -162,7 +165,13 @@ run_metagenomeseq <- function(ps,
   if (n_lvl > 2) {
     old_contrast_nms <- row.names(contrast_new)
     contrast_new <- rbind(contrast_new, rep(0, ncol(contrast_new)))
-    row.names(contrast_new) <- c(old_contrast_nms, "scalingFactor")
+    # row names of contrasts consistent with of coefficients
+    # otherwise, warning: row names of contrasts don't match col names of
+    # coefficients in the following `contrast.fit()`
+    row.names(contrast_new) <- c(
+      paste0("groups", old_contrast_nms),
+      "scalingFactor"
+    )
   }
 
   # preprocess phyloseq object
@@ -236,8 +245,8 @@ run_metagenomeseq <- function(ps,
       )
     }
 
-    # metagenomeSeq vignette: We recommend the user remove features based on the
-    # number of estimated effective samples, please see
+    # metagenomeSeq vignette: We recommend the user remove features based on
+    # the number of estimated effective samples, please see
     # calculateEffectiveSamples. We recommend removing features with less than
     # the average number of effective samples in all features. In essence,
     # setting eff = .5 when using MRcoefs, MRfulltable, or MRtable.
@@ -264,9 +273,7 @@ run_metagenomeseq <- function(ps,
     fit <- metagenomeSeq::fitZig(mgs_summarized, mod, ...)
     zigfit <- slot(fit, "fit")
     # warning: row names of contrasts don't match col names of coefficients
-    suppressWarnings(
-      new_fit <- limma::contrasts.fit(zigfit, contrasts = contrast_new)
-    )
+    new_fit <- limma::contrasts.fit(zigfit, contrasts = contrast_new)
     new_fit <- limma::eBayes(new_fit)
     res <- limma::topTable(
       new_fit,
@@ -354,9 +361,9 @@ run_metagenomeseq <- function(ps,
 #'   [`metagenomeSeq::newMRexperiment()`]. Most users will not need to pass
 #'   any additional arguments here.
 #' @return A [`metagenomeSeq::MRexperiment-class`] object.
-#' @seealso [`metagenomeSeq::fitTimeSeries()`],[`metagenomeSeq::fitLogNormal()`],
-#'   [`metagenomeSeq::fitZig()`],[`metagenomeSeq::MRtable()`],
-#'   [`metagenomeSeq::MRfulltable()`]
+#' @seealso [`metagenomeSeq::fitTimeSeries()`],
+#'   [`metagenomeSeq::fitLogNormal()`],[`metagenomeSeq::fitZig()`],
+#'   [`metagenomeSeq::MRtable()`],[`metagenomeSeq::MRfulltable()`]
 #' @export
 #' @importFrom Biobase AnnotatedDataFrame
 #' @importMethodsFrom phyloseq t

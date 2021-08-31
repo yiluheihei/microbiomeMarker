@@ -6,15 +6,16 @@
 #' @param group character, the column name to set the group
 #' @param subgroup character, the column name to set the subgroup
 #' @param taxa_rank character to specify taxonomic rank to perform
-#'   differential analysis on. Should be one of `phyloseq::rank_names(phyloseq)`,
-#'   or "all" means to summarize the taxa by the top taxa ranks
-#'   (`summarize_taxa(ps, level = rank_names(ps)[1])`), or "none" means perform
-#'   differential analysis on the original taxa (`taxa_names(phyloseq)`, e.g.,
-#'   OTU or ASV).
+#'   differential analysis on. Should be one of
+#'   `phyloseq::rank_names(phyloseq)`, or "all" means to summarize the taxa by
+#'   the top taxa ranks (`summarize_taxa(ps, level = rank_names(ps)[1])`), or
+#'   "none" means perform differential analysis on the original taxa
+#'   (`taxa_names(phyloseq)`, e.g., OTU or ASV).
 #' @param transform character, the methods used to transform the microbial
 #'   abundance. See [`transform_abundances()`] for more details. The
 #'   options include:
-#'   * "identity", return the original data without any transformation (default).
+#'   * "identity", return the original data without any transformation
+#'     (default).
 #'   * "log10", the transformation is `log10(object)`, and if the data contains
 #'     zeros the transformation is `log10(1 + object)`.
 #'   * "log10p", the transformation is `log10(1 + object)`.
@@ -65,7 +66,8 @@
 #' @importFrom stats p.adjust
 #' @importFrom phyloseq rank_names tax_glom
 #' @export
-#' @return a [microbiomeMarker-class] object, in which the `slot` of `marker_table`
+#' @return a [microbiomeMarker-class] object, in which the `slot` of
+#' `marker_table`
 #' contains four variables:
 #' * `feature`, significantly different features.
 #' * `enrich_group`, the class of the differential features enriched.
@@ -225,7 +227,7 @@ run_lefse <- function(ps,
   #   lefse_out <- marker_table(lefse_res)
   #   if (norm != "CPM") {
   #     warning(
-  #       "CPM normalization method is recommended according to the lefse paper",
+  #       "CPM normalization method is recommended according to lefse paper",
   #       call. = FALSE
   #     )
   #   }
@@ -253,8 +255,9 @@ run_lefse <- function(ps,
     # norm_factor = nf,
     diff_method = "lefse",
     # tax_table = tax_table(ps),
-    otu_table = otu_table(otus, taxa_are_rows = TRUE), # normalized feature table
-    sam_data = sample_data(ps_normed), # new var norm_factor (if it is calculated in normalize)
+    otu_table = otu_table(otus, taxa_are_rows = TRUE), # normalized
+    # new var norm_factor (if it is calculated in normalize)
+    sam_data = sample_data(ps_normed),
     tax_table = tax
   )
 

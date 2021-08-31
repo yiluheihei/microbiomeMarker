@@ -30,18 +30,18 @@ options include:
 \item "lefse", linear discriminant analysis (LDA) effect size (LEfSe) method,
 for more details see \code{\link[=run_lefse]{run_lefse()}}.
 \item "simple_t", "simple_welch", "simple_white", "simple_kruskal",
-and "simple_anova", simple statistic methods; "simple_t", "simple_welch",
+and "simple_anova", simple statistic methods; "simple_t", "simple_welch"
 and "simple_white" for two groups comparison; "simple_kruskal", and
 "simple_anova" for multiple groups comparison. For more details see
 \code{\link[=run_simple_stat]{run_simple_stat()}}.
 \item "edger", see \code{\link[=run_edger]{run_edger()}}.
-"deseq2", see \code{\link[=run_deseq2]{run_deseq2()}}.
+\item "deseq2", see \code{\link[=run_deseq2]{run_deseq2()}}.
 \item "metagenomeseq", differential expression analysis based on the
 Zero-inflated Log-Normal mixture model or Zero-inflated Gaussian mixture
 model using metagenomeSeq, see \code{\link[=run_metagenomeseq]{run_metagenomeseq()}}.
 \item "ancom", see \code{\link[=run_ancom]{run_ancom()}}.
-\item "ancombc", differential analysis of compositions of microbiomes with bias
-correction, see \code{\link[=run_ancombc]{run_ancombc()}}.
+\item "ancombc", differential analysis of compositions of microbiomes with
+bias correction, see \code{\link[=run_ancombc]{run_ancombc()}}.
 \item "aldex", see \code{\link[=run_aldex]{run_aldex()}}.
 \item "limma_voom", see \code{\link[=run_limma_voom]{run_limma_voom()}}.
 \item "sl_lr", "sl_rf", and "sl_svm", there supervised leaning (SL) methods:
@@ -50,17 +50,18 @@ logistic regression (lr), random forest (rf), or support vector machine
 }}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
-differential analysis on. Should be one of \code{phyloseq::rank_names(phyloseq)},
-or "all" means to summarize the taxa by the top taxa ranks
-(\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or "none" means perform
-differential analysis on the original taxa (\code{taxa_names(phyloseq)}, e.g.,
-OTU or ASV).}
+differential analysis on. Should be one of
+\code{phyloseq::rank_names(phyloseq)}, or "all" means to summarize the taxa by
+the top taxa ranks (\code{summarize_taxa(ps, level = rank_names(ps)[1])}), or
+"none" means perform differential analysis on the original taxa
+(\code{taxa_names(phyloseq)}, e.g., OTU or ASV).}
 
 \item{transform}{character, the methods used to transform the microbial
 abundance. See \code{\link[=transform_abundances]{transform_abundances()}} for more details. The
 options include:
 \itemize{
-\item "identity", return the original data without any transformation (default).
+\item "identity", return the original data without any transformation
+(default).
 \item "log10", the transformation is \code{log10(object)}, and if the data contains
 zeros the transformation is \code{log10(1 + object)}.
 \item "log10p", the transformation is \code{log10(1 + object)}.
@@ -77,9 +78,9 @@ data set.
 abundances were normalized by dividing the corresponding sample library
 size.
 \item "TMM": trimmed mean of m-values. First, a sample is chosen as reference.
-The scaling factor is then derived using a weighted trimmed mean over the
-differences of the log-transformed gene-count fold-change between the
-sample and the reference.
+The scaling factor is then derived using a weighted trimmed mean over
+the differences of the log-transformed gene-count fold-change between
+the sample and the reference.
 \item "RLE", relative log expression, RLE uses a pseudo-reference calculated
 using the geometric mean of the gene-specific abundances over all
 samples. The scaling factors are then calculated as the median of the
@@ -107,9 +108,9 @@ a \code{\linkS4class{microbiomeMarker}} object.
 \code{run_marker} is a wrapper of all differential analysis functions.
 }
 \details{
-This function is only a wrapper of all differential analysis functions,
-We recommend to use the corresponding function, since it has a better default
-arguments setting.
+This function is only a wrapper of all differential analysis
+functions, We recommend to use the corresponding function, since it has a
+better default arguments setting.
 }
 \seealso{
 \code{\link[=run_lefse]{run_lefse()}},\code{\link[=run_simple_stat]{run_simple_stat()}},\code{\link[=run_test_two_groups]{run_test_two_groups()}},

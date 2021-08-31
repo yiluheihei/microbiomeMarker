@@ -29,9 +29,10 @@ document of \code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}.
 \item{\code{norm_method}}{character, method used to normalize the input \code{phyloseq}
 object.}
 
-\item{\code{diff_method}}{character, method used for microbiome marker identification.}
+\item{\code{diff_method}}{character, method used for marker identification.}
 }}
 
 \seealso{
-\code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}, \code{\linkS4class{marker_table}}, \code{\link[=summarize_taxa]{summarize_taxa()}}
+\code{\link[phyloseq:phyloseq-class]{phyloseq::phyloseq}}, \code{\linkS4class{marker_table}},
+\code{\link[=summarize_taxa]{summarize_taxa()}}
 }
