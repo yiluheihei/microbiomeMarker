@@ -23,20 +23,20 @@ test_that("check the norm factors in metagenomeSeq", {
 })
 
 test_that("result of metagenomeSeq", {
-  data(pediatric_ibd)
-  mm_mgs <- run_metagenomeseq(
-    pediatric_ibd,
-    "Class",
-    # contrast = c("CD","Control"),
-    pvalue_cutoff = 0.1,
-    p_adjust = "fdr"
-  )
-
-  expect_output_file(
-    print(marker_table(mm_mgs), digits = 5),
-    test_path("out/test-metagenomeSeq.txt"),
-    print = TRUE
-  )
+  # data(pediatric_ibd)
+  # mm_mgs <- run_metagenomeseq(
+  #   pediatric_ibd,
+  #   "Class",
+  #   # contrast = c("CD","Control"),
+  #   pvalue_cutoff = 0.1,
+  #   p_adjust = "fdr"
+  # )
+  # 
+  # expect_output_file(
+  #   print(marker_table(mm_mgs), digits = 5),
+  #   test_path("out/test-metagenomeSeq.txt"),
+  #   print = TRUE
+  # )
 
   ps <- phyloseq::phyloseq(
     otu_table = otu_table(

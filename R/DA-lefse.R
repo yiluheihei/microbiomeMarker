@@ -81,7 +81,7 @@
 #' data(kostic_crc)
 #' kostic_crc_small <- phyloseq::subset_taxa(
 #'   kostic_crc,
-#'   Phylum %in% c("Firmicutes")
+#'   Phylum == "Firmicutes"
 #' )
 #' mm_lefse <- run_lefse(
 #'   kostic_crc_small,

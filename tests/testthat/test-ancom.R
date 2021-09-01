@@ -39,7 +39,8 @@ test_that("ancom result", {
     ecam, "delivery",
     test = "wilcox.test",
     p_adjust = "BH",
-    W_cutoff = 0
+    W_cutoff = 0,
+    taxa_rank = "Class"
   )
   curr_marker <- marker_table(ancom_res)
   expect_known_output(

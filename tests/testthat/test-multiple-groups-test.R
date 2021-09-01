@@ -1,22 +1,16 @@
 context("test multiple group enterotype test")
 
-
 data(enterotypes_arumugam)
 enterotype <- phyloseq::subset_samples(
   enterotypes_arumugam,
   Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
 )
-mm_anova <- run_test_multiple_groups(
-  enterotype,
-  group = "Enterotype",
-  method = "anova",
-  effect_size_cutoff = 0.7
-)
-mm_kruskal <-  run_test_multiple_groups(
-  enterotype,
-  group = "Enterotype",
-  method = "kruskal"
-)
+# mm_anova <- run_test_multiple_groups(
+#   enterotype,
+#   group = "Enterotype",
+#   method = "anova",
+#   effect_size_cutoff = 0.7
+# )
 
 tukey_res <- run_posthoc_test(enterotype, "Enterotype", method = "tukey")
 
@@ -34,17 +28,11 @@ test_that("test multiple group enterotype result", {
     fixed = TRUE
   )
 
-  expect_known_output(
-    print(marker_table(mm_anova), digits = 5),
-    test_path("out/test-multiple-group-anova.txt"),
-    print = TRUE
-  )
-
-  expect_known_output(
-    print(marker_table(mm_kruskal), digits = 5),
-    test_path("out/test-multiple-group-kruk.txt"),
-    print = TRUE
-  )
+  # expect_known_output(
+  #   print(marker_table(mm_anova), digits = 5),
+  #   test_path("out/test-multiple-group-anova.txt"),
+  #   print = TRUE
+  # )
 
 })
 
@@ -54,44 +42,6 @@ test_that("test post hoc test result", {
       tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]],
       digits = 5),
     test_path("out/posthoc-turkey.txt"),
-    print = TRUE
-  )
-
-  games_res <- run_posthoc_test(
-    enterotype, "Enterotype",
-    method = "games_howell"
-  )
-  expect_known_output(
-    print(
-      games_res@result[["p__Bacteroidetes|g__Bacteroides"]],
-      digits = 5),
-    test_path("out/posthoc-games.txt"),
-    print = TRUE
-  )
-
-  scheffe_res <- run_posthoc_test(
-    enterotype,
-    "Enterotype",
-    method = "scheffe"
-  )
-  expect_known_output(
-    print(
-      scheffe_res@result[["p__Bacteroidetes|g__Bacteroides"]],
-      digits = 5),
-    test_path("out/posthoc-scheffe.txt"),
-    print = TRUE
-  )
-
-  welch_res <- run_posthoc_test(
-    enterotype,
-    "Enterotype" ,
-    method = "welch_uncorrected"
-  )
-  expect_known_output(
-    print(
-      welch_res@result[["p__Bacteroidetes|g__Bacteroides"]],
-      digits = 5),
-    test_path("out/posthoc-welch.txt"),
     print = TRUE
   )
 })

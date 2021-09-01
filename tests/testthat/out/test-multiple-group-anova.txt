@@ -1,6 +1,0 @@
-                                feature enrich_group ef_eta_squared     pvalue
-marker1 p__Bacteroidetes|g__Bacteroides Enterotype 1        0.76337 8.3968e-10
-marker2  p__Bacteroidetes|g__Prevotella Enterotype 2        0.72123 9.0364e-09
-              padj
-marker1 8.3968e-10
-marker2 9.0364e-09

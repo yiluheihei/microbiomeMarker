@@ -95,24 +95,4 @@ test_that("ancombc works correctly", {
     # TRUE
     identical(marker, res)
   }
-  data(ecam)
-
-  mm_ancombc <- run_ancombc(
-    ecam,
-    "delivery",
-    group = "delivery",
-    p_adjust = "holm"
-  )
-  expect_known_output(
-    mm_ancombc,
-    test_path("out/test-ancombc-out.txt"),
-    print = TRUE
-  )
-
-  expect_known_output(
-    marker_table(mm_ancombc),
-    test_path("out/test-ancombc-out_marker.txt"),
-    print = TRUE
-  )
-
 })

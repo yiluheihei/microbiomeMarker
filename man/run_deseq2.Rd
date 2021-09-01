@@ -145,8 +145,8 @@ markers which difference in any of the groups.
 data(enterotypes_arumugam)
 ps <- phyloseq::subset_samples(
   enterotypes_arumugam,
-  Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
-)
+  Enterotype \%in\% c("Enterotype 3", "Enterotype 2")) \%>\%
+  phyloseq::subset_taxa(Phylum \%in\% c("Firmicutes"))
 run_deseq2(ps, group = "Enterotype")
 }
 \references{

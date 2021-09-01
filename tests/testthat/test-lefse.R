@@ -3,8 +3,12 @@ context("test lefse output")
 set.seed(2020)
 # lefse - lda
 data(kostic_crc)
-mm_lefse <- run_lefse(
+kostic_crc_small <- phyloseq::subset_taxa(
   kostic_crc,
+  Phylum == "Firmicutes"
+)
+mm_lefse <- run_lefse(
+  kostic_crc_small,
   wilcoxon_cutoff = 0.01,
   group = "DIAGNOSIS",
   kw_cutoff = 0.01,

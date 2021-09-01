@@ -1,25 +1,21 @@
 test_that("supervised machine learning method workds properly", {
-  mm_lr <- run_sl(enterotypes_arumugam, "Gender", method = "LR")
-  expect_identical(nmarker(mm_lr), 10L)
-
-  mm_svm <- run_sl(
+  data(enterotypes_arumugam)
+  ps_small<- phyloseq::subset_taxa(
     enterotypes_arumugam,
-    nfolds = 2,
-    nrepeats = 2,
-    "Gender",
-    tune_length = 2,
-    method = "SVM"
+    Phylum %in% c("Firmicutes", "Bacteroidetes")
   )
-  expect_identical(nmarker(mm_svm), 10L)
-
-  mm_rf <- run_sl(
-    enterotypes_arumugam,
+  set.seed(2021)
+  mm_lr <- run_sl(
+    ps_small,
+    group = "Gender",
+    taxa_rank = "Genus",
     nfolds = 2,
-    nrepeats = 2,
-    "Gender",
-    tune_length = 2,
-    method = "RF",
-    importance = "impurity"
+    nrepeats = 1,
+    top_n = 15,
+    norm = "TSS",
+    method = "LR",
   )
-  expect_identical(nmarker(mm_rf), 10L)
+  expect_identical(nmarker(mm_lr), 15L)
+  expect_identical(mm_lr@norm_method, "TSS")
+  expect_identical(mm_lr@diff_method, "logistic regression")
 })

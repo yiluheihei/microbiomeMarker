@@ -24,8 +24,8 @@ Visualize the result of post-hoc test using ggplot2
 data(enterotypes_arumugam)
 ps <- phyloseq::subset_samples(
   enterotypes_arumugam,
-  Enterotype \%in\% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
-)
+  Enterotype \%in\% c("Enterotype 3", "Enterotype 2", "Enterotype 1")) \%>\%
+  phyloseq::subset_taxa(Phylum == "Bacteroidetes")
 pht <- run_posthoc_test(ps, group = "Enterotype")
-plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Bacteroides")
+plot_postHocTest(pht, feature = "p__Bacteroidetes|g__Alistipes")
 }

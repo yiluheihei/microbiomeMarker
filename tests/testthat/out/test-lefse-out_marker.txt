@@ -1,42 +1,26 @@
-                                                                                                                                                feature
-marker1                                                                                                         k__Bacteria|p__Firmicutes|c__Clostridia
-marker2                                                                                        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales
-marker3                                                                                                                       k__Bacteria|p__Firmicutes
-marker4                                                                  k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae
-marker5                                    k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroidaceae_Bacteroides
-marker6                                                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae
-marker7                                                 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium
-marker8                         k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium|s__Faecalibacterium_s__
-marker9                                                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae
-marker10 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroidaceae_Bacteroides|s__Bacteroidaceae_Bacteroides_s__
-marker11                                                             k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Porphyromonadaceae
-marker12                                             k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Lachnospiraceae_g__
-marker13                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Lachnospiraceae|g__Lachnospiraceae_g__|s__Lachnospiraceae_g___s__
-marker14                                                                                                                    k__Bacteria|p__Fusobacteria
-marker15                                                                                            k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)
-marker16                                                                         k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales
-marker17                                                     k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae
-marker18                                    k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium
-marker19               k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium|s__Fusobacterium_s__
-marker20       k__Bacteria|p__Fusobacteria|c__Fusobacteria (class)|o__Fusobacteriales|f__Fusobacteriaceae|g__Fusobacterium|s__Fusobacterium necrophorum
+                                                                                                                               feature
+marker1                                                    k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae
+marker2                                k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium
+marker3        k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium|s__Faecalibacterium_s__
+marker4                                                                                        k__Bacteria|p__Firmicutes|c__Clostridia
+marker5                                                                       k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales
+marker6                             k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcaceae_g__
+marker7  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcaceae_g__|s__Ruminococcaceae_g___s__
+marker8                                                                                           k__Bacteria|p__Firmicutes|c__Bacilli
+marker9                                                                        k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales
+marker10             k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Streptococcaceae|g__Streptococcus|s__Streptococcus_s__
+marker11                                                   k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Streptococcaceae
+marker12                                  k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Streptococcaceae|g__Streptococcus
          enrich_group   ef_lda       pvalue         padj
-marker1       Healthy 4.938091 2.577541e-06 2.577541e-06
-marker2       Healthy 4.938091 2.577541e-06 2.577541e-06
-marker3       Healthy 4.842391 1.425032e-04 1.425032e-04
-marker4       Healthy 4.820702 3.706059e-04 3.706059e-04
-marker5       Healthy 4.820702 3.706059e-04 3.706059e-04
-marker6       Healthy 4.727401 6.529659e-07 6.529659e-07
-marker7       Healthy 4.567419 1.472091e-06 1.472091e-06
-marker8       Healthy 4.565791 1.607569e-06 1.607569e-06
-marker9       Healthy 4.531028 5.482858e-04 5.482858e-04
-marker10      Healthy 4.460333 1.612268e-03 1.612268e-03
-marker11      Healthy 4.047894 3.822362e-03 3.822362e-03
-marker12      Healthy 4.002610 3.414996e-03 3.414996e-03
-marker13      Healthy 4.002610 3.414996e-03 3.414996e-03
-marker14        Tumor 5.044161 1.054198e-05 1.054198e-05
-marker15        Tumor 5.044161 1.054198e-05 1.054198e-05
-marker16        Tumor 5.044161 1.054198e-05 1.054198e-05
-marker17        Tumor 5.044161 1.054198e-05 1.054198e-05
-marker18        Tumor 4.965072 2.665818e-05 2.665818e-05
-marker19        Tumor 4.844333 4.070856e-05 4.070856e-05
-marker20        Tumor 4.381821 8.750207e-03 8.750207e-03
+marker1       Healthy 4.993303 7.154793e-05 7.154793e-05
+marker2       Healthy 4.832765 5.914547e-04 5.914547e-04
+marker3       Healthy 4.830757 6.043983e-04 6.043983e-04
+marker4       Healthy 4.648541 7.176046e-04 7.176046e-04
+marker5       Healthy 4.648541 7.176046e-04 7.176046e-04
+marker6       Healthy 4.317335 6.990210e-03 6.990210e-03
+marker7       Healthy 4.317335 6.990210e-03 6.990210e-03
+marker8         Tumor 4.648541 7.176046e-04 7.176046e-04
+marker9         Tumor 4.514859 3.267911e-03 3.267911e-03
+marker10        Tumor 4.211031 4.371742e-03 4.371742e-03
+marker11        Tumor 4.122063 4.724670e-03 4.724670e-03
+marker12        Tumor 4.121855 4.812008e-03 4.812008e-03

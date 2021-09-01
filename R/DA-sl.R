@@ -79,7 +79,7 @@
 #' @examples
 #' data(enterotypes_arumugam)
 #' # small example phyloseq object for test
-#' ps_s mall<- phyloseq::subset_taxa(
+#' ps_small<- phyloseq::subset_taxa(
 #'   enterotypes_arumugam,
 #'   Phylum %in% c("Firmicutes", "Bacteroidetes")
 #' )

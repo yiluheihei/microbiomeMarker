@@ -1,49 +1,16 @@
 context("deseq2 algorithm")
 
 test_that("deseq2 algorithm", {
-  data(pediatric_ibd)
-  mm_des <- run_deseq2(
-    pediatric_ibd,
-    "Class",
-    # contrast = c("Control", "CD"),
-    pvalue_cutoff = 0.05,
-    p_adjust = "fdr"
-  )
-
-  expect_output_file(
-    print(marker_table(mm_des), digits = 5),
-    test_path("out/test-deseq2.txt"),
-    print = TRUE
-  )
-
-  # expect_error(
-  #   run_deseq2(
-  #     pediatric_ibd,
-  #     "Class",
-  #     pvalue_cutoff = 0.05,
-  #     p_adjust = "fdr"
-  #   ),
-  #   "`contrast` is requried"
-  # )
-
-  # # test for multiple groups comparison
-  # ps_test <- phyloseq::subset_samples(
-  #   cid_ying,
-  #   Consistency %in% c("formed stool", "liquid", "semi-formed")
-  # )
-  # mm_test <- run_deseq2(
-  #   ps_test,
-  #   "Consistency",
-  #   pvalue_cutoff = 0.05,
-  #   p_adjust = "fdr"
-  # )
-  #
-  # # two groups comparison for multiple groups
-  # mm_test2 <- run_deseq2(
-  #   ps_test,
-  #   "Consistency",
-  #   contrast = c("liquid", "semi-formed"),
-  #   pvalue_cutoff = 0.05,
-  #   p_adjust = "fdr"
+  # data(enterotypes_arumugam)
+  # ps <- phyloseq::subset_samples(
+  #   enterotypes_arumugam,
+  #   Enterotype %in% c("Enterotype 3", "Enterotype 2")) %>%
+  #   phyloseq::subset_taxa(Phylum %in% c("Firmicutes"))
+  # mm_des <- run_deseq2(ps, group = "Enterotype")
+  # 
+  # expect_output_file(
+  #   print(marker_table(mm_des), digits = 5),
+  #   test_path("out/test-deseq2.txt"),
+  #   print = TRUE
   # )
 })

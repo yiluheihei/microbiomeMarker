@@ -19,18 +19,24 @@ Show the ROC curve of the microbiome marker calculated by \code{run_sl}.
 }
 \examples{
 data(enterotypes_arumugam)
-set.seed(2021)
-mm_rf <- run_sl(
+# small example phyloseq object for test
+ps_s <- phyloseq::subset_taxa(
   enterotypes_arumugam,
+  Phylum \%in\% c("Firmicutes", "Bacteroidetes")
+)
+
+set.seed(2021)
+mm <- run_sl(
+  ps_s,
   group = "Gender",
   taxa_rank = "Genus",
-  top_n = 8,
+  nfolds = 2,
+  nrepeats = 1,
+  top_n = 15,
   norm = "TSS",
-  method = "RF",
-  importance = "impurity"
+  method = "LR",
 )
-plot_sl_roc(mm_rf, group = "Gender", importance = "impurity")
-
+plot_sl_roc(mm, group = "Gender")
 }
 \seealso{
 \code{\link[=run_sl]{run_sl()}}
