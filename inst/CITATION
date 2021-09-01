@@ -1,0 +1,14 @@
+citHeader("Please cite the package as follows:")
+
+citEntry(entry="misc",
+  title = "microbiome R package",
+  author = person(given ="Yang", family="Cao", 
+    email = "caoyang.name@gmail.com"),
+  journal = "",
+  year = "2021",
+  textVersion = paste(
+    "microbiomeMarker: microbiome biomarker analysis toolkit.",
+    "R package version 0.99.0.", 
+    "https://github.com/yiluheihei/microbiomeMarker."),
+  doi = "https://doi.org/10.5281/zenodo.3749415"
+)

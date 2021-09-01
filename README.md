@@ -30,10 +30,21 @@ differential analysis methods.
 
 ## Installation
 
-You can install the package directly from github
+Install the package from Bioconductor directly:
 
 ``` r
-if (!require(remotes)) install.packages("remotes")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("microbiomeMarker")
+```
+
+Or install the development version of the package from
+[Github](https://github.com/yiluheihei/microbiomeMarker).
+
+``` r
+if (!requireNamespace("remotes", quietly=TRUE))
+  install.packages("remotes")
 remotes::install_github("yiluheihei/microbiomeMarker")
 ```
 
@@ -45,7 +56,7 @@ our package.
 ## Citation
 
 Kindly cite as follows: Yang Cao (2020). microbiomeMarker: microbiome
-biomarker analysis. R package version 0.0.1.9000.
+biomarker analysis toolkit. R package version 0.99.0.
 <https://github.com/yiluheihei/microbiomeMarker>. doi:
 [10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
 
@@ -71,7 +82,7 @@ Please cite the corresponding methods paper too:
 -   ALDEx2: Fernandes, Andrew D, Jennifer Ns Reid, et al. 2014. Unifying
     the Analysis of High-Throughput Sequencing Datasets: Characterizing
     Rna-Seq, 16S rRNA Gene Sequencing and Selective Growth Experiments
-    by Compositional Data Analysis. Genome Biology 15 (2): 1–17. doi:
+    by Compositional Data Analysis. Genome Biology 15(2): 1–17. doi:
     [10.1186/2049-2618-2-15](https://doi.org/10.1186/2049-2618-2-15)
 -   edgeR: Robinson, Mark D, Davis J McCarthy, and Gordon K Smyth. 2010.
     EdgeR: A Bioconductor Package for Differential Expression Analysis
