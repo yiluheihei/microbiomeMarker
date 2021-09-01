@@ -261,7 +261,7 @@ preprocess_feature <- function(x) {
 #' @param multicls_strat logical, for multiple class tasks, whether the test is
 #'   performed in a one-against one (more strict) or in a one-against all
 #'   setting, default `FALSE`.
-#' @param correct multiple testing options, 0 for no correction (default), 1 for
+#' @param strict multiple testing options, 0 for no correction (default), 1 for
 #'   independent comparisons, 2 for independent comparison
 #' @param sample_min integer, minimum number of samples per subclass for
 #'   performing wilcoxon test, default 10
@@ -275,14 +275,14 @@ test_rep_wilcoxon <- function(subcls,
                               cls_hie,
                               feats_abd,
                               feats_name,
+                              strict = 0,
                               wilcoxon_cutoff = 0.05,
                               multicls_strat = FALSE,
-                              correct = 0,
                               sample_min = 10,
                               only_same_subcls = FALSE,
                               curv = FALSE) {
-  if (!correct %in% c(0, 1, 2)) {
-    stop("`correct` must be 0, 1 or 2")
+  if (!strict %in% c(0, 1, 2)) {
+    stop("`strict` must be 0, 1 or 2")
   }
 
   cls_nms <- names(cls_hie)
@@ -300,10 +300,10 @@ test_rep_wilcoxon <- function(subcls,
     subcls2 <- cls_hie[[pair[2]]]
     subcls2_n <- length(subcls2)
 
-    # multiple correction
-    if (correct != 0) {
+    # multiple tests
+    if (strict != 0) {
       wilcoxon_cutoff <- ifelse(
-        correct == 2,
+        strict == 2,
         wilcoxon_cutoff * subcls1_n * subcls2_n,
         1 - (1 - wilcoxon_cutoff)^(subcls1_n * subcls2_n)
       )

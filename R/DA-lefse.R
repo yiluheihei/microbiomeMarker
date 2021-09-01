@@ -53,8 +53,8 @@
 #' @param multigrp_strat logical, for multiple group tasks, whether the test is
 #'   performed in a one-against one (more strict) or in a one-against all
 #'   setting, default `FALSE`.
-#' @param correct multiple testing options, 0 for no correction (default), 1 for
-#'   independent comparisons, 2 for independent comparison
+#' @param strict multiple testing options, 0 for no correction (default), 1 for
+#'   independent comparisons, 2 for independent comparison.
 #' @param sample_min integer, minimum number of samples per subclass for
 #'   performing wilcoxon test, default 10
 #' @param only_same_subgrp logical, whether perform the wilcoxon test only
@@ -104,7 +104,7 @@ run_lefse <- function(ps,
                     bootstrap_fraction = 2/3,
                     wilcoxon_cutoff = 0.05,
                     multigrp_strat = FALSE,
-                    correct = c("0", "1", "2"),
+                    strict = c("0", "1", "2"),
                     sample_min = 10,
                     only_same_subgrp = FALSE,
                     curv = FALSE) {
@@ -120,8 +120,8 @@ run_lefse <- function(ps,
   }
 
   transform <- match.arg(transform, c("identity", "log10", "log10p"))
-  correct <- match.arg(correct, c("0", "1", "2"))
-  correct <- as.numeric(correct)
+  strict <- match.arg(strict, c("0", "1", "2"))
+  strict <- as.numeric(strict)
 
   # import input from the original lefse python script or galaxy,
   # will be dropped in the next release version
@@ -190,7 +190,7 @@ run_lefse <- function(ps,
       .x, .y,
       wilcoxon_cutoff = wilcoxon_cutoff,
       multicls_strat = multigrp_strat,
-      correct = correct,
+      strict = strict,
       sample_min = sample_min,
       only_same_subcls = only_same_subgrp,
       curv = curv

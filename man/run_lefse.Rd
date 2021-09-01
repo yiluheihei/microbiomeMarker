@@ -18,7 +18,7 @@ run_lefse(
   bootstrap_fraction = 2/3,
   wilcoxon_cutoff = 0.05,
   multigrp_strat = FALSE,
-  correct = c("0", "1", "2"),
+  strict = c("0", "1", "2"),
   sample_min = 10,
   only_same_subgrp = FALSE,
   curv = FALSE
@@ -93,8 +93,8 @@ bootstrap iteration, default \code{2/3}}
 performed in a one-against one (more strict) or in a one-against all
 setting, default \code{FALSE}.}
 
-\item{correct}{multiple testing options, 0 for no correction (default), 1 for
-independent comparisons, 2 for independent comparison}
+\item{strict}{multiple testing options, 0 for no correction (default), 1 for
+independent comparisons, 2 for independent comparison.}
 
 \item{sample_min}{integer, minimum number of samples per subclass for
 performing wilcoxon test, default 10}
