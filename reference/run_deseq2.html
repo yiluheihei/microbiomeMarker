@@ -299,8 +299,8 @@ biology 15.12 (2014): 1-21.</p>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
 <span class='va'>ps</span> <span class='op'>&lt;-</span> <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html'>subset_samples</a></span><span class='op'>(</span>
   <span class='va'>enterotypes_arumugam</span>,
-  <span class='va'>Enterotype</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span><span class='op'>)</span>
-<span class='op'>)</span>
+  <span class='va'>Enterotype</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html'>subset_taxa</a></span><span class='op'>(</span><span class='va'>Phylum</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Firmicutes"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'>run_deseq2</span><span class='op'>(</span><span class='va'>ps</span>, group <span class='op'>=</span> <span class='st'>"Enterotype"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: Not all reads are integers, the reads are `ceiling` to integers.</span>
 #&gt; <span class='warning'>   Raw reads is recommended from the ALDEx2 paper.</span></div><div class='output co'>#&gt; <span class='message'>converting counts to integer mode</span></div><div class='output co'>#&gt; <span class='message'>  Note: levels of factors in the design contain characters other than</span>
@@ -324,10 +324,10 @@ biology 15.12 (2014): 1-21.</p>
 #&gt; <span class='message'>  for column names in R. [This is a message, not a warning or an error]</span></div><div class='output co'>#&gt; microbiomeMarker-class inherited from phyloseq-class
 #&gt; normalization method:              [ RLE ]
 #&gt; microbiome marker identity method: [ DESeq2: Wald ]
-#&gt; marker_table() Marker Table:       [ 17 microbiome markers with 5 variables ]
-#&gt; otu_table()    OTU Table:          [ 235 taxa and  24 samples ]
+#&gt; marker_table() Marker Table:       [ 6 microbiome markers with 5 variables ]
+#&gt; otu_table()    OTU Table:          [ 78 taxa and  24 samples ]
 #&gt; sample_data()  Sample Data:        [ 24 samples by  10 sample variables ]
-#&gt; tax_table()    Taxonomy Table:     [ 235 taxa by 1 taxonomic ranks ]</div></pre>
+#&gt; tax_table()    Taxonomy Table:     [ 78 taxa by 1 taxonomic ranks ]</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

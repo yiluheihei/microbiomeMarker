@@ -222,12 +222,12 @@ information.</p></td>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
 <span class='va'>ps</span> <span class='op'>&lt;-</span> <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html'>subset_samples</a></span><span class='op'>(</span>
   <span class='va'>enterotypes_arumugam</span>,
-  <span class='va'>Enterotype</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span>, <span class='st'>"Enterotype 1"</span><span class='op'>)</span>
-<span class='op'>)</span>
+  <span class='va'>Enterotype</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span>, <span class='st'>"Enterotype 1"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html'>subset_taxa</a></span><span class='op'>(</span><span class='va'>Phylum</span> <span class='op'>==</span> <span class='st'>"Bacteroidetes"</span><span class='op'>)</span>
 <span class='va'>pht</span> <span class='op'>&lt;-</span> <span class='fu'>run_posthoc_test</span><span class='op'>(</span><span class='va'>ps</span>, group <span class='op'>=</span> <span class='st'>"Enterotype"</span><span class='op'>)</span>
 <span class='va'>pht</span>
 </div><div class='output co'>#&gt; postHocTest-class object
-#&gt; Pairwise test result of 238  features,  DataFrameList object, each DataFrame has five variables:
+#&gt; Pairwise test result of 13  features,  DataFrameList object, each DataFrame has five variables:
 #&gt;         comparions    : pair groups to test which separated by '-'
 #&gt;         diff_mean: difference in mean proportions
 #&gt;         pvalue        : post hoc test p values

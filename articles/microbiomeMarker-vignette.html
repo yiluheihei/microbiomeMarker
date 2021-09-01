@@ -410,38 +410,42 @@ fold-change between the sample and the reference.</li>
 <p>Curently, LEfSe is the most popular tool for microbiome biomarker discovery. Here we take LEfSe method for example:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span>
-<span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
+<span class="va">kostic_crc_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html">subset_taxa</a></span><span class="op">(</span>
   <span class="va">kostic_crc</span>,
+  <span class="va">Phylum</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
+  <span class="va">kostic_crc_small</span>,
   wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
   group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,
   kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
   multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,
-  lda_cutoff <span class="op">=</span> <span class="fl">4</span>,
+  lda_cutoff <span class="op">=</span> <span class="fl">4</span>
 <span class="op">)</span>
+
 <span class="va">mm_lefse</span>
 <span class="co">#&gt; microbiomeMarker-class inherited from phyloseq-class</span>
 <span class="co">#&gt; normalization method:              [ CPM ]</span>
 <span class="co">#&gt; microbiome marker identity method: [ lefse ]</span>
-<span class="co">#&gt; marker_table() Marker Table:       [ 20 microbiome markers with 5 variables ]</span>
-<span class="co">#&gt; otu_table()    OTU Table:          [ 960 taxa and  177 samples ]</span>
+<span class="co">#&gt; marker_table() Marker Table:       [ 12 microbiome markers with 5 variables ]</span>
+<span class="co">#&gt; otu_table()    OTU Table:          [ 276 taxa and  177 samples ]</span>
 <span class="co">#&gt; sample_data()  Sample Data:        [ 177 samples by  71 sample variables ]</span>
-<span class="co">#&gt; tax_table()    Taxonomy Table:     [ 960 taxa by 1 taxonomic ranks ]</span>
-
+<span class="co">#&gt; tax_table()    Taxonomy Table:     [ 276 taxa by 1 taxonomic ranks ]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/marker_table.html">marker_table</a></span><span class="op">(</span><span class="va">mm_lefse</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;                                                                                                              feature</span>
-<span class="co">#&gt; marker1                                                                      k__Bacteria|p__Firmicutes|c__Clostridia</span>
-<span class="co">#&gt; marker2                                                     k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales</span>
-<span class="co">#&gt; marker3                                                                                    k__Bacteria|p__Firmicutes</span>
-<span class="co">#&gt; marker4                               k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae</span>
-<span class="co">#&gt; marker5 k__Bacteria|p__Bacteroidetes|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroidaceae_Bacteroides</span>
-<span class="co">#&gt; marker6                                  k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae</span>
+<span class="co">#&gt;                                                                                                                         feature</span>
+<span class="co">#&gt; marker1                                             k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae</span>
+<span class="co">#&gt; marker2                         k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium</span>
+<span class="co">#&gt; marker3 k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Faecalibacterium|s__Faecalibacterium_s__</span>
+<span class="co">#&gt; marker4                                                                                 k__Bacteria|p__Firmicutes|c__Clostridia</span>
+<span class="co">#&gt; marker5                                                                k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales</span>
+<span class="co">#&gt; marker6                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcaceae_g__</span>
 <span class="co">#&gt;         enrich_group   ef_lda       pvalue         padj</span>
-<span class="co">#&gt; marker1      Healthy 4.886346 2.577541e-06 2.577541e-06</span>
-<span class="co">#&gt; marker2      Healthy 4.886346 2.577541e-06 2.577541e-06</span>
-<span class="co">#&gt; marker3      Healthy 4.851866 1.425032e-04 1.425032e-04</span>
-<span class="co">#&gt; marker4      Healthy 4.789828 3.706059e-04 3.706059e-04</span>
-<span class="co">#&gt; marker5      Healthy 4.789828 3.706059e-04 3.706059e-04</span>
-<span class="co">#&gt; marker6      Healthy 4.705845 6.529659e-07 6.529659e-07</span></code></pre></div>
+<span class="co">#&gt; marker1      Healthy 4.974808 7.154793e-05 7.154793e-05</span>
+<span class="co">#&gt; marker2      Healthy 4.837655 5.914547e-04 5.914547e-04</span>
+<span class="co">#&gt; marker3      Healthy 4.835798 6.043983e-04 6.043983e-04</span>
+<span class="co">#&gt; marker4      Healthy 4.630401 7.176046e-04 7.176046e-04</span>
+<span class="co">#&gt; marker5      Healthy 4.630401 7.176046e-04 7.176046e-04</span>
+<span class="co">#&gt; marker6      Healthy 4.229524 6.990210e-03 6.990210e-03</span></code></pre></div>
 </div>
 <div id="supervised-machine-learning-methods" class="section level2">
 <h2 class="hasAnchor">
@@ -451,26 +455,39 @@ fold-change between the sample and the reference.</li>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># must specify the importance para for random forest</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2021</span><span class="op">)</span>
-<span class="va">mm_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_sl.html">run_sl</a></span><span class="op">(</span>
-  <span class="va">enterotypes_arumugam</span>, 
-  group <span class="op">=</span> <span class="st">"Gender"</span>, 
+<span class="co"># small example phyloseq object for test</span>
+<span class="va">ps_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html">subset_taxa</a></span><span class="op">(</span>
+  <span class="va">enterotypes_arumugam</span>,
+  <span class="va">Phylum</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span>, <span class="st">"Bacteroidetes"</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="va">mm_lr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_sl.html">run_sl</a></span><span class="op">(</span>
+  <span class="va">ps_small</span>,
+  group <span class="op">=</span> <span class="st">"Gender"</span>,
+  nfolds <span class="op">=</span> <span class="fl">2</span>,
+  nrepeats <span class="op">=</span> <span class="fl">1</span>,
   taxa_rank <span class="op">=</span> <span class="st">"Genus"</span>,
-  top_n <span class="op">=</span> <span class="fl">8</span>,
+  top_n <span class="op">=</span> <span class="fl">15</span>,
   norm <span class="op">=</span> <span class="st">"TSS"</span>,
-  method <span class="op">=</span> <span class="st">"RF"</span>, 
-  importance <span class="op">=</span> <span class="st">"impurity"</span>
+  method <span class="op">=</span> <span class="st">"LR"</span>,
 <span class="op">)</span>
 
-<span class="fu"><a href="../reference/marker_table.html">marker_table</a></span><span class="op">(</span><span class="va">mm_rf</span><span class="op">)</span>
-<span class="co">#&gt;                      feature enrich_group    ef_imp</span>
-<span class="co">#&gt; marker1        Anaerotruncus            F 100.00000</span>
-<span class="co">#&gt; marker2            Roseburia            M  49.75989</span>
-<span class="co">#&gt; marker3   Peptostreptococcus            M  45.92378</span>
-<span class="co">#&gt; marker4           Parvimonas            M  39.97119</span>
-<span class="co">#&gt; marker5 Escherichia/Shigella            F  34.43331</span>
-<span class="co">#&gt; marker6          Mitsuokella            F  34.33629</span>
-<span class="co">#&gt; marker7   Enterobacteriaceae            F  29.79131</span>
-<span class="co">#&gt; marker8          Clostridium            F  24.30431</span></code></pre></div>
+<span class="fu"><a href="../reference/marker_table.html">marker_table</a></span><span class="op">(</span><span class="va">mm_lr</span><span class="op">)</span>
+<span class="co">#&gt;                     feature enrich_group    ef_imp</span>
+<span class="co">#&gt; marker1         Dyadobacter            M 100.00000</span>
+<span class="co">#&gt; marker2       Paenibacillus            M  80.09623</span>
+<span class="co">#&gt; marker3           Weissella            M  52.90190</span>
+<span class="co">#&gt; marker4          Bacillales            F  49.21685</span>
+<span class="co">#&gt; marker5        Zunongwangia            F  47.67223</span>
+<span class="co">#&gt; marker6         Macrococcus            M  46.78631</span>
+<span class="co">#&gt; marker7      Heliobacterium            M  42.77684</span>
+<span class="co">#&gt; marker8             Gemella            M  40.85011</span>
+<span class="co">#&gt; marker9    Syntrophothermus            M  36.87214</span>
+<span class="co">#&gt; marker10        Geobacillus            M  33.29326</span>
+<span class="co">#&gt; marker11    Symbiobacterium            M  32.72665</span>
+<span class="co">#&gt; marker12 Desulfitobacterium            F  30.36170</span>
+<span class="co">#&gt; marker13 Thermoanaerobacter            F  29.51966</span>
+<span class="co">#&gt; marker14 Porphyromonadaceae            F  28.72514</span>
+<span class="co">#&gt; marker15     Syntrophomonas            M  25.87942</span></code></pre></div>
 <p><strong>Please note that SL methods can be biased for data with sample size due to the model overfitting. Thus, we advise users to use these SL methods with caution for a smaller dataset.</strong></p>
 </div>
 <div id="pair-wise-comparison-of-multiple-groups" class="section level2">
@@ -623,7 +640,7 @@ fold-change between the sample and the reference.</li>
 <p>ROC (receiver operating characteristic) curve can be used to show the prediction performance of the identified marker. And AUC (area under the ROC curve) measures the ability of the identified marker to classify the samples. <code><a href="../reference/plot_sl_roc.html">plot_sl_roc()</a></code> was provided to show ROC curve and AUC value to evaluate marker prediction performance.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2021</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plot_sl_roc.html">plot_sl_roc</a></span><span class="op">(</span><span class="va">mm_rf</span>, group <span class="op">=</span> <span class="st">"Gender"</span>, importance <span class="op">=</span> <span class="st">"impurity"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/plot_sl_roc.html">plot_sl_roc</a></span><span class="op">(</span><span class="va">mm_lr</span>, group <span class="op">=</span> <span class="st">"Gender"</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/auc-roc-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="visualization-for-post-hoc-test" class="section level2">
@@ -706,59 +723,58 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt;  [53] DBI_1.1.1                   Rcpp_1.0.7                 </span>
 <span class="co">#&gt;  [55] plotROC_2.2.1               xtable_1.8-4               </span>
 <span class="co">#&gt;  [57] clue_0.3-59                 tidytree_0.3.4             </span>
-<span class="co">#&gt;  [59] proxy_0.4-26                bit_4.0.4                  </span>
-<span class="co">#&gt;  [61] lava_1.6.9                  prodlim_2019.11.13         </span>
-<span class="co">#&gt;  [63] stats4_4.1.1                glmnet_4.1-2               </span>
-<span class="co">#&gt;  [65] httr_1.4.2                  gplots_3.1.1               </span>
-<span class="co">#&gt;  [67] RColorBrewer_1.1-2          ellipsis_0.3.2             </span>
-<span class="co">#&gt;  [69] farver_2.1.0                pkgconfig_2.0.3            </span>
-<span class="co">#&gt;  [71] XML_3.99-0.7                nnet_7.3-16                </span>
-<span class="co">#&gt;  [73] sass_0.4.0                  locfit_1.5-9.4             </span>
-<span class="co">#&gt;  [75] utf8_1.2.2                  labeling_0.4.2             </span>
-<span class="co">#&gt;  [77] tidyselect_1.1.1            rlang_0.4.11               </span>
-<span class="co">#&gt;  [79] reshape2_1.4.4              AnnotationDbi_1.54.1       </span>
-<span class="co">#&gt;  [81] munsell_0.5.0               tools_4.1.1                </span>
-<span class="co">#&gt;  [83] cachem_1.0.6                generics_0.1.0             </span>
-<span class="co">#&gt;  [85] RSQLite_2.2.8               ranger_0.13.1              </span>
-<span class="co">#&gt;  [87] ade4_1.7-17                 evaluate_0.14              </span>
-<span class="co">#&gt;  [89] biomformat_1.20.0           stringr_1.4.0              </span>
-<span class="co">#&gt;  [91] fastmap_1.1.0               yaml_2.2.1                 </span>
-<span class="co">#&gt;  [93] ragg_1.1.3                  ggtree_3.0.4               </span>
-<span class="co">#&gt;  [95] ModelMetrics_1.2.2.2        knitr_1.33                 </span>
-<span class="co">#&gt;  [97] bit64_4.0.5                 fs_1.5.0                   </span>
-<span class="co">#&gt;  [99] caTools_1.18.2              purrr_0.3.4                </span>
-<span class="co">#&gt; [101] KEGGREST_1.32.0             ANCOMBC_1.2.2              </span>
-<span class="co">#&gt; [103] nlme_3.1-152                aplot_0.0.6                </span>
-<span class="co">#&gt; [105] compiler_4.1.1              png_0.1-7                  </span>
-<span class="co">#&gt; [107] ggsignif_0.6.2              e1071_1.7-8                </span>
-<span class="co">#&gt; [109] treeio_1.16.2               tibble_3.1.4               </span>
-<span class="co">#&gt; [111] geneplotter_1.70.0          bslib_0.2.5.1              </span>
-<span class="co">#&gt; [113] stringi_1.7.4               highr_0.9                  </span>
-<span class="co">#&gt; [115] desc_1.3.0                  Matrix_1.3-4               </span>
-<span class="co">#&gt; [117] nloptr_1.2.2.2              vegan_2.5-7                </span>
-<span class="co">#&gt; [119] microbiome_1.14.0           permute_0.9-5              </span>
-<span class="co">#&gt; [121] multtest_2.48.0             vctrs_0.3.8                </span>
-<span class="co">#&gt; [123] pillar_1.6.2                lifecycle_1.0.0            </span>
-<span class="co">#&gt; [125] rhdf5filters_1.4.0          BiocManager_1.30.16        </span>
-<span class="co">#&gt; [127] Rdpack_2.1.2                jquerylib_0.1.4            </span>
-<span class="co">#&gt; [129] GlobalOptions_0.1.2         data.table_1.14.0          </span>
-<span class="co">#&gt; [131] bitops_1.0-7                patchwork_1.1.1            </span>
-<span class="co">#&gt; [133] GenomicRanges_1.44.0        R6_2.5.1                   </span>
-<span class="co">#&gt; [135] bookdown_0.23               KernSmooth_2.23-20         </span>
-<span class="co">#&gt; [137] IRanges_2.26.0              codetools_0.2-18           </span>
-<span class="co">#&gt; [139] gtools_3.9.2                MASS_7.3-54                </span>
-<span class="co">#&gt; [141] Wrench_1.10.0               rhdf5_2.36.0               </span>
-<span class="co">#&gt; [143] SummarizedExperiment_1.22.0 DESeq2_1.32.0              </span>
-<span class="co">#&gt; [145] rprojroot_2.0.2             rjson_0.2.20               </span>
-<span class="co">#&gt; [147] withr_2.4.2                 S4Vectors_0.30.0           </span>
-<span class="co">#&gt; [149] GenomeInfoDbData_1.2.6      mgcv_1.8-36                </span>
-<span class="co">#&gt; [151] parallel_4.1.1              rpart_4.1-15               </span>
-<span class="co">#&gt; [153] timeDate_3043.102           grid_4.1.1                 </span>
-<span class="co">#&gt; [155] ggfun_0.0.3                 class_7.3-19               </span>
-<span class="co">#&gt; [157] tidyr_1.1.3                 rmarkdown_2.10             </span>
-<span class="co">#&gt; [159] MatrixGenerics_1.4.3        Cairo_1.5-12.2             </span>
-<span class="co">#&gt; [161] Rtsne_0.15                  pROC_1.17.0.1              </span>
-<span class="co">#&gt; [163] lubridate_1.7.10            Biobase_2.52.0</span></code></pre></div>
+<span class="co">#&gt;  [59] bit_4.0.4                   lava_1.6.9                 </span>
+<span class="co">#&gt;  [61] prodlim_2019.11.13          stats4_4.1.1               </span>
+<span class="co">#&gt;  [63] glmnet_4.1-2                httr_1.4.2                 </span>
+<span class="co">#&gt;  [65] gplots_3.1.1                RColorBrewer_1.1-2         </span>
+<span class="co">#&gt;  [67] ellipsis_0.3.2              farver_2.1.0               </span>
+<span class="co">#&gt;  [69] pkgconfig_2.0.3             XML_3.99-0.7               </span>
+<span class="co">#&gt;  [71] nnet_7.3-16                 sass_0.4.0                 </span>
+<span class="co">#&gt;  [73] locfit_1.5-9.4              utf8_1.2.2                 </span>
+<span class="co">#&gt;  [75] labeling_0.4.2              tidyselect_1.1.1           </span>
+<span class="co">#&gt;  [77] rlang_0.4.11                reshape2_1.4.4             </span>
+<span class="co">#&gt;  [79] AnnotationDbi_1.54.1        munsell_0.5.0              </span>
+<span class="co">#&gt;  [81] tools_4.1.1                 cachem_1.0.6               </span>
+<span class="co">#&gt;  [83] generics_0.1.0              RSQLite_2.2.8              </span>
+<span class="co">#&gt;  [85] ade4_1.7-17                 evaluate_0.14              </span>
+<span class="co">#&gt;  [87] biomformat_1.20.0           stringr_1.4.0              </span>
+<span class="co">#&gt;  [89] fastmap_1.1.0               yaml_2.2.1                 </span>
+<span class="co">#&gt;  [91] ragg_1.1.3                  ggtree_3.0.4               </span>
+<span class="co">#&gt;  [93] ModelMetrics_1.2.2.2        knitr_1.33                 </span>
+<span class="co">#&gt;  [95] bit64_4.0.5                 fs_1.5.0                   </span>
+<span class="co">#&gt;  [97] caTools_1.18.2              purrr_0.3.4                </span>
+<span class="co">#&gt;  [99] KEGGREST_1.32.0             ANCOMBC_1.2.2              </span>
+<span class="co">#&gt; [101] nlme_3.1-152                aplot_0.0.6                </span>
+<span class="co">#&gt; [103] compiler_4.1.1              png_0.1-7                  </span>
+<span class="co">#&gt; [105] ggsignif_0.6.2              treeio_1.16.2              </span>
+<span class="co">#&gt; [107] tibble_3.1.4                geneplotter_1.70.0         </span>
+<span class="co">#&gt; [109] bslib_0.2.5.1               stringi_1.7.4              </span>
+<span class="co">#&gt; [111] highr_0.9                   desc_1.3.0                 </span>
+<span class="co">#&gt; [113] Matrix_1.3-4                nloptr_1.2.2.2             </span>
+<span class="co">#&gt; [115] vegan_2.5-7                 microbiome_1.14.0          </span>
+<span class="co">#&gt; [117] permute_0.9-5               multtest_2.48.0            </span>
+<span class="co">#&gt; [119] vctrs_0.3.8                 pillar_1.6.2               </span>
+<span class="co">#&gt; [121] lifecycle_1.0.0             rhdf5filters_1.4.0         </span>
+<span class="co">#&gt; [123] BiocManager_1.30.16         Rdpack_2.1.2               </span>
+<span class="co">#&gt; [125] jquerylib_0.1.4             GlobalOptions_0.1.2        </span>
+<span class="co">#&gt; [127] data.table_1.14.0           bitops_1.0-7               </span>
+<span class="co">#&gt; [129] patchwork_1.1.1             GenomicRanges_1.44.0       </span>
+<span class="co">#&gt; [131] R6_2.5.1                    bookdown_0.23              </span>
+<span class="co">#&gt; [133] KernSmooth_2.23-20          IRanges_2.26.0             </span>
+<span class="co">#&gt; [135] codetools_0.2-18            gtools_3.9.2               </span>
+<span class="co">#&gt; [137] MASS_7.3-54                 Wrench_1.10.0              </span>
+<span class="co">#&gt; [139] rhdf5_2.36.0                SummarizedExperiment_1.22.0</span>
+<span class="co">#&gt; [141] DESeq2_1.32.0               rprojroot_2.0.2            </span>
+<span class="co">#&gt; [143] rjson_0.2.20                withr_2.4.2                </span>
+<span class="co">#&gt; [145] S4Vectors_0.30.0            GenomeInfoDbData_1.2.6     </span>
+<span class="co">#&gt; [147] mgcv_1.8-36                 parallel_4.1.1             </span>
+<span class="co">#&gt; [149] rpart_4.1-15                timeDate_3043.102          </span>
+<span class="co">#&gt; [151] grid_4.1.1                  ggfun_0.0.3                </span>
+<span class="co">#&gt; [153] class_7.3-19                tidyr_1.1.3                </span>
+<span class="co">#&gt; [155] rmarkdown_2.10              MatrixGenerics_1.4.3       </span>
+<span class="co">#&gt; [157] Cairo_1.5-12.2              Rtsne_0.15                 </span>
+<span class="co">#&gt; [159] pROC_1.17.0.1               lubridate_1.7.10           </span>
+<span class="co">#&gt; [161] Biobase_2.52.0</span></code></pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
