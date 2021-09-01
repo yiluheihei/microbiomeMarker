@@ -146,7 +146,7 @@
   bootstrap_fraction <span class='op'>=</span> <span class='fl'>2</span><span class='op'>/</span><span class='fl'>3</span>,
   wilcoxon_cutoff <span class='op'>=</span> <span class='fl'>0.05</span>,
   multigrp_strat <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  correct <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"0"</span>, <span class='st'>"1"</span>, <span class='st'>"2"</span><span class='op'>)</span>,
+  strict <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"0"</span>, <span class='st'>"1"</span>, <span class='st'>"2"</span><span class='op'>)</span>,
   sample_min <span class='op'>=</span> <span class='fl'>10</span>,
   only_same_subgrp <span class='op'>=</span> <span class='cn'>FALSE</span>,
   curv <span class='op'>=</span> <span class='cn'>FALSE</span>
@@ -248,9 +248,9 @@ performed in a one-against one (more strict) or in a one-against all
 setting, default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
-      <th>correct</th>
+      <th>strict</th>
       <td><p>multiple testing options, 0 for no correction (default), 1 for
-independent comparisons, 2 for independent comparison</p></td>
+independent comparisons, 2 for independent comparison.</p></td>
     </tr>
     <tr>
       <th>sample_min</th>
