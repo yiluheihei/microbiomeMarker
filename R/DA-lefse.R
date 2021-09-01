@@ -79,8 +79,12 @@
 #' explanation. Genome biology 12.6 (2011): R60.
 #' @examples
 #' data(kostic_crc)
-#' mm_lefse <- run_lefse(
+#' kostic_crc_small <- phyloseq::subset_taxa(
 #'   kostic_crc,
+#'   Phylum %in% c("Firmicutes")
+#' )
+#' mm_lefse <- run_lefse(
+#'   kostic_crc_small,
 #'   wilcoxon_cutoff = 0.01,
 #'   group = "DIAGNOSIS",
 #'   kw_cutoff = 0.01,

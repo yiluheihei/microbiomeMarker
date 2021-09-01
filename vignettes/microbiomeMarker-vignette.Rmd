@@ -383,16 +383,20 @@ Here we take LEfSe method for example:
 
 ```{r lefse}
 data(kostic_crc)
-mm_lefse <- run_lefse(
+kostic_crc_small <- phyloseq::subset_taxa(
   kostic_crc,
+  Phylum %in% c("Firmicutes")
+)
+mm_lefse <- run_lefse(
+  kostic_crc_small,
   wilcoxon_cutoff = 0.01,
   group = "DIAGNOSIS",
   kw_cutoff = 0.01,
   multigrp_strat = TRUE,
-  lda_cutoff = 4,
+  lda_cutoff = 4
 )
-mm_lefse
 
+mm_lefse
 head(marker_table(mm_lefse))
 ```
 
@@ -410,17 +414,23 @@ Here we take random forest for example:
 ```{r rf}
 # must specify the importance para for random forest
 set.seed(2021)
-mm_rf <- run_sl(
-  enterotypes_arumugam, 
-  group = "Gender", 
+# small example phyloseq object for test
+ps_small <- phyloseq::subset_taxa(
+  enterotypes_arumugam,
+  Phylum %in% c("Firmicutes", "Bacteroidetes")
+)
+mm_lr <- run_sl(
+  ps_small,
+  group = "Gender",
+  nfolds = 2,
+  nrepeats = 1,
   taxa_rank = "Genus",
-  top_n = 8,
+  top_n = 15,
   norm = "TSS",
-  method = "RF", 
-  importance = "impurity"
+  method = "LR",
 )
 
-marker_table(mm_rf)
+marker_table(mm_lr)
 ```
 
 **Please note that SL methods can be biased for data with sample size due to 
@@ -558,7 +568,7 @@ marker prediction performance.
 
 ```{r auc-roc}
 set.seed(2021)
-plot_sl_roc(mm_rf, group = "Gender", importance = "impurity")
+plot_sl_roc(mm_lr, group = "Gender")
 ```
 
 ## Visualization for post-hoc test 
