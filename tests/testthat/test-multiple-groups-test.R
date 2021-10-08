@@ -5,12 +5,6 @@ enterotype <- phyloseq::subset_samples(
     enterotypes_arumugam,
     Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
 )
-# mm_anova <- run_test_multiple_groups(
-#   enterotype,
-#   group = "Enterotype",
-#   method = "anova",
-#   effect_size_cutoff = 0.7
-# )
 
 tukey_res <- run_posthoc_test(enterotype, "Enterotype", method = "tukey")
 
@@ -27,12 +21,6 @@ test_that("test multiple group enterotype result", {
         regexp = "`group` must in the field of sample meta data",
         fixed = TRUE
     )
-
-    # expect_known_output(
-    #   print(marker_table(mm_anova), digits = 5),
-    #   test_path("out/test-multiple-group-anova.txt"),
-    #   print = TRUE
-    # )
 })
 
 test_that("test post hoc test result", {

@@ -86,24 +86,13 @@ run_posthoc_test <- function(ps,
     ps <- preprocess_ps(ps)
     ps <- transform_abundances(ps, transform = transform)
 
-    # ps_summarized <- summarize_taxa(ps)
-    # otus <- otu_table(ps_summarized)
-    # # normalize
-    # norm_para <- c(norm_para, method = norm, object = list(otus))
-    # otus_norm <- do.call(normalize, norm_para)
-
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_norm <- do.call(normalize, norm_para)
     ps_summarized <- summarize_taxa(ps_norm)
 
-    # relative abundance
-    # abd <- transpose_and_2df(otus)
-    # abd_norm <- transpose_and_2df(otus_norm)
     abd_norm <- transpose_and_2df(otu_table(ps_summarized))
     feature <- tax_table(ps_summarized)@.Data[, 1]
     names(abd_norm) <- feature
-    # names(abd) <- feature
-    # names(abd_norm) <- tax_table(ps)@.Data[, rank_name]
 
     groups <- sample_data(ps_summarized)[[group]]
 
@@ -244,7 +233,6 @@ calc_games_howell_test <- function(obs, groups, conf_level = 0.95) {
 
     # Statistics for games howell tests
     grp_sizes <- tapply(obs, groups, length)
-    # nb.groups <- length(grp.sizes)
     grp_means <- tapply(obs, groups, mean)
     grp_vars <- tapply(obs, groups, var)
 

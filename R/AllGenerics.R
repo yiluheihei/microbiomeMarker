@@ -76,7 +76,6 @@ setMethod("marker_table", "microbiomeMarker", function(object) {
 
     microbiomeMarker(
         marker_table = value,
-        # object@summary_tax_table,
         norm_method = object@norm_method,
         diff_method = object@diff_method,
         otu_table = object@otu_table,

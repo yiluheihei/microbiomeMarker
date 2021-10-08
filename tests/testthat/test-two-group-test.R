@@ -34,17 +34,4 @@ test_that("test two group result", {
         test_path("out/test-two-group-test-t.txt"),
         print = TRUE
     )
-
-    # white test - diff_mean
-    # mm_white <- test_two_groups(
-    #   enterotypes_arumugam,
-    #   group = "Gender",
-    #   method = "white.test",
-    #   nperm = 50
-    # )
-    # expect_known_output(
-    #   mm_white,
-    #   test_path("out/test-two-group-test-white.txt"),
-    #   print = TRUE
-    # )
 })

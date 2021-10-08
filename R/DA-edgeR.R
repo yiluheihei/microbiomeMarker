@@ -148,7 +148,6 @@ run_edger <- function(ps,
         ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
             extract_rank(taxa_rank)
     }
-    # ps_summarized <- summarize_taxa(ps_normed)
     dge_summarized <- phyloseq2edgeR(ps_summarized)
 
     nf <- get_norm_factors(ps_normed)
@@ -173,7 +172,6 @@ run_edger <- function(ps,
     fit_fun <- ifelse(method == "LRT", edgeR::glmFit, edgeR::glmQLFit)
     test_fun <- ifelse(method == "LRT", edgeR::glmLRT, edgeR::glmQLFTest)
     fit <- fit_fun(dge_summarized, design, ...)
-    # contrast <- create_contrast(groups)
     lrt <- test_fun(fit, contrast = contrast_new)
     res <- edgeR::topTags(
         lrt,
@@ -205,12 +203,6 @@ run_edger <- function(ps,
             ref_nf
     row.names(counts_normalized) <- row.names(tax_table(ps_summarized))
 
-    # enrich group
-    # if (length(lvl) == 2) {
-    #   enrich_group <- ifelse(res$logFC > 0, lvl[2], lvl[1])
-    # } else {
-    #   enrich_group <- get_sl_enrich_group(counts_normalized, groups)
-    # }
     if (n_lvl > 2) {
         if (is.null(contrast)) {
             coef <- fit$coefficients
@@ -267,7 +259,6 @@ run_edger <- function(ps,
         norm_method = get_norm_method(norm),
         diff_method = paste("edgeR:", method),
         sam_data = sample_data(ps_normed),
-        # tax_table = tax_table(ps),
         otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE),
         tax_table = tax_table(ps_summarized)
     )

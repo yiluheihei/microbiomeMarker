@@ -29,7 +29,6 @@ ps <- phyloseq::phyloseq(
 ps_summarized <- summarize_taxa(ps)
 
 test_that("check whether phyloseq tax summarized or not", {
-    # expect_true(check_tax_summarize(oxygen))
     expect_false(check_tax_summarize(ps))
     expect_true(check_tax_summarize(ps_summarized))
 })

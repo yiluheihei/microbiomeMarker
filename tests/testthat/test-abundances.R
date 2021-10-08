@@ -31,7 +31,6 @@ test_that("abundances", {
     abd <- abundances(ps, "log10p")
     abd_t <- transform_abundances(ps, "log10p")
 
-    # expect_warning(abundances(sample_ps, norm = TRUE), "not been normalized")
     expect_identical(abd, as(otu_table(abd_t), "matrix"))
 })
 

@@ -46,35 +46,13 @@ setMethod(
         if (norm) {
             nf <- get_norm_factors(object)
             if (is.null(nf)) {
-                # warning("return the original feature table.", call. = FALSE)
+                warning("return the original feature table.", call. = FALSE)
             } else {
                 abd <- sweep(abd, 2, nf, "/")
             }
         }
 
         abd
-        # otu <- as(object, "matrix")
-        #
-        # # ensure taxa are on the rows
-        # if (!taxa_are_rows(object) && ntaxa(object) > 1
-        #     && nsamples(object) > 1) {
-        #   otu <- t(otu)
-        # }
-        #
-        # if (ntaxa(object) == 1) {
-        #   otu <- matrix(otu, nrow=1)
-        #   rownames(otu) <- taxa_names(object)
-        #   colnames(otu) <- sample_names(object)
-        # }
-        #
-        # if (nsamples(object) == 1) {
-        #   otu <- matrix(otu, ncol=1)
-        #   rownames(otu) <- taxa_names(object)
-        #   colnames(otu) <- sample_names(object)
-        # }
-        #
-        # otu <- transform_abundances(otu, transform = transform)
-        # otu
     }
 )
 

@@ -4,10 +4,6 @@
 #' @noRd
 get_feature_enrich_group <- function(class, feature) {
     feature$class <- class
-
-    # not use dev version of dplyr: cur_data()
-    # feature_mean <- group_by(feature, class) %>%
-    #   summarise(colMeans(cur_data(), ) %>% bind_rows())
     feature_mean <- group_by(feature, class) %>%
         group_modify(~ purrr::map_df(.x, mean)) %>%
         ungroup()
@@ -21,7 +17,6 @@ get_feature_enrich_group <- function(class, feature) {
         feature_enrich_index,
         ~ .x[.y]
     )
-    # log10(max(feature_max_mean), 1)
     feature_max_mean[feature_max_mean < 1] <- 1
 
     return(list(
@@ -87,7 +82,6 @@ bootstap_lda <- function(feature_abundance,
     sample_fract,
     seed = 2020) {
     # Bioconductor not allows set.seed
-    # set.seed(seed)
     ldas <- purrr::rerun(
         boot_n,
         bootstap_lda_one(
@@ -222,12 +216,6 @@ cal_pair_lda <- function(feature_abundance,
 #' feature abundance preprocess
 #' @noRd
 preprocess_feature_all <- function(x, class) {
-    # not dev version of dplyr: cur_data
-    # res <- group_by(
-    #   x,
-    #   class
-    # ) %>%
-    #   summarise(purrr::map_df(cur_data(), preprocess_feature))
     res <- group_by(x, class) %>%
         group_modify(~ purrr::map_df(.x, preprocess_feature)) %>%
         ungroup()
@@ -462,7 +450,6 @@ add_missing_levels <- function(feature) {
     if (!taxa_are_rows(feature)) {
         feature <- t(feature)
     }
-    # feature <- data.frame(feature@.Data, rownames = NA)
     feature_nms <- row.names(feature)
     feature <- feature@.Data %>% data.frame()
 
@@ -524,28 +511,3 @@ check_tax_prefix <- function(taxa_nms) {
 
     any(has_prefix)
 }
-
-# # add tax level prefix
-# add_tax_level <- function(taxa_nms, sep = "|") {
-#   # prefixes <- paste0(c("k", "p", "c", "o", "f", "g", "s"), "__")
-#   prefixes <-
-#   taxa_split <- strsplit(taxa_nms,,split = sep, fixed = TRUE)
-#   nms <- purrr::map_chr(
-#     taxa_split,
-#     ~ paste0(prefixes[seq_along(.x)], .x) %>% paste(collapse = sep)
-#   )
-#
-#   nms
-# }
-
-#' replace string `-` with `_` (tax contain character `-`). Since `-` will be
-#' pharsed as mathematical minus sign in formula used for modeling (such as
-#' aov in test_multiple_groups)
-#' @keywords internal
-# fix_hyphen_tax <- function(ps) {
-#   tax <- tax_table(ps)
-#   tax_fixed <- apply(tax, 2, function(x) gsub("-", "_", x, fixed = TRUE))
-#   tax_table(ps) <- tax_fixed
-#
-#   ps
-# }

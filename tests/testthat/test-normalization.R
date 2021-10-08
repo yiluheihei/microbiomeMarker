@@ -143,11 +143,6 @@ test_that(paste0(
     "`geoMeans` and `type = 'poscounts'` in ",
     "`estimateSizeFactorsForMatrix` are equal"
 ), {
-    # ct <- as(otu_table(pediatric_ibd), "matrix")
-    # gm_mean <- function(x, na.rm = TRUE) {
-    #   exp(sum(log(x[x >0]), na.rm = na.rm) /length(x))
-    # }
-    # geoMeans <- apply(ct, 1, gm_mean)
     expect_equal(
         estimateSizeFactorsForMatrix(ct, geoMeans = geoMeans),
         estimateSizeFactorsForMatrix(ct, type = "poscounts")

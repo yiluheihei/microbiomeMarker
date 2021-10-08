@@ -59,11 +59,6 @@ setMethod(
         # please note otu_table<- function will drop the norm_factor attribute
         otu_table(object) <- otu_normed
 
-        # otu_table(object) <- otu_table(
-        #   otu_normed,
-        #   taxa_are_rows = taxa_are_rows(object)
-        # )
-
         object
     }
 )
@@ -142,8 +137,8 @@ setMethod(
     }
 )
 
-##### Four normalization methods do not save the norm factor: value, rarefy,
-##### clr and tss; where three methods save the norm factor: css, rle, tmm.
+## Four normalization methods do not save the norm factor: value, rarefy,
+## clr and tss; where three methods save the norm factor: css, rle, tmm.
 
 #' Normalize feature table by rafefying such that all samples have the same
 #' number of total counts (library size).
@@ -287,9 +282,6 @@ norm_rle <- function(object,
     )
     object_nf <- set_nf(object, nf)
 
-    # otu <- sweep(otu, 2, nf, FUN = "/")
-    # otu_table(object) <- otu_table(otu, taxa_are_rows = taxa_are_rows(object))
-
     object_nf
 }
 
@@ -331,10 +323,6 @@ norm_tmm <- function(object,
         doWeighting = do_weighting,
         Acutoff = Acutoff
     )
-    # ef_nf <- colSums(otu) * nf
-    # # use the mean of the effective library size as a reference library size
-    # ref_nf <- mean(ef_nf)
-    # otu_norm <- sweep(otu, MARGIN = 2, ef_nf, "/") * ref_nf
     object_nf <- set_nf(object, nf)
 
     object_nf
@@ -352,13 +340,6 @@ norm_tmm <- function(object,
 #' @aliases norm_clr
 norm_clr <- function(object) {
     otu <- as(otu_table(object), "matrix")
-
-    # pos counts
-    # if (any(otu == 0)) {
-    #   otu <- otu + 1
-    # }
-    #
-    # otu_norm <- apply(otu, 2, function(x) {log(x) - mean(log(x))})
     otu_norm <- apply(otu, 2, trans_clr)
 
     otu_table(object) <- otu_table(
@@ -366,15 +347,12 @@ norm_clr <- function(object) {
         taxa_are_rows = taxa_are_rows(object)
     )
 
-    # set norm factor as 1
-    # object_nf <- set_nf(object, nf = 1)
-
     # do not save the norm_factor, the norm factors are calculated based on the
     # subsequently differential analysis method, e.g. edgeR, DESeq
     object
 }
 
-# {github}/joey711/shiny-phyloseq/blob/master/panels/paneldoc/Transform.md
+# from joey711/shiny-phyloseq/blob/master/panels/paneldoc/Transform.md
 gm_mean <- function(x, na.rm = TRUE) {
     # The geometric mean, with some error-protection bits.
     exp(sum(log(x[x > 0 & !is.na(x)]), na.rm = na.rm) / length(x))
@@ -397,10 +375,6 @@ trans_clr <- function(x, base = exp(1)) {
 #' @aliases norm_cpm
 #' @importFrom phyloseq transform_sample_counts
 norm_cpm <- function(object) {
-    # if (missing(normalization)) {
-    #   return(object)
-    # }
-
     otu <- as(otu_table(object), "matrix") %>%
         as.data.frame()
 
@@ -424,13 +398,6 @@ norm_cpm <- function(object) {
             object,
             function(x) x * 1e+06 / sum(x[single_indx])
         )
-
-        # lib_size <- purrr::map_dbl(otu, ~ sum(.x[single_indx]))
-
-        # `sum(abd)` must be greaer than 0 since the missing level is added
-        # if (sum(abd) == 0) {
-        #   abd <- purrr::map_dbl(feature, sum)
-        # }
     } else {
         ps_normed <- transform_sample_counts(
             object,
@@ -449,19 +416,6 @@ norm_cpm <- function(object) {
             }
         }
     )
-
-    # normed_coef <- normalization/lib_size
-
-    # otu_normed <- purrr::map2_df(
-    #   otu, normed_coef,
-    #   function(x, y) {
-    #     res <- x * y
-    #     if (mean(res) && stats::sd(res)/mean(res) < 1e-10) {
-    #       res <- round(res * 1e6)/1e6
-    #     }
-    #     res
-    #   }
-    # )
 
     otu_normed <- as.data.frame(otu_normed)
     row.names(otu_normed) <- row.names(otu)
@@ -519,10 +473,6 @@ get_norm_factors <- function(object) {
         nf <- attr(object, "norm_factor")
     }
 
-    # if (is.null(nf)) {
-    #   warning("`object` has not been normalized.", call. = FALSE)
-    # }
-
     nf
 }
 
@@ -550,11 +500,6 @@ normalize_feature <- function(feature, normalization) {
     if (hie) {
         single_indx <- which(lengths(feature_split) < 2)
         abd <- purrr::map_dbl(feature, ~ sum(.x[single_indx]))
-
-        # `sum(abd)` must be greaer than 0 since the missing level is added
-        # if (sum(abd) == 0) {
-        #   abd <- purrr::map_dbl(feature, sum)
-        # }
     } else {
         abd <- purrr::map_dbl(feature, sum)
     }

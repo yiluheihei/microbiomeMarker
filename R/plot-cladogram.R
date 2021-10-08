@@ -150,7 +150,6 @@ plot_cladogram <- function(mm,
     ## add guide labels
     guide_label <- clade_label[ind, ] %>%
         mutate(
-            # anno_shape = purrr::map_int(short_label, utf8ToInt),
             label2 = paste0(short_label, ": ", .data$label),
             color = annotation_info$color[
                 match(.data$label, annotation_info$label)]
@@ -213,15 +212,6 @@ get_treedata_phyloseq <- function(ps, sep = "|") {
     taxa <- tax_table(ps)
     otu <- otu_table(ps)
     row.names(otu) <- taxa@.Data[, 1]
-
-    # is_summarized <- check_tax_summarize(ps)
-    # if (is_summarized) {
-    #   row.names(feature) <- taxa@.Data[, 1]
-    #   feature <- add_missing_levels(feature)
-    # } else {
-    #   feature <- summarize_taxa(ps, sep = sep)
-    # }
-
     taxa_nms <- row.names(otu)
 
     tree_table <- data.frame(
@@ -254,11 +244,6 @@ get_treedata_phyloseq <- function(ps, sep = "|") {
 
     levels <- purrr::map_chr(nodes, ~ gsub("__.*$", "", .x)) %>%
         factor(levels = rev(prefix))
-    # levels used for extend of clade label
-    # levels <- purrr::map_chr(nodes, ~ gsub("__.*$", "", .x)) %>%
-    #   factor(
-    #   levels = rev(c("r" , "k", "p", "c", "o", "f", "g", "s"))
-    # )
 
     nodes_parent <- purrr::map_chr(
         taxa_split,
@@ -347,7 +332,6 @@ generate_cladogram_annotation <- function(marker,
         # colors will be matched in order (usually alphabetical) with the groups
         names(color) <- sort(unique(enrich_group))
         color <- color[match(enrich_group, names(color))]
-        # color <- rep(color, times = table(enrich_group))
     }
 
     annotation <- data.frame(

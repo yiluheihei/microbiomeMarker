@@ -109,7 +109,6 @@ run_test_multiple_groups <- function(ps,
     }
 
     feature <- tax_table(ps_summarized)@.Data[, 1]
-    # abd <- transpose_and_2df(otus)
     abd_norm <- abundances(ps_summarized, norm = TRUE) %>%
         transpose_and_2df()
 
@@ -168,7 +167,6 @@ run_test_multiple_groups <- function(ps,
     # append feature
     res <- mutate(res, feature = feature) %>%
         select(.data$feature, .data$enrich_group, everything())
-    # row.names(res) <- feature[match(res$feature, feature)]
     row.names(res) <- paste0("feature", seq_len(nrow(res)))
 
     # filter: pvalue and effect size

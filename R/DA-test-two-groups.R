@@ -116,8 +116,6 @@ run_test_two_groups <- function(ps,
     # normalize, normalize first, then summarize
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
-    # check taxa_rank
-    # check_taxa_rank(ps, taxa_rank)
     if (taxa_rank == "all") {
         ps_summarized <- summarize_taxa(ps_normed)
     } else if (taxa_rank == "none") {
@@ -126,7 +124,6 @@ run_test_two_groups <- function(ps,
         ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
             extract_rank(taxa_rank)
     }
-    # ps_summarized <- summarize_taxa(ps_normed)
     abd_norm <- abundances(ps_summarized, norm = TRUE) %>%
         transpose_and_2df()
 
@@ -178,19 +175,17 @@ run_test_two_groups <- function(ps,
 
     # p value correction for multiple comparisons
     test_res$padj <- p.adjust(test_res$pvalue, method = p_adjust)
-    # row.names(test_res) <- feature[match(test_res$feature, feature)]
     row.names(test_res) <- paste0("feature", seq_len(nrow(test_res)))
 
-    # p <= 0.05
     test_filtered <- filter(test_res, .data$padj <= pvalue_cutoff)
-    # abs(diff_mean) >= cutoff
+    
     if (!is.null(diff_mean_cutoff)) {
         test_filtered <- filter(
             test_filtered,
             abs(.data$ef_diff_mean) >= diff_mean_cutoff
         )
     }
-    # ratio >= cutoff or <= 1/cutoff
+
     if (!is.null(ratio_cutoff)) {
         test_filtered <- filter(
             test_filtered,

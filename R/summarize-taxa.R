@@ -41,9 +41,6 @@ summarize_taxa <- function(ps,
         stop("`level` must in the ranks of `ps` (rank_names(ps))")
     }
 
-    # ranks <- setdiff(available_ranks, "Summarize")
-    # level <- match(level, ranks)
-
     ind <- match(level, ps_ranks)
     levels <- ps_ranks[ind:length(ps_ranks)]
     res <- purrr::map(
@@ -93,11 +90,6 @@ extract_prefix <- function(ranks) {
         ps <- transform_sample_counts(ps, function(x) x / sum(x))
     }
 
-    # norm the abundance data
-    # if (norm > 0) {
-    #   ps@otu_table <- ps@otu_table*norm
-    # }
-
     otus <- otu_table(ps)
     otus_extend <- slot(otus, ".Data") %>%
         tibble::as_tibble()
@@ -119,8 +111,6 @@ extract_prefix <- function(ranks) {
     # filter taxa of which abundance is zero
     ind <- rowSums(taxa_summarized) != 0
     taxa_summarized <- taxa_summarized[ind, ]
-    # tibble::rownames_to_column(var = "taxa") %>%
-    # arrange(taxa)
 
     taxa_summarized
 }
@@ -166,7 +156,3 @@ add_prefix <- function(ps) {
 
     ps
 }
-
-# suppress the checking notes “no visible binding for global variable", which is
-# caused by NSE
-# utils::globalVariables(c(".", "taxa", "as_tibble"))

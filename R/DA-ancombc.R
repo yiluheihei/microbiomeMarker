@@ -250,9 +250,6 @@ run_ancombc <- function(ps,
     # # enriched group
     enrich_abd <- get_ancombc_enrich_group(ps_summarized, ancombc_out, group)
     norm_abd <- enrich_abd$abd
-    # group_enrich <- enrich_abd$group_enrich
-    # idx <- match(group_enrich$feature, rownames(mtab))
-    # group_enrich <- group_enrich[idx, ]
 
     mtab <- cbind(feature = row.names(mtab), mtab, enrich_group)
     mtab_sig <- mtab[mtab$diff_abn, ]
@@ -264,7 +261,6 @@ run_ancombc <- function(ps,
         norm_method = get_norm_method(norm),
         diff_method = "ancombc",
         sam_data = sample_data(ps_summarized),
-        # tax_table = tax_table(ps),
         otu_table = otu_table(norm_abd, taxa_are_rows = TRUE),
         tax_table = tax_table(ps_summarized)
     )

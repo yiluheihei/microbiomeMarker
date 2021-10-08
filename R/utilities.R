@@ -2,8 +2,6 @@
 #' @noRd
 check_tax_summarize <- function(ps) {
     taxa <- row.names(otu_table(ps))
-    # taxa2 <- tax_table(ps)@.Data[, 1]
-
     # whether taxa is separated by `|`,
     # may be required to add extra separate strings in the future
     has_separate <- any(grepl("[|]", taxa))
@@ -66,10 +64,8 @@ add_prefix_summarized <- function(ps, ranks_prefix, sep = "|") {
             paste0(collapse = sep)
     )
     tax_prefix <- do.call(rbind, tax_prefix)
-    # row.names(tax_prefix) <- tax_prefix
     colnames(tax_prefix) <- paste0(ranks_prefix, collapse = sep)
     tax_table(ps) <- tax_table(tax_prefix)
-
     taxa_names(ps) <- tax_prefix[, 1]
 
     ps

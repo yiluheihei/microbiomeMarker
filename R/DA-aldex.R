@@ -132,7 +132,7 @@ run_aldex <- function(ps,
     ps_normed <- do.call(normalize, norm_para)
 
     # summarize data
-    # create a function, extract_summarize?
+    # create a function, extract_summarize
     # check taxa_rank
     check_taxa_rank(ps, taxa_rank)
     if (taxa_rank == "all") {
@@ -176,13 +176,6 @@ run_aldex <- function(ps,
         test_out <- do.call(test_fun, test_para)
     }
 
-    # aldex_feature <- data.frame(
-    #   feature = feature,
-    #   enrich_group = enrich_group,
-    #   ef_aldex = ef_aldex,
-    #   pvalue = pvalue,
-    #   padj = padj
-    # )
     sig_feature <- dplyr::filter(test_out, .data$padj <= pvalue_cutoff)
     marker <- return_marker(sig_feature, test_out)
 

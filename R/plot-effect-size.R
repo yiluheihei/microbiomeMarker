@@ -89,9 +89,6 @@ plot_ef_dot <- function(mm,
         )
     }
 
-    # the levels of features: in increase order of effect size
-    # marker <- marker[order(marker$effect_size), ]
-
     # maker subset
     if (!is.null(markers)) {
         ind <- match(markers, marker$feature)
@@ -112,9 +109,6 @@ plot_ef_dot <- function(mm,
         }
 
         marker <- marker[ind, ]
-
-        # reorder to keep in increase order of effect size
-        # marker <- marker[order(marker$effect_size), ]
     }
 
     # increase order in each group

@@ -67,22 +67,6 @@ test_that("microbiomeMarker constructor", {
         tax_table = tax1
     )
 
-    # msg3 <- "the length of `norm_factor` must be equal to sample numbers"
-    # nf <- c(1, 2, 3)
-    # expect_silent(microbiomeMarker(
-    #   marker1,
-    #   norm_factor = nf[1:2],
-    #   otu_table = otu1,
-    #   tax_table = tax1
-    # ))
-    # expect_microbiomeMarker_error(
-    #   msg3,
-    #   marker1,
-    #   norm_factor = nf,
-    #   otu_table = otu1,
-    #   tax_table = tax1
-    # )
-
     msg4 <- "nrow of `otu_table` must be equal to the length of `tax_table()`"
     expect_microbiomeMarker_error(
         msg4,

@@ -141,8 +141,6 @@ run_lefse <- function(ps,
     # normalization
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
-    # nf <- get_norm_factors(ps_normed)
-    # ps <- normalize(ps, norm, ...)
 
     sample_meta <- sample_data(ps_normed)
     grp_info <- lefse_format_grp(sample_meta, group, subgroup = subgroup)
@@ -160,9 +158,8 @@ run_lefse <- function(ps,
         ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
             extract_rank(taxa_rank)
     }
-    # otus <- otu_table(ps_summarized)
+
     otus <- abundances(ps_summarized, norm = TRUE)
-    # otus_norm <- normalize_feature(otus, normalization = normalization)
     # transform it for test
     otus_test <- as.data.frame(t(otus), stringsAsFactors = FALSE)
     feature <- tax_table(ps_summarized)@.Data[, 1]
@@ -212,7 +209,6 @@ run_lefse <- function(ps,
     lefse_res <- data.frame(
         feature = names(sig_otus),
         enrich_group = otus_enriched_group$group,
-        # log_max_mean = otus_enriched_group$log_max_mean,
         ef_lda = ldas,
         pvalue = kw_p[sig_ind][wilcoxon_p],
         stringsAsFactors = FALSE
@@ -221,33 +217,9 @@ run_lefse <- function(ps,
     lefse_sig <- filter(lefse_res, .data$ef_lda >= lda_cutoff) %>%
         arrange(.data$enrich_group, desc(.data$ef_lda))
 
-    # if (nrow(lefse_sig)) {
-    #   lefse_out <- marker_table(lefse_sig)
-    # } else {
-    #   warning(
-    #     "No significant feature identified, return all the features",
-    #     call. = FALSE
-    #   )
-    #   lefse_out <- marker_table(lefse_res)
-    #   if (norm != "CPM") {
-    #     warning(
-    #       "CPM normalization method is recommended according to lefse paper",
-    #       call. = FALSE
-    #     )
-    #   }
-    # }
     lefse_out <- return_marker(lefse_sig, lefse_res)
     lefse_out$padj <- lefse_out$pvalue
     row.names(lefse_out) <- paste0("marker", seq_len(nrow(lefse_out)))
-
-    # if (summarize == "lefse" || summarize) {
-    #   tax <- matrix(row.names(otus)) %>%
-    #     tax_table()
-    # } else {
-    #   tax <- tax_table(ps)
-    # }
-    # row.names(tax) <- row.names(otus)
-
 
     tax <- matrix(feature) %>%
         tax_table()
@@ -256,9 +228,7 @@ run_lefse <- function(ps,
     mm <- microbiomeMarker(
         marker_table = lefse_out,
         norm_method = get_norm_method(norm),
-        # norm_factor = nf,
         diff_method = "lefse",
-        # tax_table = tax_table(ps),
         otu_table = otu_table(otus, taxa_are_rows = TRUE), # normalized
         # new var norm_factor (if it is calculated in normalize)
         sam_data = sample_data(ps_normed),
@@ -267,8 +237,3 @@ run_lefse <- function(ps,
 
     mm
 }
-
-# suppress the checking notes “no visible binding for global variable", which is
-# caused by NSE
-# use rlang:.data
-# utils::globalVariables(c("lda"))

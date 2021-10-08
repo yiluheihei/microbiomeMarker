@@ -12,7 +12,7 @@
 # DESeq2 contrast: https://github.com/tavareshugo/tutorial_DESeq2_contrasts
 #
 # reference source code:
-# biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
+# from biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
 # https://github.com/hbctraining/DGE_workshop/blob/master/schedule/1.5-day.md
 #
 #
@@ -248,13 +248,6 @@ run_deseq2 <- function(ps,
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
 
-    # # norm factors of RLE method
-    # dds <- phyloseq2DESeq2(ps, design = dsg)
-    # norm_para <- c(norm_para, type = sfType, counts = list(counts(dds)))
-    # nf <- do.call(estimateSizeFactorsForMatrix, norm_para)
-
-    # summarize data
-    # ps_summarized <- summarize_taxa(ps_normed)
     # check taxa_rank
     check_taxa_rank(ps, taxa_rank)
     if (taxa_rank == "all") {
@@ -288,10 +281,7 @@ run_deseq2 <- function(ps,
     # rule to stop after 1e-8)
     # https://support.bioconductor.org/p/63845/
     # https://support.bioconductor.org/p/122757/
-    # biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
-    # if (! missing(contrast) && n_lvl = 3) {
-    #   stop("`contrast` is used for Wald test", call. = FALSE)
-    # }
+    # from biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
 
     # LRT is used to analyze all levels of a factor at once, and the
     # The p values are determined solely by the difference in deviance between
@@ -300,16 +290,9 @@ run_deseq2 <- function(ps,
     # we use Wald test. Moreover, you can set the argument `test` in `results()`
     # when extract the results from LRT, and it is equivalent to Wast test.
     #
-    # ds1 <- DESeq(dds, test = "LRT")
-    # results(ds1, test = "Wald")
-    #
-    # ds2 <- DESeq(dds, test = "Wald")
-    # results(ds2)
-    #
     # However, even though there are fold changes  present in the results of
     # LRT, they are not directly associated with the actual hypothesis test (
     # actually determined by the arguments name or contrast).
-    # test <- ifelse(n_lvl == 2, "Wald", "LRT")
     if (test == "Wald") { # two groups comparison
         res_deseq <- try(
             DESeq2::DESeq(
@@ -388,7 +371,6 @@ run_deseq2 <- function(ps,
         res <- DESeq2::results(
             object = dds_summarized,
             contrast = contrast_new,
-            # alpha = pvalue_cutoff,
             pAdjustMethod = p_adjust
         )
         # rename log2FoldChange to logFC, use base R rather than dplyr::rename
@@ -406,7 +388,6 @@ run_deseq2 <- function(ps,
         )
         res <- DESeq2::results(
             object = dds_summarized,
-            # alpha = pvalue_cutoff,
             pAdjustMethod = p_adjust
         )
     }
@@ -481,7 +462,6 @@ run_deseq2 <- function(ps,
         marker_table = marker_table(sig_feature),
         norm_method = get_norm_method(norm),
         diff_method = paste0("DESeq2: ", test),
-        # summary_tax_table = tax_table(ps_summarized),
         sam_data = sample_data(ps_normed),
         tax_table = tax_table(ps_summarized),
         otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE)
@@ -622,135 +602,3 @@ estimateSizeFactorsForMatrix <- function(counts,
     }
     sf
 }
-
-#' # used if data is not overdispered
-#' # this function is modified from the DESeq2::DESeq()
-#' # https://github.com/mikelove/DESeq2/blob/master/R/core.R#L271
-#' #
-#' #' @importMethodsFrom DESeq2 design
-#' deseq2 <- function(object,
-#'                    test = c("Wald", "LRT"),
-#'                    sfType = "poscounts",
-#'                    type = c("DESeq2", "glmGamPoi"),
-#'                    betaPrior =FALSE,
-#'                    full,
-#'                    reduced,
-#'                    minReplicatesForReplace = 7,
-#'                    modelMatrixType,
-#'                    useT = FALSE,
-#'                    minmu = if (fitType == "glmGamPoi") 1e-06 else 0.5) {
-#'   stopifnot(is(object, "DESeqDataSet"))
-#'   stopifnot(is.logical(betaPrior))
-#'   test <- match.arg(test, choices=c("Wald","LRT"))
-#'
-#'   sfType <- match.arg(sfType, choices=c("ratio","poscounts","iterate"))
-#'
-#'   stopifnot(is.numeric(minReplicatesForReplace))
-#'   modelAsFormula <- !is.matrix(full) & is(design(object), "formula")
-#'
-#'   if (test == "LRT") {
-#'     if (missing(reduced)) {
-#'       stop("likelihood ratio test requires a 'reduced' design, see ?DESeq")
-#'     }
-#'     if (betaPrior) {
-#'       stop(
-#'         paste(
-#'           "test = 'LRT' does not support use of LFC shrinkage,",
-#'           "use betaPrior=FALSE"
-#'         )
-#'       )
-#'     }
-#'     if (!missing(modelMatrixType) && modelMatrixType == "expanded") {
-#'       stop("test='LRT' does not support use of expanded model matrix")
-#'     }
-#'     if (is.matrix(full) | is.matrix(reduced)) {
-#'       if (!(is.matrix(full) & is.matrix(reduced))) {
-#'         stop(
-#'           paste(
-#'             "if one of 'full' and 'reduced' is a matrix,",
-#'             "the other must be also a matrix")
-#'         )
-#'       }
-#'     }
-#'
-#'     if (modelAsFormula) {
-#'       DESeq2:::checkLRT(full, reduced)
-#'     } else {
-#'       DESeq2:::checkFullRank(full)
-#'       DESeq2:::checkFullRank(reduced)
-#'       if (ncol(full) <= ncol(reduced)) {
-#'         stop(
-#'           paste("the number of columns of 'full' should be more than",
-#'                 "the number of columns of 'reduced'")
-#'         )
-#'       }
-#'     }
-#'   }
-#'
-#'   if (test == "Wald" & !missing(reduced)) {
-#'     warning("'reduced' ignored when test='Wald'")
-#'   }
-#'
-#'   if (modelAsFormula) {
-#'     # run some tests common to DESeq, nbinomWaldTest, nbinomLRT
-#'     DESeq2:::designAndArgChecker(object, betaPrior)
-#'
-#'     if (design(object) == formula(~1)) {
-#'       warning("the design is ~ 1 (just an intercept). is this intended?")
-#'     }
-#'
-#'     if (full != design(object)) {
-#'       stop("'full' specified as formula should equal design(object)")
-#'     }
-#'     modelMatrix <- NULL
-#'   } else {
-#'     # model not as formula, so DESeq() is using supplied model matrix
-#'     if (!quiet) message("using supplied model matrix")
-#'     if (betaPrior == TRUE) {
-#'       stop("betaPrior=TRUE is not supported for user-provided model matrix")
-#'     }
-#'     DESeq2:::checkFullRank(full)
-#'     # this will be used for dispersion estimation and testing
-#'     modelMatrix <- full
-#'   }
-#'
-#'   attr(object, "betaPrior") <- betaPrior
-#'
-#'   if (test == "Wald") {
-#'     object <- DESeq2::nbinomWaldTest(
-#'       object,
-#'       betaPrior=betaPrior,
-#'       quiet = TRUE,
-#'       modelMatrix = modelMatrix,
-#'       modelMatrixType = modelMatrixType,
-#'       useT=useT,
-#'       minmu=minmu
-#'     )
-#'   } else if (test == "LRT") {
-#'     object <- DESeq2::nbinomLRT(
-#'       object,
-#'       full = full,
-#'       reduced = reduced,
-#'       quiet = TRUE,
-#'       minmu = minmu,
-#'       type = type
-#'     )
-#'   }
-#'
-#'   sufficientReps <- any(DESeq2:::nOrMoreInCell(
-#'     attr(object,"modelMatrix"),minReplicatesForReplace)
-#'   )
-#'   if (sufficientReps) {
-#'     object <- DESeq2:::refitWithoutOutliers(
-#'       object,
-#'       test = test,
-#'       betaPrior = betaPrior,
-#'       full = full, reduced = reduced, quiet = TRUE,
-#'       minReplicatesForReplace = minReplicatesForReplace,
-#'       modelMatrix = modelMatrix,
-#'       modelMatrixType = modelMatrixType
-#'     )
-#'   }
-#'
-#'   object
-#' }

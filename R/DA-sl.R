@@ -152,7 +152,7 @@ run_sl <- function(ps,
     ps_normed <- do.call(normalize, norm_para)
 
     # summarize data
-    # create a function, extract_summarize?
+    # create a function, extract_summarize
     # check taxa_rank
     check_taxa_rank(ps, taxa_rank)
     if (taxa_rank == "all") {
@@ -166,7 +166,6 @@ run_sl <- function(ps,
 
     counts_tab <- abundances(ps_summarized, norm = TRUE)
     tax_tab <- as.data.frame(tax_table(ps_summarized))
-    # sam_tab <- sample_data(ps_summarized)
     # in the animalcules, the counts were transferred as cpm, counts per million
 
     # number of markers must smaller than features
@@ -185,14 +184,6 @@ run_sl <- function(ps,
     # filter zero or near zero-variance predictors
     # https://topepo.github.io/caret/pre-processing.html#nzv
     # {stackoverflow}questions/47060233/stacking-models-from-different-packages
-    # nzv_idx <- caret::nearZeroVar(
-    #   counts_tab,
-    #   freqCut = 95 / 5,
-    #   uniqueCut = 10
-    # )
-    # if (length(nzv_idx)) {
-    #   counts_tab <- counts_tab[-nzv_idx]
-    # }
 
     # add target variable
     # to compute the varImp of svm model y must be a factor,

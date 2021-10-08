@@ -134,7 +134,7 @@ run_ancom <- function(ps,
     ps_normed <- do.call(normalize, norm_para)
 
     # summarize data
-    # create a function, extract_summarize?
+    # create a function, extract_summarize
     # check taxa_rank
     check_taxa_rank(ps, taxa_rank)
     if (taxa_rank == "all") {
@@ -228,20 +228,20 @@ run_ancom <- function(ps,
     mm
 }
 
-# github/biocore/scikit-bio/blob/master/skbio/stats/composition.py#L811
 #' Calculates pairwise pvalues between all features
 #' @param feature_table matrix-like, logged feature table.
 #' @param classes character vector, the same length with `log_ratio`.
 #' @param test  character, the test to dtermine the p value of log ratio,
 #'   one of "aov", "wilcox.test",  "kruskal.test".
 #' @param ... extra arguments passed to the test.
+#' @references 
+#' github/biocore/scikit-bio/blob/master/skbio/stats/composition.py#L811
 #' @noRd
 calc_ancom_pmat <- function(feature_table,
     classes,
     test = c("aov", "wilcox.test", "kruskal.test"),
     ...) {
     test_method <- match.arg(test, c("aov", "wilcox.test", "kruskal.test"))
-    # test <- match.fun(test_method)
 
     taxas <- row.names(feature_table)
     feature_table <- data.frame(t(feature_table))
@@ -353,7 +353,6 @@ get_struc_zero <- function(ps, group, neg_lb) {
 #' @noRd
 get_ancom_enrich_group <- function(feature_abd, group) {
     abd_split <- split(feature_abd, group)
-    # abd_mean_group <- sapply(abd_split, mean)
     abd_mean_group <- vapply(abd_split, mean, FUN.VALUE = 0.0)
     enrich_group <- names(abd_split)[which.max(abd_mean_group)]
 

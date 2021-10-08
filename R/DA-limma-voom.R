@@ -126,7 +126,7 @@ run_limma_voom <- function(ps,
     ps_normed <- do.call(normalize, norm_para)
 
     # summarize data
-    # create a function, extract_summarize?
+    # create a function, extract_summarize
     # check taxa_rank
     check_taxa_rank(ps, taxa_rank)
     if (taxa_rank == "all") {
@@ -141,10 +141,6 @@ run_limma_voom <- function(ps,
     counts <- abundances(ps_summarized, norm = FALSE)
 
     # design matrix
-    # design <- model.matrix(
-    #   stats::as.formula(paste("~", group)),
-    #   data.frame(sample_meta)
-    # )
     design <- model.matrix(~ 0 + groups)
 
     # library size
@@ -208,7 +204,6 @@ run_limma_voom <- function(ps,
         norm_method = get_norm_method(norm),
         diff_method = "limma_voom",
         sam_data = sample_data(ps_normed),
-        # tax_table = tax_table(ps),
         otu_table = otu_table(counts_normed, taxa_are_rows = TRUE),
         tax_table = tax_table(ps_summarized)
     )

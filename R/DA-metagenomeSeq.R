@@ -2,7 +2,7 @@
 # are useful summary tables of the model outputs. We currently recommend using
 # the zero-inflated log-normal model as implemented in fitFeatureModel.
 #
-# biocore/qiime/blob/master/qiime/support_files/R/fitZIG.r
+# from biocore/qiime/blob/master/qiime/support_files/R/fitZIG.r
 # /xia-lab/MicrobiomeAnalystR/blob/master/R/general_anal.R#L505
 # https://support.bioconductor.org/p/78230/
 
@@ -132,11 +132,6 @@ run_metagenomeseq <- function(ps,
     ...) {
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     method <- match.arg(method, c("ZILN", "ZIG"))
-    # test_fun <- ifelse(method == "ZILN",
-    #   metagenomeSeq::fitFeatureModel,
-    #   metagenomeSeq::fitZig
-    # )
-
     p_adjust <- match.arg(
         p_adjust,
         c(
@@ -145,13 +140,8 @@ run_metagenomeseq <- function(ps,
         )
     )
 
-    # The levels must by syntactically valid names in R, makeContrast
-    # if (!missing(contrast)) contrast <- make.names(contrast)
-
     groups <- sample_data(ps)[[group]]
     groups <- factor(groups)
-    # The levels must by syntactically valid names in R, makeContrast
-    # levels(groups) <- make.names(levels(groups))
     lvl <- levels(groups)
     n_lvl <- length(lvl)
 
@@ -187,8 +177,6 @@ run_metagenomeseq <- function(ps,
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
 
-    # summarize data
-    # ps_summarized <- summarize_taxa(ps_normed)
     # check taxa_rank
     check_taxa_rank(ps, taxa_rank)
     if (taxa_rank == "all") {
@@ -223,8 +211,6 @@ run_metagenomeseq <- function(ps,
     )
 
     mod <- model.matrix(~ 0 + groups)
-    # colnames(mod) <- levels(groups)
-
 
     if (n_lvl == 2) {
         if (method == "ZILN") {
@@ -310,10 +296,8 @@ run_metagenomeseq <- function(ps,
             de_idx <- match(row.names(res), row.names(coef))
             enrich_group <- enrich_group[de_idx]
         }
-        # ef_var <- ifelse(is.matrix(contrast_new), "F", "logFC")
         res$enrich_group <- enrich_group
     }
-
 
     res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
 
@@ -346,14 +330,11 @@ run_metagenomeseq <- function(ps,
         diff_method = paste0("metagenomeSeq: ", method),
         otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE),
         sam_data = sample_data(ps_normed),
-        # tax_table = tax_table(ps_summarized),
         tax_table = tax_table(ps_summarized)
     )
 
     marker
 }
-
-
 
 # This function is modified from `phyloseq::phyloseq_to_metagenomeSeq()`,
 # There two changes: 1) do not coerce count data to vanilla matrix of integers;
@@ -413,9 +394,6 @@ phyloseq2metagenomeSeq <- function(ps, ...) {
             )
         )
     }
-
-    # setting the norm factor, or the fitzig or
-    # nf <- sample_data(ps)[["metagenomeSeq_norm_factor"]]
 
     # Create MRexperiment
     mr_obj <- metagenomeSeq::newMRexperiment(

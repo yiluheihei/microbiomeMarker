@@ -1,8 +1,7 @@
 test_that("ancombc works correctly", {
     if (FALSE) {
         # result of ancombc package, example from the package vignette
-        # require(microbiome)
-        # data(atlas1006, package = "microbiome")
+        # atalas1006 from microbiome package
         pseq <- subset_samples(atlas1006, time == 0)
         sample_data(pseq)$bmi_group <- recode(
             sample_data(pseq)$bmi_group,
@@ -65,7 +64,6 @@ test_that("ancombc works correctly", {
         global_res <- out$res_global
         global_res$enrich_group <- enrich_group
         global_res <- global_res[global_res$diff_abn, ]
-        # global_res$feature <- rownames(global_res)
         res <- data.frame(
             feature = paste0("p__", rownames(global_res)),
             enrich_group = global_res$enrich_group,

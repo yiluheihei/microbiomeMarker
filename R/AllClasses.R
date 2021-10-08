@@ -79,14 +79,12 @@ setClassUnion("numericOrNULL", c("numeric", "NULL"))
     slots = c(
         marker_table = "marker_tableOrNULL",
         norm_method = "characterOrNULL",
-        # norm_factor = "numericOrNULL",
         diff_method = "characterOrNULL"
     ),
     contains = "phyloseq",
     prototype = list(
         marker_table = NULL,
         norm_method = NULL,
-        # norm_factor = NULL,
         diff_method = NULL
     )
 )
@@ -136,7 +134,6 @@ setClassUnion("numericOrNULL", c("numeric", "NULL"))
 #' )
 microbiomeMarker <- function(marker_table = NULL,
     norm_method = NULL,
-    # norm_factor = NULL,
     diff_method = NULL,
     ...) {
     ps_slots <- list(...)
@@ -158,12 +155,6 @@ microbiomeMarker <- function(marker_table = NULL,
         diff_method = diff_method,
         ...
     )
-    # `microbiomeMarker-class`(
-    #   marker_table = marker_table,
-    #   norm_method = norm_method,
-    #   diff_method = diff_method,
-    #   phyloseq(...)
-    # )
 }
 
 # validity for microbiomeMarker, at least contains two slots: otu_table,
@@ -171,19 +162,11 @@ microbiomeMarker <- function(marker_table = NULL,
 #' @importMethodsFrom phyloseq taxa_names
 validity_microbiomeMarker <- function(object) {
     msg <- NULL
-    # if (is.null(object@microbiome_marker)) {
-    #   msg <- c(msg, "microbiome_marker slot is required")
-    # }
     otu <- object@otu_table
     tax <- object@tax_table
     marker <- object@marker_table
     norm_method <- object@norm_method
-    # norm_factor <- object@norm_factor
     diff_method <- object@diff_method
-
-    # if (!is.null(summary_tax) && !inherits(summary_tax, "taxonomyTable")) {
-    #   msg <- c(msg, "`summary_tax_table` must be a `taxonomyTable` object")
-    # }
 
     # summarized taxa
     if (is.null(tax)) {
@@ -193,10 +176,6 @@ validity_microbiomeMarker <- function(object) {
     if (is.null(otu)) {
         msg <- c(msg, "otu_table is required")
     }
-
-    # if (!is.null(norm_factor) && length(norm_factor) != nsamples(object)) {
-    #   msg <- c(msg, "length of `norm_factor` must be equal to sample number")
-    # }
 
     # marker in marker_table must be contained in tax_table
     if (!is.null(marker) && !is.null(tax) &&
@@ -272,19 +251,6 @@ setClass("postHocTest",
 # validity for postHocTest
 validity_postHocTest <- function(object) {
     msg <- NULL
-
-    # result <- object@result
-    # diff_var <- setdiff(
-    #   c("comparisons", "diff_means", "pvalue", "ci_lower", "ci_upper"),
-    #   names(result)
-    # )
-    # if (length(diff_var) > 0) {
-    #   msg <- c(
-    #     msg,
-    #     paste0("`", diff_var, "`", collapse = ", ")
-    #   )
-    # }
-
     conf_level <- object@conf_level
     if (!is.numeric(conf_level) || conf_level < 0 || conf_level > 1) {
         msg <- c(
