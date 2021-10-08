@@ -58,16 +58,16 @@ marker and columns represents the samples.
 \examples{
 data(kostic_crc)
 kostic_crc_small <- phyloseq::subset_taxa(
-  kostic_crc,
-  Phylum \%in\% c("Firmicutes")
+    kostic_crc,
+    Phylum \%in\% c("Firmicutes")
 )
 mm_lefse <- run_lefse(
-  kostic_crc_small,
-  wilcoxon_cutoff = 0.01,
-  group = "DIAGNOSIS",
-  kw_cutoff = 0.01,
-  multigrp_strat = TRUE,
-  lda_cutoff = 4
+    kostic_crc_small,
+    wilcoxon_cutoff = 0.01,
+    group = "DIAGNOSIS",
+    kw_cutoff = 0.01,
+    multigrp_strat = TRUE,
+    lda_cutoff = 4
 )
 plot_heatmap(mm_lefse, group = "DIAGNOSIS")
 }

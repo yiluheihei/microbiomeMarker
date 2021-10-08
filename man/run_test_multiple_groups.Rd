@@ -86,13 +86,13 @@ Statistical test for multiple groups
 \examples{
 data(enterotypes_arumugam)
 ps <- phyloseq::subset_samples(
-  enterotypes_arumugam,
-  Enterotype \%in\% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+    enterotypes_arumugam,
+    Enterotype \%in\% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
 )
-mm_anova <-  run_test_multiple_groups(
-  ps,
-  group = "Enterotype",
-  method = "anova"
+mm_anova <- run_test_multiple_groups(
+    ps,
+    group = "Enterotype",
+    method = "anova"
 )
 }
 \seealso{

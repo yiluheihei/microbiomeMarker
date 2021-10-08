@@ -19,22 +19,22 @@ setClass("marker_table", contains = "data.frame")
 
 # validator of marker_table
 validity_marker_table <- function(object) {
-  msg <- NULL
-  if (!"feature" %in% names(object)) {
-    msg <- c(
-      msg,
-      "marker table must contain variable `feature` to save the name of marker"
-    )
-  }
-  if (any(dim(object) == 0)) {
-    msg <- c(msg, "marker table must have non-zero dimensions")
-  }
+    msg <- NULL
+    if (!"feature" %in% names(object)) {
+        msg <- c(
+            msg,
+            "marker table must contain variable `feature`: the name of marker"
+        )
+    }
+    if (any(dim(object) == 0)) {
+        msg <- c(msg, "marker table must have non-zero dimensions")
+    }
 
-  if (length(msg)) {
-    return(msg)
-  } else {
-    return(TRUE)
-  }
+    if (length(msg)) {
+        return(msg)
+    } else {
+        return(TRUE)
+    }
 }
 
 setValidity("marker_table", validity_marker_table)
@@ -76,19 +76,19 @@ setClassUnion("numericOrNULL", c("numeric", "NULL"))
 #' @exportClass microbiomeMarker
 #' @return a [`microbiomeMarker-class`] object.
 `microbiomeMarker-class` <- setClass("microbiomeMarker",
-  slots = c(
-    marker_table = "marker_tableOrNULL",
-    norm_method = "characterOrNULL",
-    # norm_factor = "numericOrNULL",
-    diff_method = "characterOrNULL"
-  ),
-  contains = "phyloseq",
-  prototype = list(
-    marker_table = NULL,
-    norm_method = NULL,
-    # norm_factor = NULL,
-    diff_method = NULL
-  )
+    slots = c(
+        marker_table = "marker_tableOrNULL",
+        norm_method = "characterOrNULL",
+        # norm_factor = "numericOrNULL",
+        diff_method = "characterOrNULL"
+    ),
+    contains = "phyloseq",
+    prototype = list(
+        marker_table = NULL,
+        norm_method = NULL,
+        # norm_factor = NULL,
+        diff_method = NULL
+    )
 )
 
 #' Build microbiomeMarker-class objects
@@ -107,118 +107,125 @@ setClassUnion("numericOrNULL", c("numeric", "NULL"))
 #' @return  a [`microbiomeMarker-class`] object.
 #' @examples
 #' microbiomeMarker(
-#'   marker_table = marker_table(data.frame(
-#'     feature = c("speciesA", "speciesB"),
-#'     enrich_group = c("groupA", "groupB"),
-#'     ef_logFC = c(-2, 2),
-#'     pvalue = c(0.01, 0.01),
-#'     padj = c(0.01, 0.01),
-#'     row.names = c("marker1", "marker2"))),
-#'  norm_method = "TSS",
-#'  diff_method = "DESeq2",
-#'  otu_table = otu_table(matrix(
-#'    c(4, 1, 1, 4), nrow = 2, byrow = TRUE,
-#'    dimnames = list(c("speciesA", "speciesB"), c("sample1", "sample2"))),
-#'    taxa_are_rows = TRUE),
-#'  tax_table = tax_table(matrix(
-#'    c("speciesA", "speciesB"), nrow = 2,
-#'    dimnames = list(c("speciesA", "speciesB"), "Species"))),
-#'  sam_data = sample_data(data.frame(
-#'    group = c("groupA", "groupB"),
-#'    row.names = c("sample1", "sample2")))
+#'     marker_table = marker_table(data.frame(
+#'         feature = c("speciesA", "speciesB"),
+#'         enrich_group = c("groupA", "groupB"),
+#'         ef_logFC = c(-2, 2),
+#'         pvalue = c(0.01, 0.01),
+#'         padj = c(0.01, 0.01),
+#'         row.names = c("marker1", "marker2")
+#'     )),
+#'     norm_method = "TSS",
+#'     diff_method = "DESeq2",
+#'     otu_table = otu_table(matrix(
+#'         c(4, 1, 1, 4),
+#'         nrow = 2, byrow = TRUE,
+#'         dimnames = list(c("speciesA", "speciesB"), c("sample1", "sample2"))
+#'     ),
+#'     taxa_are_rows = TRUE
+#'     ),
+#'     tax_table = tax_table(matrix(
+#'         c("speciesA", "speciesB"),
+#'         nrow = 2,
+#'         dimnames = list(c("speciesA", "speciesB"), "Species")
+#'     )),
+#'     sam_data = sample_data(data.frame(
+#'         group = c("groupA", "groupB"),
+#'         row.names = c("sample1", "sample2")
+#'     ))
 #' )
 microbiomeMarker <- function(marker_table = NULL,
-                             norm_method = NULL,
-                             # norm_factor = NULL,
-                             diff_method = NULL,
-                             ...) {
-  ps_slots <- list(...)
-  ps_component_cls <- vapply(ps_slots, class, character(1))
-  if (!"otu_table" %in% ps_component_cls) {
-    stop("otu_table is required")
-  }
-  if (!"taxonomyTable" %in% ps_component_cls) {
-    stop("tax_table is required")
-  }
+    norm_method = NULL,
+    # norm_factor = NULL,
+    diff_method = NULL,
+    ...) {
+    ps_slots <- list(...)
+    ps_component_cls <- vapply(ps_slots, class, character(1))
+    if (!"otu_table" %in% ps_component_cls) {
+        stop("otu_table is required")
+    }
+    if (!"taxonomyTable" %in% ps_component_cls) {
+        stop("tax_table is required")
+    }
 
-  # set the rownmaes of marker_table as "markern"
-  rownames(marker_table) <- paste0("marker", seq_len(nrow(marker_table)))
+    # set the rownmaes of marker_table as "markern"
+    rownames(marker_table) <- paste0("marker", seq_len(nrow(marker_table)))
 
-  new(
-    "microbiomeMarker",
-    marker_table = marker_table,
-    norm_method = norm_method,
-    diff_method = diff_method,
-    ...
-  )
-  # `microbiomeMarker-class`(
-  #   marker_table = marker_table,
-  #   norm_method = norm_method,
-  #   diff_method = diff_method,
-  #   phyloseq(...)
-  # )
+    new(
+        "microbiomeMarker",
+        marker_table = marker_table,
+        norm_method = norm_method,
+        diff_method = diff_method,
+        ...
+    )
+    # `microbiomeMarker-class`(
+    #   marker_table = marker_table,
+    #   norm_method = norm_method,
+    #   diff_method = diff_method,
+    #   phyloseq(...)
+    # )
 }
 
 # validity for microbiomeMarker, at least contains two slots: otu_table,
 #  tax_table
 #' @importMethodsFrom phyloseq taxa_names
 validity_microbiomeMarker <- function(object) {
-  msg <- NULL
-  # if (is.null(object@microbiome_marker)) {
-  #   msg <- c(msg, "microbiome_marker slot is required")
-  # }
-  otu <- object@otu_table
-  tax <- object@tax_table
-  marker <- object@marker_table
-  norm_method <- object@norm_method
-  # norm_factor <- object@norm_factor
-  diff_method <- object@diff_method
+    msg <- NULL
+    # if (is.null(object@microbiome_marker)) {
+    #   msg <- c(msg, "microbiome_marker slot is required")
+    # }
+    otu <- object@otu_table
+    tax <- object@tax_table
+    marker <- object@marker_table
+    norm_method <- object@norm_method
+    # norm_factor <- object@norm_factor
+    diff_method <- object@diff_method
 
-  # if (!is.null(summary_tax) && !inherits(summary_tax, "taxonomyTable")) {
-  #   msg <- c(msg, "`summary_tax_table` must be a `taxonomyTable` object")
-  # }
+    # if (!is.null(summary_tax) && !inherits(summary_tax, "taxonomyTable")) {
+    #   msg <- c(msg, "`summary_tax_table` must be a `taxonomyTable` object")
+    # }
 
-  # summarized taxa
-  if (is.null(tax)) {
-    msg <- c(msg, "tax_table is required")
-  }
+    # summarized taxa
+    if (is.null(tax)) {
+        msg <- c(msg, "tax_table is required")
+    }
 
-  if (is.null(otu)) {
-    msg <- c(msg, "otu_table is required")
-  }
+    if (is.null(otu)) {
+        msg <- c(msg, "otu_table is required")
+    }
 
-  # if (!is.null(norm_factor) && length(norm_factor) != nsamples(object)) {
-  #   msg <- c(msg, "length of `norm_factor` must be equal to sample number")
-  # }
+    # if (!is.null(norm_factor) && length(norm_factor) != nsamples(object)) {
+    #   msg <- c(msg, "length of `norm_factor` must be equal to sample number")
+    # }
 
-  # marker in marker_table must be contained in tax_table
-  if (!is.null(marker) && !is.null(tax) &&
-      !all(marker$feature %in% tax@.Data[, 1])) {
-    msg <- c(msg, "marker in marker_table must be contained in tax")
-  }
+    # marker in marker_table must be contained in tax_table
+    if (!is.null(marker) && !is.null(tax) &&
+        !all(marker$feature %in% tax@.Data[, 1])) {
+        msg <- c(msg, "marker in marker_table must be contained in tax")
+    }
 
-  if (!is.null(otu) && !is.null(tax) && nrow(otu) != nrow(tax)) {
-    msg <- c(
-      msg,
-      "nrow of `otu_table` must be equal to the length of `tax_table()`"
-    )
-  }
+    if (!is.null(otu) && !is.null(tax) && nrow(otu) != nrow(tax)) {
+        msg <- c(
+            msg,
+            "nrow of `otu_table` must be equal to the length of `tax_table()`"
+        )
+    }
 
-  if (!is.null(tax) && !is.null(marker) && nrow(marker) > nrow(tax)) {
-    msg <- c(
-      msg,
-      paste0(
-        "The number of different feature must be smaller than the",
-        " total number of feature"
-      )
-    )
-  }
+    if (!is.null(tax) && !is.null(marker) && nrow(marker) > nrow(tax)) {
+        msg <- c(
+            msg,
+            paste0(
+                "The number of different feature must be smaller than the",
+                " total number of feature"
+            )
+        )
+    }
 
-  if (length(msg)) {
-    return(msg)
-  } else {
-    return(TRUE)
-  }
+    if (length(msg)) {
+        return(msg)
+    } else {
+        return(TRUE)
+    }
 }
 
 setValidity("microbiomeMarker", validity_microbiomeMarker)
@@ -247,58 +254,62 @@ setValidity("microbiomeMarker", validity_microbiomeMarker)
 #' @importClassesFrom IRanges DataFrameList
 #' @return a [`postHocTest-class`] object.
 setClass("postHocTest",
-  slots = c(
-    result = "DataFrameList",
-    abundance = "data.frame",
-    conf_level = "numeric",
-    method = "character",
-    method_str = "character"
-  ),
-  prototype = list(
-    result = NULL,
-    conf_level = NULL,
-    method = NULL,
-    method_str = NULL
-  )
+    slots = c(
+        result = "DataFrameList",
+        abundance = "data.frame",
+        conf_level = "numeric",
+        method = "character",
+        method_str = "character"
+    ),
+    prototype = list(
+        result = NULL,
+        conf_level = NULL,
+        method = NULL,
+        method_str = NULL
+    )
 )
 
 # validity for postHocTest
 validity_postHocTest <- function(object) {
-  msg <- NULL
+    msg <- NULL
 
-  # result <- object@result
-  # diff_var <- setdiff(
-  #   c("comparisons", "diff_means", "pvalue", "ci_lower", "ci_upper"),
-  #   names(result)
-  # )
-  # if (length(diff_var) > 0) {
-  #   msg <- c(
-  #     msg,
-  #     paste0("`", diff_var, "`", collapse = ", ")
-  #   )
-  # }
+    # result <- object@result
+    # diff_var <- setdiff(
+    #   c("comparisons", "diff_means", "pvalue", "ci_lower", "ci_upper"),
+    #   names(result)
+    # )
+    # if (length(diff_var) > 0) {
+    #   msg <- c(
+    #     msg,
+    #     paste0("`", diff_var, "`", collapse = ", ")
+    #   )
+    # }
 
-  conf_level <- object@conf_level
-  if (!is.numeric(conf_level) || conf_level < 0 || conf_level > 1) {
-    msg <- c(
-      msg,
-      "conf_level must in the range of (0,1)"
-    )
-  }
+    conf_level <- object@conf_level
+    if (!is.numeric(conf_level) || conf_level < 0 || conf_level > 1) {
+        msg <- c(
+            msg,
+            "conf_level must in the range of (0,1)"
+        )
+    }
 
-  method <- object@method
-  if (!method %in% c("tukey", "games_howell", "scheffe", "welch_uncorrected")) {
-    msg <- c(
-      msg,
-      "method must be one of tukey, games_howell, scheffe or welch_uncorrected"
-    )
-  }
+    method <- object@method
+    if (!method %in% 
+            c("tukey", "games_howell", "scheffe", "welch_uncorrected")) {
+        msg <- c(
+            msg,
+            paste(
+                "method must be one of tukey, games_howell, scheffe or",
+                "welch_uncorrected"
+            )
+        )
+    }
 
-  if (length(msg)) {
-    return(msg)
-  } else {
-    return(TRUE)
-  }
+    if (length(msg)) {
+        return(msg)
+    } else {
+        return(TRUE)
+    }
 }
 
 setValidity("postHocTest", validity_postHocTest)
@@ -320,40 +331,48 @@ setValidity("postHocTest", validity_postHocTest)
 #' @examples
 #' require(IRanges)
 #' pht <- postHocTest(
-#'   result = DataFrameList(
-#'     featureA = DataFrame(
-#'       comparisons = c("group2-group1", "group3-group1", "group3-group2"),
-#'       diff_mean = runif(3),
-#'       pvalue = rep(0.01, 3),
-#'       ci_lower = rep(0.01, 3),
-#'       ci_upper = rep(0.011, 3)),
-#'     featureB = DataFrame(
-#'       comparisons = c("group2-group1", "group3-group1", "group3-group2"),
-#'       diff_mean = runif(3),
-#'       pvalue = rep(0.01, 3),
-#'       ci_lower = rep(0.01, 3),
-#'       ci_upper = rep(0.011, 3))),
-#'  abundance = data.frame(
-#'    featureA = runif(3),
-#'    featureB = runif(3),
-#'    group = c("group1", "group2", "grou3"))
+#'     result = DataFrameList(
+#'         featureA = DataFrame(
+#'             comparisons = c("group2-group1", 
+#'                 "group3-group1", 
+#'                 "group3-group2"),
+#'             diff_mean = runif(3),
+#'             pvalue = rep(0.01, 3),
+#'             ci_lower = rep(0.01, 3),
+#'             ci_upper = rep(0.011, 3)
+#'         ),
+#'         featureB = DataFrame(
+#'             comparisons = c("group2-group1", 
+#'                 "group3-group1", 
+#'                 "group3-group2"),
+#'             diff_mean = runif(3),
+#'             pvalue = rep(0.01, 3),
+#'             ci_lower = rep(0.01, 3),
+#'             ci_upper = rep(0.011, 3)
+#'         )
+#'     ),
+#'     abundance = data.frame(
+#'         featureA = runif(3),
+#'         featureB = runif(3),
+#'         group = c("group1", "group2", "grou3")
+#'     )
 #' )
 #' pht
 postHocTest <- function(result,
-                        abundance,
-                        conf_level = 0.95,
-                        method = "tukey",
-                        method_str =
-                          paste("Posthoc multiple comparisons of means: ",
-                                method
-                          )
-                        ) {
-  new(
-    "postHocTest",
-    result = result,
-    abundance = abundance,
-    conf_level = conf_level,
-    method = method,
-    method_str = method_str
-  )
+    abundance,
+    conf_level = 0.95,
+    method = "tukey",
+    method_str =
+        paste(
+            "Posthoc multiple comparisons of means: ",
+            method
+        )) {
+    new(
+        "postHocTest",
+        result = result,
+        abundance = abundance,
+        conf_level = conf_level,
+        method = method,
+        method_str = method_str
+    )
 }

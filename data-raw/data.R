@@ -3,22 +3,25 @@ library(phyloseq)
 library(magrittr)
 # Human Moving Picture from MicrobiomeAnalyst server ----------------------
 
-download.file("https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/treebiom.zip",
-  "data-raw/caporaso.zip"
+download.file(
+    "https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/treebiom.zip",
+    "data-raw/caporaso.zip"
 )
 unzip("data-raw/caporaso.zip", exdir = "data-raw/")
 file.rename("data-raw/treebiom/", "data-raw/caporaso/")
 
 ps <- import_biom(
-  "data-raw/caporaso/otu_table_mc2_w_tax_no_pynast_failures.biom",
-  treefilename = "data-raw/caporaso/rep_set.tre",
+    "data-raw/caporaso/otu_table_mc2_w_tax_no_pynast_failures.biom",
+    treefilename = "data-raw/caporaso/rep_set.tre",
 )
 
-colnames(tax_table(ps)) <- c("Kingdom", "Phylum", "Class", "Order",
-  "Family", "Genus", "Species")
+colnames(tax_table(ps)) <- c(
+    "Kingdom", "Phylum", "Class", "Order",
+    "Family", "Genus", "Species"
+)
 
 sampledata <- read.delim("data-raw/caporaso/map.txt", row.names = 1) %>%
-  sample_data()
+    sample_data()
 caporaso <- merge_phyloseq(ps, sampledata)
 
 usethis::use_data(caporaso, overwrite = TRUE)
@@ -27,8 +30,8 @@ unlink("data-raw/cap*", recursive = TRUE)
 
 # cid data from github.com/ying14/yingtools2 ------------------------------
 download.file(
-  "https://github.com/ying14/yingtools2/raw/master/data/cid.phy.rda",
-  "data-raw/cid.phy.rda"
+    "https://github.com/ying14/yingtools2/raw/master/data/cid.phy.rda",
+    "data-raw/cid.phy.rda"
 )
 load("data-raw/cid.phy.rda")
 cid_ying <- cid.phy
@@ -40,20 +43,20 @@ unlink("data-raw/cid*")
 
 # https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/ibd_data.zip
 download.file(
-  "https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/ibd_data.zip",
-  "data-raw/pediatric_idb.zip"
+    "https://www.microbiomeanalyst.ca/MicrobiomeAnalyst/resources/data/ibd_data.zip",
+    "data-raw/pediatric_idb.zip"
 )
 unzip("data-raw/pediatric_idb.zip", exdir = "data-raw/")
 asv_abundance <- readr::read_tsv("data-raw/ibd_data/IBD_data/ibd_asv_table.txt") %>%
-  tibble::column_to_rownames("#NAME")
+    tibble::column_to_rownames("#NAME")
 asv_table <- readr::read_tsv("data-raw/ibd_data/IBD_data/ibd_taxa.txt") %>%
-  tibble::column_to_rownames("#TAXONOMY")
+    tibble::column_to_rownames("#TAXONOMY")
 sample_table <- readr::read_csv("data-raw/ibd_data/IBD_data/ibd_meta.csv") %>%
-  tibble::column_to_rownames("#NAME")
+    tibble::column_to_rownames("#NAME")
 pediatric_ibd <- phyloseq(
-  otu_table(asv_abundance, taxa_are_rows = TRUE),
-  tax_table(as.matrix(asv_table)),
-  sample_data(sample_table)
+    otu_table(asv_abundance, taxa_are_rows = TRUE),
+    tax_table(as.matrix(asv_table)),
+    sample_data(sample_table)
 )
 tree <- read_tree(treefile = "data-raw/ibd_data/IBD_data/ibd_tree.tre")
 phy_tree(pediatric_ibd) <- tree
@@ -99,9 +102,9 @@ unlink("data-raw/pediatric_idb.zip")
 #
 download.file("https://raw.githubusercontent.com/biobakery/biobakery/master/demos/biobakery_demos/data/lefse/input/hmp_small_aerobiosis.txt", "data-raw/oxygen.txt")
 oxygen <- import_biobakery_lefse_in(
-  "data-raw/oxygen.txt",
-  ranks_prefix = c("k", "p", "c", "o", "f", "g"),
-  meta_rows = 1:3,
+    "data-raw/oxygen.txt",
+    ranks_prefix = c("k", "p", "c", "o", "f", "g"),
+    meta_rows = 1:3,
 )
 unlink("data-raw/oxygen.txt")
 usethis::use_data(oxygen, overwrite = TRUE)
@@ -135,9 +138,9 @@ usethis::use_data(oxygen, overwrite = TRUE)
 # )
 download.file("https://raw.githubusercontent.com/biobakery/galaxy_lefse/master/test-data/lefse_input", "data-raw/lefse_in")
 spontaneous_colitis <- import_biobakery_lefse_in(
-  "data-raw/lefse_in",
-  ranks_prefix = c("k", "p", "c", "o", "f", "g"),
-  meta_rows = 1,
+    "data-raw/lefse_in",
+    ranks_prefix = c("k", "p", "c", "o", "f", "g"),
+    meta_rows = 1,
 )
 unlink("data-raw/lefse_in")
 usethis::use_data(spontaneous_colitis, overwrite = TRUE)
@@ -153,9 +156,9 @@ enterotype_abd <- dplyr::select(enterotypes_arumugam, -Phyla, -Genera)
 enterotype_tax <- dplyr::select(enterotypes_arumugam, Phylum = Phyla, Genus = Genera)
 
 enterotypes_arumugam <- phyloseq(
-  otu_table(enterotype_abd, taxa_are_rows = TRUE),
-  tax_table(as.matrix(enterotype_tax)),
-  sample_data(enterotypes_arumugam_meta)
+    otu_table(enterotype_abd, taxa_are_rows = TRUE),
+    tax_table(as.matrix(enterotype_tax)),
+    sample_data(enterotypes_arumugam_meta)
 )
 
 usethis::use_data(enterotypes_arumugam, overwrite = TRUE)
@@ -169,10 +172,10 @@ usethis::use_data(enterotypes_arumugam, overwrite = TRUE)
 # carcinoma. Kostic, A. D., Gevers, D., Pedamallu, C. S., Michaud, M., Duke,
 # ., Earl, A. M., et al. (2012). Genome research, 22(2), 292-298.
 #
-filepath = system.file(
-  "extdata",
-  "study_1457_split_library_seqs_and_mapping.zip",
-  package="phyloseq"
+filepath <- system.file(
+    "extdata",
+    "study_1457_split_library_seqs_and_mapping.zip",
+    package = "phyloseq"
 )
 kostic <- phyloseq::microbio_me_qiime(filepath)
 
@@ -201,16 +204,16 @@ names(taxa_table) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus")
 # set the NA|unknown|unclassified to __, and then add prefix
 prefixes <- c("k", "p", "c", "o", "f", "g")
 taxa_table <- purrr::map2_df(
-  taxa_table, prefixes,
-  ~ ifelse(.x == "__", paste0(.y, .x), .x)
+    taxa_table, prefixes,
+    ~ ifelse(.x == "__", paste0(.y, .x), .x)
 )
 ecam_meta <- phyloseq::sample_data(ecam_meta)
 row.names(ecam_meta) <- names(feature_table)
 
 
 ecam <- phyloseq::phyloseq(
-  phyloseq::otu_table(as(feature_table, "matrix"), taxa_are_rows = TRUE),
-  phyloseq::tax_table(as(taxa_table, "matrix")),
-  phyloseq::sample_data(ecam_meta)
+    phyloseq::otu_table(as(feature_table, "matrix"), taxa_are_rows = TRUE),
+    phyloseq::tax_table(as(taxa_table, "matrix")),
+    phyloseq::sample_data(ecam_meta)
 )
 usethis::use_data(ecam, overwrite = TRUE)

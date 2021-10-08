@@ -12,25 +12,25 @@
 #' @examples
 #' data(enterotypes_arumugam)
 #' mm <- run_limma_voom(
-#'   enterotypes_arumugam,
-#'   "Enterotype",
-#'   contrast = c("Enterotype 3", "Enterotype 2"),
-#'   pvalue_cutoff = 0.05,
-#'   p_adjust = "fdr"
+#'     enterotypes_arumugam,
+#'     "Enterotype",
+#'     contrast = c("Enterotype 3", "Enterotype 2"),
+#'     pvalue_cutoff = 0.05,
+#'     p_adjust = "fdr"
 #' )
 #' marker_table(mm)
 setGeneric(
-  "marker_table",
-  function(object)standardGeneric("marker_table")
+    "marker_table",
+    function(object) standardGeneric("marker_table")
 )
 
 # build marker_table from data.frame
 #' @aliases marker_table,data.frame-method
 #' @rdname marker_table-methods
 setMethod("marker_table", "data.frame", function(object) {
-  mt <- new("marker_table", object)
+    mt <- new("marker_table", object)
 
-  mt
+    mt
 })
 
 
@@ -39,7 +39,7 @@ setMethod("marker_table", "data.frame", function(object) {
 #' @aliases marker_table,microbiomeMarker-method
 
 setMethod("marker_table", "microbiomeMarker", function(object) {
-  object@marker_table
+    object@marker_table
 })
 
 
@@ -59,31 +59,31 @@ setMethod("marker_table", "microbiomeMarker", function(object) {
 #' @examples
 #' data(enterotypes_arumugam)
 #' mm <- run_limma_voom(
-#'   enterotypes_arumugam,
-#'   "Enterotype",
-#'   contrast = c("Enterotype 3", "Enterotype 2"),
-#'   pvalue_cutoff = 0.1,
-#'   p_adjust = "fdr"
+#'     enterotypes_arumugam,
+#'     "Enterotype",
+#'     contrast = c("Enterotype 3", "Enterotype 2"),
+#'     pvalue_cutoff = 0.1,
+#'     p_adjust = "fdr"
 #' )
 #' mm_marker <- marker_table(mm)
 #' mm_marker
 #' marker_table(mm) <- mm_marker[1:2, ]
 #' marker_table(mm)
 "marker_table<-" <- function(object, value) {
-  if (!inherits(value, "marker_table")) {
-    value <- marker_table(value)
-  }
+    if (!inherits(value, "marker_table")) {
+        value <- marker_table(value)
+    }
 
-  microbiomeMarker(
-    marker_table = value,
-    # object@summary_tax_table,
-    norm_method = object@norm_method,
-    diff_method = object@diff_method,
-    otu_table = object@otu_table,
-    tax_table = object@tax_table,
-    phy_tree = object@phy_tree,
-    refseq = object@refseq
-  )
+    microbiomeMarker(
+        marker_table = value,
+        # object@summary_tax_table,
+        norm_method = object@norm_method,
+        diff_method = object@diff_method,
+        otu_table = object@otu_table,
+        tax_table = object@tax_table,
+        phy_tree = object@phy_tree,
+        refseq = object@refseq
+    )
 }
 # microbiomeMarker class ------------------------------------------------------
 
@@ -92,86 +92,87 @@ setMethod("marker_table", "microbiomeMarker", function(object) {
 #' @rdname microbiomeMarker-class
 #' @param object a `microbiomeMarker-class` object
 #' @export
-setMethod("show", "microbiomeMarker", function(object){
-  cat("microbiomeMarker-class inherited from phyloseq-class", fill = TRUE)
-  norm <- object@norm_method
-  if (!is.null(norm)) {
-    if (grepl("per-sample normalized", norm)) {
-      norm <- gsub(".*to ", "", norm)
-      cat(
-        "normalization: per-sample to value [", norm, "]", fill = TRUE
-      )
-    } else {
-      cat(
-        "normalization method:              [", norm, "]", fill = TRUE
-      )
+setMethod("show", "microbiomeMarker", function(object) {
+    cat("microbiomeMarker-class inherited from phyloseq-class", fill = TRUE)
+    norm <- object@norm_method
+    if (!is.null(norm)) {
+        if (grepl("per-sample normalized", norm)) {
+            norm <- gsub(".*to ", "", norm)
+            cat(
+                "normalization: per-sample to value [", norm, "]",
+                fill = TRUE
+            )
+        } else {
+            cat(
+                "normalization method:              [", norm, "]",
+                fill = TRUE
+            )
+        }
     }
-  }
 
-  if (!is.null(object@diff_method)) {
+    if (!is.null(object@diff_method)) {
+        cat(
+            "microbiome marker identity method: [",
+            object@diff_method,
+            "]",
+            fill = TRUE
+        )
+    }
+
     cat(
-      "microbiome marker identity method: [",
-      object@diff_method,
-      "]",
-      fill = TRUE
+        "marker_table() Marker Table:       [",
+        nrow(object@marker_table), "microbiome markers with",
+        ncol(object@marker_table), "variables ]",
+        fill = TRUE
     )
-  }
 
-  cat(
-    "marker_table() Marker Table:       [",
-    nrow(object@marker_table), "microbiome markers with",
-    ncol(object@marker_table), "variables ]",
-    fill = TRUE
-  )
-
-  # print otu_table (always there).
-  cat(
-    "otu_table()    OTU Table:          [",
-    ntaxa(otu_table(object)), "taxa and ",
-    nsamples(otu_table(object)), "samples ]",
-    fill = TRUE
-  )
-
-  # print Sample Data if there
-  if(!is.null(sample_data(object, FALSE))){
+    # print otu_table (always there).
     cat(
-      "sample_data()  Sample Data:        [", dim(sample_data(object))[1],
-      "samples by ", dim(sample_data(object))[2],
-      "sample variables ]",
-      fill = TRUE
+        "otu_table()    OTU Table:          [",
+        ntaxa(otu_table(object)), "taxa and ",
+        nsamples(otu_table(object)), "samples ]",
+        fill = TRUE
     )
-  }
 
-  # print tax Tab if there
-  if(!is.null(tax_table(object, FALSE))){
-    cat(
-      "tax_table()    Taxonomy Table:     [", dim(tax_table(object))[1],
-      "taxa by", dim(tax_table(object))[2],
-      "taxonomic ranks ]",
-      fill = TRUE
-    )
-  }
+    # print Sample Data if there
+    if (!is.null(sample_data(object, FALSE))) {
+        cat(
+            "sample_data()  Sample Data:        [", dim(sample_data(object))[1],
+            "samples by ", dim(sample_data(object))[2],
+            "sample variables ]",
+            fill = TRUE
+        )
+    }
 
-  # print tree if there
-  if(!is.null(phy_tree(object, FALSE))){
-    cat(
-      "phy_tree()    Phylogenetic Tree:   [", ntaxa(phy_tree(object)),
-      "tips and", phy_tree(object)$Nnode,
-      "internal nodes ]",
-      fill = TRUE
-    )
-  }
+    # print tax Tab if there
+    if (!is.null(tax_table(object, FALSE))) {
+        cat(
+            "tax_table()    Taxonomy Table:     [", dim(tax_table(object))[1],
+            "taxa by", dim(tax_table(object))[2],
+            "taxonomic ranks ]",
+            fill = TRUE
+        )
+    }
 
-  # print refseq summary if there
-  if(!is.null(refseq(object, FALSE))){
-    cat(
-      "refseq()      ", class(refseq(object))[1],
-      ":         [", ntaxa(refseq(object)),
-      " reference sequences ]",
-      fill = TRUE
-    )
-  }
+    # print tree if there
+    if (!is.null(phy_tree(object, FALSE))) {
+        cat(
+            "phy_tree()    Phylogenetic Tree:   [", ntaxa(phy_tree(object)),
+            "tips and", phy_tree(object)$Nnode,
+            "internal nodes ]",
+            fill = TRUE
+        )
+    }
 
+    # print refseq summary if there
+    if (!is.null(refseq(object, FALSE))) {
+        cat(
+            "refseq()      ", class(refseq(object))[1],
+            ":         [", ntaxa(refseq(object)),
+            " reference sequences ]",
+            fill = TRUE
+        )
+    }
 })
 
 # get the number of markers -----------------------------------------------
@@ -184,12 +185,12 @@ setMethod("show", "microbiomeMarker", function(object){
 #' @export
 #' @examples
 #' mt <- marker_table(data.frame(
-#'   feature = c("speciesA", "speciesB"),
-#'   enrich_group = c("groupA", "groupB"),
-#'   ef_logFC = c(-2, 2),
-#'   pvalue = c(0.01, 0.01),
-#'   padj = c(0.01, 0.01),
-#'   row.names = c("marker1", "marker2")
+#'     feature = c("speciesA", "speciesB"),
+#'     enrich_group = c("groupA", "groupB"),
+#'     ef_logFC = c(-2, 2),
+#'     pvalue = c(0.01, 0.01),
+#'     padj = c(0.01, 0.01),
+#'     row.names = c("marker1", "marker2")
 #' ))
 #' nmarker(mt)
 setGeneric("nmarker", function(object) standardGeneric("nmarker"))
@@ -197,13 +198,13 @@ setGeneric("nmarker", function(object) standardGeneric("nmarker"))
 #' @rdname nmarker-methods
 #' @aliases nmarker,microbiomeMarker-method
 setMethod("nmarker", "microbiomeMarker", function(object) {
-  nrow(marker_table(object))
+    nrow(marker_table(object))
 })
 
 #' @rdname nmarker-methods
 #' @aliases nmarker,marker_table-method
 setMethod("nmarker", "marker_table", function(object) {
-  nrow(object)
+    nrow(object)
 })
 
 # postHocTest class -------------------------------------------------------
@@ -211,28 +212,30 @@ setMethod("nmarker", "marker_table", function(object) {
 #' @aliases show, postHocTest-method
 #' @param object a `postHocTest-class` object
 #' @export
-setMethod("show", "postHocTest", function(object){
-  cat("postHocTest-class object", fill = TRUE)
-  result <- object@result
-  var_mean <- c(
-    "pair groups to test which separated by '-'",
-    "difference in mean proportions",
-    "post hoc test p values",
-    "lower confidence interval",
-    "upper confidence interval"
-  )
-  cat(
-    "Pairwise test result of", length(result), " features, ",
-    "DataFrameList object, each DataFrame has five variables:\n       ",
-    paste0(
-      names(result[[1]]),
-      c("    : ", ": ", "        : ", " : ", " : "),
-      var_mean,
-      collapse = "        ",
-      "\n")
-  )
-  cat(
-    "Posthoc multiple comparisons of means",
-    " using ", object@method, " method", fill = TRUE
-  )
+setMethod("show", "postHocTest", function(object) {
+    cat("postHocTest-class object", fill = TRUE)
+    result <- object@result
+    var_mean <- c(
+        "pair groups to test which separated by '-'",
+        "difference in mean proportions",
+        "post hoc test p values",
+        "lower confidence interval",
+        "upper confidence interval"
+    )
+    cat(
+        "Pairwise test result of", length(result), " features, ",
+        "DataFrameList object, each DataFrame has five variables:\n       ",
+        paste0(
+            names(result[[1]]),
+            c("    : ", ": ", "        : ", " : ", " : "),
+            var_mean,
+            collapse = "        ",
+            "\n"
+        )
+    )
+    cat(
+        "Posthoc multiple comparisons of means",
+        " using ", object@method, " method",
+        fill = TRUE
+    )
 })

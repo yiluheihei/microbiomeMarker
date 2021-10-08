@@ -23,11 +23,11 @@ This function replace the \code{marker_table} slot of \code{object} with \code{v
 \examples{
 data(enterotypes_arumugam)
 mm <- run_limma_voom(
-  enterotypes_arumugam,
-  "Enterotype",
-  contrast = c("Enterotype 3", "Enterotype 2"),
-  pvalue_cutoff = 0.1,
-  p_adjust = "fdr"
+    enterotypes_arumugam,
+    "Enterotype",
+    contrast = c("Enterotype 3", "Enterotype 2"),
+    pvalue_cutoff = 0.1,
+    p_adjust = "fdr"
 )
 mm_marker <- marker_table(mm)
 mm_marker

@@ -145,341 +145,349 @@
 #' @examples
 #' data(enterotypes_arumugam)
 #' ps <- phyloseq::subset_samples(
-#'   enterotypes_arumugam,
-#'   Enterotype %in% c("Enterotype 3", "Enterotype 2")) %>%
-#'   phyloseq::subset_taxa(Phylum %in% c("Firmicutes"))
+#'     enterotypes_arumugam,
+#'     Enterotype %in% c("Enterotype 3", "Enterotype 2")
+#' ) %>%
+#'     phyloseq::subset_taxa(Phylum %in% c("Firmicutes"))
 #' run_deseq2(ps, group = "Enterotype")
 run_deseq2 <- function(ps,
-                      group,
-                      contrast = NULL,
-                      taxa_rank = "all",
-                      norm = "RLE",
-                      norm_para = list(),
-                      transform = c("identity", "log10", "log10p"),
-                      # test = c("Wald", "LRT"),
-                      fitType = c("parametric", "local", "mean", "glmGamPoi"),
-                      sfType = "poscounts",
-                      betaPrior = FALSE,
-                      modelMatrixType,
-                      useT = FALSE,
-                      minmu = ifelse(fitType == "glmGamPoi", 1e-06, 0.5),
-                      p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                   "hochberg", "hommel", "BH", "BY"),
-                      pvalue_cutoff = 0.05,
-                      ...) {
-  norm_methods <- c("none", "rarefy", "RLE", "CSS", "TMM")
-  if (!norm %in% norm_methods) {
-    stop(
-      "`norm` must be one of 'none', 'rarefy', 'RLE', 'CSS', or 'TMM'",
-      call. = FALSE
-    )
-  }
-
-  # groups
-  sam_tab <- sample_data(ps)
-  if (! group %in% names(sam_tab)) {
-    stop(
-      "`group` should one of the variable in the `sample_data` of ps",
-      call. = FALSE
-    )
-  }
-  groups <- sam_tab[[group]]
-  if (!is.factor(groups)) {
-    groups <- factor(groups)
-    sam_tab[[group]] <- groups
-    sample_data(ps) <- sam_tab
-  }
-  lvl <- levels(groups)
-  n_lvl <- length(lvl)
-
-  if (n_lvl < 2) {
-    stop("Differential analysis requires at least two groups.")
-  }
-
-  # contrast, test method, name of effect size
-  if (n_lvl == 2) {# two groups
-    if (!is.null(contrast)) {
-      warning(
-        "`contrast` is ignored, you do not need to set it",
-        call. = FALSE
-      )
-    }
-    contrast_new <- c(group, lvl[2], lvl[1])
-  } else {
-    if (!is.null(contrast)) {
-      if (!is.character(contrast) || length(contrast) != 2) {
-        stop("`contrast` must be a two length character", call. = FALSE)
-      }
-      idx <- match(contrast, lvl, nomatch = 0L)
-      if (!all(idx)) {
+    group,
+    contrast = NULL,
+    taxa_rank = "all",
+    norm = "RLE",
+    norm_para = list(),
+    transform = c("identity", "log10", "log10p"),
+    # test = c("Wald", "LRT"),
+    fitType = c("parametric", "local", "mean", "glmGamPoi"),
+    sfType = "poscounts",
+    betaPrior = FALSE,
+    modelMatrixType,
+    useT = FALSE,
+    minmu = ifelse(fitType == "glmGamPoi", 1e-06, 0.5),
+    p_adjust = c(
+        "none", "fdr", "bonferroni", "holm",
+        "hochberg", "hommel", "BH", "BY"
+    ),
+    pvalue_cutoff = 0.05,
+    ...) {
+    norm_methods <- c("none", "rarefy", "RLE", "CSS", "TMM")
+    if (!norm %in% norm_methods) {
         stop(
-          "all elements of `contrast` must be contained in `groups`",
-          call. = FALSE
+            "`norm` must be one of 'none', 'rarefy', 'RLE', 'CSS', or 'TMM'",
+            call. = FALSE
         )
-      }
-      contrast_new <- c(group, contrast[2], contrast[1])
-    }
-  }
-  test <- ifelse(n_lvl > 2 && is.null(contrast), "LRT", "Wald")
-  ef_name <- ifelse(test == "Wald", "logFC", "F")
-
-  fitType <- match.arg(fitType, c("parametric", "local", "mean", "glmGamPoi"))
-  transform <- match.arg(transform, c("identity", "log10", "log10p"))
-  p_adjust <- match.arg(
-    p_adjust,
-    c("none", "fdr", "bonferroni", "holm",
-      "hochberg", "hommel", "BH", "BY")
-  )
-
-  if (! sfType %in% c("ratio","poscounts","iterate")) {
-    stop("`sfType` muste be one of poscounts, ratio, or iterate")
-  }
-
-  # preprocess phyloseq object
-  ps <- preprocess_ps(ps)
-  ps <- transform_abundances(ps, transform = transform)
-
-  # prenormalize the data
-  norm_para <- c(norm_para, method = norm, object = list(ps))
-  ps_normed <- do.call(normalize, norm_para)
-
-  # # norm factors of RLE method
-  # dds <- phyloseq2DESeq2(ps, design = dsg)
-  # norm_para <- c(norm_para, type = sfType, counts = list(counts(dds)))
-  # nf <- do.call(estimateSizeFactorsForMatrix, norm_para)
-
-  # summarize data
-  # ps_summarized <- summarize_taxa(ps_normed)
-  # check taxa_rank
-  check_taxa_rank(ps, taxa_rank)
-  if (taxa_rank == "all") {
-    ps_summarized <- summarize_taxa(ps_normed)
-  } else if (taxa_rank =="none") {
-    ps_summarized <- extract_rank(ps_normed, taxa_rank)
-  } else {
-    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
-      extract_rank(taxa_rank)
-  }
-
-  dsg <- formula(paste("~", group))
-  dds_summarized <- phyloseq2DESeq2(
-    ps_summarized,
-    design = dsg
-  )
-  nf <- get_norm_factors(ps_normed)
-  if (!is.null(nf)) {
-    sizeFactors(dds_summarized) <- nf
-  }
-
-
-  # error: all gene-wise dispersion estimates are within 2 orders of magnitude
-  # from the minimum value, which indicates that the count are not
-  # overdispersed
-  #
-  # If dispersion values are less than 1e-6  (minimal value is 1e-8),
-  # it would be problematic to fit a dispersion trend in DESeq2.
-  # The reason for a minimal value, is that for a given row of the count matrix,
-  # the maximum likelihood estimate can tend to 0 (and so we have a rule to stop
-  # after 1e-8)
-  # https://support.bioconductor.org/p/63845/
-  # https://support.bioconductor.org/p/122757/
-  # biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
-  # if (! missing(contrast) && n_lvl = 3) {
-  #   stop("`contrast` is used for Wald test", call. = FALSE)
-  # }
-
-  # LRT is used to analyze all levels of a factor at once, and the
-  # The p values are determined solely by the difference in deviance between
-  # the "full" and "reduced" model formula (not log2 fold changes). Only Wast
-  # method was used for pair-wise comparison. Thus, for pair-wise comparison,
-  # we use Wald test. Moreover, you can set the argument `test` in `results()`
-  # when extract the results from LRT, and it is equivalent to Wast test.
-  #
-  # ds1 <- DESeq(dds, test = "LRT")
-  # results(ds1, test = "Wald")
-  #
-  # ds2 <- DESeq(dds, test = "Wald")
-  # results(ds2)
-  #
-  # However, even though there are fold changes  present in the results of
-  # LRT, they are not directly associated with the actual hypothesis test (
-  # actually determined by the arguments name or contrast).
-  # test <- ifelse(n_lvl == 2, "Wald", "LRT")
-  if (test == "Wald") { # two groups comparison
-    res_deseq <- try(
-      DESeq2::DESeq(
-        dds_summarized,
-        test = test,
-        fitType = fitType,
-        sfType = sfType,
-        quiet = TRUE,
-        betaPrior = betaPrior,
-        modelMatrixType = modelMatrixType,
-        useT = useT,
-        minmu = minmu,
-        ...),
-      silent = TRUE
-    )
-
-    if (inherits(res_deseq, "try-error") && fitType != "local") {
-      warning("data is not overdispered, try `fitType = 'local'`")
-      res_deseq <- try(
-        DESeq2::DESeq(
-          dds_summarized,
-          test = test,
-          fitType = "local",
-          sfType = sfType,
-          quiet = TRUE,
-          betaPrior = betaPrior,
-          modelMatrixType = modelMatrixType,
-          useT = useT,
-          minmu = minmu,
-          ...),
-        silent = TRUE
-      )
     }
 
-    if (inherits(res_deseq, "try-error") && fitType != "mean") {
-      warning("data is not overdispered, try `fitType = 'mean'`")
-      res_deseq <- try(
-        DESeq2::DESeq(
-          dds_summarized,
-          test = test,
-          fitType = "mean",
-          sfType = sfType,
-          quiet = TRUE,
-          betaPrior = betaPrior,
-          modelMatrixType = modelMatrixType,
-          useT = useT,
-          minmu = minmu,
-          ...),
-        silent = TRUE
-      )
+    # groups
+    sam_tab <- sample_data(ps)
+    if (!group %in% names(sam_tab)) {
+        stop(
+            "`group` should one of the variable in the `sample_data` of ps",
+            call. = FALSE
+        )
     }
-    if (inherits(res_deseq, "try-error")) {
-      warning(
-        "data is not overdispered, use gene-wise estimates ",
-        "as final estimates"
-      )
-      # dds_summarized <- DESeq2::estimateSizeFactors(dds_summarized)
-      dds_summarized <- DESeq2::estimateDispersionsGeneEst(dds_summarized)
-      DESeq2::dispersions(dds_summarized) <- mcols(dds_summarized)$dispGeneEst
+    groups <- sam_tab[[group]]
+    if (!is.factor(groups)) {
+        groups <- factor(groups)
+        sam_tab[[group]] <- groups
+        sample_data(ps) <- sam_tab
+    }
+    lvl <- levels(groups)
+    n_lvl <- length(lvl)
 
-      dds_summarized <- DESeq2::nbinomWaldTest(
-        dds_summarized,
-        betaPrior = betaPrior,
-        quiet = TRUE,
-        modelMatrixType = modelMatrixType,
-        useT = useT,
-        minmu = minmu
-      )
+    if (n_lvl < 2) {
+        stop("Differential analysis requires at least two groups.")
+    }
+
+    # contrast, test method, name of effect size
+    if (n_lvl == 2) { # two groups
+        if (!is.null(contrast)) {
+            warning(
+                "`contrast` is ignored, you do not need to set it",
+                call. = FALSE
+            )
+        }
+        contrast_new <- c(group, lvl[2], lvl[1])
     } else {
-      dds_summarized <- res_deseq
+        if (!is.null(contrast)) {
+            if (!is.character(contrast) || length(contrast) != 2) {
+                stop("`contrast` must be a two length character", call. = FALSE)
+            }
+            idx <- match(contrast, lvl, nomatch = 0L)
+            if (!all(idx)) {
+                stop(
+                    "all elements of `contrast` must be contained in `groups`",
+                    call. = FALSE
+                )
+            }
+            contrast_new <- c(group, contrast[2], contrast[1])
+        }
+    }
+    test <- ifelse(n_lvl > 2 && is.null(contrast), "LRT", "Wald")
+    ef_name <- ifelse(test == "Wald", "logFC", "F")
+
+    fitType <- match.arg(fitType, c("parametric", "local", "mean", "glmGamPoi"))
+    transform <- match.arg(transform, c("identity", "log10", "log10p"))
+    p_adjust <- match.arg(
+        p_adjust,
+        c(
+            "none", "fdr", "bonferroni", "holm",
+            "hochberg", "hommel", "BH", "BY"
+        )
+    )
+
+    if (!sfType %in% c("ratio", "poscounts", "iterate")) {
+        stop("`sfType` muste be one of poscounts, ratio, or iterate")
     }
 
-    res <- DESeq2::results(
-      object = dds_summarized,
-      contrast = contrast_new,
-      # alpha = pvalue_cutoff,
-      pAdjustMethod = p_adjust
+    # preprocess phyloseq object
+    ps <- preprocess_ps(ps)
+    ps <- transform_abundances(ps, transform = transform)
+
+    # prenormalize the data
+    norm_para <- c(norm_para, method = norm, object = list(ps))
+    ps_normed <- do.call(normalize, norm_para)
+
+    # # norm factors of RLE method
+    # dds <- phyloseq2DESeq2(ps, design = dsg)
+    # norm_para <- c(norm_para, type = sfType, counts = list(counts(dds)))
+    # nf <- do.call(estimateSizeFactorsForMatrix, norm_para)
+
+    # summarize data
+    # ps_summarized <- summarize_taxa(ps_normed)
+    # check taxa_rank
+    check_taxa_rank(ps, taxa_rank)
+    if (taxa_rank == "all") {
+        ps_summarized <- summarize_taxa(ps_normed)
+    } else if (taxa_rank == "none") {
+        ps_summarized <- extract_rank(ps_normed, taxa_rank)
+    } else {
+        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
+            extract_rank(taxa_rank)
+    }
+
+    dsg <- formula(paste("~", group))
+    dds_summarized <- phyloseq2DESeq2(
+        ps_summarized,
+        design = dsg
     )
-    # rename log2FoldChange to logFC, use base R rather than dplyr::rename
-    names(res)[names(res) == "log2FoldChange"] <- "logFC"
-  } else {
-      dds_summarized <- DESeq2::DESeq(
-        dds_summarized,
-        test = test,
-        fitType = fitType,
-        sfType = sfType,
-        quiet = TRUE,
-        minmu = minmu,
-        reduced = ~ 1,
-        ...
-      )
-      res <- DESeq2::results(
-        object = dds_summarized,
-        # alpha = pvalue_cutoff,
-        pAdjustMethod = p_adjust
-      )
-  }
+    nf <- get_norm_factors(ps_normed)
+    if (!is.null(nf)) {
+        sizeFactors(dds_summarized) <- nf
+    }
 
-  # Why p value is NA?
-  # By default, independent filtering is performed to select a set of genes
-  # for multiple test correction which maximizes the number of adjusted p
-  # values less than a given critical value alpha (by default 0.1).
-  # The adjusted p-values for the genes which do not pass the filter threshold
-  # are set to NA.
-  # By default, results assigns a p-value of NA to genes containing count
-  # outliers, as identified using Cook's distance.
 
-  # normalized counts
-  counts_normalized <- DESeq2::counts(dds_summarized, normalized = TRUE)
+    # error: all gene-wise dispersion estimates are within 2 orders of magnitude
+    # from the minimum value, which indicates that the count are not
+    # overdispersed
+    #
+    # If dispersion values are less than 1e-6  (minimal value is 1e-8),
+    # it would be problematic to fit a dispersion trend in DESeq2.
+    # The reason for a minimal value, is that for a given row of the count 
+    # matrix, the maximum likelihood estimate can tend to 0 (and so we have a 
+    # rule to stop after 1e-8)
+    # https://support.bioconductor.org/p/63845/
+    # https://support.bioconductor.org/p/122757/
+    # biocore/qiime/blob/master/qiime/support_files/R/DESeq2_nbinom.r
+    # if (! missing(contrast) && n_lvl = 3) {
+    #   stop("`contrast` is used for Wald test", call. = FALSE)
+    # }
 
-  # one way anova f statistic for LRT
-  if (test == "LRT") {
-    temp_count <- data.frame(t(counts_normalized))
-    f_stat <-  vapply(
-      temp_count,
-      calc_ef_md_f,
-      FUN.VALUE = 0.0,
-      group = groups
+    # LRT is used to analyze all levels of a factor at once, and the
+    # The p values are determined solely by the difference in deviance between
+    # the "full" and "reduced" model formula (not log2 fold changes). Only Wast
+    # method was used for pair-wise comparison. Thus, for pair-wise comparison,
+    # we use Wald test. Moreover, you can set the argument `test` in `results()`
+    # when extract the results from LRT, and it is equivalent to Wast test.
+    #
+    # ds1 <- DESeq(dds, test = "LRT")
+    # results(ds1, test = "Wald")
+    #
+    # ds2 <- DESeq(dds, test = "Wald")
+    # results(ds2)
+    #
+    # However, even though there are fold changes  present in the results of
+    # LRT, they are not directly associated with the actual hypothesis test (
+    # actually determined by the arguments name or contrast).
+    # test <- ifelse(n_lvl == 2, "Wald", "LRT")
+    if (test == "Wald") { # two groups comparison
+        res_deseq <- try(
+            DESeq2::DESeq(
+                dds_summarized,
+                test = test,
+                fitType = fitType,
+                sfType = sfType,
+                quiet = TRUE,
+                betaPrior = betaPrior,
+                modelMatrixType = modelMatrixType,
+                useT = useT,
+                minmu = minmu,
+                ...
+            ),
+            silent = TRUE
+        )
+
+        if (inherits(res_deseq, "try-error") && fitType != "local") {
+            warning("data is not overdispered, try `fitType = 'local'`")
+            res_deseq <- try(
+                DESeq2::DESeq(
+                    dds_summarized,
+                    test = test,
+                    fitType = "local",
+                    sfType = sfType,
+                    quiet = TRUE,
+                    betaPrior = betaPrior,
+                    modelMatrixType = modelMatrixType,
+                    useT = useT,
+                    minmu = minmu,
+                    ...
+                ),
+                silent = TRUE
+            )
+        }
+
+        if (inherits(res_deseq, "try-error") && fitType != "mean") {
+            warning("data is not overdispered, try `fitType = 'mean'`")
+            res_deseq <- try(
+                DESeq2::DESeq(
+                    dds_summarized,
+                    test = test,
+                    fitType = "mean",
+                    sfType = sfType,
+                    quiet = TRUE,
+                    betaPrior = betaPrior,
+                    modelMatrixType = modelMatrixType,
+                    useT = useT,
+                    minmu = minmu,
+                    ...
+                ),
+                silent = TRUE
+            )
+        }
+        if (inherits(res_deseq, "try-error")) {
+            warning(
+                "data is not overdispered, use gene-wise estimates ",
+                "as final estimates"
+            )
+            dds_summarized <- DESeq2::estimateDispersionsGeneEst(dds_summarized)
+            DESeq2::dispersions(dds_summarized) <- 
+                mcols(dds_summarized)$dispGeneEst
+
+            dds_summarized <- DESeq2::nbinomWaldTest(
+                dds_summarized,
+                betaPrior = betaPrior,
+                quiet = TRUE,
+                modelMatrixType = modelMatrixType,
+                useT = useT,
+                minmu = minmu
+            )
+        } else {
+            dds_summarized <- res_deseq
+        }
+
+        res <- DESeq2::results(
+            object = dds_summarized,
+            contrast = contrast_new,
+            # alpha = pvalue_cutoff,
+            pAdjustMethod = p_adjust
+        )
+        # rename log2FoldChange to logFC, use base R rather than dplyr::rename
+        names(res)[names(res) == "log2FoldChange"] <- "logFC"
+    } else {
+        dds_summarized <- DESeq2::DESeq(
+            dds_summarized,
+            test = test,
+            fitType = fitType,
+            sfType = sfType,
+            quiet = TRUE,
+            minmu = minmu,
+            reduced = ~1,
+            ...
+        )
+        res <- DESeq2::results(
+            object = dds_summarized,
+            # alpha = pvalue_cutoff,
+            pAdjustMethod = p_adjust
+        )
+    }
+
+    # Why p value is NA?
+    # By default, independent filtering is performed to select a set of genes
+    # for multiple test correction which maximizes the number of adjusted p
+    # values less than a given critical value alpha (by default 0.1).
+    # The adjusted p-values for the genes which do not pass the filter threshold
+    # are set to NA.
+    # By default, results assigns a p-value of NA to genes containing count
+    # outliers, as identified using Cook's distance.
+
+    # normalized counts
+    counts_normalized <- DESeq2::counts(dds_summarized, normalized = TRUE)
+
+    # one way anova f statistic for LRT
+    if (test == "LRT") {
+        temp_count <- data.frame(t(counts_normalized))
+        f_stat <- vapply(
+            temp_count,
+            calc_ef_md_f,
+            FUN.VALUE = 0.0,
+            group = groups
+        )
+        res[["F"]] <- f_stat
+    }
+
+    res <- data.frame(res)
+    # enrich group
+    if (test == "Wald") {
+        enrich_group <- ifelse(res$logFC > 0, contrast_new[2], contrast_new[3])
+    } else {
+        cf <- coef(dds_summarized)
+        # the first coef is intercept, set the coef of the reference group as 0
+        cf[, 1] <- 0
+        enrich_idx <- apply(
+            cf, 1,
+            function(x) ifelse(any(is.na(x)), NA, which.max(x))
+        )
+        enrich_group <- lvl[enrich_idx]
+        enrich_group <- enrich_group[match(row.names(res), row.names(cf))]
+    }
+    res$enrich_group <- enrich_group
+    # order according to padj
+    res_ordered <- res[order(res$padj), ]
+    # filter sig feature
+    padj <- res_ordered$padj
+    res_filtered <- res_ordered[!is.na(padj) & padj < pvalue_cutoff, ]
+
+    if (nrow(res_filtered) == 0) {
+        warning("No significant features were found, return all the features")
+        sig_feature <- cbind(feature = row.names(res_ordered), res_ordered)
+    } else {
+        sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
+    }
+    # rownames in the form of marker*
+    row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+
+    # reorder columns: feature, enrich_group, other columns
+    other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
+    sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
+    row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+
+    # only keep five variables: feature, enrich_group, effect_size (logFC),
+    # pvalue, and padj
+    keep_var <- c("feature", "enrich_group", ef_name, "pvalue", "padj")
+    sig_feature <- sig_feature[keep_var]
+    names(sig_feature)[3] <- paste0("ef_", ef_name)
+
+    marker <- microbiomeMarker(
+        marker_table = marker_table(sig_feature),
+        norm_method = get_norm_method(norm),
+        diff_method = paste0("DESeq2: ", test),
+        # summary_tax_table = tax_table(ps_summarized),
+        sam_data = sample_data(ps_normed),
+        tax_table = tax_table(ps_summarized),
+        otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE)
     )
-    res[["F"]] <- f_stat
-  }
 
-  res <- data.frame(res)
-  # enrich group
-  if (test == "Wald") {
-    enrich_group <- ifelse(res$logFC > 0, contrast_new[2], contrast_new[3])
-  } else {
-    cf <- coef(dds_summarized)
-    # the first coef is intercept, we set the coef of the reference group as 0
-    cf[, 1] <- 0
-    enrich_idx <- apply(
-      cf, 1,
-      function(x) ifelse(any(is.na(x)), NA, which.max(x))
-    )
-    enrich_group <- lvl[enrich_idx]
-    enrich_group <- enrich_group[match(row.names(res), row.names(cf))]
-  }
-  res$enrich_group <- enrich_group
-  # order according to padj
-  res_ordered <- res[order(res$padj), ]
-  # filter sig feature
-  padj <- res_ordered$padj
-  res_filtered <- res_ordered[!is.na(padj) & padj < pvalue_cutoff, ]
-
-  if (nrow(res_filtered) == 0) {
-    warning("No significant features were found, return all the features")
-    sig_feature <- cbind(feature = row.names(res_ordered), res_ordered)
-  } else {
-    sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
-  }
-  # rownames in the form of marker*
-  row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
-
-  # reorder columns: feature, enrich_group, other columns
-  other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
-  sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
-  row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
-
-  # only keep five variables: feature, enrich_group, effect_size (logFC),
-  # pvalue, and padj
-  keep_var <- c("feature", "enrich_group", ef_name, "pvalue", "padj")
-  sig_feature <- sig_feature[keep_var]
-  names(sig_feature)[3] <- paste0("ef_", ef_name)
-
-  marker <- microbiomeMarker(
-    marker_table = marker_table(sig_feature),
-    norm_method = get_norm_method(norm),
-    diff_method = paste0("DESeq2: ", test),
-    # summary_tax_table = tax_table(ps_summarized),
-    sam_data = sample_data(ps_normed),
-    tax_table = tax_table(ps_summarized),
-    otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE)
-  )
-
-  marker
+    marker
 }
 
 #' Convert `phyloseq-class` object to `DESeqDataSet-class` object
@@ -502,50 +510,50 @@ run_deseq2 <- function(ps,
 #' @seealso [`DESeq2::DESeqDataSetFromMatrix()`],[`DESeq2::DESeq()`]
 #' @examples
 #' data(caporaso)
-#' phyloseq2DESeq2(caporaso, ~ SampleType)
+#' phyloseq2DESeq2(caporaso, ~SampleType)
 phyloseq2DESeq2 <- function(ps, design, ...) {
-  stopifnot(inherits(ps, "phyloseq"))
-  ps <- keep_taxa_in_rows(ps)
+    stopifnot(inherits(ps, "phyloseq"))
+    ps <- keep_taxa_in_rows(ps)
 
-  # sample data
-  samp <- sample_data(ps, errorIfNULL = FALSE)
-  if (is.null(samp)) {
-    stop(
-      "`sample_data` of `ps` is required,",
-      " for specifying experimental design.",
-      call. = FALSE
+    # sample data
+    samp <- sample_data(ps, errorIfNULL = FALSE)
+    if (is.null(samp)) {
+        stop(
+            "`sample_data` of `ps` is required,",
+            " for specifying experimental design.",
+            call. = FALSE
+        )
+    }
+    # count data
+    ct <- as(otu_table(ps), "matrix")
+
+    # deseq2 requires raw counts, means the counts must be integer
+    dds <- tryCatch(
+        DESeq2::DESeqDataSetFromMatrix(
+            countData = ct,
+            colData = data.frame(samp),
+            design = design,
+            ...
+        ),
+        error = function(e) e
     )
-  }
-  # count data
-  ct <- as(otu_table(ps), "matrix")
-
-  # deseq2 requires raw counts, means the counts must be integer
-  dds <- tryCatch(
-    DESeq2::DESeqDataSetFromMatrix(
-      countData = ct,
-      colData = data.frame(samp),
-      design = design,
-      ...
-    ),
-    error = function(e) e
-  )
-  if (inherits(dds, "error") &&
-      conditionMessage(dds) == "some values in assay are not integers") {
-    warning(
-      "Not all reads are integers, the reads are `ceiling` to integers.\n",
-      "   Raw reads is recommended from the ALDEx2 paper.",
-      call. = FALSE
-    )
-    dds <- DESeq2::DESeqDataSetFromMatrix(
-        countData = ceiling(ct),
-        colData = data.frame(samp),
-        design = design,
-        ...
-      )
-  }
+    if (inherits(dds, "error") &&
+        conditionMessage(dds) == "some values in assay are not integers") {
+        warning(
+            "Not all reads are integers, the reads are ceiled to integers.\n",
+            "   Raw reads is recommended from the ALDEx2 paper.",
+            call. = FALSE
+        )
+        dds <- DESeq2::DESeqDataSetFromMatrix(
+            countData = ceiling(ct),
+            colData = data.frame(samp),
+            design = design,
+            ...
+        )
+    }
 
 
- dds
+    dds
 }
 
 # Modified from `DESeq2::estimateFactorsForMatrix()` directly
@@ -560,58 +568,59 @@ phyloseq2DESeq2 <- function(ps, design, ...) {
 # to `estimateSizeFactorsForMatrix(counts(diagdds2), type = "poscounts")` by
 # stabilize size factors if `type = "poscounts"`.
 estimateSizeFactorsForMatrix <- function(counts,
-                                         locfunc = stats::median,
-                                         geoMeans,
-                                         controlGenes,
-                                         type = c("ratio","poscounts")) {
-  type <- match.arg(type, c("ratio","poscounts"))
-  if (missing(geoMeans)) {
-    incomingGeoMeans <- FALSE
-    if (type == "ratio") {
-      loggeomeans <- rowMeans(log(counts))
-    } else if (type == "poscounts") {
-      lc <- log(counts)
-      lc[!is.finite(lc)] <- 0
-      loggeomeans <- rowMeans(lc)
-      allZero <- rowSums(counts) == 0
-      loggeomeans[allZero] <- -Inf
+    locfunc = stats::median,
+    geoMeans,
+    controlGenes,
+    type = c("ratio", "poscounts")) {
+    type <- match.arg(type, c("ratio", "poscounts"))
+    if (missing(geoMeans)) {
+        incomingGeoMeans <- FALSE
+        if (type == "ratio") {
+            loggeomeans <- rowMeans(log(counts))
+        } else if (type == "poscounts") {
+            lc <- log(counts)
+            lc[!is.finite(lc)] <- 0
+            loggeomeans <- rowMeans(lc)
+            allZero <- rowSums(counts) == 0
+            loggeomeans[allZero] <- -Inf
+        }
+    } else {
+        incomingGeoMeans <- TRUE
+        if (length(geoMeans) != nrow(counts)) {
+            stop("geoMeans should be as long as the number of rows of counts")
+        }
+        loggeomeans <- log(geoMeans)
     }
-  } else {
-    incomingGeoMeans <- TRUE
-    if (length(geoMeans) != nrow(counts)) {
-      stop("geoMeans should be as long as the number of rows of counts")
+    if (all(is.infinite(loggeomeans))) {
+        stop(
+            "every gene contains at least one zero ",
+            "cannot compute log geometric means",
+            call. = FALSE
+        )
     }
-    loggeomeans <- log(geoMeans)
-  }
-  if (all(is.infinite(loggeomeans))) {
-    stop(
-      "every gene contains at least one zero ",
-      "cannot compute log geometric means",
-      call. = FALSE
-    )
-  }
-  sf <- if (missing(controlGenes)) {
-    apply(counts, 2, function(cnts) {
-      exp(locfunc((log(cnts) - loggeomeans)[is.finite(loggeomeans) & cnts > 0]))
-    })
-  } else {
-    if ( !( is.numeric(controlGenes) | is.logical(controlGenes) ) ) {
-      stop("controlGenes should be either a numeric or logical vector")
+    sf <- if (missing(controlGenes)) {
+        apply(counts, 2, function(cnts) {
+            exp(locfunc((log(cnts) - loggeomeans)[
+                is.finite(loggeomeans) & cnts > 0]))
+        })
+    } else {
+        if (!(is.numeric(controlGenes) | is.logical(controlGenes))) {
+            stop("controlGenes should be either a numeric or logical vector")
+        }
+        loggeomeansSub <- loggeomeans[controlGenes]
+        apply(
+            counts[controlGenes, , drop = FALSE], 2,
+            function(cnts) {
+                idx <- is.finite(loggeomeansSub) & cnts > 0
+                exp(locfunc((log(cnts) - loggeomeansSub)[idx]))
+            }
+        )
     }
-    loggeomeansSub <- loggeomeans[controlGenes]
-    apply(
-      counts[controlGenes,,drop=FALSE], 2,
-      function(cnts) {
-        idx <- is.finite(loggeomeansSub) & cnts > 0
-        exp(locfunc((log(cnts) - loggeomeansSub)[idx]))
-      }
-    )
-  }
-  if (incomingGeoMeans | type == "poscounts") {
-    # stabilize size factors to have geometric mean of 1
-    sf <- sf/exp(mean(log(sf)))
-  }
-  sf
+    if (incomingGeoMeans | type == "poscounts") {
+        # stabilize size factors to have geometric mean of 1
+        sf <- sf / exp(mean(log(sf)))
+    }
+    sf
 }
 
 #' # used if data is not overdispered

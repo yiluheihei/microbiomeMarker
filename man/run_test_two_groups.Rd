@@ -97,9 +97,9 @@ Statistical test between two groups
 \examples{
 data(enterotypes_arumugam)
 mm_welch <- run_test_two_groups(
-  enterotypes_arumugam,
-  group = "Gender",
-  method = "welch.test"
+    enterotypes_arumugam,
+    group = "Gender",
+    method = "welch.test"
 )
 mm_welch
 }

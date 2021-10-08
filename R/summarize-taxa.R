@@ -16,154 +16,155 @@
 #' data(enterotypes_arumugam)
 #' summarize_taxa(enterotypes_arumugam)
 summarize_taxa <- function(ps,
-                           level = rank_names(ps)[1],
-                           absolute = TRUE,
-                           sep = "|") {
+    level = rank_names(ps)[1],
+    absolute = TRUE,
+    sep = "|") {
 
-  # return ps if it has been summarized
-  summarized <- check_tax_summarize(ps)
-  if (summarized) {
-    otu_summarized <- otu_table(ps) %>%
-      add_missing_levels()
-    tax_summarized <- row.names(otu_summarized) %>%
-      matrix() %>%
-      tax_table()
-    row.names(tax_summarized) <- row.names(otu_summarized)
-    return(phyloseq(otu_summarized, tax_summarized, sample_data(ps)))
-  }
+    # return ps if it has been summarized
+    summarized <- check_tax_summarize(ps)
+    if (summarized) {
+        otu_summarized <- otu_table(ps) %>%
+            add_missing_levels()
+        tax_summarized <- row.names(otu_summarized) %>%
+            matrix() %>%
+            tax_table()
+        row.names(tax_summarized) <- row.names(otu_summarized)
+        return(phyloseq(otu_summarized, tax_summarized, sample_data(ps)))
+    }
 
-  if (!has_prefix(ps)) {
-    ps <- add_prefix(ps)
-  }
+    if (!has_prefix(ps)) {
+        ps <- add_prefix(ps)
+    }
 
-  ps_ranks <- rank_names(ps)
-  if (!level %in% ps_ranks) {
-    stop("`level` must in the ranks of `ps` (rank_names(ps))")
-  }
+    ps_ranks <- rank_names(ps)
+    if (!level %in% ps_ranks) {
+        stop("`level` must in the ranks of `ps` (rank_names(ps))")
+    }
 
-  # ranks <- setdiff(available_ranks, "Summarize")
-  # level <- match(level, ranks)
+    # ranks <- setdiff(available_ranks, "Summarize")
+    # level <- match(level, ranks)
 
-  ind <- match(level, ps_ranks)
-  levels <- ps_ranks[ind:length(ps_ranks)]
-  res <- purrr::map(
-    levels,
-    ~.summarize_taxa_level(
-      ps,
-      rank = .x,
-      absolute = absolute,
-      sep = sep
+    ind <- match(level, ps_ranks)
+    levels <- ps_ranks[ind:length(ps_ranks)]
+    res <- purrr::map(
+        levels,
+        ~ .summarize_taxa_level(
+            ps,
+            rank = .x,
+            absolute = absolute,
+            sep = sep
+        )
     )
-  )
-  tax_nms <- purrr::map(res, row.names) %>% unlist()
-  res <- bind_rows(res)
-  row.names(res) <- tax_nms
+    tax_nms <- purrr::map(res, row.names) %>% unlist()
+    res <- bind_rows(res)
+    row.names(res) <- tax_nms
 
-  otu_summarized <- otu_table(res, taxa_are_rows = TRUE)
-  tax_summarized <- row.names(otu_summarized) %>%
-    matrix() %>%
-    tax_table()
-  row.names(tax_summarized) <- row.names(otu_summarized)
-  row.names(otu_summarized) <- row.names(tax_summarized)
+    otu_summarized <- otu_table(res, taxa_are_rows = TRUE)
+    tax_summarized <- row.names(otu_summarized) %>%
+        matrix() %>%
+        tax_table()
+    row.names(tax_summarized) <- row.names(otu_summarized)
+    row.names(otu_summarized) <- row.names(tax_summarized)
 
-  # set the colnames of tax_table in the form of k|p|c|o
-  rank_prefix <- extract_prefix(ps_ranks)
-  colnames(tax_summarized) <- paste0(rank_prefix, collapse = sep)
+    # set the colnames of tax_table in the form of k|p|c|o
+    rank_prefix <- extract_prefix(ps_ranks)
+    colnames(tax_summarized) <- paste0(rank_prefix, collapse = sep)
 
-  return(phyloseq(otu_summarized, tax_summarized, sample_data(ps)))
+    return(phyloseq(otu_summarized, tax_summarized, sample_data(ps)))
 }
 
 #' extract prefix of names of the taxonomic ranks
 #' @noRd
 extract_prefix <- function(ranks) {
-  if (inherits(ranks, "phyloseq")) {
-    ranks <- rank_names(ranks)
-  }
+    if (inherits(ranks, "phyloseq")) {
+        ranks <- rank_names(ranks)
+    }
 
-  tolower(substr(ranks, 1, 1))
+    tolower(substr(ranks, 1, 1))
 }
 
 #' Summarize the taxa for the specific rank
 #' @noRd
 .summarize_taxa_level <- function(ps,
-                                  rank_name,
-                                  absolute = TRUE,
-                                  sep = "|") {
-  if (!absolute) {
-    ps <- transform_sample_counts(ps, function(x)x/sum(x))
-  }
+    rank_name,
+    absolute = TRUE,
+    sep = "|") {
+    if (!absolute) {
+        ps <- transform_sample_counts(ps, function(x) x / sum(x))
+    }
 
-  # norm the abundance data
-  # if (norm > 0) {
-  #   ps@otu_table <- ps@otu_table*norm
-  # }
+    # norm the abundance data
+    # if (norm > 0) {
+    #   ps@otu_table <- ps@otu_table*norm
+    # }
 
-  otus <- otu_table(ps)
-  otus_extend <- slot(otus, ".Data") %>%
-    tibble::as_tibble()
+    otus <- otu_table(ps)
+    otus_extend <- slot(otus, ".Data") %>%
+        tibble::as_tibble()
 
-  taxas <- tax_table(ps)@.Data %>%
-    tibble::as_tibble()
+    taxas <- tax_table(ps)@.Data %>%
+        tibble::as_tibble()
 
-  ranks <- setdiff(available_ranks, "Summarize")
-  rank_level <- match(rank_name, ranks)
-  select_ranks <- intersect(ranks[seq_len(rank_level)], rank_names(ps))
+    ranks <- setdiff(available_ranks, "Summarize")
+    rank_level <- match(rank_name, ranks)
+    select_ranks <- intersect(ranks[seq_len(rank_level)], rank_names(ps))
 
-  consensus <- taxas[, select_ranks]  %>%
-    purrr::pmap_chr(paste, sep = sep)
-  otus_extend$consensus <- consensus
+    consensus <- taxas[, select_ranks] %>%
+        purrr::pmap_chr(paste, sep = sep)
+    otus_extend$consensus <- consensus
 
-  taxa_summarized <- group_split(otus_extend, consensus) %>%
-    purrr::map(.sum_consensus)
-  taxa_summarized <- do.call(rbind, taxa_summarized)
-  # filter taxa of which abundance is zero
-  ind <- rowSums(taxa_summarized) != 0
-  taxa_summarized <- taxa_summarized[ind, ]
+    taxa_summarized <- group_split(otus_extend, consensus) %>%
+        purrr::map(.sum_consensus)
+    taxa_summarized <- do.call(rbind, taxa_summarized)
+    # filter taxa of which abundance is zero
+    ind <- rowSums(taxa_summarized) != 0
+    taxa_summarized <- taxa_summarized[ind, ]
     # tibble::rownames_to_column(var = "taxa") %>%
     # arrange(taxa)
 
-  taxa_summarized
+    taxa_summarized
 }
 
 #' sum all otus which belongs to the same taxa
 #' @noRd
 .sum_consensus <- function(x) {
-  consensus <- unique(x$consensus)
-  if (length(consensus) != 1) {
-    stop("consensus in the same group muste be the same")
-  }
+    consensus <- unique(x$consensus)
+    if (length(consensus) != 1) {
+        stop("consensus in the same group muste be the same")
+    }
 
-  x$consensus <- NULL
-  res <- as.data.frame(t(colSums(x)))
-  row.names(res) <- consensus
+    x$consensus <- NULL
+    res <- as.data.frame(t(colSums(x)))
+    row.names(res) <- consensus
 
-  return(res)
+    return(res)
 }
 
 # check whether taxa has prefix or not
 has_prefix <- function(ps) {
-  sample_tax <- tax_table(ps)[1, 1]
-  if (substr(sample_tax, 2, 3) == "__") {
-    return(TRUE)
-  } else {
-    return(FALSE)
-  }
+    sample_tax <- tax_table(ps)[1, 1]
+    if (substr(sample_tax, 2, 3) == "__") {
+        return(TRUE)
+    } else {
+        return(FALSE)
+    }
 }
 
 # add ranks prefix, e.g k__, p__, only worked for unsummarized data
 add_prefix <- function(ps) {
-  tax <- as(tax_table(ps), "matrix") %>%
-    as.data.frame()
-  lvl <- colnames(tax)
-  prefix <- get_prefix(lvl)
+    tax <- as(tax_table(ps), "matrix") %>%
+        as.data.frame()
+    lvl <- colnames(tax)
+    prefix <- get_prefix(lvl)
 
-  tax_new <- mapply(function(x, y) paste0(x, y), prefix, tax, SIMPLIFY = FALSE)
-  tax_new <- do.call(cbind, tax_new)
-  row.names(tax_new) <- row.names(tax)
-  colnames(tax_new) <- lvl
-  tax_table(ps) <- tax_new
+    tax_new <- mapply(function(x, y) paste0(x, y), 
+        prefix, tax, SIMPLIFY = FALSE)
+    tax_new <- do.call(cbind, tax_new)
+    row.names(tax_new) <- row.names(tax)
+    colnames(tax_new) <- lvl
+    tax_table(ps) <- tax_new
 
-  ps
+    ps
 }
 
 # suppress the checking notes “no visible binding for global variable", which is

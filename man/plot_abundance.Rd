@@ -29,11 +29,11 @@ plot the abundances of markers
 \examples{
 data(enterotypes_arumugam)
 mm <- run_limma_voom(
-  enterotypes_arumugam,
-  "Enterotype",
-  contrast = c("Enterotype 3", "Enterotype 2"),
-  pvalue_cutoff = 0.01,
-  p_adjust = "none"
+    enterotypes_arumugam,
+    "Enterotype",
+    contrast = c("Enterotype 3", "Enterotype 2"),
+    pvalue_cutoff = 0.01,
+    p_adjust = "none"
 )
 plot_abundance(mm, group = "Enterotype")
 }

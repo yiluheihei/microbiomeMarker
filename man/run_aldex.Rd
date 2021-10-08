@@ -105,8 +105,8 @@ Perform differential analysis using ALDEx2
 \examples{
 data(enterotypes_arumugam)
 ps <- phyloseq::subset_samples(
-  enterotypes_arumugam,
-  Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
+    enterotypes_arumugam,
+    Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
 )
 run_aldex(ps, group = "Enterotype")
 }

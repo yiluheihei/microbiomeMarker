@@ -77,110 +77,120 @@
 #'   [`run_metagenomeseq`],[`run_ancom()`],[`run_ancombc()`],[`run_aldex()`],
 #'   [`run_limma_voom()`],[`run_sl()`]
 run_marker <- function(ps,
-                       group,
-                       da_method = c("lefse", "simple_t", "simple_welch",
-                                  "simple_white", "simple_kruskal",
-                                  "simple_anova", "edger", "deseq2",
-                                  "metagenomeseq", "ancom", "ancombc", "aldex",
-                                  "limma_voom", "sl_lr", "sl_rf", "sl_svm"),
-                       taxa_rank = "all",
-                       transform = c("identity", "log10", "log10p") ,
-                       norm = "none",
-                       norm_para = list(),
-                       p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                    "hochberg", "hommel", "BH", "BY"),
-                       pvalue_cutoff = 0.05,
-                       ...) {
-  stopifnot(inherits(ps, "phyloseq"))
+    group,
+    da_method = c(
+        "lefse", "simple_t", "simple_welch",
+        "simple_white", "simple_kruskal",
+        "simple_anova", "edger", "deseq2",
+        "metagenomeseq", "ancom", "ancombc", "aldex",
+        "limma_voom", "sl_lr", "sl_rf", "sl_svm"
+    ),
+    taxa_rank = "all",
+    transform = c("identity", "log10", "log10p"),
+    norm = "none",
+    norm_para = list(),
+    p_adjust = c(
+        "none", "fdr", "bonferroni", "holm",
+        "hochberg", "hommel", "BH", "BY"
+    ),
+    pvalue_cutoff = 0.05,
+    ...) {
+    stopifnot(inherits(ps, "phyloseq"))
 
-  transform <- match.arg(transform, c("identity", "log10", "log10p"))
-  da_method <- match.arg(
-    da_method,
-    c("lefse", "simple_t", "simple_welch",
-      "simple_white", "simple_kruskal", "simple_anova",
-      "edger", "deseq2", "metagenomeseq", "ancom",
-      "ancombc", "aldex", "limma_voom",
-      "sl_lr", "sl_rf", "sl_svm")
-  )
-  p_adjust <- match.arg(
-    p_adjust,
-    c("none", "fdr", "bonferroni", "holm",
-      "hochberg", "hommel", "BH", "BY")
-  )
+    transform <- match.arg(transform, c("identity", "log10", "log10p"))
+    da_method <- match.arg(
+        da_method,
+        c(
+            "lefse", "simple_t", "simple_welch",
+            "simple_white", "simple_kruskal", "simple_anova",
+            "edger", "deseq2", "metagenomeseq", "ancom",
+            "ancombc", "aldex", "limma_voom",
+            "sl_lr", "sl_rf", "sl_svm"
+        )
+    )
+    p_adjust <- match.arg(
+        p_adjust,
+        c(
+            "none", "fdr", "bonferroni", "holm",
+            "hochberg", "hommel", "BH", "BY"
+        )
+    )
 
-  # group
-  sample_meta <- sample_data(ps)
-  if (!group %in% names(sample_meta)) {
-    stop("`group` must in the field of sample meta data", call. = FALSE)
-  }
-  groups <- sample_meta[[group]]
-  n_group <- length(unique(groups))
-  if (n_group == 1) {
-    stop("at least two groups required", call. = FALSE)
-  }
+    # group
+    sample_meta <- sample_data(ps)
+    if (!group %in% names(sample_meta)) {
+        stop("`group` must in the field of sample meta data", call. = FALSE)
+    }
+    groups <- sample_meta[[group]]
+    n_group <- length(unique(groups))
+    if (n_group == 1) {
+        stop("at least two groups required", call. = FALSE)
+    }
 
-  para <- c(
-    list(...),
-    ps = ps,
-    group = group,
-    taxa_rank = taxa_rank,
-    transform = transform,
-    norm = norm,
-    norm_para = norm_para,
-    p_adjust = p_adjust,
-    pvalue_cutoff = pvalue_cutoff
-  )
-
-  test_fun <- switch (da_method,
-    lefse = run_lefse,
-    edger = run_edger,
-    metagenomeseq = run_metagenomeseq,
-    deseq2 = run_deseq2,
-    ancom = run_ancom,
-    ancombc = run_ancombc,
-    aldex = run_aldex,
-    limma_voom = run_limma_voom
-  )
-
-  if (da_method == "lefse") {
     para <- c(
-      list(...),
-      ps = ps,
-      class = group,
-      taxa_rank = taxa_rank,
-      transform = transform,
-      norm = norm,
-      norm_para = norm_para
+        list(...),
+        ps = ps,
+        group = group,
+        taxa_rank = taxa_rank,
+        transform = transform,
+        norm = norm,
+        norm_para = norm_para,
+        p_adjust = p_adjust,
+        pvalue_cutoff = pvalue_cutoff
     )
-  }
-  if (da_method %in% c("simple_t", "simple_welch",
-                       "simple_white", "simple_kruskal", "simple_anova")) {
-    test_method <- switch (da_method,
-      simple_t = "t.test",
-      simple_wilch = "welch.test",
-      simple_white = "white.test",
-      simple_anova = "anova",
-      simple_kruskal = "kruskal"
-    )
-    para <- c(para, method = test_method)
-    test_fun <- run_simple_stat
-  }
-  if (da_method %in% c("sl_lr", "sl_rf", "sl_svm")) { # sl methods
-    sl_method <- gsub("sl_", "", da_method) %>%
-      toupper()
-    para <- c(
-      list(...),
-      ps = ps,
-      group = group,
-      taxa_rank = taxa_rank,
-      transform = transform,
-      norm = norm,
-      norm_para = norm_para,
-      method = sl_method
-    )
-    test_fun <- run_sl
-  }
-  mm <- do.call(test_fun, para)
 
-  mm
+    test_fun <- switch(da_method,
+        lefse = run_lefse,
+        edger = run_edger,
+        metagenomeseq = run_metagenomeseq,
+        deseq2 = run_deseq2,
+        ancom = run_ancom,
+        ancombc = run_ancombc,
+        aldex = run_aldex,
+        limma_voom = run_limma_voom
+    )
+
+    if (da_method == "lefse") {
+        para <- c(
+            list(...),
+            ps = ps,
+            class = group,
+            taxa_rank = taxa_rank,
+            transform = transform,
+            norm = norm,
+            norm_para = norm_para
+        )
+    }
+    if (da_method %in% c(
+        "simple_t", "simple_welch",
+        "simple_white", "simple_kruskal", "simple_anova"
+    )) {
+        test_method <- switch(da_method,
+            simple_t = "t.test",
+            simple_wilch = "welch.test",
+            simple_white = "white.test",
+            simple_anova = "anova",
+            simple_kruskal = "kruskal"
+        )
+        para <- c(para, method = test_method)
+        test_fun <- run_simple_stat
+    }
+    if (da_method %in% c("sl_lr", "sl_rf", "sl_svm")) { # sl methods
+        sl_method <- gsub("sl_", "", da_method) %>%
+            toupper()
+        para <- c(
+            list(...),
+            ps = ps,
+            group = group,
+            taxa_rank = taxa_rank,
+            transform = transform,
+            norm = norm,
+            norm_para = norm_para,
+            method = sl_method
+        )
+        test_fun <- run_sl
+    }
+    mm <- do.call(test_fun, para)
+
+    mm
 }

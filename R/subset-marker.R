@@ -10,26 +10,26 @@
 #' @examples
 #' data(enterotypes_arumugam)
 #' mm <- run_limma_voom(
-#'   enterotypes_arumugam,
-#'   "Enterotype",
-#'   contrast = c("Enterotype 3", "Enterotype 2"),
-#'   pvalue_cutoff = 0.01,
-#'   p_adjust = "none"
+#'     enterotypes_arumugam,
+#'     "Enterotype",
+#'     contrast = c("Enterotype 3", "Enterotype 2"),
+#'     pvalue_cutoff = 0.01,
+#'     p_adjust = "none"
 #' )
 #' subset_marker(mm, enrich_group == "Enterotype 3")
 subset_marker <- function(mm, ...) {
-  if (is.null(marker_table(mm))) {
-    warning("No marker_table in `mm`")
-    return(mm)
-  }
+    if (is.null(marker_table(mm))) {
+        warning("No marker_table in `mm`")
+        return(mm)
+    }
 
-  marker <- data.frame(marker_table(mm))
-  marker_new <- subset(marker, ...)
+    marker <- data.frame(marker_table(mm))
+    marker_new <- subset(marker, ...)
 
-  if (inherits(mm, "marker_table")) {
-    return(marker_table(marker_new))
-  } else {
-    marker_table(mm) <- marker_new
-    return(mm)
-  }
+    if (inherits(mm, "marker_table")) {
+        return(marker_table(marker_new))
+    } else {
+        marker_table(mm) <- marker_new
+        return(mm)
+    }
 }

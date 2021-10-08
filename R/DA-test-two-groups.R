@@ -58,163 +58,174 @@
 #' @examples
 #' data(enterotypes_arumugam)
 #' mm_welch <- run_test_two_groups(
-#'   enterotypes_arumugam,
-#'   group = "Gender",
-#'   method = "welch.test"
+#'     enterotypes_arumugam,
+#'     group = "Gender",
+#'     method = "welch.test"
 #' )
 #' mm_welch
 run_test_two_groups <- function(ps,
-                              group,
-                              taxa_rank = "all",
-                              transform = c("identity", "log10", "log10p"),
-                              norm = "TSS",
-                              norm_para = list(),
-                              method = c("welch.test", "t.test", "white.test"),
-                              p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                           "hochberg", "hommel", "BH", "BY"),
-                              pvalue_cutoff = 0.05,
-                              diff_mean_cutoff = NULL,
-                              ratio_cutoff = NULL,
-                              conf_level = 0.95,
-                              nperm = 1000,
-                              ...) {
-  stopifnot(inherits(ps, "phyloseq"))
+    group,
+    taxa_rank = "all",
+    transform = c("identity", "log10", "log10p"),
+    norm = "TSS",
+    norm_para = list(),
+    method = c("welch.test", "t.test", "white.test"),
+    p_adjust = c(
+        "none", "fdr", "bonferroni", "holm",
+        "hochberg", "hommel", "BH", "BY"
+    ),
+    pvalue_cutoff = 0.05,
+    diff_mean_cutoff = NULL,
+    ratio_cutoff = NULL,
+    conf_level = 0.95,
+    nperm = 1000,
+    ...) {
+    stopifnot(inherits(ps, "phyloseq"))
 
-  if (!check_rank_names(ps)) {
-    stop(
-      "ranks of `ps` must be one of ",
-      paste(available_ranks, collapse = ", ")
+    if (!check_rank_names(ps)) {
+        stop(
+            "ranks of `ps` must be one of ",
+            paste(available_ranks, collapse = ", ")
+        )
+    }
+
+    p_adjust <- match.arg(
+        p_adjust,
+        c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY")
     )
-  }
+    method <- match.arg(method, c("welch.test", "t.test", "white.test"))
 
-  p_adjust <- match.arg(
-    p_adjust,
-    c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY")
-  )
-  method <- match.arg(method, c("welch.test", "t.test", "white.test"))
+    # preprocess phyloseq object
+    ps <- preprocess_ps(ps)
+    ps <- transform_abundances(ps, transform = transform)
 
-  # preprocess phyloseq object
-  ps <- preprocess_ps(ps)
-  ps <- transform_abundances(ps, transform = transform)
+    # original abundance for white test
+    # check taxa_rank
+    check_taxa_rank(ps, taxa_rank)
+    if (taxa_rank == "all") {
+        ps_orig_summarized <- summarize_taxa(ps)
+    } else if (taxa_rank == "none") {
+        ps_orig_summarized <- extract_rank(ps, taxa_rank)
+    } else {
+        ps_orig_summarized <- aggregate_taxa(ps, taxa_rank) %>%
+            extract_rank(taxa_rank)
+    }
+    otus <- abundances(ps_orig_summarized, norm = FALSE)
+    abd <- transpose_and_2df(otus)
 
-  # original abundance for white test
-  # check taxa_rank
-  check_taxa_rank(ps, taxa_rank)
-  if (taxa_rank == "all") {
-    ps_orig_summarized <- summarize_taxa(ps)
-  } else if (taxa_rank =="none") {
-    ps_orig_summarized <- extract_rank(ps, taxa_rank)
-  } else {
-    ps_orig_summarized <-aggregate_taxa(ps, taxa_rank) %>%
-      extract_rank(taxa_rank)
-  }
-  otus <- abundances(ps_orig_summarized, norm = FALSE)
-  abd <- transpose_and_2df(otus)
+    # normalize, normalize first, then summarize
+    norm_para <- c(norm_para, method = norm, object = list(ps))
+    ps_normed <- do.call(normalize, norm_para)
+    # check taxa_rank
+    # check_taxa_rank(ps, taxa_rank)
+    if (taxa_rank == "all") {
+        ps_summarized <- summarize_taxa(ps_normed)
+    } else if (taxa_rank == "none") {
+        ps_summarized <- extract_rank(ps_normed, taxa_rank)
+    } else {
+        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
+            extract_rank(taxa_rank)
+    }
+    # ps_summarized <- summarize_taxa(ps_normed)
+    abd_norm <- abundances(ps_summarized, norm = TRUE) %>%
+        transpose_and_2df()
 
-  # normalize, normalize first, then summarize
-  norm_para <- c(norm_para, method = norm, object = list(ps))
-  ps_normed <- do.call(normalize, norm_para)
-  # check taxa_rank
-  # check_taxa_rank(ps, taxa_rank)
-  if (taxa_rank == "all") {
-    ps_summarized <- summarize_taxa(ps_normed)
-  } else if (taxa_rank =="none") {
-    ps_summarized <- extract_rank(ps_normed, taxa_rank)
-  } else {
-    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
-      extract_rank(taxa_rank)
-  }
-  # ps_summarized <- summarize_taxa(ps_normed)
-  abd_norm <- abundances(ps_summarized, norm = TRUE) %>%
-    transpose_and_2df()
+    sample_meta <- sample_data(ps_summarized)
+    if (!group %in% names(sample_meta)) {
+        stop("`group` must in the field of sample meta data")
+    }
+    groups <- sample_meta[[group]]
+    abd_norm_group <- split(abd_norm, groups)
 
-  sample_meta <- sample_data(ps_summarized)
-  if (!group %in% names(sample_meta)) {
-    stop("`group` must in the field of sample meta data")
-  }
-  groups <- sample_meta[[group]]
-  abd_norm_group <- split(abd_norm, groups)
+    # used for permute statistic in white's non parametric t test method
+    orig_abd_group <- split(abd, groups)
 
-  # used for permute statistic in white's non parametric t test method
-  orig_abd_group <- split(abd, groups)
+    if (method == "welch.test") {
+        test_res <- run_t_test(abd_norm_group, conf_level = conf_level, ...)
+    } else if (method == "t.test") {
+        test_res <- run_t_test(
+            abd_norm_group, 
+            conf_level, 
+            var_equal = TRUE, ...
+        )
+    } else if (method == "white.test") {
+        test_res <- run_white_test(
+            abd_norm_group[[1]],
+            abd_norm_group[[2]],
+            orig_abd_group[[1]],
+            orig_abd_group[[2]],
+            group_names = names(abd_norm_group),
+            conf_level = conf_level,
+            nperm = nperm,
+            ...
+        )
+    }
 
-  if (method == "welch.test") {
-    test_res <- run_t_test(abd_norm_group, conf_level = conf_level, ...)
-  } else if (method == "t.test") {
-    test_res <- run_t_test(abd_norm_group, conf_level, var_equal = TRUE, ...)
-  } else if (method == "white.test") {
-    test_res <- run_white_test(
-      abd_norm_group[[1]],
-      abd_norm_group[[2]],
-      orig_abd_group[[1]],
-      orig_abd_group[[2]],
-      group_names = names(abd_norm_group),
-      conf_level = conf_level,
-      nperm = nperm,
-      ...
+    feature <- tax_table(ps_summarized)@.Data[, 1]
+    test_res[["feature"]] <- feature
+
+    # ratio
+    ratio <- purrr::pmap_dbl(abd_norm_group, ~ calc_ratio(.x, .y))
+    test_res$ratio <- ratio
+
+    # set the ci and ratio to 0, if both of the mean is 0
+    test_res <- mutate(
+        test_res,
+        ci_lower = ifelse(.data$pvalue == 1, 0, .data$ci_lower),
+        ci_upper = ifelse(.data$pvalue == 1, 0, .data$ci_upper)
+    ) %>%
+        select(.data$feature, .data$enrich_group, everything())
+
+    # p value correction for multiple comparisons
+    test_res$padj <- p.adjust(test_res$pvalue, method = p_adjust)
+    # row.names(test_res) <- feature[match(test_res$feature, feature)]
+    row.names(test_res) <- paste0("feature", seq_len(nrow(test_res)))
+
+    # p <= 0.05
+    test_filtered <- filter(test_res, .data$padj <= pvalue_cutoff)
+    # abs(diff_mean) >= cutoff
+    if (!is.null(diff_mean_cutoff)) {
+        test_filtered <- filter(
+            test_filtered,
+            abs(.data$ef_diff_mean) >= diff_mean_cutoff
+        )
+    }
+    # ratio >= cutoff or <= 1/cutoff
+    if (!is.null(ratio_cutoff)) {
+        test_filtered <- filter(
+            test_filtered,
+            .data$ratio >= ratio_cutoff | .data$ratio <= 1 / ratio_cutoff
+        )
+    }
+
+    # summarized tax table
+    tax <- matrix(feature) %>%
+        tax_table()
+    row.names(tax) <- row.names(otus)
+
+    # only keep five variables: feature, enrich_group, effect_size (diff_mean),
+    # pvalue, and padj
+    test_res <- test_res[, c(
+        "feature", "enrich_group",
+        "ef_diff_mean", "pvalue", "padj"
+    )]
+    test_filtered <- test_filtered[, c(
+        "feature", "enrich_group",
+        "ef_diff_mean", "pvalue", "padj"
+    )]
+    row.names(test_filtered) <- paste0("marker", seq_len(nrow(test_filtered)))
+
+    marker <- return_marker(test_filtered, test_res)
+    marker <- microbiomeMarker(
+        marker_table = marker,
+        norm_method = get_norm_method(norm),
+        diff_method = method,
+        sam_data = sample_data(ps_normed),
+        otu_table = otu_table(t(abd), taxa_are_rows = TRUE),
+        tax_table = tax
     )
-  }
 
-  feature <- tax_table(ps_summarized)@.Data[, 1]
-  test_res[["feature"]] <- feature
-
-  # ratio
-  ratio <- purrr::pmap_dbl(abd_norm_group, ~ calc_ratio(.x, .y))
-  test_res$ratio <- ratio
-
-  # set the ci and ratio to 0, if both of the mean is 0
-  test_res <- mutate(
-    test_res,
-    ci_lower = ifelse(.data$pvalue == 1, 0, .data$ci_lower),
-    ci_upper = ifelse(.data$pvalue == 1, 0, .data$ci_upper)) %>%
-    select(.data$feature, .data$enrich_group, everything())
-
-  # p value correction for multiple comparisons
-  test_res$padj <- p.adjust(test_res$pvalue, method = p_adjust)
-  # row.names(test_res) <- feature[match(test_res$feature, feature)]
-  row.names(test_res) <- paste0("feature", seq_len(nrow(test_res)))
-
-  # p <= 0.05
-  test_filtered <-  filter(test_res, .data$padj <= pvalue_cutoff)
-  # abs(diff_mean) >= cutoff
-  if (!is.null(diff_mean_cutoff)) {
-    test_filtered <- filter(
-      test_filtered,
-      abs(.data$ef_diff_mean) >= diff_mean_cutoff
-    )
-  }
-  # ratio >= cutoff or <= 1/cutoff
-  if (!is.null(ratio_cutoff)) {
-    test_filtered <- filter(
-      test_filtered,
-      .data$ratio >= ratio_cutoff | .data$ratio <= 1/ratio_cutoff
-    )
-  }
-
-  # summarized tax table
-  tax <- matrix(feature) %>%
-    tax_table()
-  row.names(tax) <- row.names(otus)
-
-  # only keep five variables: feature, enrich_group, effect_size (diff_mean),
-  # pvalue, and padj
-  test_res <- test_res[, c("feature", "enrich_group",
-                           "ef_diff_mean", "pvalue", "padj")]
-  test_filtered <- test_filtered[, c("feature", "enrich_group",
-                                     "ef_diff_mean", "pvalue", "padj")]
-  row.names(test_filtered) <- paste0("marker", seq_len(nrow(test_filtered)))
-
-  marker <- return_marker(test_filtered, test_res)
-  marker <- microbiomeMarker(
-    marker_table = marker,
-    norm_method = get_norm_method(norm),
-    diff_method = method,
-    sam_data = sample_data(ps_normed),
-    otu_table = otu_table(t(abd), taxa_are_rows = TRUE),
-    tax_table = tax
-  )
-
-  marker
+    marker
 }
 
 # t test and welch test ---------------------------------------------------
@@ -232,50 +243,53 @@ run_test_two_groups <- function(ps,
 #' @seealso [stats::t.test()]
 #' @noRd
 run_t_test <- function(abd_group, conf_level = 0.95, var_equal = FALSE, ...) {
-  if (length(abd_group) != 2) {
-    stop("welch test requires test between two groups")
-  }
+    if (length(abd_group) != 2) {
+        stop("welch test requires test between two groups")
+    }
 
-  t_res <- purrr::pmap(
-    abd_group,
-    ~ t.test(.x, .y, conf.level = conf_level, var.equal = var_equal, ...)
-  )
+    t_res <- purrr::pmap(
+        abd_group,
+        ~ t.test(.x, .y, conf.level = conf_level, var.equal = var_equal, ...)
+    )
 
-  # p value
-  p <- purrr::map_dbl(t_res, ~ .x$p.value)
-  # set the p value to 1 is the result is NA
-  p[is.na(p)] <- 1
+    # p value
+    p <- purrr::map_dbl(t_res, ~ .x$p.value)
+    # set the p value to 1 is the result is NA
+    p[is.na(p)] <- 1
 
-  # means each group
-  # different between means
-  t_estimate <- purrr::map(t_res, ~ .x$estimate)
-  mean_g1 <- purrr::map_dbl(t_estimate, ~ .x[1])
-  mean_g2 <- purrr::map_dbl(t_estimate, ~ .x[2])
-  diff_means <- mean_g1 - mean_g2
+    # means each group
+    # different between means
+    t_estimate <- purrr::map(t_res, ~ .x$estimate)
+    mean_g1 <- purrr::map_dbl(t_estimate, ~ .x[1])
+    mean_g2 <- purrr::map_dbl(t_estimate, ~ .x[2])
+    diff_means <- mean_g1 - mean_g2
 
-  # confidence interval
-  ci <- purrr::map(t_res, ~ .x$conf.int)
-  ci_lower <- purrr::map_dbl(ci, ~ .x[1])
-  ci_upper <- purrr::map_dbl(ci, ~ .x[2])
+    # confidence interval
+    ci <- purrr::map(t_res, ~ .x$conf.int)
+    ci_lower <- purrr::map_dbl(ci, ~ .x[1])
+    ci_upper <- purrr::map_dbl(ci, ~ .x[2])
 
-  group_names <- names(abd_group)
-  mean_names <- paste(group_names, "mean", sep = "_")
-  res <- data.frame(
-    p,
-    mean_g1,
-    mean_g2,
-    diff_means,
-    ci_lower,
-    ci_upper
-  )
-  names(res) <- c("pvalue", mean_names, "ef_diff_mean", "ci_lower", "ci_upper")
+    group_names <- names(abd_group)
+    mean_names <- paste(group_names, "mean", sep = "_")
+    res <- data.frame(
+        p,
+        mean_g1,
+        mean_g2,
+        diff_means,
+        ci_lower,
+        ci_upper
+    )
+    names(res) <- c(
+        "pvalue", mean_names, 
+        "ef_diff_mean", "ci_lower", "ci_upper"
+    )
 
-  # enrich_group
-  means_df <- data.frame(mean_g1, mean_g2)
-  group_enriched <- group_names[apply(means_df, 1, which.max)]
-  res$enrich_group <- group_enriched
+    # enrich_group
+    means_df <- data.frame(mean_g1, mean_g2)
+    group_enriched <- group_names[apply(means_df, 1, which.max)]
+    res$enrich_group <- group_enriched
 
-  res
+    res
 }
 
 # white's non parametric t test -------------------------------------------
@@ -291,85 +305,87 @@ run_t_test <- function(abd_group, conf_level = 0.95, var_equal = FALSE, ...) {
 #' @param ... extra arguments passed to [t.test()]
 #' @noRd
 run_white_test <- function(norm_group1,
-                           norm_group2,
-                           orig_group1,
-                           orig_group2,
-                           group_names,
-                           conf_level = 0.95,
-                           nperm = 1000,
-                           ...) {
-
-  two_sample_ts <- calc_twosample_ts(norm_group1, norm_group2)
-  t_statistic <- purrr::map_dbl(two_sample_ts, ~ .x["t_static"])
-  diff_means <- purrr::map_dbl(two_sample_ts, ~ .x["diff_means"])
-
-  permute_p <- calc_permute_p(
-    norm_group1, norm_group2,
-    orig_group1, orig_group2,
-    t_statistic,
-    conf_level = conf_level,
-    nperm = nperm
-  )
-
-  bootstrap_ci <- calc_bootstrap_ci(
-    norm_group1,
     norm_group2,
-    conf_level = conf_level,
-    replicates = nperm
-  )
-
-  # sparse feature ------------------------------------------------------------
-  n1 <- nrow(orig_group1)
-  n2 <- nrow(orig_group2)
-  sparse_index1 <- purrr::map_dbl(orig_group1, sum) < n1
-  sparse_index2 <- purrr::map_dbl(orig_group2, sum) < n2
-  sparse_index <- which(sparse_index1 & sparse_index2)
-
-  sparse_res <- calc_sparse_p(orig_group1, orig_group2, sparse_index, ...)
-  # p value
-  sparse_p <- purrr::map_dbl(sparse_res, ~ .x$p.value)
-  # set the p value to 1 is the result is NA
-  sparse_p[is.na(sparse_p)] <- 1
-
-  # means of each group
-  sparse_diff_means <- calc_sparse_diff_mean(
     orig_group1,
     orig_group2,
-    sparse_index
-  )
+    group_names,
+    conf_level = 0.95,
+    nperm = 1000,
+    ...) {
+    two_sample_ts <- calc_twosample_ts(norm_group1, norm_group2)
+    t_statistic <- purrr::map_dbl(two_sample_ts, ~ .x["t_static"])
+    diff_means <- purrr::map_dbl(two_sample_ts, ~ .x["diff_means"])
 
-  # confidence interval
-  sparse_ci <- purrr::map(sparse_res, ~ .x$conf.int)
-  sparse_ci_lower <- purrr::map_dbl(sparse_ci, ~ .x[1])
-  sparse_ci_upper <- purrr::map_dbl(sparse_ci, ~ .x[2])
+    permute_p <- calc_permute_p(
+        norm_group1, norm_group2,
+        orig_group1, orig_group2,
+        t_statistic,
+        conf_level = conf_level,
+        nperm = nperm
+    )
 
-  permute_p$pvalue_two_side[sparse_index] <- sparse_p
-  diff_means[sparse_index] <- sparse_diff_means
-  ci_lower <- bootstrap_ci$ci_lower
-  ci_lower[sparse_index] <- sparse_ci_lower
-  ci_upper <- bootstrap_ci$ci_upper
-  ci_upper[sparse_index] <- sparse_ci_upper
+    bootstrap_ci <- calc_bootstrap_ci(
+        norm_group1,
+        norm_group2,
+        conf_level = conf_level,
+        replicates = nperm
+    )
 
-  mean_g1 <- colMeans(norm_group1)
-  mean_g2 <- colMeans(norm_group2)
+    # sparse feature -----------------------------------------------------------
+    n1 <- nrow(orig_group1)
+    n2 <- nrow(orig_group2)
+    sparse_index1 <- purrr::map_dbl(orig_group1, sum) < n1
+    sparse_index2 <- purrr::map_dbl(orig_group2, sum) < n2
+    sparse_index <- which(sparse_index1 & sparse_index2)
 
-  mean_names <- paste(group_names, "mean", sep = "_")
-  res <- data.frame(
-    permute_p$pvalue_two_side,
-    mean_g1,
-    mean_g2,
-    diff_means,
-    ci_lower,
-    ci_upper
-  )
-  names(res) <- c("pvalue", mean_names, "ef_diff_mean", "ci_lower", "ci_upper")
+    sparse_res <- calc_sparse_p(orig_group1, orig_group2, sparse_index, ...)
+    # p value
+    sparse_p <- purrr::map_dbl(sparse_res, ~ .x$p.value)
+    # set the p value to 1 is the result is NA
+    sparse_p[is.na(sparse_p)] <- 1
 
-  # enrich_group
-  means_df <- data.frame(mean_g1, mean_g2)
-  group_enriched <- group_names[apply(means_df, 1, which.max)]
-  res$enrich_group <- group_enriched
+    # means of each group
+    sparse_diff_means <- calc_sparse_diff_mean(
+        orig_group1,
+        orig_group2,
+        sparse_index
+    )
 
-  res
+    # confidence interval
+    sparse_ci <- purrr::map(sparse_res, ~ .x$conf.int)
+    sparse_ci_lower <- purrr::map_dbl(sparse_ci, ~ .x[1])
+    sparse_ci_upper <- purrr::map_dbl(sparse_ci, ~ .x[2])
+
+    permute_p$pvalue_two_side[sparse_index] <- sparse_p
+    diff_means[sparse_index] <- sparse_diff_means
+    ci_lower <- bootstrap_ci$ci_lower
+    ci_lower[sparse_index] <- sparse_ci_lower
+    ci_upper <- bootstrap_ci$ci_upper
+    ci_upper[sparse_index] <- sparse_ci_upper
+
+    mean_g1 <- colMeans(norm_group1)
+    mean_g2 <- colMeans(norm_group2)
+
+    mean_names <- paste(group_names, "mean", sep = "_")
+    res <- data.frame(
+        permute_p$pvalue_two_side,
+        mean_g1,
+        mean_g2,
+        diff_means,
+        ci_lower,
+        ci_upper
+    )
+    names(res) <- c(
+        "pvalue", mean_names, 
+        "ef_diff_mean", "ci_lower", "ci_upper"
+    )
+
+    # enrich_group
+    means_df <- data.frame(mean_g1, mean_g2)
+    group_enriched <- group_names[apply(means_df, 1, which.max)]
+    res$enrich_group <- group_enriched
+
+    res
 }
 
 #' permuted p values from Storey and Tibshirani(2003)
@@ -377,186 +393,192 @@ run_white_test <- function(norm_group1,
 #' @param t_statistic white non parametric t statistic
 #' @noRd
 calc_permute_p <- function(norm_group1,
-                           norm_group2,
-                           orig_group1,
-                           orig_group2,
-                           t_statistic,
-                           conf_level = 0.95,
-                           nperm = 1000) {
-  n1 <- nrow(norm_group1)
-  n2 <- nrow(norm_group2)
-  smaples_n <- n1 + n2
-  features_n <- length(norm_group1)
+    norm_group2,
+    orig_group1,
+    orig_group2,
+    t_statistic,
+    conf_level = 0.95,
+    nperm = 1000) {
+    n1 <- nrow(norm_group1)
+    n2 <- nrow(norm_group2)
+    smaples_n <- n1 + n2
+    features_n <- length(norm_group1)
 
 
-  # calculate p value -------------------------------------------------------
-  permuted_res <- purrr::rerun(nperm, calc_permute_ts(norm_group1, norm_group2))
-  permuted_ts <- purrr::map_df(
-    permuted_res,
-    ~ .x %>% purrr::map(~ .x["t_static"])
-  )
-  permuted_diff_means<- purrr::map_df(
-    permuted_res,
-    ~ .x %>% purrr::map(~ .x["diff_means"])
-  )
+    # calculate p value -------------------------------------------------------
+    permuted_res <- purrr::rerun(
+        nperm, 
+        calc_permute_ts(norm_group1, norm_group2)
+    )
+    permuted_ts <- purrr::map_df(
+        permuted_res,
+        ~ .x %>% purrr::map(~ .x["t_static"])
+    )
+    permuted_diff_means <- purrr::map_df(
+        permuted_res,
+        ~ .x %>% purrr::map(~ .x["diff_means"])
+    )
 
-  if (n1 < 8 || n2 < 8) {
-    # pool just the frequently observed ts
-    cleaned_permuted_ttests <- permuted_ts
-    group1_high_freq <- colSums(orig_group1) >= n1
-    group2_high_freq <- colSums(orig_group2) >= n2
-    high_freq_indices <- which(group1_high_freq | group2_high_freq)
+    if (n1 < 8 || n2 < 8) {
+        # pool just the frequently observed ts
+        cleaned_permuted_ttests <- permuted_ts
+        group1_high_freq <- colSums(orig_group1) >= n1
+        group2_high_freq <- colSums(orig_group2) >= n2
+        high_freq_indices <- which(group1_high_freq | group2_high_freq)
 
-    pvalue_one_side <- rep(0, features_n)
-    pvalue_two_side <- rep(0, features_n)
+        pvalue_one_side <- rep(0, features_n)
+        pvalue_two_side <- rep(0, features_n)
 
-    for (hf_index in high_freq_indices) {
-      one_side <- 0
-      two_side <- 0
+        for (hf_index in high_freq_indices) {
+            one_side <- 0
+            two_side <- 0
 
-      for (i in seq_len(nperm)) {
-        for (hf_index2 in high_freq_indices) {
-          # one side
-          if (cleaned_permuted_ttests[i, hf_index2] > t_statistic[hf_index]) {
-            one_side <- one_side + 1
-          }
+            for (i in seq_len(nperm)) {
+                for (hf_index2 in high_freq_indices) {
+                    # one side
+                    if (cleaned_permuted_ttests[i, hf_index2] >
+                            t_statistic[hf_index]) {
+                        one_side <- one_side + 1
+                    }
 
-          # two side
-          if (abs(cleaned_permuted_ttests[i, hf_index2]) >
-              abs(t_statistic[hf_index])) {
-            two_side <- two_side + 1
-          }
+                    # two side
+                    if (abs(cleaned_permuted_ttests[i, hf_index2]) >
+                        abs(t_statistic[hf_index])) {
+                        two_side <- two_side + 1
+                    }
+                }
+            }
+
+            pvalue_one_side[hf_index] <- 1 / 
+                (nperm * length(high_freq_indices)) * one_side
+            pvalue_two_side[hf_index] <- 1 / 
+                (nperm * length(high_freq_indices)) * two_side
         }
-      }
+    } else {
+        no <- calc_p_large_sample(permuted_ts, t_statistic)
+        two_side_no <- purrr::map_dbl(no, ~ .x["two_side"])
+        g_side_no <- purrr::map_dbl(no, ~ .x["g_side"])
+        l_side_no <- purrr::map_dbl(no, ~ .x["l_side"])
 
-      pvalue_one_side[hf_index] <- 1/(nperm*length(high_freq_indices))*one_side
-      pvalue_two_side[hf_index] <- 1/(nperm*length(high_freq_indices))*two_side
+        pvalue_two_side <- 1 / (nperm + 1) * (two_side_no + 1)
+        pvalue_g_side <- 1 / (nperm + 1) * (g_side_no + 1)
+        pvalue_l_side <- 1 / (nperm + 1) * (l_side_no + 1)
     }
 
-  } else {
-    no <- calc_p_large_sample(permuted_ts, t_statistic)
-    two_side_no <- purrr::map_dbl(no, ~ .x["two_side"])
-    g_side_no <- purrr::map_dbl(no, ~ .x["g_side"])
-    l_side_no <- purrr::map_dbl(no, ~ .x["l_side"])
+    pvalue <- data.frame(
+        pvalue_two_side = pvalue_two_side,
+        pvalue_g_side = pvalue_g_side,
+        pvalue_l_side = pvalue_l_side
+    )
 
-    pvalue_two_side <- 1/(nperm + 1) * (two_side_no + 1)
-    pvalue_g_side <- 1/(nperm + 1) * (g_side_no + 1)
-    pvalue_l_side <- 1/(nperm + 1) * (l_side_no + 1)
-  }
-
-  pvalue <- data.frame(
-    pvalue_two_side = pvalue_two_side,
-    pvalue_g_side = pvalue_g_side,
-    pvalue_l_side = pvalue_l_side
-  )
-
-  pvalue
+    pvalue
 }
 
 # calculate the permute p value, if number of samples in both groups are larger
 # than 8
 calc_p_large_sample <- function(permuted_ts, t_statistic) {
-  no <- purrr::map2(
-    permuted_ts,
-    t_statistic,
-    ~ purrr::map_df(
-      .x,
-      function(i) {
-        l_side <- 0
-        g_side <- 0
-        two_side <- 0
-        if (i > .y) {
-          g_side <- g_side + 1
-        }
-        if (i < .y) {
-          l_side <- l_side + 1
-        }
-        if (abs(i) > abs(.y)) {
-          two_side <- two_side + 1
-        }
-        return(c(two_side = two_side, g_side = g_side, l_side = l_side))
-      }
+    no <- purrr::map2(
+        permuted_ts,
+        t_statistic,
+        ~ purrr::map_df(
+            .x,
+            function(i) {
+                l_side <- 0
+                g_side <- 0
+                two_side <- 0
+                if (i > .y) {
+                    g_side <- g_side + 1
+                }
+                if (i < .y) {
+                    l_side <- l_side + 1
+                }
+                if (abs(i) > abs(.y)) {
+                    two_side <- two_side + 1
+                }
+                return(c(two_side = two_side, g_side = g_side, l_side = l_side))
+            }
+        )
     )
-  )
 
-  purrr::map(no, colSums)
+    purrr::map(no, colSums)
 }
 
 # bootstrap confidence interval
 calc_bootstrap_ci <- function(norm_group1,
-                              norm_group2,
-                              conf_level = 0.95,
-                              replicates = 1000) {
-  diff_means <- purrr::map2_df(
-    norm_group1,
     norm_group2,
-    bootstrap_diff_mean_prop_single
-  )
+    conf_level = 0.95,
+    replicates = 1000) {
+    diff_means <- purrr::map2_df(
+        norm_group1,
+        norm_group2,
+        bootstrap_diff_mean_prop_single
+    )
 
-  ci_lower <- purrr::map_dbl(
-    diff_means,
-    ~ .x[max(0, floor(0.5*(1-conf_level)*length(.x)))]
-  )
+    ci_lower <- purrr::map_dbl(
+        diff_means,
+        ~ .x[max(0, floor(0.5 * (1 - conf_level) * length(.x)))]
+    )
 
-  ci_upper <- purrr::map_dbl(
-    diff_means,
-    ~ .x[min(length(.x) - 1,
-             ceiling((conf_level + 0.5*(1.0 - conf_level))*length(.x)))
-        ]
-  )
+    ci_upper <- purrr::map_dbl(
+        diff_means,
+        ~ .x[min(
+            length(.x) - 1,
+            ceiling((conf_level + 0.5 * (1.0 - conf_level)) * length(.x))
+        )]
+    )
 
-  return(data.frame(ci_lower = ci_lower, ci_upper = ci_upper))
+    return(data.frame(ci_lower = ci_lower, ci_upper = ci_upper))
 }
 
 # bootstrap one time, difference mean of an single feature
 bootstrap_diff_mean_prop_single <- function(group1, group2, replicates = 1000) {
-  bootstrap_one <- function(group1, group2) {
-    n1 <- length(group1)
-    n2 <- length(group2)
-    choices1 <- sample.int(n1, n1, replace = TRUE)
-    choices2 <- sample.int(n2, n2, replace = TRUE)
-    sample_group1 <- group1[choices1]
-    sample_group2 <- group2[choices2]
-    diff_means <- mean(sample_group1) - mean(sample_group2)
+    bootstrap_one <- function(group1, group2) {
+        n1 <- length(group1)
+        n2 <- length(group2)
+        choices1 <- sample.int(n1, n1, replace = TRUE)
+        choices2 <- sample.int(n2, n2, replace = TRUE)
+        sample_group1 <- group1[choices1]
+        sample_group2 <- group2[choices2]
+        diff_means <- mean(sample_group1) - mean(sample_group2)
 
-    diff_means
-  }
+        diff_means
+    }
 
-  diff_means <- replicate(
-    replicates,
-    bootstrap_one(group1, group2),
-    simplify = TRUE
-  )
+    diff_means <- replicate(
+        replicates,
+        bootstrap_one(group1, group2),
+        simplify = TRUE
+    )
 
-  return(sort(diff_means))
+    return(sort(diff_means))
 }
 
 calc_permute_ts <- function(norm_group1, norm_group2) {
-   n1 <- nrow(norm_group1)
-   n2 <- nrow(norm_group2)
-   samples_n <- n1 + n2
-   perm <- sample.int(samples_n, samples_n)
-   features_n <- length(norm_group1)
+    n1 <- nrow(norm_group1)
+    n2 <- nrow(norm_group2)
+    samples_n <- n1 + n2
+    perm <- sample.int(samples_n, samples_n)
+    features_n <- length(norm_group1)
 
-   # permute the rows
-   prop_group <- dplyr::bind_rows(norm_group1, norm_group2)
-   prop_group_permute <- prop_group[perm, ]
+    # permute the rows
+    prop_group <- dplyr::bind_rows(norm_group1, norm_group2)
+    prop_group_permute <- prop_group[perm, ]
 
-   calc_twosample_ts(
-     prop_group_permute[seq_len(n1), ],
-     prop_group_permute[(n1 + 1):(n1 + n2), ]
-   )
+    calc_twosample_ts(
+        prop_group_permute[seq_len(n1), ],
+        prop_group_permute[(n1 + 1):(n1 + n2), ]
+    )
 }
 
 # Calculate two sample t statistic of all features
 calc_twosample_ts <- function(norm_group1, norm_group2) {
-  ts <- purrr::map2(
-    norm_group1,
-    norm_group2,
-    calc_twosample_ts_single_feature
-  )
+    ts <- purrr::map2(
+        norm_group1,
+        norm_group2,
+        calc_twosample_ts_single_feature
+    )
 
-  ts
+    ts
 }
 
 #' Calculate two sample t statistic of a feature, return a two length vector:
@@ -564,81 +586,81 @@ calc_twosample_ts <- function(norm_group1, norm_group2) {
 #' @importFrom stats var
 #' @noRd
 calc_twosample_ts_single_feature <- function(norm_group1, norm_group2) {
-  n1 <- length(norm_group1)
-  n2 <- length(norm_group2)
+    n1 <- length(norm_group1)
+    n2 <- length(norm_group2)
 
-  mean_g1 <- sum(norm_group1)/n1
-  var_g1 <- var(norm_group1)
-  stderr_g1 <- var_g1/n1
+    mean_g1 <- sum(norm_group1) / n1
+    var_g1 <- var(norm_group1)
+    stderr_g1 <- var_g1 / n1
 
-  mean_g2 <- sum(norm_group2)/n2
-  var_g2 <- var(norm_group2)
-  stderr_g2 <- var_g2/n2
+    mean_g2 <- sum(norm_group2) / n2
+    var_g2 <- var(norm_group2)
+    stderr_g2 <- var_g2 / n2
 
-  diff_means <- mean_g1 - mean_g2
+    diff_means <- mean_g1 - mean_g2
 
-  denom <- sqrt(stderr_g1 + stderr_g2)
-  if (denom == 0) {
-    warning(
-      "degenerate case: zero variance for both groups;",
-      " variance set to 1e-6.",
-      call. = FALSE
-    )
-    t_static <- diff_means/1e-6
-  } else {
-    t_static <- diff_means/denom
-  }
+    denom <- sqrt(stderr_g1 + stderr_g2)
+    if (denom == 0) {
+        warning(
+            "degenerate case: zero variance for both groups;",
+            " variance set to 1e-6.",
+            call. = FALSE
+        )
+        t_static <- diff_means / 1e-6
+    } else {
+        t_static <- diff_means / denom
+    }
 
-  return(c(t_static = t_static, diff_means = diff_means))
+    return(c(t_static = t_static, diff_means = diff_means))
 }
 
 #' calculate p values for sparse data using fisher's exact test
 #' @importFrom stats fisher.test
 #' @noRd
 calc_sparse_p <- function(orig_group1, orig_group2, sparse_index, ...) {
-  cm_list <- create_contingency_matrix(
-    orig_group1,
-    orig_group2,
-    sparse_index = sparse_index
-  )
+    cm_list <- create_contingency_matrix(
+        orig_group1,
+        orig_group2,
+        sparse_index = sparse_index
+    )
 
-  purrr::map(cm_list, fisher.test, ...)
+    purrr::map(cm_list, fisher.test, ...)
 }
 
 # create contingency matrix  list for fisher exact test
 create_contingency_matrix <- function(orig_group1, orig_group2, sparse_index) {
-  all1 <- sum(orig_group1)
-  all2 <- sum(orig_group2)
-  sparse_group1 <- orig_group1[sparse_index]
-  sparse_group2 <- orig_group2[sparse_index]
-  feature_abd1 <- colSums(sparse_group1)
-  feature_abd2 <- colSums(sparse_group2)
+    all1 <- sum(orig_group1)
+    all2 <- sum(orig_group2)
+    sparse_group1 <- orig_group1[sparse_index]
+    sparse_group2 <- orig_group2[sparse_index]
+    feature_abd1 <- colSums(sparse_group1)
+    feature_abd2 <- colSums(sparse_group2)
 
-  cm_list <- purrr::map2(
-    feature_abd1, feature_abd2,
-    ~ matrix(
-      c(.x, all1 - .x, .y, all2 - .y),
-      nrow = 2,
-      dimnames = list(c("featrue", "other"), c("group1", "group2"))
+    cm_list <- purrr::map2(
+        feature_abd1, feature_abd2,
+        ~ matrix(
+            c(.x, all1 - .x, .y, all2 - .y),
+            nrow = 2,
+            dimnames = list(c("featrue", "other"), c("group1", "group2"))
+        )
     )
-  )
 
-  cm_list
+    cm_list
 }
 
 calc_sparse_diff_mean <- function(orig_group1, orig_group2, sparse_index) {
-  all1 <- sum(orig_group1)
-  all2 <- sum(orig_group2)
-  sparse_group1 <- orig_group1[sparse_index]
-  sparse_group2 <- orig_group2[sparse_index]
-  feature_abd1 <- colSums(sparse_group1)
-  feature_abd2 <- colSums(sparse_group2)
+    all1 <- sum(orig_group1)
+    all2 <- sum(orig_group2)
+    sparse_group1 <- orig_group1[sparse_index]
+    sparse_group2 <- orig_group2[sparse_index]
+    feature_abd1 <- colSums(sparse_group1)
+    feature_abd2 <- colSums(sparse_group2)
 
-  purrr::map2_dbl(
-    feature_abd1,
-    feature_abd2,
-    ~ (.x/all1 - .y/all2)
-  )
+    purrr::map2_dbl(
+        feature_abd1,
+        feature_abd2,
+        ~ (.x / all1 - .y / all2)
+    )
 }
 
 
@@ -653,22 +675,22 @@ calc_sparse_diff_mean <- function(orig_group1, orig_group2, sparse_index) {
 #' @return numeric ratio for a feature
 #' @noRd
 calc_ratio <- function(abd1, abd2, pseudocount = 0.5) {
-  n1 <- length(abd1)
-  n2 <- length(abd2)
+    n1 <- length(abd1)
+    n2 <- length(abd2)
 
-  mean_g1 <- sum(abd1)/n1
-  mean_g2 <- sum(abd2)/n2
+    mean_g1 <- sum(abd1) / n1
+    mean_g2 <- sum(abd2) / n2
 
-  if (mean_g1 == 0 || mean_g2 == 0) {
-    pseudocount <- pseudocount/(mean_g1 + mean_g2)
-    mean_g1 <- mean_g1 + pseudocount
-    mean_g2 <- mean_g2 + pseudocount
-  }
+    if (mean_g1 == 0 || mean_g2 == 0) {
+        pseudocount <- pseudocount / (mean_g1 + mean_g2)
+        mean_g1 <- mean_g1 + pseudocount
+        mean_g2 <- mean_g2 + pseudocount
+    }
 
-  res <- mean_g1/mean_g2
-  if (is.na(res)) {
-    res <- 0
-  }
+    res <- mean_g1 / mean_g2
+    if (is.na(res)) {
+        res <- 0
+    }
 
-  res
+    res
 }

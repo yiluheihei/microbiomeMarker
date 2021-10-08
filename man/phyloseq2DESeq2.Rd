@@ -26,7 +26,7 @@ This function convert [phyloseq::phyloseq-class\verb{] to [}DESeq2::DESeqDataSet
 }
 \examples{
 data(caporaso)
-phyloseq2DESeq2(caporaso, ~ SampleType)
+phyloseq2DESeq2(caporaso, ~SampleType)
 }
 \seealso{
 \code{\link[DESeq2:DESeqDataSet]{DESeq2::DESeqDataSetFromMatrix()}},\code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}

@@ -53,172 +53,180 @@
 #' @examples
 #' data(enterotypes_arumugam)
 #' ps <- phyloseq::subset_samples(
-#'   enterotypes_arumugam,
-#'   Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+#'     enterotypes_arumugam,
+#'     Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
 #' )
-#' mm_anova <-  run_test_multiple_groups(
-#'   ps,
-#'   group = "Enterotype",
-#'   method = "anova"
+#' mm_anova <- run_test_multiple_groups(
+#'     ps,
+#'     group = "Enterotype",
+#'     method = "anova"
 #' )
 run_test_multiple_groups <- function(ps,
-                                  group,
-                                  taxa_rank = "all",
-                                  transform = c("identity", "log10", "log10p"),
-                                  norm = "TSS",
-                                  norm_para = list(),
-                                  method = c("anova", "kruskal"),
-                                  p_adjust = c("none", "fdr", "bonferroni",
-                                               "holm", "hochberg", "hommel",
-                                               "BH", "BY"),
-                                  pvalue_cutoff = 0.05,
-                                  effect_size_cutoff = NULL) {
-  stopifnot(inherits(ps, "phyloseq"))
-
-  if (!check_rank_names(ps)) {
-    stop(
-      "ranks of `ps` must be one of ",
-      paste(available_ranks, collapse = ", ")
-    )
-  }
-
-  p_adjust <- match.arg(
-    p_adjust,
-    c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY")
-  )
-  method <- match.arg(method, c("anova", "kruskal"))
-
-  # preprocess phyloseq object
-  ps <- preprocess_ps(ps)
-  ps <- transform_abundances(ps, transform = transform)
-
-  # normalize
-  norm_para <- c(norm_para, method = norm, object = list(ps))
-  ps_normed <- do.call(normalize, norm_para)
-  # summarize
-  check_taxa_rank(ps, taxa_rank)
-  if (taxa_rank == "all") {
-    ps_summarized <- summarize_taxa(ps_normed)
-  } else if (taxa_rank =="none") {
-    ps_summarized <- extract_rank(ps_normed, taxa_rank)
-  } else {
-    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
-      extract_rank(taxa_rank)
-  }
-
-  feature <- tax_table(ps_summarized)@.Data[, 1]
-  # abd <- transpose_and_2df(otus)
-  abd_norm <- abundances(ps_summarized, norm = TRUE) %>%
-    transpose_and_2df()
-
-  sample_meta <- sample_data(ps_summarized)
-  if (!group %in% names(sample_meta)) {
-    stop("`group` must in the field of sample meta data")
-  }
-  groups <- sample_meta[[group]]
-
-  if (method == "anova") {
-    aov_df <- mutate(abd_norm, groups = groups)
-
-    # separator "|" and some strings (such as "/", "-", "+") have a special
-    # meaning in formula
-    # replace this strings with ___(three underscores) before aov (new_feature),
-    # and reset the names as `feature`
-    names(aov_df) <- gsub("[-|+*//]", "___", names(aov_df))
-    new_features <- setdiff(names(aov_df), "groups")
-
-    formula_char <- paste(new_features, "~", "groups")
-    pvalue <- purrr::map(
-      formula_char,
-      ~ aov(as.formula(.x), aov_df) %>% summary(.)) %>%
-      purrr::map_dbl(~.x[[1]][["Pr(>F)"]][1])
-  } else {
-    pvalue <- purrr::map_dbl(abd_norm, ~ kruskal.test(.x, groups)$p.value)
-  }
-  pvalue[is.na(pvalue)] <- 1
-
-  # p value correction for multiple comparisons
-  padj <- p.adjust(pvalue, method = p_adjust)
-
-  ef <- purrr::map_dbl(abd_norm, calc_etasq, groups)
-
-  # mean abundances
-  abd_means <- calc_mean(abd_norm, groups)
-  row.names(abd_means) <- feature
-
-  # enriched group
-  group_enriched_idx <- apply(abd_means, 1, which.max)
-  groups_uniq <- unique(groups)
-  group_nms <- groups_uniq[charmatch(groups_uniq, names(abd_means))]
-  group_enriched <- group_nms[group_enriched_idx]
-
-  res <- bind_cols(
-    data.frame(
-      enrich_group = group_enriched,
-      pvalue = pvalue,
-      padj= padj,
-      ef_eta_squared = ef
+    group,
+    taxa_rank = "all",
+    transform = c("identity", "log10", "log10p"),
+    norm = "TSS",
+    norm_para = list(),
+    method = c("anova", "kruskal"),
+    p_adjust = c(
+        "none", "fdr", "bonferroni",
+        "holm", "hochberg", "hommel",
+        "BH", "BY"
     ),
-    abd_means
-  )
+    pvalue_cutoff = 0.05,
+    effect_size_cutoff = NULL) {
+    stopifnot(inherits(ps, "phyloseq"))
 
-  # append feature
-  res <- mutate(res,feature = feature) %>%
-    select(.data$feature, .data$enrich_group, everything())
-  # row.names(res) <- feature[match(res$feature, feature)]
-  row.names(res) <- paste0("feature", seq_len(nrow(res)))
+    if (!check_rank_names(ps)) {
+        stop(
+            "ranks of `ps` must be one of ",
+            paste(available_ranks, collapse = ", ")
+        )
+    }
 
-  # filter: pvalue and effect size
-  res_filtered <- filter(res, .data$padj <= pvalue_cutoff)
-
-  if (!is.null(effect_size_cutoff)) {
-    res_filtered <- filter(
-      res_filtered,
-      .data$ef_eta_squared >= effect_size_cutoff
+    p_adjust <- match.arg(
+        p_adjust,
+        c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY")
     )
-  }
+    method <- match.arg(method, c("anova", "kruskal"))
 
-  # summarized tax table
-  tax <- matrix(feature) %>%
-    tax_table()
-  row.names(tax) <- colnames(abd_norm)
+    # preprocess phyloseq object
+    ps <- preprocess_ps(ps)
+    ps <- transform_abundances(ps, transform = transform)
 
-  # only keep five variables: feature, enrich_group, effect_size (diff_mean),
-  # pvalue, and padj
-  res <- res[, c("feature", "enrich_group", "ef_eta_squared", "pvalue", "padj")]
-  res_filtered <- res_filtered[, c("feature", "enrich_group",
-                                   "ef_eta_squared", "pvalue", "padj")]
-  row.names(res_filtered) <- paste0("marker", seq_len(nrow(res_filtered)))
+    # normalize
+    norm_para <- c(norm_para, method = norm, object = list(ps))
+    ps_normed <- do.call(normalize, norm_para)
+    # summarize
+    check_taxa_rank(ps, taxa_rank)
+    if (taxa_rank == "all") {
+        ps_summarized <- summarize_taxa(ps_normed)
+    } else if (taxa_rank == "none") {
+        ps_summarized <- extract_rank(ps_normed, taxa_rank)
+    } else {
+        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
+            extract_rank(taxa_rank)
+    }
 
-  marker <- return_marker(res_filtered, res)
-  marker <- microbiomeMarker(
-    marker_table = marker,
-    norm_method = get_norm_method(norm),
-    diff_method = method,
-    sam_data = sample_data(ps_normed),
-    otu_table = otu_table(t(abd_norm), taxa_are_rows = TRUE),
-    tax_table = tax
-  )
+    feature <- tax_table(ps_summarized)@.Data[, 1]
+    # abd <- transpose_and_2df(otus)
+    abd_norm <- abundances(ps_summarized, norm = TRUE) %>%
+        transpose_and_2df()
 
-  marker
+    sample_meta <- sample_data(ps_summarized)
+    if (!group %in% names(sample_meta)) {
+        stop("`group` must in the field of sample meta data")
+    }
+    groups <- sample_meta[[group]]
+
+    if (method == "anova") {
+        aov_df <- mutate(abd_norm, groups = groups)
+
+        # separator "|" and some strings (such as "/", "-", "+") have a special
+        # meaning in formula
+        # replace this strings with ___(three underscores) before aov 
+        # (new_feature), and reset the names as `feature`
+        names(aov_df) <- gsub("[-|+*//]", "___", names(aov_df))
+        new_features <- setdiff(names(aov_df), "groups")
+
+        formula_char <- paste(new_features, "~", "groups")
+        pvalue <- purrr::map(
+            formula_char,
+            ~ aov(as.formula(.x), aov_df) %>% summary(.)
+        ) %>%
+            purrr::map_dbl(~ .x[[1]][["Pr(>F)"]][1])
+    } else {
+        pvalue <- purrr::map_dbl(abd_norm, ~ kruskal.test(.x, groups)$p.value)
+    }
+    pvalue[is.na(pvalue)] <- 1
+
+    # p value correction for multiple comparisons
+    padj <- p.adjust(pvalue, method = p_adjust)
+
+    ef <- purrr::map_dbl(abd_norm, calc_etasq, groups)
+
+    # mean abundances
+    abd_means <- calc_mean(abd_norm, groups)
+    row.names(abd_means) <- feature
+
+    # enriched group
+    group_enriched_idx <- apply(abd_means, 1, which.max)
+    groups_uniq <- unique(groups)
+    group_nms <- groups_uniq[charmatch(groups_uniq, names(abd_means))]
+    group_enriched <- group_nms[group_enriched_idx]
+
+    res <- bind_cols(
+        data.frame(
+            enrich_group = group_enriched,
+            pvalue = pvalue,
+            padj = padj,
+            ef_eta_squared = ef
+        ),
+        abd_means
+    )
+
+    # append feature
+    res <- mutate(res, feature = feature) %>%
+        select(.data$feature, .data$enrich_group, everything())
+    # row.names(res) <- feature[match(res$feature, feature)]
+    row.names(res) <- paste0("feature", seq_len(nrow(res)))
+
+    # filter: pvalue and effect size
+    res_filtered <- filter(res, .data$padj <= pvalue_cutoff)
+
+    if (!is.null(effect_size_cutoff)) {
+        res_filtered <- filter(
+            res_filtered,
+            .data$ef_eta_squared >= effect_size_cutoff
+        )
+    }
+
+    # summarized tax table
+    tax <- matrix(feature) %>%
+        tax_table()
+    row.names(tax) <- colnames(abd_norm)
+
+    # only keep five variables: feature, enrich_group, effect_size (diff_mean),
+    # pvalue, and padj
+    res <- res[, c(
+        "feature", "enrich_group", 
+        "ef_eta_squared", "pvalue", "padj"
+    )]
+    res_filtered <- res_filtered[, c(
+        "feature", "enrich_group",
+        "ef_eta_squared", "pvalue", "padj"
+    )]
+    row.names(res_filtered) <- paste0("marker", seq_len(nrow(res_filtered)))
+
+    marker <- return_marker(res_filtered, res)
+    marker <- microbiomeMarker(
+        marker_table = marker,
+        norm_method = get_norm_method(norm),
+        diff_method = method,
+        sam_data = sample_data(ps_normed),
+        otu_table = otu_table(t(abd_norm), taxa_are_rows = TRUE),
+        tax_table = tax
+    )
+
+    marker
 }
 
 # calculate mean abundance of each feature in each group
 #' @importFrom dplyr bind_cols
 #' @noRd
 calc_mean <- function(abd_norm, groups) {
-  abd_norm_groups <- split(abd_norm, groups)
-  abd_means <- purrr::map(abd_norm_groups, ~ colMeans(.x)) %>%
-    bind_cols() %>%
-    as.data.frame()
-  row.names(abd_means) <- names(abd_norm)
-  names(abd_means) <- paste(
-    names(abd_norm_groups),
-    "mean_abundance",
-    sep = ":"
-  )
+    abd_norm_groups <- split(abd_norm, groups)
+    abd_means <- purrr::map(abd_norm_groups, ~ colMeans(.x)) %>%
+        bind_cols() %>%
+        as.data.frame()
+    row.names(abd_means) <- names(abd_norm)
+    names(abd_means) <- paste(
+        names(abd_norm_groups),
+        "mean_abundance",
+        sep = ":"
+    )
 
-  abd_means
+    abd_means
 }
 
 #' calculate eta-squared measurement of effect size commonly used in multiple
@@ -228,25 +236,25 @@ calc_mean <- function(abd_norm, groups) {
 #' feature
 #' @noRd
 calc_etasq <- function(feature, group) {
-  group_n <- table(group)
+    group_n <- table(group)
 
-  if (any(group_n < 1)) {
-    return(-1)
-  }
+    if (any(group_n < 1)) {
+        return(-1)
+    }
 
-  total_sum <- sum(feature)
-  n <- length(feature)
-  grand_mean <- total_sum/n
+    total_sum <- sum(feature)
+    n <- length(feature)
+    grand_mean <- total_sum / n
 
-  total_ss <- sum((feature - grand_mean)^2)
-  feature_split <- split(feature, group)
-  between_group_ss <- purrr::map_dbl(
-    feature_split,
-    ~ sum(.x)*sum(.x)/length(.x)
-  )
-  between_group_ss <- sum(between_group_ss) - total_sum*total_sum/n
+    total_ss <- sum((feature - grand_mean)^2)
+    feature_split <- split(feature, group)
+    between_group_ss <- purrr::map_dbl(
+        feature_split,
+        ~ sum(.x) * sum(.x) / length(.x)
+    )
+    between_group_ss <- sum(between_group_ss) - total_sum * total_sum / n
 
-  etasq <- ifelse(total_ss == 0, -1, between_group_ss/total_ss)
+    etasq <- ifelse(total_ss == 0, -1, between_group_ss / total_ss)
 
-  etasq
+    etasq
 }

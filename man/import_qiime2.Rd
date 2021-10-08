@@ -37,24 +37,24 @@ phyloseq object.
 }
 \examples{
 otuqza_file <- system.file(
-  "extdata", "table.qza",
-  package = "microbiomeMarker"
+    "extdata", "table.qza",
+    package = "microbiomeMarker"
 )
 taxaqza_file <- system.file(
-  "extdata", "taxonomy.qza",
-  package = "microbiomeMarker"
+    "extdata", "taxonomy.qza",
+    package = "microbiomeMarker"
 )
 sample_file <- system.file(
-  "extdata", "sample-metadata.tsv",
-  package = "microbiomeMarker"
+    "extdata", "sample-metadata.tsv",
+    package = "microbiomeMarker"
 )
 treeqza_file <- system.file(
-  "extdata", "tree.qza",
-  package = "microbiomeMarker"
+    "extdata", "tree.qza",
+    package = "microbiomeMarker"
 )
 ps <- import_qiime2(
-  otu_qza = otuqza_file, taxa_qza = taxaqza_file,
-  sam_tab = sample_file, tree_qza = treeqza_file
+    otu_qza = otuqza_file, taxa_qza = taxaqza_file,
+    sam_tab = sample_file, tree_qza = treeqza_file
 )
 ps
 }

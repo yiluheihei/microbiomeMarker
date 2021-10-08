@@ -26,11 +26,11 @@ marker table (\code{\linkS4class{marker_table}}).
 \examples{
 data(enterotypes_arumugam)
 mm <- run_limma_voom(
-  enterotypes_arumugam,
-  "Enterotype",
-  contrast = c("Enterotype 3", "Enterotype 2"),
-  pvalue_cutoff = 0.05,
-  p_adjust = "fdr"
+    enterotypes_arumugam,
+    "Enterotype",
+    contrast = c("Enterotype 3", "Enterotype 2"),
+    pvalue_cutoff = 0.05,
+    p_adjust = "fdr"
 )
 marker_table(mm)
 }

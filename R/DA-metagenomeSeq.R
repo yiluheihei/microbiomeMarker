@@ -112,233 +112,245 @@
 #' @examples
 #' data(enterotypes_arumugam)
 #' ps <- phyloseq::subset_samples(
-#'   enterotypes_arumugam,
-#'   Enterotype %in% c("Enterotype 3", "Enterotype 2")
+#'     enterotypes_arumugam,
+#'     Enterotype %in% c("Enterotype 3", "Enterotype 2")
 #' )
 #' run_metagenomeseq(ps, group = "Enterotype")
 run_metagenomeseq <- function(ps,
-                              group,
-                              contrast = NULL,
-                              taxa_rank = "all",
-                              transform = c("identity", "log10", "log10p"),
-                              norm = "CSS",
-                              norm_para = list(),
-                              method = c("ZILN", "ZIG"),
-                              p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                           "hochberg", "hommel", "BH", "BY"),
-                              pvalue_cutoff = 0.05,
-                              ...) {
-  transform <- match.arg(transform, c("identity", "log10", "log10p"))
-  method <- match.arg(method, c("ZILN", "ZIG"))
-  # test_fun <- ifelse(method == "ZILN",
-  #   metagenomeSeq::fitFeatureModel,
-  #   metagenomeSeq::fitZig
-  # )
+    group,
+    contrast = NULL,
+    taxa_rank = "all",
+    transform = c("identity", "log10", "log10p"),
+    norm = "CSS",
+    norm_para = list(),
+    method = c("ZILN", "ZIG"),
+    p_adjust = c(
+        "none", "fdr", "bonferroni", "holm",
+        "hochberg", "hommel", "BH", "BY"
+    ),
+    pvalue_cutoff = 0.05,
+    ...) {
+    transform <- match.arg(transform, c("identity", "log10", "log10p"))
+    method <- match.arg(method, c("ZILN", "ZIG"))
+    # test_fun <- ifelse(method == "ZILN",
+    #   metagenomeSeq::fitFeatureModel,
+    #   metagenomeSeq::fitZig
+    # )
 
-  p_adjust <- match.arg(
-    p_adjust,
-    c("none", "fdr", "bonferroni", "holm",
-      "hochberg", "hommel", "BH", "BY")
-  )
-
-  # The levels must by syntactically valid names in R, makeContrast
-  # if (!missing(contrast)) contrast <- make.names(contrast)
-
-  groups <- sample_data(ps)[[group]]
-  groups <- factor(groups)
-  # The levels must by syntactically valid names in R, makeContrast
-  # levels(groups) <- make.names(levels(groups))
-  lvl <- levels(groups)
-  n_lvl <- length(lvl)
-
-  if (n_lvl > 2 && method == "ZILN") {
-    stop(
-      "ZILN method do not allows for multiple groups comparison,\n",
-      "please try set method = `ZIG`",
-      call. = FALSE
+    p_adjust <- match.arg(
+        p_adjust,
+        c(
+            "none", "fdr", "bonferroni", "holm",
+            "hochberg", "hommel", "BH", "BY"
+        )
     )
-  }
 
-  contrast_new <- create_contrast(groups, contrast)
-  # When running fitZig by default there is an additional covariate added to
-  # the design matrix (scalingFactor), add var scalingFactor (set as zero)
-  if (n_lvl > 2) {
-    old_contrast_nms <- row.names(contrast_new)
-    contrast_new <- rbind(contrast_new, rep(0, ncol(contrast_new)))
-    # row names of contrasts consistent with of coefficients
-    # otherwise, warning: row names of contrasts don't match col names of
-    # coefficients in the following `contrast.fit()`
-    row.names(contrast_new) <- c(
-      paste0("groups", old_contrast_nms),
-      "scalingFactor"
-    )
-  }
+    # The levels must by syntactically valid names in R, makeContrast
+    # if (!missing(contrast)) contrast <- make.names(contrast)
 
-  # preprocess phyloseq object
-  ps <- preprocess_ps(ps)
-  ps <- transform_abundances(ps, transform = transform)
+    groups <- sample_data(ps)[[group]]
+    groups <- factor(groups)
+    # The levels must by syntactically valid names in R, makeContrast
+    # levels(groups) <- make.names(levels(groups))
+    lvl <- levels(groups)
+    n_lvl <- length(lvl)
 
-  # normalization, write a function here
-  # fitZig fitFeatureModel
-  norm_para <- c(norm_para, method = norm, object = list(ps))
-  ps_normed <- do.call(normalize, norm_para)
+    if (n_lvl > 2 && method == "ZILN") {
+        stop(
+            "ZILN method do not allows for multiple groups comparison,\n",
+            "please try set method = `ZIG`",
+            call. = FALSE
+        )
+    }
 
-  # summarize data
-  # ps_summarized <- summarize_taxa(ps_normed)
-  # check taxa_rank
-  check_taxa_rank(ps, taxa_rank)
-  if (taxa_rank == "all") {
-    ps_summarized <- summarize_taxa(ps_normed)
-  } else if (taxa_rank =="none") {
-    ps_summarized <- extract_rank(ps_normed, taxa_rank)
-  } else {
-    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
-      extract_rank(taxa_rank)
-  }
-  mgs_summarized <- phyloseq2metagenomeSeq(ps_summarized)
+    contrast_new <- create_contrast(groups, contrast)
+    # When running fitZig by default there is an additional covariate added to
+    # the design matrix (scalingFactor), add var scalingFactor (set as zero)
+    if (n_lvl > 2) {
+        old_contrast_nms <- row.names(contrast_new)
+        contrast_new <- rbind(contrast_new, rep(0, ncol(contrast_new)))
+        # row names of contrasts consistent with of coefficients
+        # otherwise, warning: row names of contrasts don't match col names of
+        # coefficients in the following `contrast.fit()`
+        row.names(contrast_new) <- c(
+            paste0("groups", old_contrast_nms),
+            "scalingFactor"
+        )
+    }
 
-  # extract norm factors and set the norm factors of MRexperiment
-  nf <- get_norm_factors(ps_normed)
-  if (!is.null(nf)) {
-    pData(mgs_summarized@expSummary$expSummary)$normFactors <- nf
-  } else {
-    # for TSS, CRL and rarefy: normalized the feature table using CSS method
-    ct <- metagenomeSeq::MRcounts(mgs_summarized, norm = FALSE)
-    fun_p <- select_quantile_func(ct)
-    mgs_summarized <- metagenomeSeq::cumNorm(
-      mgs_summarized,
-      p = fun_p(mgs_summarized)
-    )
-  }
+    # preprocess phyloseq object
+    ps <- preprocess_ps(ps)
+    ps <- transform_abundances(ps, transform = transform)
 
-  sl <- ifelse("sl" %in% names(norm_para), norm_para[["sl"]], 1000)
-  counts_normalized <- metagenomeSeq::MRcounts(
-    mgs_summarized,
-    norm = TRUE,
-    sl = sl
-  )
+    # normalization, write a function here
+    # fitZig fitFeatureModel
+    norm_para <- c(norm_para, method = norm, object = list(ps))
+    ps_normed <- do.call(normalize, norm_para)
 
-  mod <- model.matrix(~0+groups)
-  # colnames(mod) <- levels(groups)
-
-
-  if (n_lvl == 2) {
-    if (method == "ZILN") {
-      tryCatch(
-        fit <- metagenomeSeq::fitFeatureModel(mgs_summarized, mod, ...),
-        error = function(e) {
-           paste0(
-             "fitFeatureModel model failed to fit to your data! ",
-            "Consider fitZig model or further filtering your dataset!"
-          )
-        }
-      )
+    # summarize data
+    # ps_summarized <- summarize_taxa(ps_normed)
+    # check taxa_rank
+    check_taxa_rank(ps, taxa_rank)
+    if (taxa_rank == "all") {
+        ps_summarized <- summarize_taxa(ps_normed)
+    } else if (taxa_rank == "none") {
+        ps_summarized <- extract_rank(ps_normed, taxa_rank)
     } else {
-      tryCatch(
-        fit <- metagenomeSeq::fitZig(mgs_summarized, mod, ...),
-        error = function(e) {
-          paste0(
-            "fitZig model failed to fit to your data! ",
-            "Consider fitFeatureModel model or further filtering your dataset!"
-          )
-        }
-      )
+        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
+            extract_rank(taxa_rank)
     }
+    mgs_summarized <- phyloseq2metagenomeSeq(ps_summarized)
 
-    # metagenomeSeq vignette: We recommend the user remove features based on
-    # the number of estimated effective samples, please see
-    # calculateEffectiveSamples. We recommend removing features with less than
-    # the average number of effective samples in all features. In essence,
-    # setting eff = .5 when using MRcoefs, MRfulltable, or MRtable.
-    res <- metagenomeSeq::MRcoefs(
-      fit,
-      number = ntaxa(ps_summarized),
-      adjustMethod = p_adjust,
-      group = 3,
-      eff = 0.5
-    )
-    res <- dplyr::rename(res, pvalue = .data$pvalues, padj = .data$adjPvalues)
-
-    # For fitZig, the output var is the coefficient of interest (effect size),
-    # For fitFeaturemodel, logFC is anologous to coefficient of fitZig
-    # (as logFC is really just the estimate the coefficient of interest).
-    # Thus, we change the var of coefficent of interest to logFC for fitZig
-    # https://support.bioconductor.org/p/94138/
-    if (method == "ZIG") {
-      names(res)[2] <- "logFC"
-    }
-    ef_var <- "logFC"
-    res$enrich_group <- ifelse(res[[ef_var]] > 0, lvl[2], lvl[1])
-  } else {
-    fit <- metagenomeSeq::fitZig(mgs_summarized, mod, ...)
-    zigfit <- slot(fit, "fit")
-    # warning: row names of contrasts don't match col names of coefficients
-    new_fit <- limma::contrasts.fit(zigfit, contrasts = contrast_new)
-    new_fit <- limma::eBayes(new_fit)
-    res <- limma::topTable(
-      new_fit,
-      number = Inf,
-      adjust.method = p_adjust,
-    )
-    res <- dplyr::filter(res, .data$adj.P.Val <= pvalue_cutoff) %>%
-      dplyr::rename(pvalue = .data$P.Value, padj = .data$adj.P.Val)
-
-    ef_var = ifelse(
-      is.matrix(contrast_new) && ncol(contrast_new) > 2,
-      "F", "logFC"
-    )
-
-    # enrich group
-    if (ef_var == "logFC") {
-      exp_lvl <- lvl[contrast_new == 1]
-      ref_lvl <- lvl[contrast_new == -1]
-      enrich_group <- ifelse(res$logFC > 0, exp_lvl, ref_lvl)
+    # extract norm factors and set the norm factors of MRexperiment
+    nf <- get_norm_factors(ps_normed)
+    if (!is.null(nf)) {
+        pData(mgs_summarized@expSummary$expSummary)$normFactors <- nf
     } else {
-      coef <- zigfit$coefficients
-      enrich_group <- lvl[apply(coef[, seq_len(n_lvl)], 1, which.max)]
-      # sort the enrich_group according to the DE of topTags
-      de_idx <- match(row.names(res), row.names(coef))
-      enrich_group <- enrich_group[de_idx]
+        # for TSS, CRL and rarefy: normalized the feature table using CSS method
+        ct <- metagenomeSeq::MRcounts(mgs_summarized, norm = FALSE)
+        fun_p <- select_quantile_func(ct)
+        mgs_summarized <- metagenomeSeq::cumNorm(
+            mgs_summarized,
+            p = fun_p(mgs_summarized)
+        )
     }
-    # ef_var <- ifelse(is.matrix(contrast_new), "F", "logFC")
-    res$enrich_group <- enrich_group
-  }
+
+    sl <- ifelse("sl" %in% names(norm_para), norm_para[["sl"]], 1000)
+    counts_normalized <- metagenomeSeq::MRcounts(
+        mgs_summarized,
+        norm = TRUE,
+        sl = sl
+    )
+
+    mod <- model.matrix(~ 0 + groups)
+    # colnames(mod) <- levels(groups)
 
 
-  res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
+    if (n_lvl == 2) {
+        if (method == "ZILN") {
+            tryCatch(
+                fit <- metagenomeSeq::fitFeatureModel(mgs_summarized, mod, ...),
+                error = function(e) {
+                    paste0(
+                        "fitFeatureModel model failed to fit to your data! ",
+                        "Consider fitZig model or further ",
+                        "filtering your dataset!"
+                    )
+                }
+            )
+        } else {
+            tryCatch(
+                fit <- metagenomeSeq::fitZig(mgs_summarized, mod, ...),
+                error = function(e) {
+                    paste0(
+                        "fitZig model failed to fit to your data! ",
+                        "Consider fitFeatureModel model or further ",
+                        "filtering your dataset!"
+                    )
+                }
+            )
+        }
 
-  # write a function
-  if (nrow(res_filtered) == 0) {
-    warning("No significant features were found, return all the features")
-    sig_feature <- cbind(feature = row.names(res), res)
-  } else {
-    sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
-  }
+        # metagenomeSeq vignette: We recommend the user remove features based on
+        # the number of estimated effective samples, please see
+        # calculateEffectiveSamples. We recommend removing features with less 
+        # than the average number of effective samples in all features. In 
+        # essence, setting eff = .5 when using MRcoefs, MRfulltable, or MRtable.
+        res <- metagenomeSeq::MRcoefs(
+            fit,
+            number = ntaxa(ps_summarized),
+            adjustMethod = p_adjust,
+            group = 3,
+            eff = 0.5
+        )
+        res <- dplyr::rename(
+            res, 
+            pvalue = .data$pvalues, 
+            padj = .data$adjPvalues
+        )
 
-  # only keep five variables: feature, enrich_group, effect_size (e.g. logFC),
-  # pvalue, and padj
-  sig_feature <- sig_feature[, c("feature", "enrich_group",
-                                 ef_var, "pvalue", "padj")]
-  row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+        # For fitZig, the output var is the coefficient of interest (effect size
+        # ), For fitFeaturemodel, logFC is anologous to coefficient of fitZig
+        # (as logFC is really just the estimate the coefficient of interest).
+        # Thus, we change the var of coefficent of interest to logFC for fitZig
+        # https://support.bioconductor.org/p/94138/
+        if (method == "ZIG") {
+            names(res)[2] <- "logFC"
+        }
+        ef_var <- "logFC"
+        res$enrich_group <- ifelse(res[[ef_var]] > 0, lvl[2], lvl[1])
+    } else {
+        fit <- metagenomeSeq::fitZig(mgs_summarized, mod, ...)
+        zigfit <- slot(fit, "fit")
+        # warning: row names of contrasts don't match col names of coefficients
+        new_fit <- limma::contrasts.fit(zigfit, contrasts = contrast_new)
+        new_fit <- limma::eBayes(new_fit)
+        res <- limma::topTable(
+            new_fit,
+            number = Inf,
+            adjust.method = p_adjust,
+        )
+        res <- dplyr::filter(res, .data$adj.P.Val <= pvalue_cutoff) %>%
+            dplyr::rename(pvalue = .data$P.Value, padj = .data$adj.P.Val)
 
-  # rename the ef
-  names(sig_feature)[3] <- ifelse(
-    ef_var %in% c("logFC", "F"),
-    paste0("ef_", ef_var),
-    paste0("ef_", "coef")
-  )
+        ef_var <- ifelse(
+            is.matrix(contrast_new) && ncol(contrast_new) > 2,
+            "F", "logFC"
+        )
 
-  marker <- microbiomeMarker(
-    marker_table = marker_table(sig_feature),
-    norm_method = get_norm_method(norm),
-    diff_method = paste0("metagenomeSeq: ", method),
-    otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE),
-    sam_data = sample_data(ps_normed),
-    # tax_table = tax_table(ps_summarized),
-    tax_table = tax_table(ps_summarized)
-  )
+        # enrich group
+        if (ef_var == "logFC") {
+            exp_lvl <- lvl[contrast_new == 1]
+            ref_lvl <- lvl[contrast_new == -1]
+            enrich_group <- ifelse(res$logFC > 0, exp_lvl, ref_lvl)
+        } else {
+            coef <- zigfit$coefficients
+            enrich_group <- lvl[apply(coef[, seq_len(n_lvl)], 1, which.max)]
+            # sort the enrich_group according to the DE of topTags
+            de_idx <- match(row.names(res), row.names(coef))
+            enrich_group <- enrich_group[de_idx]
+        }
+        # ef_var <- ifelse(is.matrix(contrast_new), "F", "logFC")
+        res$enrich_group <- enrich_group
+    }
 
-  marker
+
+    res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
+
+    # write a function
+    if (nrow(res_filtered) == 0) {
+        warning("No significant features were found, return all the features")
+        sig_feature <- cbind(feature = row.names(res), res)
+    } else {
+        sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
+    }
+
+    # only keep five variables: feature, enrich_group, effect_size (e.g. logFC),
+    # pvalue, and padj
+    sig_feature <- sig_feature[, c(
+        "feature", "enrich_group",
+        ef_var, "pvalue", "padj"
+    )]
+    row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+
+    # rename the ef
+    names(sig_feature)[3] <- ifelse(
+        ef_var %in% c("logFC", "F"),
+        paste0("ef_", ef_var),
+        paste0("ef_", "coef")
+    )
+
+    marker <- microbiomeMarker(
+        marker_table = marker_table(sig_feature),
+        norm_method = get_norm_method(norm),
+        diff_method = paste0("metagenomeSeq: ", method),
+        otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE),
+        sam_data = sample_data(ps_normed),
+        # tax_table = tax_table(ps_summarized),
+        tax_table = tax_table(ps_summarized)
+    )
+
+    marker
 }
 
 
@@ -371,82 +383,82 @@ run_metagenomeseq <- function(ps,
 #' data(caporaso)
 #' phyloseq2metagenomeSeq(caporaso)
 phyloseq2metagenomeSeq <- function(ps, ...) {
-  # Enforce orientation. Samples are columns
-  if (!taxa_are_rows(ps) ) {
-    ps <- t(ps)
-  }
+    # Enforce orientation. Samples are columns
+    if (!taxa_are_rows(ps)) {
+        ps <- t(ps)
+    }
 
-  count <- as(otu_table(ps), "matrix")
-  # Create sample annotation if possible
-  if (!is.null(sample_data(ps, FALSE))) {
-    adf <- AnnotatedDataFrame(data.frame(sample_data(ps)))
-  } else {
-    adf <- NULL
-  }
+    count <- as(otu_table(ps), "matrix")
+    # Create sample annotation if possible
+    if (!is.null(sample_data(ps, FALSE))) {
+        adf <- AnnotatedDataFrame(data.frame(sample_data(ps)))
+    } else {
+        adf <- NULL
+    }
 
-  # Create taxa annotation if possible
-  if (!is.null(tax_table(ps, FALSE))) {
-    tdf <- AnnotatedDataFrame(
-      data.frame(
-        OTUname = taxa_names(ps),
-        data.frame(tax_table(ps)),
-        row.names = taxa_names(ps)
-      )
+    # Create taxa annotation if possible
+    if (!is.null(tax_table(ps, FALSE))) {
+        tdf <- AnnotatedDataFrame(
+            data.frame(
+                OTUname = taxa_names(ps),
+                data.frame(tax_table(ps)),
+                row.names = taxa_names(ps)
+            )
+        )
+    } else {
+        tdf <- AnnotatedDataFrame(
+            data.frame(
+                OTUname = taxa_names(ps),
+                row.names = taxa_names(ps)
+            )
+        )
+    }
+
+    # setting the norm factor, or the fitzig or
+    # nf <- sample_data(ps)[["metagenomeSeq_norm_factor"]]
+
+    # Create MRexperiment
+    mr_obj <- metagenomeSeq::newMRexperiment(
+        counts = count,
+        phenoData = adf,
+        featureData = tdf,
+        ...
     )
-  } else {
-    tdf <- AnnotatedDataFrame(
-      data.frame(
-        OTUname = taxa_names(ps),
-        row.names = taxa_names(ps)
-      )
-    )
-  }
 
-  # setting the norm factor, or the fitzig or
-  # nf <- sample_data(ps)[["metagenomeSeq_norm_factor"]]
-
-  # Create MRexperiment
-  mr_obj = metagenomeSeq::newMRexperiment(
-    counts = count,
-    phenoData = adf,
-    featureData = tdf,
-    ...
-  )
-
-  mr_obj
+    mr_obj
 }
 
 
 #' @rdname phyloseq2metagenomeSeq
 #' @export
 otu_table2metagenomeSeq <- function(ps, ...) {
-  stopifnot(inherits(ps, "otu_table"))
-  # create a sample data with only one var "sample": sam1, sam2
-  sdf <- sample_data(data.frame(sample = paste0("sam", seq_len(ncol(ps)))))
-  row.names(sdf) <- colnames(ps)
+    stopifnot(inherits(ps, "otu_table"))
+    # create a sample data with only one var "sample": sam1, sam2
+    sdf <- sample_data(data.frame(sample = paste0("sam", seq_len(ncol(ps)))))
+    row.names(sdf) <- colnames(ps)
 
-  ps <- phyloseq(
-    ps,
-    sdf
-  )
-  mgs <- phyloseq2metagenomeSeq(ps)
+    ps <- phyloseq(
+        ps,
+        sdf
+    )
+    mgs <- phyloseq2metagenomeSeq(ps)
 
-  mgs
+    mgs
 }
 
 
 # get enrich group of a feature for multiple groups comparison
 # group_pairs and logFC_pairs are the same length
 get_mgs_enrich_group <- function(group_pairs, logFC_pairs) {
-  all_groups <- unique(unlist(group_pairs))
-  for (i in seq_along(group_pairs)) {
-    group_low <- ifelse(
-      logFC_pairs[i] > 0,
-      group_pairs[[i]][2],
-      group_pairs[[i]][1]
-    )
-    all_groups <- setdiff(all_groups, group_low)
-  }
+    all_groups <- unique(unlist(group_pairs))
+    for (i in seq_along(group_pairs)) {
+        group_low <- ifelse(
+            logFC_pairs[i] > 0,
+            group_pairs[[i]][2],
+            group_pairs[[i]][1]
+        )
+        all_groups <- setdiff(all_groups, group_low)
+    }
 
-  all_groups
+    all_groups
 }

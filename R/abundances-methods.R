@@ -22,91 +22,95 @@
 #' @examples
 #' data(caporaso)
 #' abd <- abundances(caporaso)
-setGeneric("abundances",
-  function(object,
-           transform = c("identity", "log10", "log10p"),
-           norm = FALSE) {
-    standardGeneric("abundances")
-  }
+setGeneric(
+    "abundances",
+    function(object,
+    transform = c("identity", "log10", "log10p"),
+    norm = FALSE) {
+        standardGeneric("abundances")
+    }
 )
 
 # otu_table object
 #' @aliases abundances, otu_table-method
 #' @rdname abundances-methods
-setMethod(abundances, "otu_table",
-  function(object,
-           transform = c("identity", "log10", "log10p"),
-           norm = FALSE) {
-    transform <- match.arg(transform, c("identity", "log10", "log10p"))
-    obj_transed <- transform_abundances(object, transform = transform)
-    abd <- as(otu_table(obj_transed), "matrix")
+setMethod(
+    abundances, "otu_table",
+    function(object, 
+        transform = c("identity", "log10", "log10p"),
+        norm = FALSE) {
+        transform <- match.arg(transform, c("identity", "log10", "log10p"))
+        obj_transed <- transform_abundances(object, transform = transform)
+        abd <- as(otu_table(obj_transed), "matrix")
 
-    if (norm) {
-      nf <- get_norm_factors(object)
-      if (is.null(nf)) {
-        # warning("return the original feature table.", call. = FALSE)
-      } else {
-        abd <- sweep(abd, 2, nf, "/")
-      }
+        if (norm) {
+            nf <- get_norm_factors(object)
+            if (is.null(nf)) {
+                # warning("return the original feature table.", call. = FALSE)
+            } else {
+                abd <- sweep(abd, 2, nf, "/")
+            }
+        }
+
+        abd
+        # otu <- as(object, "matrix")
+        #
+        # # ensure taxa are on the rows
+        # if (!taxa_are_rows(object) && ntaxa(object) > 1
+        #     && nsamples(object) > 1) {
+        #   otu <- t(otu)
+        # }
+        #
+        # if (ntaxa(object) == 1) {
+        #   otu <- matrix(otu, nrow=1)
+        #   rownames(otu) <- taxa_names(object)
+        #   colnames(otu) <- sample_names(object)
+        # }
+        #
+        # if (nsamples(object) == 1) {
+        #   otu <- matrix(otu, ncol=1)
+        #   rownames(otu) <- taxa_names(object)
+        #   colnames(otu) <- sample_names(object)
+        # }
+        #
+        # otu <- transform_abundances(otu, transform = transform)
+        # otu
     }
-
-    abd
-    # otu <- as(object, "matrix")
-    #
-    # # ensure taxa are on the rows
-    # if (!taxa_are_rows(object) && ntaxa(object) > 1
-    #     && nsamples(object) > 1) {
-    #   otu <- t(otu)
-    # }
-    #
-    # if (ntaxa(object) == 1) {
-    #   otu <- matrix(otu, nrow=1)
-    #   rownames(otu) <- taxa_names(object)
-    #   colnames(otu) <- sample_names(object)
-    # }
-    #
-    # if (nsamples(object) == 1) {
-    #   otu <- matrix(otu, ncol=1)
-    #   rownames(otu) <- taxa_names(object)
-    #   colnames(otu) <- sample_names(object)
-    # }
-    #
-    # otu <- transform_abundances(otu, transform = transform)
-    # otu
-  }
 )
 
 # phyloseq object
 #' @aliases abundances,phyloseq-method
 #' @rdname abundances-methods
-setMethod(abundances, "phyloseq",
-  function(object,
-           transform = c("identity", "log10", "log10p"),
-           norm = FALSE) {
-    transform <- match.arg(transform, c("identity", "log10", "log10p"))
-    otu <- otu_table(object)
-    if (norm) {
-      nf <- get_norm_factors(object)
-      if (!is.null(nf)) {
-        attr(otu, "norm_factor") <- nf
-      }
-    }
-    otu <- abundances(otu, transform = transform, norm = norm)
+setMethod(
+    abundances, "phyloseq",
+    function(object,
+        transform = c("identity", "log10", "log10p"),
+        norm = FALSE) {
+        transform <- match.arg(transform, c("identity", "log10", "log10p"))
+        otu <- otu_table(object)
+        if (norm) {
+            nf <- get_norm_factors(object)
+            if (!is.null(nf)) {
+                attr(otu, "norm_factor") <- nf
+            }
+        }
+        otu <- abundances(otu, transform = transform, norm = norm)
 
-    otu
-  }
+        otu
+    }
 )
 
 # microbiomeMarker object
 #' @aliases abundances,microbiomeMarker-method
 #' @rdname abundances-methods
-setMethod(abundances, "microbiomeMarker",
-  function(object,
-           transform = c("identity", "log10", "log10p")) {
-    transform <- match.arg(transform, c("identity", "log10", "log10p"))
-    otu <- otu_table(object)
-    otu <- abundances(otu, transform = transform, norm = FALSE)
+setMethod(
+    abundances, "microbiomeMarker",
+    function(object,
+        transform = c("identity", "log10", "log10p")) {
+        transform <- match.arg(transform, c("identity", "log10", "log10p"))
+        otu <- otu_table(object)
+        otu <- abundances(otu, transform = transform, norm = FALSE)
 
-    otu
-  }
+        otu
+    }
 )

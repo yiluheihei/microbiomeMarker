@@ -107,8 +107,8 @@ is a wrapper of \code{run_test_two_groups} and \code{run_test_multiple_groups}.
 \examples{
 data(enterotypes_arumugam)
 ps <- phyloseq::subset_samples(
-  enterotypes_arumugam,
-  Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
+    enterotypes_arumugam,
+    Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
 )
 run_simple_stat(ps, group = "Enterotype")
 }

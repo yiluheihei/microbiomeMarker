@@ -92,182 +92,187 @@
 #' @examples
 #' data(enterotypes_arumugam)
 #' ps <- phyloseq::subset_samples(
-#'   enterotypes_arumugam,
-#'   Enterotype %in% c("Enterotype 3", "Enterotype 2")
+#'     enterotypes_arumugam,
+#'     Enterotype %in% c("Enterotype 3", "Enterotype 2")
 #' )
 #' run_edger(ps, group = "Enterotype")
 run_edger <- function(ps,
-                      group,
-                      contrast = NULL,
-                      taxa_rank = "all",
-                      method = c("LRT", "QLFT"),
-                      transform = c("identity", "log10", "log10p"),
-                      norm = "TMM",
-                      norm_para = list(),
-                      disp_para = list(),
-                      p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                   "hochberg", "hommel", "BH", "BY"),
-                      pvalue_cutoff = 0.05,
-                      ...) {
-  transform <- match.arg(transform, c("identity", "log10", "log10p"))
-  method <- match.arg(method, c("LRT", "QLFT"))
-  p_adjust <- match.arg(
-    p_adjust,
-    c("none", "fdr", "bonferroni", "holm",
-      "hochberg", "hommel", "BH", "BY")
-  )
+    group,
+    contrast = NULL,
+    taxa_rank = "all",
+    method = c("LRT", "QLFT"),
+    transform = c("identity", "log10", "log10p"),
+    norm = "TMM",
+    norm_para = list(),
+    disp_para = list(),
+    p_adjust = c(
+        "none", "fdr", "bonferroni", "holm",
+        "hochberg", "hommel", "BH", "BY"
+    ),
+    pvalue_cutoff = 0.05,
+    ...) {
+    transform <- match.arg(transform, c("identity", "log10", "log10p"))
+    method <- match.arg(method, c("LRT", "QLFT"))
+    p_adjust <- match.arg(
+        p_adjust,
+        c(
+            "none", "fdr", "bonferroni", "holm",
+            "hochberg", "hommel", "BH", "BY"
+        )
+    )
 
-  groups <- sample_data(ps)[[group]]
-  if (!is.factor(groups)) {
-    groups <- factor(groups)
-  }
-  lvl <- levels(groups)
-  n_lvl <- length(lvl)
-  # create contrast
-  contrast_new <- create_contrast(groups, contrast)
-
-  # preprocess phyloseq object
-  ps <- preprocess_ps(ps)
-  ps <- transform_abundances(ps, transform = transform)
-
-  norm_para <- c(norm_para, method = norm, object = list(ps))
-  ps_normed <- do.call(normalize, norm_para)
-
-  # summarize data and  add norm.factors var to samples of DGEList
-  # check taxa_rank
-  check_taxa_rank(ps, taxa_rank)
-  if (taxa_rank == "all") {
-    ps_summarized <- summarize_taxa(ps_normed)
-  } else if (taxa_rank =="none") {
-    ps_summarized <- extract_rank(ps_normed, taxa_rank)
-  } else {
-    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
-      extract_rank(taxa_rank)
-  }
-  # ps_summarized <- summarize_taxa(ps_normed)
-  dge_summarized <- phyloseq2edgeR(ps_summarized)
-
-  nf <- get_norm_factors(ps_normed)
-  if (!is.null(nf)) {
-    dge_summarized$samples$norm.factors <- nf
-  } else {
-    # for TSS, CRL and rarefy (no norm factors is saved),
-    # normalized the feature table using TMM method in edgeR
-    # using the default arguments.
-    dge_summarized <- edgeR::calcNormFactors(dge_summarized, method = "TMM")
-  }
-
-  # estimate dispersion
-  design <- stats::model.matrix(~0+groups)
-  disp_para <- c(disp_para, y = list(dge_summarized), design = list(design))
-  dge_summarized <- do.call(edgeR::estimateDisp, disp_para)
-
-  # differential expression
-  # quasi-likelihood (QL) F-test is used as it reflects the uncertainty in
-  #  estimating the dispersion for each feature, and gives stricter error
-  #  rate control
-  fit_fun <- ifelse(method == "LRT", edgeR::glmFit, edgeR::glmQLFit)
-  test_fun <- ifelse(method == "LRT", edgeR::glmLRT, edgeR::glmQLFTest)
-  fit <- fit_fun(dge_summarized, design, ...)
-  # contrast <- create_contrast(groups)
-  lrt <- test_fun(fit, contrast = contrast_new)
-  res <- edgeR::topTags(
-    lrt,
-    n = ntaxa(ps_summarized),
-    adjust.method = p_adjust,
-    sort.by = "PValue"
-  )
-  res <- res$table
-  if ("FDR" %in% names(res)) {
-    res <- dplyr::rename(res, pvalue = .data$PValue, padj = .data$FDR)
-  } else if ("FWER" %in% names(res)) {
-    res <- dplyr::rename(res, pvalue = .data$PValue, padj = .data$FWER)
-  } else {
-    res <- dplyr::rename(res, pvalue = .data$PValue)
-    res$padj <- res$pvalue
-  }
-
-  # normalized counts
-  ef_nf <- dge_summarized$samples$lib.size * dge_summarized$samples$norm.factors
-  ref_nf <- mean(ef_nf)
-  counts_normalized <-
-    sweep(
-      as(otu_table(ps_summarized), "matrix"),
-      MARGIN = 2,
-      ef_nf,
-      "/"
-    ) *
-    ref_nf
-  row.names(counts_normalized) <- row.names(tax_table(ps_summarized))
-
-  # enrich group
-  # if (length(lvl) == 2) {
-  #   enrich_group <- ifelse(res$logFC > 0, lvl[2], lvl[1])
-  # } else {
-  #   enrich_group <- get_sl_enrich_group(counts_normalized, groups)
-  # }
-  if (n_lvl > 2) {
-    if (is.null(contrast)) {
-      coef <- fit$coefficients
-      enrich_group <- lvl[apply(coef, 1, which.max)]
-      # sort the enrich_group according to the DE of topTags
-      de_idx <- match(row.names(res), row.names(coef))
-      enrich_group <- enrich_group[de_idx]
-    } else {
-      enrich_group <- ifelse(res$logFC > 0, contrast[2], contrast[1])
+    groups <- sample_data(ps)[[group]]
+    if (!is.factor(groups)) {
+        groups <- factor(groups)
     }
-  } else {
-    enrich_group <- ifelse(res$logFC > 0, lvl[2], lvl[1])
-  }
+    lvl <- levels(groups)
+    n_lvl <- length(lvl)
+    # create contrast
+    contrast_new <- create_contrast(groups, contrast)
 
-  res$enrich_group <- enrich_group
+    # preprocess phyloseq object
+    ps <- preprocess_ps(ps)
+    ps <- transform_abundances(ps, transform = transform)
 
-  res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
-  # edgeR::decideTestsDGE(), dentify which genes are significantly
-  # differentially expressed from an edgeR fit object containing p-values and
-  # test statistics.
+    norm_para <- c(norm_para, method = norm, object = list(ps))
+    ps_normed <- do.call(normalize, norm_para)
 
-  if (nrow(res_filtered) == 0) {
-    warning("No significant features were found, return all the features")
-    sig_feature <- cbind(feature = row.names(res), res)
-  } else {
-    sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
-  }
-  # first two columns: feature enrich_group (write a function)
-  other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
-  sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
-  row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
-
-  # var of effect size: named as ef_<name> of the actual effect size,
-  # two groups: logFC, multiple groups: F for QLFT method, LR for LFT method
-  if (n_lvl == 2) { # two groups
-    ef_name <- "logFC"
-  } else { # multiple groups
-    if (!is.null(contrast)) { # two groups comparison from multiple groups
-      ef_name = "logFC"
+    # summarize data and  add norm.factors var to samples of DGEList
+    # check taxa_rank
+    check_taxa_rank(ps, taxa_rank)
+    if (taxa_rank == "all") {
+        ps_summarized <- summarize_taxa(ps_normed)
+    } else if (taxa_rank == "none") {
+        ps_summarized <- extract_rank(ps_normed, taxa_rank)
     } else {
-      ef_name <- ifelse(method == "LRT", "LR", "F")
+        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
+            extract_rank(taxa_rank)
     }
-  }
+    # ps_summarized <- summarize_taxa(ps_normed)
+    dge_summarized <- phyloseq2edgeR(ps_summarized)
 
-  # only keep five variables: feature, enrich_group, effect_size (LR for LRT
-  # F for QLFT), pvalue, and padj, write a function? select_marker_var
-  # (effect_size = "")
-  keep_var <- c("feature", "enrich_group", ef_name, "pvalue", "padj")
-  sig_feature <- sig_feature[keep_var]
-  names(sig_feature)[3] <- paste0("ef_", ef_name)
+    nf <- get_norm_factors(ps_normed)
+    if (!is.null(nf)) {
+        dge_summarized$samples$norm.factors <- nf
+    } else {
+        # for TSS, CRL and rarefy (no norm factors is saved),
+        # normalized the feature table using TMM method in edgeR
+        # using the default arguments.
+        dge_summarized <- edgeR::calcNormFactors(dge_summarized, method = "TMM")
+    }
 
-  marker <- microbiomeMarker(
-    marker_table = marker_table(sig_feature),
-    norm_method = get_norm_method(norm),
-    diff_method = paste("edgeR:", method),
-    sam_data = sample_data(ps_normed),
-    # tax_table = tax_table(ps),
-    otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE),
-    tax_table = tax_table(ps_summarized)
-  )
+    # estimate dispersion
+    design <- stats::model.matrix(~ 0 + groups)
+    disp_para <- c(disp_para, y = list(dge_summarized), design = list(design))
+    dge_summarized <- do.call(edgeR::estimateDisp, disp_para)
 
-  marker
+    # differential expression
+    # quasi-likelihood (QL) F-test is used as it reflects the uncertainty in
+    #  estimating the dispersion for each feature, and gives stricter error
+    #  rate control
+    fit_fun <- ifelse(method == "LRT", edgeR::glmFit, edgeR::glmQLFit)
+    test_fun <- ifelse(method == "LRT", edgeR::glmLRT, edgeR::glmQLFTest)
+    fit <- fit_fun(dge_summarized, design, ...)
+    # contrast <- create_contrast(groups)
+    lrt <- test_fun(fit, contrast = contrast_new)
+    res <- edgeR::topTags(
+        lrt,
+        n = ntaxa(ps_summarized),
+        adjust.method = p_adjust,
+        sort.by = "PValue"
+    )
+    res <- res$table
+    if ("FDR" %in% names(res)) {
+        res <- dplyr::rename(res, pvalue = .data$PValue, padj = .data$FDR)
+    } else if ("FWER" %in% names(res)) {
+        res <- dplyr::rename(res, pvalue = .data$PValue, padj = .data$FWER)
+    } else {
+        res <- dplyr::rename(res, pvalue = .data$PValue)
+        res$padj <- res$pvalue
+    }
+
+    # normalized counts
+    ef_nf <- dge_summarized$samples$lib.size * 
+        dge_summarized$samples$norm.factors
+    ref_nf <- mean(ef_nf)
+    counts_normalized <-
+        sweep(
+            as(otu_table(ps_summarized), "matrix"),
+            MARGIN = 2,
+            ef_nf,
+            "/"
+        ) *
+            ref_nf
+    row.names(counts_normalized) <- row.names(tax_table(ps_summarized))
+
+    # enrich group
+    # if (length(lvl) == 2) {
+    #   enrich_group <- ifelse(res$logFC > 0, lvl[2], lvl[1])
+    # } else {
+    #   enrich_group <- get_sl_enrich_group(counts_normalized, groups)
+    # }
+    if (n_lvl > 2) {
+        if (is.null(contrast)) {
+            coef <- fit$coefficients
+            enrich_group <- lvl[apply(coef, 1, which.max)]
+            # sort the enrich_group according to the DE of topTags
+            de_idx <- match(row.names(res), row.names(coef))
+            enrich_group <- enrich_group[de_idx]
+        } else {
+            enrich_group <- ifelse(res$logFC > 0, contrast[2], contrast[1])
+        }
+    } else {
+        enrich_group <- ifelse(res$logFC > 0, lvl[2], lvl[1])
+    }
+
+    res$enrich_group <- enrich_group
+
+    res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
+    # edgeR::decideTestsDGE(), dentify which genes are significantly
+    # differentially expressed from an edgeR fit object containing p-values and
+    # test statistics.
+
+    if (nrow(res_filtered) == 0) {
+        warning("No significant features were found, return all the features")
+        sig_feature <- cbind(feature = row.names(res), res)
+    } else {
+        sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
+    }
+    # first two columns: feature enrich_group (write a function)
+    other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
+    sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
+    row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+
+    # var of effect size: named as ef_<name> of the actual effect size,
+    # two groups: logFC, multiple groups: F for QLFT method, LR for LFT method
+    if (n_lvl == 2) { # two groups
+        ef_name <- "logFC"
+    } else { # multiple groups
+        if (!is.null(contrast)) { # two groups comparison from multiple groups
+            ef_name <- "logFC"
+        } else {
+            ef_name <- ifelse(method == "LRT", "LR", "F")
+        }
+    }
+
+    # only keep five variables: feature, enrich_group, effect_size (LR for LRT
+    # F for QLFT), pvalue, and padj, write a function? select_marker_var
+    # (effect_size = "")
+    keep_var <- c("feature", "enrich_group", ef_name, "pvalue", "padj")
+    sig_feature <- sig_feature[keep_var]
+    names(sig_feature)[3] <- paste0("ef_", ef_name)
+
+    marker <- microbiomeMarker(
+        marker_table = marker_table(sig_feature),
+        norm_method = get_norm_method(norm),
+        diff_method = paste("edgeR:", method),
+        sam_data = sample_data(ps_normed),
+        # tax_table = tax_table(ps),
+        otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE),
+        tax_table = tax_table(ps_summarized)
+    )
+
+    marker
 }
 
 #' Convert phyloseq data to edgeR `DGEList` object
@@ -286,27 +291,24 @@ run_edger <- function(ps,
 #' data(caporaso)
 #' dge <- phyloseq2edgeR(caporaso)
 phyloseq2edgeR <- function(ps, ...) {
-  ps <- keep_taxa_in_rows(ps)
-  abd <- as(otu_table(ps), "matrix")
+    ps <- keep_taxa_in_rows(ps)
+    abd <- as(otu_table(ps), "matrix")
 
-  # tax_table: annotation information
-  taxa <- tax_table(ps, FALSE)
-  if (!is.null(taxa)) {
-    taxa <- data.frame(as(taxa, "matrix"))
-  }
+    # tax_table: annotation information
+    taxa <- tax_table(ps, FALSE)
+    if (!is.null(taxa)) {
+        taxa <- data.frame(as(taxa, "matrix"))
+    }
 
-  # sample_data: information on each sample
-  samp <- sample_data(ps, FALSE)
+    # sample_data: information on each sample
+    samp <- sample_data(ps, FALSE)
 
-  dge <- edgeR::DGEList(
-    counts = abd,
-    samples = samp,
-    genes = taxa,
-    ...
-  )
+    dge <- edgeR::DGEList(
+        counts = abd,
+        samples = samp,
+        genes = taxa,
+        ...
+    )
 
-  dge
+    dge
 }
-
-
-

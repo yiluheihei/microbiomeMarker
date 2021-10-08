@@ -65,130 +65,136 @@
 #' @examples
 #' data(enterotypes_arumugam)
 #' ps <- phyloseq::subset_samples(
-#'   enterotypes_arumugam,
-#'   Enterotype %in% c("Enterotype 3", "Enterotype 2")
+#'     enterotypes_arumugam,
+#'     Enterotype %in% c("Enterotype 3", "Enterotype 2")
 #' )
 #' run_simple_stat(ps, group = "Enterotype")
 run_simple_stat <- function(ps,
-                            group,
-                            taxa_rank = "all",
-                            transform = c("identity", "log10", "log10p"),
-                            norm = "TSS",
-                            norm_para = list(),
-                            method = c("welch.test", "t.test", "white.test",
-                                       "anova", "kruskal"),
-                            p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                         "hochberg", "hommel", "BH", "BY"),
-                            pvalue_cutoff = 0.05,
-                            diff_mean_cutoff = NULL,
-                            ratio_cutoff = NULL,
-                            eta_squared_cutoff = NULL,
-                            conf_level = 0.95,
-                            nperm = 1000,
-                            ...) {
-  stopifnot(inherits(ps, "phyloseq"))
+    group,
+    taxa_rank = "all",
+    transform = c("identity", "log10", "log10p"),
+    norm = "TSS",
+    norm_para = list(),
+    method = c(
+        "welch.test", "t.test", "white.test",
+        "anova", "kruskal"
+    ),
+    p_adjust = c(
+        "none", "fdr", "bonferroni", "holm",
+        "hochberg", "hommel", "BH", "BY"
+    ),
+    pvalue_cutoff = 0.05,
+    diff_mean_cutoff = NULL,
+    ratio_cutoff = NULL,
+    eta_squared_cutoff = NULL,
+    conf_level = 0.95,
+    nperm = 1000,
+    ...) {
+    stopifnot(inherits(ps, "phyloseq"))
 
-  transform <- match.arg(transform, c("identity", "log10", "log10p"))
-  method <- match.arg(
-    method,
-    c("welch.test", "t.test", "white.test", "anova", "kruskal")
-  )
-  p_adjust <- match.arg(
-    p_adjust,
-    c("none", "fdr", "bonferroni", "holm",
-      "hochberg", "hommel", "BH", "BY")
-  )
-
-  # group
-  sample_meta <- sample_data(ps)
-  if (! group %in% names(sample_meta)) {
-    stop("`group` must in the field of sample meta data", call. = FALSE)
-  }
-  groups <- sample_meta[[group]]
-  n_group <- length(unique(groups))
-  if (n_group == 1) {
-    stop("at least two groups required", call. = FALSE)
-  }
-
-  if (n_group == 2) {
-    if (! method %in% c("welch.test", "t.test", "white.test")) {
-      stop(
-        "There are two groups here, please select welch.test, t.test, ",
-        "or white.test for two groups comparison",
-        call. = FALSE
-      )
-    }
-    if (! missing(eta_squared_cutoff)) {
-      warning(
-        "`eta_squared_cutoff` is ignored since it is only used for ",
-        "multiple groups comparison",
-        call. = FALSE
-      )
-    }
-
-    res <- run_test_two_groups(
-      ps = ps,
-      group = group,
-      taxa_rank = taxa_rank,
-      transform = transform,
-      norm = norm,
-      norm_para = norm_para,
-      method = method,
-      p_adjust = p_adjust,
-      pvalue_cutoff = pvalue_cutoff,
-      diff_mean_cutoff = diff_mean_cutoff,
-      ratio_cutoff = ratio_cutoff,
-      conf_level = conf_level,
-      nperm = nperm,
-      ...
+    transform <- match.arg(transform, c("identity", "log10", "log10p"))
+    method <- match.arg(
+        method,
+        c("welch.test", "t.test", "white.test", "anova", "kruskal")
     )
-  } else {
-    if (! method %in% c("anova", "kruskal")) {
-      stop(
-        "There are more than two groups, please select anova or kruskal for, ",
-        "multiple groups comparison",
-        call. = FALSE
-      )
-    }
-
-    if (! missing(diff_mean_cutoff)) {
-      warning(
-        "`diff_mean_cutoff` only worked for two groups comparison",
-        call. = FALSE
-      )
-    }
-    if (! missing(ratio_cutoff)) {
-      warning(
-        "`ratio_cutoff` only worked for two groups comparison",
-        call. = FALSE
-      )
-    }
-    if (! missing(nperm)) {
-      warning(
-        "`nperm` only worked for two groups comparison",
-        call. = FALSE
-      )
-    }
-    if (! missing(conf_level)) {
-      warning(
-        "`conf_level` only worked for two groups comparison",
-        call. = FALSE
-      )
-    }
-
-    res <- run_test_multiple_groups(
-      ps = ps,
-      group = group,
-      taxa_rank = taxa_rank,
-      transform = transform,
-      norm = norm,
-      norm_para = norm_para,
-      method = method,
-      p_adjust = p_adjust,
-      pvalue_cutoff = pvalue_cutoff,
-      effect_size_cutoff = eta_squared_cutoff
+    p_adjust <- match.arg(
+        p_adjust,
+        c(
+            "none", "fdr", "bonferroni", "holm",
+            "hochberg", "hommel", "BH", "BY"
+        )
     )
-  }
 
-  res
+    # group
+    sample_meta <- sample_data(ps)
+    if (!group %in% names(sample_meta)) {
+        stop("`group` must in the field of sample meta data", call. = FALSE)
+    }
+    groups <- sample_meta[[group]]
+    n_group <- length(unique(groups))
+    if (n_group == 1) {
+        stop("at least two groups required", call. = FALSE)
+    }
+
+    if (n_group == 2) {
+        if (!method %in% c("welch.test", "t.test", "white.test")) {
+            stop(
+                "There are two groups here, please select welch.test, t.test, ",
+                "or white.test for two groups comparison",
+                call. = FALSE
+            )
+        }
+        if (!missing(eta_squared_cutoff)) {
+            warning(
+                "`eta_squared_cutoff` is ignored since it is only used for ",
+                "multiple groups comparison",
+                call. = FALSE
+            )
+        }
+
+        res <- run_test_two_groups(
+            ps = ps,
+            group = group,
+            taxa_rank = taxa_rank,
+            transform = transform,
+            norm = norm,
+            norm_para = norm_para,
+            method = method,
+            p_adjust = p_adjust,
+            pvalue_cutoff = pvalue_cutoff,
+            diff_mean_cutoff = diff_mean_cutoff,
+            ratio_cutoff = ratio_cutoff,
+            conf_level = conf_level,
+            nperm = nperm,
+            ...
+        )
+    } else {
+        if (!method %in% c("anova", "kruskal")) {
+            stop(
+                "There are more than two groups, please select anova or ",
+                "kruskal for multiple groups comparison",
+                call. = FALSE
+            )
+        }
+
+        if (!missing(diff_mean_cutoff)) {
+            warning(
+                "`diff_mean_cutoff` only worked for two groups comparison",
+                call. = FALSE
+            )
+        }
+        if (!missing(ratio_cutoff)) {
+            warning(
+                "`ratio_cutoff` only worked for two groups comparison",
+                call. = FALSE
+            )
+        }
+        if (!missing(nperm)) {
+            warning(
+                "`nperm` only worked for two groups comparison",
+                call. = FALSE
+            )
+        }
+        if (!missing(conf_level)) {
+            warning(
+                "`conf_level` only worked for two groups comparison",
+                call. = FALSE
+            )
+        }
+
+        res <- run_test_multiple_groups(
+            ps = ps,
+            group = group,
+            taxa_rank = taxa_rank,
+            transform = transform,
+            norm = norm,
+            norm_para = norm_para,
+            method = method,
+            p_adjust = p_adjust,
+            pvalue_cutoff = pvalue_cutoff,
+            effect_size_cutoff = eta_squared_cutoff
+        )
+    }
+
+    res
 }

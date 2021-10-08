@@ -116,8 +116,8 @@ if there are 2 groups, use non-parametric Wilcoxon rank sum test
 \donttest{
 data(enterotypes_arumugam)
 ps <- phyloseq::subset_samples(
-  enterotypes_arumugam,
-  Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
+    enterotypes_arumugam,
+    Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
 )
 run_ancom(ps, group = "Enterotype")
 }

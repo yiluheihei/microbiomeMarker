@@ -66,148 +66,152 @@
 #' @examples
 #' data(enterotypes_arumugam)
 #' mm <- run_limma_voom(
-#'   enterotypes_arumugam,
-#'   "Enterotype",
-#'   contrast = c("Enterotype 3", "Enterotype 2"),
-#'   pvalue_cutoff = 0.01,
-#'   p_adjust = "none"
+#'     enterotypes_arumugam,
+#'     "Enterotype",
+#'     contrast = c("Enterotype 3", "Enterotype 2"),
+#'     pvalue_cutoff = 0.01,
+#'     p_adjust = "none"
 #' )
 #' mm
 run_limma_voom <- function(ps,
-                           group,
-                           contrast = NULL,
-                           taxa_rank = "all",
-                           transform = c("identity", "log10", "log10p"),
-                           norm = "none",
-                           norm_para = list(),
-                           voom_span = 0.5,
-                           p_adjust = c("none", "fdr", "bonferroni", "holm",
-                                        "hochberg", "hommel", "BH", "BY"),
-                           pvalue_cutoff = 0.05,
-                           ...) {
-  stopifnot(inherits(ps, "phyloseq"))
-  p_adjust <- match.arg(
-    p_adjust,
-    c("none", "fdr", "bonferroni", "holm",
-      "hochberg", "hommel", "BH", "BY")
-  )
-
-  # check whether group is valid, write a function
-  sample_meta <- sample_data(ps)
-  meta_nms <- names(sample_meta)
-  if (!group %in% meta_nms) {
-    stop(
-      group, " are not contained in the `sample_data` of `ps`",
-      call. = FALSE
+    group,
+    contrast = NULL,
+    taxa_rank = "all",
+    transform = c("identity", "log10", "log10p"),
+    norm = "none",
+    norm_para = list(),
+    voom_span = 0.5,
+    p_adjust = c(
+        "none", "fdr", "bonferroni", "holm",
+        "hochberg", "hommel", "BH", "BY"
+    ),
+    pvalue_cutoff = 0.05,
+    ...) {
+    stopifnot(inherits(ps, "phyloseq"))
+    p_adjust <- match.arg(
+        p_adjust,
+        c(
+            "none", "fdr", "bonferroni", "holm",
+            "hochberg", "hommel", "BH", "BY"
+        )
     )
-  }
-  groups <- sample_meta[[group]]
-  if(!is.factor(groups)) {
-    groups <- factor(groups)
-  }
-  lvl <- levels(groups)
-  n_lvl <- length(lvl)
 
-  contrast_new <- create_contrast(groups, contrast)
+    # check whether group is valid, write a function
+    sample_meta <- sample_data(ps)
+    meta_nms <- names(sample_meta)
+    if (!group %in% meta_nms) {
+        stop(
+            group, " are not contained in the `sample_data` of `ps`",
+            call. = FALSE
+        )
+    }
+    groups <- sample_meta[[group]]
+    if (!is.factor(groups)) {
+        groups <- factor(groups)
+    }
+    lvl <- levels(groups)
+    n_lvl <- length(lvl)
+
+    contrast_new <- create_contrast(groups, contrast)
 
 
-  transform <- match.arg(transform, c("identity", "log10", "log10p"))
+    transform <- match.arg(transform, c("identity", "log10", "log10p"))
 
-  # preprocess phyloseq object
-  ps <- preprocess_ps(ps)
-  ps <- transform_abundances(ps, transform = transform)
+    # preprocess phyloseq object
+    ps <- preprocess_ps(ps)
+    ps <- transform_abundances(ps, transform = transform)
 
-  # normalize the data
-  norm_para <- c(norm_para, method = norm, object = list(ps))
-  ps_normed <- do.call(normalize, norm_para)
+    # normalize the data
+    norm_para <- c(norm_para, method = norm, object = list(ps))
+    ps_normed <- do.call(normalize, norm_para)
 
-  # summarize data
-  # create a function, extract_summarize?
-  # check taxa_rank
-  check_taxa_rank(ps, taxa_rank)
-  if (taxa_rank == "all") {
-    ps_summarized <- summarize_taxa(ps_normed)
-  } else if (taxa_rank =="none") {
-    ps_summarized <- extract_rank(ps_normed, taxa_rank)
-  } else {
-    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
-      extract_rank(taxa_rank)
-  }
+    # summarize data
+    # create a function, extract_summarize?
+    # check taxa_rank
+    check_taxa_rank(ps, taxa_rank)
+    if (taxa_rank == "all") {
+        ps_summarized <- summarize_taxa(ps_normed)
+    } else if (taxa_rank == "none") {
+        ps_summarized <- extract_rank(ps_normed, taxa_rank)
+    } else {
+        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
+            extract_rank(taxa_rank)
+    }
 
-  counts <- abundances(ps_summarized, norm = FALSE)
+    counts <- abundances(ps_summarized, norm = FALSE)
 
-  # design matrix
-  # design <- model.matrix(
-  #   stats::as.formula(paste("~", group)),
-  #   data.frame(sample_meta)
-  # )
-  design <- model.matrix(~0+groups)
+    # design matrix
+    # design <- model.matrix(
+    #   stats::as.formula(paste("~", group)),
+    #   data.frame(sample_meta)
+    # )
+    design <- model.matrix(~ 0 + groups)
 
-  # library size
-  nf <- get_norm_factors(ps_normed)
-  lib_size <- phyloseq::sample_sums(ps)
-  if (!is.null(nf)) {
-    lib_size <- nf * lib_size
-  }
+    # library size
+    nf <- get_norm_factors(ps_normed)
+    lib_size <- phyloseq::sample_sums(ps)
+    if (!is.null(nf)) {
+        lib_size <- nf * lib_size
+    }
 
-  voom_out <- limma::voom(
-    counts,
-    design = design,
-    lib.size = lib_size,
-    span = voom_span
-  )
-  fit_out <- limma::lmFit(voom_out, design = design)
+    voom_out <- limma::voom(
+        counts,
+        design = design,
+        lib.size = lib_size,
+        span = voom_span
+    )
+    fit_out <- limma::lmFit(voom_out, design = design)
 
-  if (length(contrast_new) == n_lvl) {
-    # warning: row names of contrasts don't match col names of coefficients
-    fit_out <- limma::contrasts.fit(fit_out, contrast_new)
-  }
-  test_out <- limma::eBayes(fit_out, ...)
-  test_df <- limma::topTable(
-    test_out,
-    number = nrow(counts),
-    adjust.method = p_adjust
-  )
+    if (length(contrast_new) == n_lvl) {
+        # warning: row names of contrasts don't match col names of coefficients
+        fit_out <- limma::contrasts.fit(fit_out, contrast_new)
+    }
+    test_out <- limma::eBayes(fit_out, ...)
+    test_df <- limma::topTable(
+        test_out,
+        number = nrow(counts),
+        adjust.method = p_adjust
+    )
 
-  counts_normed <- abundances(ps_summarized, norm = TRUE)
-  if (length(contrast_new) == n_lvl) {
-    exp_lvl <- lvl[contrast_new == 1]
-    ref_lvl <- lvl[contrast_new == -1]
-    enrich_group <- ifelse(test_df$logFC > 0, exp_lvl, ref_lvl)
-  } else {
-    cf <- fit_out$coefficients
-    enrich_idx <- apply(cf, 1, which.max)
-    enrich_group <- lvl[enrich_idx]
-    enrich_group <- enrich_group[match(row.names(test_df), row.names(cf))]
-  }
+    counts_normed <- abundances(ps_summarized, norm = TRUE)
+    if (length(contrast_new) == n_lvl) {
+        exp_lvl <- lvl[contrast_new == 1]
+        ref_lvl <- lvl[contrast_new == -1]
+        enrich_group <- ifelse(test_df$logFC > 0, exp_lvl, ref_lvl)
+    } else {
+        cf <- fit_out$coefficients
+        enrich_idx <- apply(cf, 1, which.max)
+        enrich_group <- lvl[enrich_idx]
+        enrich_group <- enrich_group[match(row.names(test_df), row.names(cf))]
+    }
 
-  if (length(contrast_new) == n_lvl) {
-    ef <- test_df[["logFC"]]
-    ef_name <- "ef_logFC"
-  } else {
-    ef <- test_df [["F"]]
-    ef_name <- "ef_F_statistic"
-  }
+    if (length(contrast_new) == n_lvl) {
+        ef <- test_df[["logFC"]]
+        ef_name <- "ef_logFC"
+    } else {
+        ef <- test_df[["F"]]
+        ef_name <- "ef_F_statistic"
+    }
 
-  marker <- data.frame(
-    feature = row.names(test_df),
-    enrich_group = enrich_group,
-    ef = ef,
-    pvalue = test_df$P.Value,
-    padj = test_df$adj.P.Val
-  )
-  names(marker)[3] <- ef_name
-  sig_marker <- dplyr::filter(marker, .data$padj <= pvalue_cutoff)
-  marker <- return_marker(sig_marker, marker)
-  mm <- microbiomeMarker(
-    marker_table = marker,
-    norm_method = get_norm_method(norm),
-    diff_method = "limma_voom",
-    sam_data = sample_data(ps_normed),
-    # tax_table = tax_table(ps),
-    otu_table = otu_table(counts_normed, taxa_are_rows = TRUE),
-    tax_table = tax_table(ps_summarized)
-  )
+    marker <- data.frame(
+        feature = row.names(test_df),
+        enrich_group = enrich_group,
+        ef = ef,
+        pvalue = test_df$P.Value,
+        padj = test_df$adj.P.Val
+    )
+    names(marker)[3] <- ef_name
+    sig_marker <- dplyr::filter(marker, .data$padj <= pvalue_cutoff)
+    marker <- return_marker(sig_marker, marker)
+    mm <- microbiomeMarker(
+        marker_table = marker,
+        norm_method = get_norm_method(norm),
+        diff_method = "limma_voom",
+        sam_data = sample_data(ps_normed),
+        # tax_table = tax_table(ps),
+        otu_table = otu_table(counts_normed, taxa_are_rows = TRUE),
+        tax_table = tax_table(ps_summarized)
+    )
 
-  mm
+    mm
 }

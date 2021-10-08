@@ -29,50 +29,54 @@
 #'
 #' @examples
 #' seq_tab <- readRDS(system.file("extdata", "dada2_seqtab.rds",
-#'   package= "microbiomeMarker"))
+#'     package = "microbiomeMarker"
+#' ))
 #' tax_tab <- readRDS(system.file("extdata", "dada2_taxtab.rds",
-#'  package= "microbiomeMarker"))
+#'     package = "microbiomeMarker"
+#' ))
 #' sam_tab <- read.table(system.file("extdata", "dada2_samdata.txt",
-#'  package= "microbiomeMarker"), sep = "\t", header = TRUE, row.names = 1)
+#'     package = "microbiomeMarker"
+#' ), sep = "\t", header = TRUE, row.names = 1)
 #' ps <- import_dada2(seq_tab = seq_tab, tax_tab = tax_tab, sam_tab = sam_tab)
 #' ps
 import_dada2 <- function(seq_tab,
-                        tax_tab = NULL,
-                        sam_tab = NULL,
-                        phy_tree = NULL,
-                        keep_taxa_rows = TRUE) {
-  # refseq
-  refseq <- colnames(seq_tab)
-  # set refseq and taxa names to ASV_1, ASV_2,...
-  refseq_nm <- paste0("ASV", seq_along(refseq))
-  colnames(seq_tab) <- refseq_nm
-  names(refseq) <- refseq_nm
+    tax_tab = NULL,
+    sam_tab = NULL,
+    phy_tree = NULL,
+    keep_taxa_rows = TRUE) {
+    # refseq
+    refseq <- colnames(seq_tab)
+    # set refseq and taxa names to ASV_1, ASV_2,...
+    refseq_nm <- paste0("ASV", seq_along(refseq))
+    colnames(seq_tab) <- refseq_nm
+    names(refseq) <- refseq_nm
 
-  if (!is.null(tax_tab)) {
-    if (!identical(refseq_nm, row.names(tax_tab))) {
-      tax_tab <- tax_tab[match(refseq, row.names(tax_tab)), , drop = FALSE]
+    if (!is.null(tax_tab)) {
+        if (!identical(refseq_nm, row.names(tax_tab))) {
+            tax_tab <- tax_tab[match(refseq, row.names(tax_tab)), , 
+                drop = FALSE]
+        }
+        row.names(tax_tab) <- refseq_nm
+        tax_tab <- tax_table(as.matrix(tax_tab))
     }
-    row.names(tax_tab) <- refseq_nm
-    tax_tab <- tax_table(as.matrix(tax_tab))
-  }
 
-  # refseq to XStringSet
-  refseq <- Biostrings::DNAStringSet(refseq)
+    # refseq to XStringSet
+    refseq <- Biostrings::DNAStringSet(refseq)
 
-  if (!is.null(sam_tab)) {
-    sam_tab <- sample_data(sam_tab)
-  }
+    if (!is.null(sam_tab)) {
+        sam_tab <- sample_data(sam_tab)
+    }
 
-  if (!is.null(phy_tree) && inherits(phy_tree, "character")) {
-    phy_tree <- read_tree(phy_tree)
-  }
+    if (!is.null(phy_tree) && inherits(phy_tree, "character")) {
+        phy_tree <- read_tree(phy_tree)
+    }
 
-  asv_tab <- otu_table(seq_tab, taxa_are_rows = FALSE)
-  ps <- phyloseq(asv_tab, tax_tab, sam_tab, phy_tree, refseq)
+    asv_tab <- otu_table(seq_tab, taxa_are_rows = FALSE)
+    ps <- phyloseq(asv_tab, tax_tab, sam_tab, phy_tree, refseq)
 
-  if (keep_taxa_rows) {
-    ps <- t(ps)
-  }
+    if (keep_taxa_rows) {
+        ps <- t(ps)
+    }
 
-  ps
+    ps
 }

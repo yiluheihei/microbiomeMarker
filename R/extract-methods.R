@@ -12,6 +12,6 @@
 #' @rdname extract-methods
 #' @seealso [`base::Extract()`]
 setMethod("[", "marker_table", function(x, i, j, ...) {
-  newx <- marker_table(data.frame(x)[i, j, drop = FALSE])
-  newx
+    newx <- marker_table(data.frame(x)[i, j, drop = FALSE])
+    newx
 })

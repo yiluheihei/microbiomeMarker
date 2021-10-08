@@ -22,23 +22,31 @@ This function extracts the results of posthoc test.
 \examples{
 require(IRanges)
 pht <- postHocTest(
-  result = DataFrameList(
-    featureA = DataFrame(
-      comparisons = c("group2-group1", "group3-group1", "group3-group2"),
-      diff_mean = runif(3),
-      pvalue = rep(0.01, 3),
-      ci_lower = rep(0.01, 3),
-      ci_upper = rep(0.011, 3)),
-    featureB = DataFrame(
-      comparisons = c("group2-group1", "group3-group1", "group3-group2"),
-      diff_mean = runif(3),
-      pvalue = rep(0.01, 3),
-      ci_lower = rep(0.01, 3),
-      ci_upper = rep(0.011, 3))),
- abundance = data.frame(
-   featureA = runif(3),
-   featureB = runif(3),
-   group = c("group1", "group2", "grou3"))
+    result = DataFrameList(
+        featureA = DataFrame(
+            comparisons = c("group2-group1", 
+                "group3-group1", 
+                "group3-group2"),
+            diff_mean = runif(3),
+            pvalue = rep(0.01, 3),
+            ci_lower = rep(0.01, 3),
+            ci_upper = rep(0.011, 3)
+        ),
+        featureB = DataFrame(
+            comparisons = c("group2-group1", 
+                "group3-group1", 
+                "group3-group2"),
+            diff_mean = runif(3),
+            pvalue = rep(0.01, 3),
+            ci_lower = rep(0.01, 3),
+            ci_upper = rep(0.011, 3)
+        )
+    ),
+    abundance = data.frame(
+        featureA = runif(3),
+        featureB = runif(3),
+        group = c("group1", "group2", "grou3")
+    )
 )
 extract_posthoc_res(pht, "featureA")[[1]]
 }

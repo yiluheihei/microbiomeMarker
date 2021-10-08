@@ -80,192 +80,192 @@
 #' @examples
 #' data(kostic_crc)
 #' kostic_crc_small <- phyloseq::subset_taxa(
-#'   kostic_crc,
-#'   Phylum == "Firmicutes"
+#'     kostic_crc,
+#'     Phylum == "Firmicutes"
 #' )
 #' mm_lefse <- run_lefse(
-#'   kostic_crc_small,
-#'   wilcoxon_cutoff = 0.01,
-#'   group = "DIAGNOSIS",
-#'   kw_cutoff = 0.01,
-#'   multigrp_strat = TRUE,
-#'   lda_cutoff = 4
+#'     kostic_crc_small,
+#'     wilcoxon_cutoff = 0.01,
+#'     group = "DIAGNOSIS",
+#'     kw_cutoff = 0.01,
+#'     multigrp_strat = TRUE,
+#'     lda_cutoff = 4
 #' )
 run_lefse <- function(ps,
-                    group,
-                    subgroup = NULL,
-                    taxa_rank = "all",
-                    transform = c("identity", "log10", "log10p"),
-                    norm = "CPM",
-                    norm_para = list(),
-                    kw_cutoff = 0.05,
-                    lda_cutoff = 2,
-                    bootstrap_n = 30,
-                    bootstrap_fraction = 2/3,
-                    wilcoxon_cutoff = 0.05,
-                    multigrp_strat = FALSE,
-                    strict = c("0", "1", "2"),
-                    sample_min = 10,
-                    only_same_subgrp = FALSE,
-                    curv = FALSE) {
-  if (!inherits(ps, "phyloseq")) {
-    stop("`ps` must be phyloseq object", call. = FALSE)
-  }
+    group,
+    subgroup = NULL,
+    taxa_rank = "all",
+    transform = c("identity", "log10", "log10p"),
+    norm = "CPM",
+    norm_para = list(),
+    kw_cutoff = 0.05,
+    lda_cutoff = 2,
+    bootstrap_n = 30,
+    bootstrap_fraction = 2 / 3,
+    wilcoxon_cutoff = 0.05,
+    multigrp_strat = FALSE,
+    strict = c("0", "1", "2"),
+    sample_min = 10,
+    only_same_subgrp = FALSE,
+    curv = FALSE) {
+    if (!inherits(ps, "phyloseq")) {
+        stop("`ps` must be phyloseq object", call. = FALSE)
+    }
 
-  if (!check_rank_names(ps)) {
-    stop(
-      "ranks of `ps` must be one of ",
-      paste(available_ranks, collapse = ", ")
+    if (!check_rank_names(ps)) {
+        stop(
+            "ranks of `ps` must be one of ",
+            paste(available_ranks, collapse = ", ")
+        )
+    }
+
+    transform <- match.arg(transform, c("identity", "log10", "log10p"))
+    strict <- match.arg(strict, c("0", "1", "2"))
+    strict <- as.numeric(strict)
+
+    # import input from the original lefse python script or galaxy,
+    # will be dropped in the next release version
+    summarized <- check_tax_summarize(ps)
+    if (summarized && norm != "CPM") {
+        stop(
+            "`norm` must be a 'CPM' or 'none' while `ps` has been summarized",
+            call. = FALSE
+        )
+    }
+
+    # pre-processing, including: keep taxa in rows, filter taxa whose abundance
+    # is zero, fix duplicated tax, transformation and normalization
+    ps <- preprocess_ps(ps)
+    # transformation
+    ps <- transform_abundances(ps, transform = transform)
+    # normalization
+    norm_para <- c(norm_para, method = norm, object = list(ps))
+    ps_normed <- do.call(normalize, norm_para)
+    # nf <- get_norm_factors(ps_normed)
+    # ps <- normalize(ps, norm, ...)
+
+    sample_meta <- sample_data(ps_normed)
+    grp_info <- lefse_format_grp(sample_meta, group, subgroup = subgroup)
+    grp <- grp_info$group
+    subgrp <- grp_info$subgroup
+    grp_hie <- grp_info$group_hie
+
+    # check taxa_rank
+    check_taxa_rank(ps, taxa_rank)
+    if (taxa_rank == "all") {
+        ps_summarized <- summarize_taxa(ps_normed)
+    } else if (taxa_rank == "none") {
+        ps_summarized <- extract_rank(ps_normed, taxa_rank)
+    } else {
+        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
+            extract_rank(taxa_rank)
+    }
+    # otus <- otu_table(ps_summarized)
+    otus <- abundances(ps_summarized, norm = TRUE)
+    # otus_norm <- normalize_feature(otus, normalization = normalization)
+    # transform it for test
+    otus_test <- as.data.frame(t(otus), stringsAsFactors = FALSE)
+    feature <- tax_table(ps_summarized)@.Data[, 1]
+    names(otus_test) <- feature
+
+    # kw rank sum test among classes
+    kw_p <- purrr::map_dbl(otus_test, ~ kruskal.test(.x, grp)$p.value)
+
+    # remove the taxa, while pvalue is na
+    na_ind <- is.na(kw_p)
+    if (sum(na_ind) >= 1) {
+        otus_test <- otus_test[!na_ind]
+        kw_p <- kw_p[!na_ind]
+    }
+
+    sig_ind <- kw_p <= kw_cutoff
+    sig_otus <- otus_test[, sig_ind]
+
+    # wilcox test is preformed for each class, if there is no subclass
+    features_nms <- names(sig_otus)
+    wilcoxon_p <- purrr::map2_lgl(
+        sig_otus, features_nms,
+        ~ test_rep_wilcoxon(
+            subgroup, grp_hie,
+            .x, .y,
+            wilcoxon_cutoff = wilcoxon_cutoff,
+            multicls_strat = multigrp_strat,
+            strict = strict,
+            sample_min = sample_min,
+            only_same_subcls = only_same_subgrp,
+            curv = curv
+        )
     )
-  }
+    sig_otus <- sig_otus[, wilcoxon_p]
 
-  transform <- match.arg(transform, c("identity", "log10", "log10p"))
-  strict <- match.arg(strict, c("0", "1", "2"))
-  strict <- as.numeric(strict)
+    # mean abundance in each group
+    otus_enriched_group <- get_feature_enrich_group(grp, sig_otus)
 
-  # import input from the original lefse python script or galaxy,
-  # will be dropped in the next release version
-  summarized <- check_tax_summarize(ps)
-  if (summarized && norm != "CPM") {
-    stop(
-      "`norm` must be a 'CPM' or 'none' while `ps` has been summarized",
-      call. = FALSE
+    # bootsrap iteration of lda
+    ldas <- bootstap_lda(
+        sig_otus,
+        boot_n = bootstrap_n,
+        class = grp,
+        sample_fract = bootstrap_fraction
     )
-  }
 
-  # pre-processing, including: keep taxa in rows, filter taxa whose abundance is
-  # zero, fix duplicated tax, transformation and normalization
-  ps <- preprocess_ps(ps)
-  # transformation
-  ps <- transform_abundances(ps, transform = transform)
-  # normalization
-  norm_para <- c(norm_para, method = norm, object = list(ps))
-  ps_normed <- do.call(normalize, norm_para)
-  # nf <- get_norm_factors(ps_normed)
-  # ps <- normalize(ps, norm, ...)
-
-  sample_meta <- sample_data(ps_normed)
-  grp_info <- lefse_format_grp(sample_meta, group, subgroup = subgroup)
-  grp <- grp_info$group
-  subgrp <- grp_info$subgroup
-  grp_hie <- grp_info$group_hie
-
-  # check taxa_rank
-  check_taxa_rank(ps, taxa_rank)
-  if (taxa_rank == "all") {
-    ps_summarized <- summarize_taxa(ps_normed)
-  } else if (taxa_rank =="none") {
-    ps_summarized <- extract_rank(ps_normed, taxa_rank)
-  } else {
-    ps_summarized <-aggregate_taxa(ps_normed, taxa_rank) %>%
-      extract_rank(taxa_rank)
-  }
-  # otus <- otu_table(ps_summarized)
-  otus <- abundances(ps_summarized, norm = TRUE)
-  # otus_norm <- normalize_feature(otus, normalization = normalization)
-  # transform it for test
-  otus_test <- as.data.frame(t(otus), stringsAsFactors = FALSE)
-  feature <- tax_table(ps_summarized)@.Data[, 1]
-  names(otus_test) <- feature
-
-  # kw rank sum test among classes
-  kw_p <- purrr::map_dbl(otus_test, ~ kruskal.test(.x, grp)$p.value)
-
-  # remove the taxa, while pvalue is na
-  na_ind <- is.na(kw_p)
-  if (sum(na_ind) >= 1) {
-    otus_test <- otus_test[!na_ind]
-    kw_p <- kw_p[!na_ind]
-  }
-
-  sig_ind <- kw_p <= kw_cutoff
-  sig_otus <- otus_test[, sig_ind]
-
-  # wilcoxon rank sum test is preformed for each class, if there is no subclass
-  features_nms <- names(sig_otus)
-  wilcoxon_p <- purrr::map2_lgl(
-    sig_otus, features_nms,
-    ~ test_rep_wilcoxon(
-      subgroup, grp_hie,
-      .x, .y,
-      wilcoxon_cutoff = wilcoxon_cutoff,
-      multicls_strat = multigrp_strat,
-      strict = strict,
-      sample_min = sample_min,
-      only_same_subcls = only_same_subgrp,
-      curv = curv
+    lefse_res <- data.frame(
+        feature = names(sig_otus),
+        enrich_group = otus_enriched_group$group,
+        # log_max_mean = otus_enriched_group$log_max_mean,
+        ef_lda = ldas,
+        pvalue = kw_p[sig_ind][wilcoxon_p],
+        stringsAsFactors = FALSE
     )
-  )
-  sig_otus <- sig_otus[, wilcoxon_p]
 
-  # mean abundance in each group
-  otus_enriched_group <- get_feature_enrich_group(grp, sig_otus)
+    lefse_sig <- filter(lefse_res, .data$ef_lda >= lda_cutoff) %>%
+        arrange(.data$enrich_group, desc(.data$ef_lda))
 
-  # bootsrap iteration of lda
-  ldas <- bootstap_lda(
-    sig_otus,
-    boot_n = bootstrap_n,
-    class = grp,
-    sample_fract = bootstrap_fraction
-  )
+    # if (nrow(lefse_sig)) {
+    #   lefse_out <- marker_table(lefse_sig)
+    # } else {
+    #   warning(
+    #     "No significant feature identified, return all the features",
+    #     call. = FALSE
+    #   )
+    #   lefse_out <- marker_table(lefse_res)
+    #   if (norm != "CPM") {
+    #     warning(
+    #       "CPM normalization method is recommended according to lefse paper",
+    #       call. = FALSE
+    #     )
+    #   }
+    # }
+    lefse_out <- return_marker(lefse_sig, lefse_res)
+    lefse_out$padj <- lefse_out$pvalue
+    row.names(lefse_out) <- paste0("marker", seq_len(nrow(lefse_out)))
 
-  lefse_res <- data.frame(
-    feature = names(sig_otus),
-    enrich_group = otus_enriched_group$group,
-    # log_max_mean = otus_enriched_group$log_max_mean,
-    ef_lda = ldas,
-    pvalue = kw_p[sig_ind][wilcoxon_p],
-    stringsAsFactors = FALSE
-  )
-
-  lefse_sig <- filter(lefse_res, .data$ef_lda >= lda_cutoff) %>%
-    arrange(.data$enrich_group, desc(.data$ef_lda))
-
-  # if (nrow(lefse_sig)) {
-  #   lefse_out <- marker_table(lefse_sig)
-  # } else {
-  #   warning(
-  #     "No significant feature identified, return all the features",
-  #     call. = FALSE
-  #   )
-  #   lefse_out <- marker_table(lefse_res)
-  #   if (norm != "CPM") {
-  #     warning(
-  #       "CPM normalization method is recommended according to lefse paper",
-  #       call. = FALSE
-  #     )
-  #   }
-  # }
-  lefse_out <- return_marker(lefse_sig, lefse_res)
-  lefse_out$padj <- lefse_out$pvalue
-  row.names(lefse_out) <- paste0("marker", seq_len(nrow(lefse_out)))
-
-  # if (summarize == "lefse" || summarize) {
-  #   tax <- matrix(row.names(otus)) %>%
-  #     tax_table()
-  # } else {
-  #   tax <- tax_table(ps)
-  # }
-  # row.names(tax) <- row.names(otus)
+    # if (summarize == "lefse" || summarize) {
+    #   tax <- matrix(row.names(otus)) %>%
+    #     tax_table()
+    # } else {
+    #   tax <- tax_table(ps)
+    # }
+    # row.names(tax) <- row.names(otus)
 
 
-  tax <- matrix(feature) %>%
-      tax_table()
-  row.names(tax) <- row.names(otus)
+    tax <- matrix(feature) %>%
+        tax_table()
+    row.names(tax) <- row.names(otus)
 
-  mm <- microbiomeMarker(
-    marker_table = lefse_out,
-    norm_method = get_norm_method(norm),
-    # norm_factor = nf,
-    diff_method = "lefse",
-    # tax_table = tax_table(ps),
-    otu_table = otu_table(otus, taxa_are_rows = TRUE), # normalized
-    # new var norm_factor (if it is calculated in normalize)
-    sam_data = sample_data(ps_normed),
-    tax_table = tax
-  )
+    mm <- microbiomeMarker(
+        marker_table = lefse_out,
+        norm_method = get_norm_method(norm),
+        # norm_factor = nf,
+        diff_method = "lefse",
+        # tax_table = tax_table(ps),
+        otu_table = otu_table(otus, taxa_are_rows = TRUE), # normalized
+        # new var norm_factor (if it is calculated in normalize)
+        sam_data = sample_data(ps_normed),
+        tax_table = tax
+    )
 
-  mm
+    mm
 }
 
 # suppress the checking notes “no visible binding for global variable", which is

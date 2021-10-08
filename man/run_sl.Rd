@@ -115,21 +115,21 @@ the performance of the marker predictions for the testing data.
 \examples{
 data(enterotypes_arumugam)
 # small example phyloseq object for test
-ps_small<- phyloseq::subset_taxa(
-  enterotypes_arumugam,
-  Phylum \%in\% c("Firmicutes", "Bacteroidetes")
+ps_small <- phyloseq::subset_taxa(
+    enterotypes_arumugam,
+    Phylum \%in\% c("Firmicutes", "Bacteroidetes")
 )
 
 set.seed(2021)
 mm <- run_sl(
-  ps_small,
-  group = "Gender",
-  taxa_rank = "Genus",
-  nfolds = 2,
-  nrepeats = 1,
-  top_n = 15,
-  norm = "TSS",
-  method = "LR",
+    ps_small,
+    group = "Gender",
+    taxa_rank = "Genus",
+    nfolds = 2,
+    nrepeats = 1,
+    top_n = 15,
+    norm = "TSS",
+    method = "LR",
 )
 mm
 }

@@ -35,44 +35,46 @@
 #' #   meta_rows = 1:3,
 #' # )
 import_biobakery_lefse_in <- function(file,
-                                      ranks_prefix,
-                                      meta_rows = 1,
-                                      sep = "|") {
-  dat <- utils::read.delim(file, header = FALSE)
+    ranks_prefix,
+    meta_rows = 1,
+    sep = "|") {
+    dat <- utils::read.delim(file, header = FALSE)
 
-  # meta data of samples
-  meta_nms <- dat[meta_rows, 1]
-  sample_meta <- dat[meta_rows, -1] %>%
-    t() %>%
-    as.data.frame() %>%
-    sample_data()
-  colnames(sample_meta) <- meta_nms
-  row.names(sample_meta) <- paste0("sa", seq_len(nrow(sample_meta)))
+    # meta data of samples
+    meta_nms <- dat[meta_rows, 1]
+    sample_meta <- dat[meta_rows, -1] %>%
+        t() %>%
+        as.data.frame() %>%
+        sample_data()
+    colnames(sample_meta) <- meta_nms
+    row.names(sample_meta) <- paste0("sa", seq_len(nrow(sample_meta)))
 
-  # tax table
-  tax <- dat[-meta_rows, 1, drop = FALSE] %>%
-    as.matrix() %>%
-    tax_table()
-  # ensure the ranks_prefix is contained in available_ranks
-  # and in descending order
-  available_prefix <- get_available_prefix(available_ranks)
-  if (!all(ranks_prefix %in% available_prefix)) {
-    stop("all elements of ranks_prefix must be contained in available_ranks")
-  }
-  tax_nms <- keep_prefix_desc(ranks_prefix, type = "ranks") %>%
-    paste0(collapse = sep)
-  colnames(tax) <- tax_nms
-  row.names(tax) <- paste0("feature", seq_len(nrow(tax)))
+    # tax table
+    tax <- dat[-meta_rows, 1, drop = FALSE] %>%
+        as.matrix() %>%
+        tax_table()
+    # ensure the ranks_prefix is contained in available_ranks
+    # and in descending order
+    available_prefix <- get_available_prefix(available_ranks)
+    if (!all(ranks_prefix %in% available_prefix)) {
+        stop("all elements of ranks_prefix must be contained ",
+            "in available_ranks"
+        )
+    }
+    tax_nms <- keep_prefix_desc(ranks_prefix, type = "ranks") %>%
+        paste0(collapse = sep)
+    colnames(tax) <- tax_nms
+    row.names(tax) <- paste0("feature", seq_len(nrow(tax)))
 
-  # otu table
-  otu <- dat[-meta_rows, -1, drop = FALSE] %>%
-    apply(2, as.numeric) %>%
-    otu_table(taxa_are_rows = TRUE)
-  row.names(otu) <- taxa_names(tax)
-  colnames(otu) <- sample_names(sample_meta)
+    # otu table
+    otu <- dat[-meta_rows, -1, drop = FALSE] %>%
+        apply(2, as.numeric) %>%
+        otu_table(taxa_are_rows = TRUE)
+    row.names(otu) <- taxa_names(tax)
+    colnames(otu) <- sample_names(sample_meta)
 
-  ps <- phyloseq(otu, tax, sample_meta) %>%
-    add_prefix_summarized(ranks_prefix, sep)
+    ps <- phyloseq(otu, tax, sample_meta) %>%
+        add_prefix_summarized(ranks_prefix, sep)
 
-  ps
+    ps
 }

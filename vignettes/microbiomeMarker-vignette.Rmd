@@ -17,12 +17,12 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  message = FALSE,
-  warning = FALSE,
-  fig.align = "center",
-  crop = NULL
+    collapse = TRUE,
+    comment = "#>",
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center",
+    crop = NULL
 )
 library(BiocStyle)
 ```
@@ -58,8 +58,9 @@ Support vector machine) to facilitate the identification of microbiome markers.
 Install the package from Bioconductor directly:
 
 ```{r install-bioc,eval=FALSE}
-if (!requireNamespace("BiocManager", quietly = TRUE))
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
+}
 
 BiocManager::install("microbiomeMarker")
 ```
@@ -68,8 +69,9 @@ Or install the development version of the package from
 [Github](https://github.com/yiluheihei/microbiomeMarker). 
 
 ```{r install-gh,eval=FALSE}
-if (!requireNamespace("remotes", quietly=TRUE))
-  install.packages("remotes")
+if (!requireNamespace("remotes", quietly = TRUE)) {
+    install.packages("remotes")
+}
 remotes::install_github("yiluheihei/microbiomeMarker")
 ```
 
@@ -106,25 +108,25 @@ analogous to the traditional OTU table. Conveniently, taxa names are saved as
 
 ```{r import-dada2}
 seq_tab <- readRDS(
-  system.file(
-    "extdata", "dada2_seqtab.rds",
-    package= "microbiomeMarker"
-  )
+    system.file(
+        "extdata", "dada2_seqtab.rds",
+        package = "microbiomeMarker"
+    )
 )
 tax_tab <- readRDS(
-  system.file(
-    "extdata", "dada2_taxtab.rds",
-    package= "microbiomeMarker"
-  )
+    system.file(
+        "extdata", "dada2_taxtab.rds",
+        package = "microbiomeMarker"
+    )
 )
 sam_tab <- read.table(
-  system.file(
-    "extdata", "dada2_samdata.txt", 
-    package= "microbiomeMarker"
-  ), 
-  sep = "\t", 
-  header = TRUE, 
-  row.names = 1
+    system.file(
+        "extdata", "dada2_samdata.txt",
+        package = "microbiomeMarker"
+    ),
+    sep = "\t",
+    header = TRUE,
+    row.names = 1
 )
 ps <- import_dada2(seq_tab = seq_tab, tax_tab = tax_tab, sam_tab = sam_tab)
 ps
@@ -139,25 +141,25 @@ tree, representative sequence and sample metadata from qiime2 using
 
 ```{r import-qiime2,message=FALSE}
 otuqza_file <- system.file(
-  "extdata", "table.qza",
-  package = "microbiomeMarker"
+    "extdata", "table.qza",
+    package = "microbiomeMarker"
 )
 taxaqza_file <- system.file(
-  "extdata", "taxonomy.qza",
-  package = "microbiomeMarker"
+    "extdata", "taxonomy.qza",
+    package = "microbiomeMarker"
 )
 sample_file <- system.file(
-  "extdata", "sample-metadata.tsv",
-  package = "microbiomeMarker"
+    "extdata", "sample-metadata.tsv",
+    package = "microbiomeMarker"
 )
 treeqza_file <- system.file(
-  "extdata", "tree.qza",
-  package = "microbiomeMarker"
+    "extdata", "tree.qza",
+    package = "microbiomeMarker"
 )
 
 ps <- import_qiime2(
-  otu_qza = otuqza_file, taxa_qza = taxaqza_file,
-  sam_tab = sample_file, tree_qza = treeqza_file
+    otu_qza = otuqza_file, taxa_qza = taxaqza_file,
+    sam_tab = sample_file, tree_qza = treeqza_file
 )
 ps
 ```
@@ -256,25 +258,25 @@ metagenomeSeq, and the default values of `norm` in the DA functions is set as
 their default normalization methods.
 
 ```{r norm-note,eval=FALSE}
-# equivalent to 
-# run_lefse(
-#   wilcoxon_cutoff = 0.01, 
-#   norm = "CPM", 
-#   group = "DIAGNOSIS",
-#   kw_cutoff = 0.01,
-#   multigrp_strat = TRUE,
-#   lda_cutoff = 4
-# )
 data(kostic_crc)
-mm_test <- normalize(kostic_crc, method = "CPM") %>% 
-  run_lefse(
-    wilcoxon_cutoff = 0.01, 
-    norm = "none", # must be "none" since the input has been normalized
+mm_test <- normalize(kostic_crc, method = "CPM") %>%
+    run_lefse(
+        wilcoxon_cutoff = 0.01,
+        norm = "none", # must be "none" since the input has been normalized
+        group = "DIAGNOSIS",
+        kw_cutoff = 0.01,
+        multigrp_strat = TRUE,
+        lda_cutoff = 4
+    )
+# equivalent to
+run_lefse(
+    wilcoxon_cutoff = 0.01,
+    norm = "CPM",
     group = "DIAGNOSIS",
     kw_cutoff = 0.01,
     multigrp_strat = TRUE,
     lda_cutoff = 4
-  )
+)
 ```
 
 ## Simple statitical tests {#simple-stat}
@@ -294,9 +296,9 @@ between two groups.
 ```{r two-group-test}
 data(enterotypes_arumugam)
 tg_welch <- run_test_two_groups(
-  enterotypes_arumugam, 
-  group = "Gender", 
-  method = "welch.test"
+    enterotypes_arumugam,
+    group = "Gender",
+    method = "welch.test"
 )
 
 # three significantly differential genera (marker)
@@ -312,13 +314,13 @@ differential test for multiple groups.
 ```{r multi-group-test}
 # three groups
 ps <- phyloseq::subset_samples(
-  enterotypes_arumugam,
-  Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
+    enterotypes_arumugam,
+    Enterotype %in% c("Enterotype 3", "Enterotype 2", "Enterotype 1")
 )
-mg_anova <-  run_test_multiple_groups(
-  ps,
-  group = "Enterotype", 
-  method = "anova"
+mg_anova <- run_test_multiple_groups(
+    ps,
+    group = "Enterotype",
+    method = "anova"
 )
 
 # 24 markers
@@ -345,25 +347,25 @@ Here we take edgeR method as an example.
 # contrast must be specified for two groups comparison
 data(pediatric_ibd)
 mm_edger <- run_edger(
-  pediatric_ibd,
-  group = "Class",
-  pvalue_cutoff = 0.1,
-  p_adjust = "fdr"
+    pediatric_ibd,
+    group = "Class",
+    pvalue_cutoff = 0.1,
+    p_adjust = "fdr"
 )
 mm_edger
 
 # multiple groups
 data(cid_ying)
 cid <- phyloseq::subset_samples(
-  cid_ying,
-  Consistency %in% c("formed stool", "liquid", "semi-formed")
+    cid_ying,
+    Consistency %in% c("formed stool", "liquid", "semi-formed")
 )
 mm_edger_mg <- run_edger(
-  cid,
-  group = "Consistency",
-  method  = "QLFT",
-  pvalue_cutoff = 0.05,
-  p_adjust = "fdr"
+    cid,
+    group = "Consistency",
+    method  = "QLFT",
+    pvalue_cutoff = 0.05,
+    p_adjust = "fdr"
 )
 mm_edger_mg
 ```
@@ -384,16 +386,16 @@ Here we take LEfSe method for example:
 ```{r lefse}
 data(kostic_crc)
 kostic_crc_small <- phyloseq::subset_taxa(
-  kostic_crc,
-  Phylum %in% c("Firmicutes")
+    kostic_crc,
+    Phylum %in% c("Firmicutes")
 )
 mm_lefse <- run_lefse(
-  kostic_crc_small,
-  wilcoxon_cutoff = 0.01,
-  group = "DIAGNOSIS",
-  kw_cutoff = 0.01,
-  multigrp_strat = TRUE,
-  lda_cutoff = 4
+    kostic_crc_small,
+    wilcoxon_cutoff = 0.01,
+    group = "DIAGNOSIS",
+    kw_cutoff = 0.01,
+    multigrp_strat = TRUE,
+    lda_cutoff = 4
 )
 
 mm_lefse
@@ -416,18 +418,18 @@ Here we take random forest for example:
 set.seed(2021)
 # small example phyloseq object for test
 ps_small <- phyloseq::subset_taxa(
-  enterotypes_arumugam,
-  Phylum %in% c("Firmicutes", "Bacteroidetes")
+    enterotypes_arumugam,
+    Phylum %in% c("Firmicutes", "Bacteroidetes")
 )
 mm_lr <- run_sl(
-  ps_small,
-  group = "Gender",
-  nfolds = 2,
-  nrepeats = 1,
-  taxa_rank = "Genus",
-  top_n = 15,
-  norm = "TSS",
-  method = "LR",
+    ps_small,
+    group = "Gender",
+    nfolds = 2,
+    nrepeats = 1,
+    taxa_rank = "Genus",
+    top_n = 15,
+    norm = "TSS",
+    method = "LR",
 )
 
 marker_table(mm_lr)
@@ -455,8 +457,8 @@ pht
 markers <- marker_table(mg_anova)$feature
 markers
 
-# take a marker "p__Bacteroidetes|g__Bacteroides"  
-# for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from 
+# take a marker "p__Bacteroidetes|g__Bacteroides"
+# for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from
 # between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.
 extract_posthoc_res(pht, "p__Bacteroidetes|g__Bacteroides")[[1]]
 ```
@@ -472,11 +474,11 @@ limma-voom method as example:
 ```{r pair-wise-linear}
 # comparison between Enterotype 3 and Enterotype 2
 mm_lv_pair <- run_limma_voom(
-  ps,
-  "Enterotype",
-  contrast = c("Enterotype 3", "Enterotype 2"),
-  pvalue_cutoff = 0.05,
-  p_adjust = "fdr"
+    ps,
+    "Enterotype",
+    contrast = c("Enterotype 3", "Enterotype 2"),
+    pvalue_cutoff = 0.05,
+    p_adjust = "fdr"
 )
 mm_lv_pair
 marker_table(mm_lv_pair)
@@ -555,7 +557,7 @@ features by default. Users can plot a LEfSe cladogram using function
 
 ```{r cladogram,fig.width=7,fig.height=7}
 plot_cladogram(mm_lefse, color = c(Healthy = "darkgreen", Tumor = "red")) +
-  theme(plot.margin = margin(0,0,0,0))
+    theme(plot.margin = margin(0, 0, 0, 0))
 ```
 
 ## AUC-ROC curve from SL methods
