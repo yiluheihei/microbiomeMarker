@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.1</span>
       </span>
     </div>
 
@@ -158,22 +158,22 @@
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
 <span class='co'># small example phyloseq object for test</span>
 <span class='va'>ps_s</span> <span class='op'>&lt;-</span> <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html'>subset_taxa</a></span><span class='op'>(</span>
-  <span class='va'>enterotypes_arumugam</span>,
-  <span class='va'>Phylum</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Firmicutes"</span>, <span class='st'>"Bacteroidetes"</span><span class='op'>)</span>
+    <span class='va'>enterotypes_arumugam</span>,
+    <span class='va'>Phylum</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Firmicutes"</span>, <span class='st'>"Bacteroidetes"</span><span class='op'>)</span>
 <span class='op'>)</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>2021</span><span class='op'>)</span>
 <span class='va'>mm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='run_sl.html'>run_sl</a></span><span class='op'>(</span>
-  <span class='va'>ps_s</span>,
-  group <span class='op'>=</span> <span class='st'>"Gender"</span>,
-  taxa_rank <span class='op'>=</span> <span class='st'>"Genus"</span>,
-  nfolds <span class='op'>=</span> <span class='fl'>2</span>,
-  nrepeats <span class='op'>=</span> <span class='fl'>1</span>,
-  top_n <span class='op'>=</span> <span class='fl'>15</span>,
-  norm <span class='op'>=</span> <span class='st'>"TSS"</span>,
-  method <span class='op'>=</span> <span class='st'>"LR"</span>,
+    <span class='va'>ps_s</span>,
+    group <span class='op'>=</span> <span class='st'>"Gender"</span>,
+    taxa_rank <span class='op'>=</span> <span class='st'>"Genus"</span>,
+    nfolds <span class='op'>=</span> <span class='fl'>2</span>,
+    nrepeats <span class='op'>=</span> <span class='fl'>1</span>,
+    top_n <span class='op'>=</span> <span class='fl'>15</span>,
+    norm <span class='op'>=</span> <span class='st'>"TSS"</span>,
+    method <span class='op'>=</span> <span class='st'>"LR"</span>,
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: lattice</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: ggplot2</span></div><div class='input'><span class='fu'>plot_sl_roc</span><span class='op'>(</span><span class='va'>mm</span>, group <span class='op'>=</span> <span class='st'>"Gender"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: return the original feature table.</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: ggplot2</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: lattice</span></div><div class='input'><span class='fu'>plot_sl_roc</span><span class='op'>(</span><span class='va'>mm</span>, group <span class='op'>=</span> <span class='st'>"Gender"</span><span class='op'>)</span>
 </div><div class='img'><img src='plot_sl_roc-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

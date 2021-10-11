@@ -73,7 +73,7 @@ marker table (marker_table)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.1</span>
       </span>
     </div>
 
@@ -159,13 +159,13 @@ microbiomeMarker package that contain <code>marker_table</code></p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
 <span class='va'>mm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='run_limma_voom.html'>run_limma_voom</a></span><span class='op'>(</span>
-  <span class='va'>enterotypes_arumugam</span>,
-  <span class='st'>"Enterotype"</span>,
-  contrast <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span><span class='op'>)</span>,
-  pvalue_cutoff <span class='op'>=</span> <span class='fl'>0.05</span>,
-  p_adjust <span class='op'>=</span> <span class='st'>"fdr"</span>
+    <span class='va'>enterotypes_arumugam</span>,
+    <span class='st'>"Enterotype"</span>,
+    contrast <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span><span class='op'>)</span>,
+    pvalue_cutoff <span class='op'>=</span> <span class='fl'>0.05</span>,
+    p_adjust <span class='op'>=</span> <span class='st'>"fdr"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: row names of contrasts don't match col names of coefficients</span></div><div class='input'><span class='fu'>marker_table</span><span class='op'>(</span><span class='va'>mm</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: row names of contrasts don't match col names of coefficients</span></div><div class='output co'>#&gt; <span class='warning'>Warning: return the original feature table.</span></div><div class='input'><span class='fu'>marker_table</span><span class='op'>(</span><span class='va'>mm</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Object of class "marker_table"
 #&gt;                                   feature enrich_group  ef_logFC       pvalue
 #&gt; marker1    p__Bacteroidetes|g__Prevotella Enterotype 2  5.821020 3.082538e-11

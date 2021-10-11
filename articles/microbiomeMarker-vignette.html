@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.1</span>
       </span>
     </div>
 
@@ -107,14 +107,16 @@
 <a href="#installation" class="anchor"></a>Installation</h1>
 <p>Install the package from Bioconductor directly:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
+<span class="op">}</span>
 
 <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"microbiomeMarker"</span><span class="op">)</span></code></pre></div>
 <p>Or install the development version of the package from <a href="https://github.com/yiluheihei/microbiomeMarker">Github</a>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<span class="op">}</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"yiluheihei/microbiomeMarker"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="package-loading" class="section level1">
@@ -137,25 +139,25 @@
 <p>The output of the <a href="https://benjjneb.github.io/dada2">dada2</a> pipeline is a feature table of amplicon sequence variants (an ASV table): A matrix with rows corresponding to samples and columns to ASVs, in which the value of each entry is the number of times that ASV was observed in that sample. This table is analogous to the traditional OTU table. Conveniently, taxa names are saved as</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seq_tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
-    <span class="st">"extdata"</span>, <span class="st">"dada2_seqtab.rds"</span>,
-    package<span class="op">=</span> <span class="st">"microbiomeMarker"</span>
-  <span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
+        <span class="st">"extdata"</span>, <span class="st">"dada2_seqtab.rds"</span>,
+        package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
+    <span class="op">)</span>
 <span class="op">)</span>
 <span class="va">tax_tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
-    <span class="st">"extdata"</span>, <span class="st">"dada2_taxtab.rds"</span>,
-    package<span class="op">=</span> <span class="st">"microbiomeMarker"</span>
-  <span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
+        <span class="st">"extdata"</span>, <span class="st">"dada2_taxtab.rds"</span>,
+        package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
+    <span class="op">)</span>
 <span class="op">)</span>
 <span class="va">sam_tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
-    <span class="st">"extdata"</span>, <span class="st">"dada2_samdata.txt"</span>, 
-    package<span class="op">=</span> <span class="st">"microbiomeMarker"</span>
-  <span class="op">)</span>, 
-  sep <span class="op">=</span> <span class="st">"\t"</span>, 
-  header <span class="op">=</span> <span class="cn">TRUE</span>, 
-  row.names <span class="op">=</span> <span class="fl">1</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
+        <span class="st">"extdata"</span>, <span class="st">"dada2_samdata.txt"</span>,
+        package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
+    <span class="op">)</span>,
+    sep <span class="op">=</span> <span class="st">"\t"</span>,
+    header <span class="op">=</span> <span class="cn">TRUE</span>,
+    row.names <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span>
 <span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import_dada2.html">import_dada2</a></span><span class="op">(</span>seq_tab <span class="op">=</span> <span class="va">seq_tab</span>, tax_tab <span class="op">=</span> <span class="va">tax_tab</span>, sam_tab <span class="op">=</span> <span class="va">sam_tab</span><span class="op">)</span>
 <span class="va">ps</span>
@@ -171,25 +173,25 @@
 <p><a href="http://qiime.org/">qiime2</a> is the most widely used software for metagenomic analysis. User can import the feature table, taxonomic table, phylogenetic tree, representative sequence and sample metadata from qiime2 using <code><a href="../reference/import_qiime2.html">import_qiime2()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">otuqza_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
-  <span class="st">"extdata"</span>, <span class="st">"table.qza"</span>,
-  package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
+    <span class="st">"extdata"</span>, <span class="st">"table.qza"</span>,
+    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
 <span class="op">)</span>
 <span class="va">taxaqza_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
-  <span class="st">"extdata"</span>, <span class="st">"taxonomy.qza"</span>,
-  package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
+    <span class="st">"extdata"</span>, <span class="st">"taxonomy.qza"</span>,
+    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
 <span class="op">)</span>
 <span class="va">sample_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
-  <span class="st">"extdata"</span>, <span class="st">"sample-metadata.tsv"</span>,
-  package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
+    <span class="st">"extdata"</span>, <span class="st">"sample-metadata.tsv"</span>,
+    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
 <span class="op">)</span>
 <span class="va">treeqza_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span>
-  <span class="st">"extdata"</span>, <span class="st">"tree.qza"</span>,
-  package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
+    <span class="st">"extdata"</span>, <span class="st">"tree.qza"</span>,
+    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span>
 <span class="op">)</span>
 
 <span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import_qiime2.html">import_qiime2</a></span><span class="op">(</span>
-  otu_qza <span class="op">=</span> <span class="va">otuqza_file</span>, taxa_qza <span class="op">=</span> <span class="va">taxaqza_file</span>,
-  sam_tab <span class="op">=</span> <span class="va">sample_file</span>, tree_qza <span class="op">=</span> <span class="va">treeqza_file</span>
+    otu_qza <span class="op">=</span> <span class="va">otuqza_file</span>, taxa_qza <span class="op">=</span> <span class="va">taxaqza_file</span>,
+    sam_tab <span class="op">=</span> <span class="va">sample_file</span>, tree_qza <span class="op">=</span> <span class="va">treeqza_file</span>
 <span class="op">)</span>
 <span class="va">ps</span>
 <span class="co">#&gt; phyloseq-class experiment-level object</span>
@@ -265,25 +267,25 @@ fold-change between the sample and the reference.</li>
 <hr>
 <p><strong><em>Note</em></strong>: all the DA functions provides a para to specify the normalization method. We emphasize that users should specify the normalization method in the DA functions rather than using these normalization functions directly. If you use normalize data first and then perform DA, you should set the <code>norm_method</code> manually. We recommend to use the default normalization methods for the corresponding DA methods, e.g. “CPM” for LEfSe and “CSS” for metagenomeSeq, and the default values of <code>norm</code> in the DA functions is set as their default normalization methods.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># equivalent to </span>
-<span class="co"># run_lefse(</span>
-<span class="co">#   wilcoxon_cutoff = 0.01, </span>
-<span class="co">#   norm = "CPM", </span>
-<span class="co">#   group = "DIAGNOSIS",</span>
-<span class="co">#   kw_cutoff = 0.01,</span>
-<span class="co">#   multigrp_strat = TRUE,</span>
-<span class="co">#   lda_cutoff = 4</span>
-<span class="co"># )</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span>
-<span class="va">mm_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalize,phyloseq-method.html">normalize</a></span><span class="op">(</span><span class="va">kostic_crc</span>, method <span class="op">=</span> <span class="st">"CPM"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
-    wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>, 
-    norm <span class="op">=</span> <span class="st">"none"</span>, <span class="co"># must be "none" since the input has been normalized</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span>
+<span class="va">mm_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalize,phyloseq-method.html">normalize</a></span><span class="op">(</span><span class="va">kostic_crc</span>, method <span class="op">=</span> <span class="st">"CPM"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
+        wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
+        norm <span class="op">=</span> <span class="st">"none"</span>, <span class="co"># must be "none" since the input has been normalized</span>
+        group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,
+        kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
+        multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,
+        lda_cutoff <span class="op">=</span> <span class="fl">4</span>
+    <span class="op">)</span>
+<span class="co"># equivalent to</span>
+<span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
+    wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
+    norm <span class="op">=</span> <span class="st">"CPM"</span>,
     group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,
     kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
     multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,
     lda_cutoff <span class="op">=</span> <span class="fl">4</span>
-  <span class="op">)</span></code></pre></div>
+<span class="op">)</span></code></pre></div>
 </div>
 <div id="simple-stat" class="section level2">
 <h2 class="hasAnchor">
@@ -293,9 +295,9 @@ fold-change between the sample and the reference.</li>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">enterotypes_arumugam</span><span class="op">)</span>
 <span class="va">tg_welch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_test_two_groups.html">run_test_two_groups</a></span><span class="op">(</span>
-  <span class="va">enterotypes_arumugam</span>, 
-  group <span class="op">=</span> <span class="st">"Gender"</span>, 
-  method <span class="op">=</span> <span class="st">"welch.test"</span>
+    <span class="va">enterotypes_arumugam</span>,
+    group <span class="op">=</span> <span class="st">"Gender"</span>,
+    method <span class="op">=</span> <span class="st">"welch.test"</span>
 <span class="op">)</span>
 
 <span class="co"># three significantly differential genera (marker)</span>
@@ -322,13 +324,13 @@ fold-change between the sample and the reference.</li>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># three groups</span>
 <span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html">subset_samples</a></span><span class="op">(</span>
-  <span class="va">enterotypes_arumugam</span>,
-  <span class="va">Enterotype</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span>, <span class="st">"Enterotype 1"</span><span class="op">)</span>
+    <span class="va">enterotypes_arumugam</span>,
+    <span class="va">Enterotype</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span>, <span class="st">"Enterotype 1"</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="va">mg_anova</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/run_test_multiple_groups.html">run_test_multiple_groups</a></span><span class="op">(</span>
-  <span class="va">ps</span>,
-  group <span class="op">=</span> <span class="st">"Enterotype"</span>, 
-  method <span class="op">=</span> <span class="st">"anova"</span>
+<span class="va">mg_anova</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_test_multiple_groups.html">run_test_multiple_groups</a></span><span class="op">(</span>
+    <span class="va">ps</span>,
+    group <span class="op">=</span> <span class="st">"Enterotype"</span>,
+    method <span class="op">=</span> <span class="st">"anova"</span>
 <span class="op">)</span>
 
 <span class="co"># 24 markers</span>
@@ -367,10 +369,10 @@ fold-change between the sample and the reference.</li>
 <code class="sourceCode R"><span class="co"># contrast must be specified for two groups comparison</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">pediatric_ibd</span><span class="op">)</span>
 <span class="va">mm_edger</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_edger.html">run_edger</a></span><span class="op">(</span>
-  <span class="va">pediatric_ibd</span>,
-  group <span class="op">=</span> <span class="st">"Class"</span>,
-  pvalue_cutoff <span class="op">=</span> <span class="fl">0.1</span>,
-  p_adjust <span class="op">=</span> <span class="st">"fdr"</span>
+    <span class="va">pediatric_ibd</span>,
+    group <span class="op">=</span> <span class="st">"Class"</span>,
+    pvalue_cutoff <span class="op">=</span> <span class="fl">0.1</span>,
+    p_adjust <span class="op">=</span> <span class="st">"fdr"</span>
 <span class="op">)</span>
 <span class="va">mm_edger</span>
 <span class="co">#&gt; microbiomeMarker-class inherited from phyloseq-class</span>
@@ -384,15 +386,15 @@ fold-change between the sample and the reference.</li>
 <span class="co"># multiple groups</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">cid_ying</span><span class="op">)</span>
 <span class="va">cid</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html">subset_samples</a></span><span class="op">(</span>
-  <span class="va">cid_ying</span>,
-  <span class="va">Consistency</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"formed stool"</span>, <span class="st">"liquid"</span>, <span class="st">"semi-formed"</span><span class="op">)</span>
+    <span class="va">cid_ying</span>,
+    <span class="va">Consistency</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"formed stool"</span>, <span class="st">"liquid"</span>, <span class="st">"semi-formed"</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="va">mm_edger_mg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_edger.html">run_edger</a></span><span class="op">(</span>
-  <span class="va">cid</span>,
-  group <span class="op">=</span> <span class="st">"Consistency"</span>,
-  method  <span class="op">=</span> <span class="st">"QLFT"</span>,
-  pvalue_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
-  p_adjust <span class="op">=</span> <span class="st">"fdr"</span>
+    <span class="va">cid</span>,
+    group <span class="op">=</span> <span class="st">"Consistency"</span>,
+    method  <span class="op">=</span> <span class="st">"QLFT"</span>,
+    pvalue_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
+    p_adjust <span class="op">=</span> <span class="st">"fdr"</span>
 <span class="op">)</span>
 <span class="va">mm_edger_mg</span>
 <span class="co">#&gt; microbiomeMarker-class inherited from phyloseq-class</span>
@@ -411,16 +413,16 @@ fold-change between the sample and the reference.</li>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span>
 <span class="va">kostic_crc_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html">subset_taxa</a></span><span class="op">(</span>
-  <span class="va">kostic_crc</span>,
-  <span class="va">Phylum</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span><span class="op">)</span>
+    <span class="va">kostic_crc</span>,
+    <span class="va">Phylum</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
-  <span class="va">kostic_crc_small</span>,
-  wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
-  group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,
-  kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
-  multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,
-  lda_cutoff <span class="op">=</span> <span class="fl">4</span>
+    <span class="va">kostic_crc_small</span>,
+    wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
+    group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,
+    kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
+    multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,
+    lda_cutoff <span class="op">=</span> <span class="fl">4</span>
 <span class="op">)</span>
 
 <span class="va">mm_lefse</span>
@@ -440,12 +442,12 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; marker5                                                                k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales</span>
 <span class="co">#&gt; marker6                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcaceae_g__</span>
 <span class="co">#&gt;         enrich_group   ef_lda       pvalue         padj</span>
-<span class="co">#&gt; marker1      Healthy 4.991692 7.154793e-05 7.154793e-05</span>
-<span class="co">#&gt; marker2      Healthy 4.878362 5.914547e-04 5.914547e-04</span>
-<span class="co">#&gt; marker3      Healthy 4.876454 6.043983e-04 6.043983e-04</span>
-<span class="co">#&gt; marker4      Healthy 4.701696 7.176046e-04 7.176046e-04</span>
-<span class="co">#&gt; marker5      Healthy 4.701696 7.176046e-04 7.176046e-04</span>
-<span class="co">#&gt; marker6      Healthy 4.220377 6.990210e-03 6.990210e-03</span></code></pre></div>
+<span class="co">#&gt; marker1      Healthy 5.002836 7.154793e-05 7.154793e-05</span>
+<span class="co">#&gt; marker2      Healthy 4.876620 5.914547e-04 5.914547e-04</span>
+<span class="co">#&gt; marker3      Healthy 4.874579 6.043983e-04 6.043983e-04</span>
+<span class="co">#&gt; marker4      Healthy 4.682653 7.176046e-04 7.176046e-04</span>
+<span class="co">#&gt; marker5      Healthy 4.682653 7.176046e-04 7.176046e-04</span>
+<span class="co">#&gt; marker6      Healthy 4.264137 6.990210e-03 6.990210e-03</span></code></pre></div>
 </div>
 <div id="supervised-machine-learning-methods" class="section level2">
 <h2 class="hasAnchor">
@@ -457,18 +459,18 @@ fold-change between the sample and the reference.</li>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2021</span><span class="op">)</span>
 <span class="co"># small example phyloseq object for test</span>
 <span class="va">ps_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html">subset_taxa</a></span><span class="op">(</span>
-  <span class="va">enterotypes_arumugam</span>,
-  <span class="va">Phylum</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span>, <span class="st">"Bacteroidetes"</span><span class="op">)</span>
+    <span class="va">enterotypes_arumugam</span>,
+    <span class="va">Phylum</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span>, <span class="st">"Bacteroidetes"</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="va">mm_lr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_sl.html">run_sl</a></span><span class="op">(</span>
-  <span class="va">ps_small</span>,
-  group <span class="op">=</span> <span class="st">"Gender"</span>,
-  nfolds <span class="op">=</span> <span class="fl">2</span>,
-  nrepeats <span class="op">=</span> <span class="fl">1</span>,
-  taxa_rank <span class="op">=</span> <span class="st">"Genus"</span>,
-  top_n <span class="op">=</span> <span class="fl">15</span>,
-  norm <span class="op">=</span> <span class="st">"TSS"</span>,
-  method <span class="op">=</span> <span class="st">"LR"</span>,
+    <span class="va">ps_small</span>,
+    group <span class="op">=</span> <span class="st">"Gender"</span>,
+    nfolds <span class="op">=</span> <span class="fl">2</span>,
+    nrepeats <span class="op">=</span> <span class="fl">1</span>,
+    taxa_rank <span class="op">=</span> <span class="st">"Genus"</span>,
+    top_n <span class="op">=</span> <span class="fl">15</span>,
+    norm <span class="op">=</span> <span class="st">"TSS"</span>,
+    method <span class="op">=</span> <span class="st">"LR"</span>,
 <span class="op">)</span>
 
 <span class="fu"><a href="../reference/marker_table.html">marker_table</a></span><span class="op">(</span><span class="va">mm_lr</span><span class="op">)</span>
@@ -534,8 +536,8 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt;   p__Proteobacteria|g__Stenotrophomonas         p__Unclassified|g__Unclassified </span>
 <span class="co">#&gt; "p__Proteobacteria|g__Stenotrophomonas"       "p__Unclassified|g__Unclassified"</span>
 
-<span class="co"># take a marker "p__Bacteroidetes|g__Bacteroides"  </span>
-<span class="co"># for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from </span>
+<span class="co"># take a marker "p__Bacteroidetes|g__Bacteroides"</span>
+<span class="co"># for example, we will show "p__Bacteroidetes|g__Bacteroides"  differ from</span>
 <span class="co"># between Enterotype 2-Enterotype 1 and Enterotype 3-Enterotype 2.</span>
 <span class="fu"><a href="../reference/extract_posthoc_res.html">extract_posthoc_res</a></span><span class="op">(</span><span class="va">pht</span>, <span class="st">"p__Bacteroidetes|g__Bacteroides"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; DataFrame with 3 rows and 5 columns</span>
@@ -553,11 +555,11 @@ fold-change between the sample and the reference.</li>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># comparison between Enterotype 3 and Enterotype 2</span>
 <span class="va">mm_lv_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_limma_voom.html">run_limma_voom</a></span><span class="op">(</span>
-  <span class="va">ps</span>,
-  <span class="st">"Enterotype"</span>,
-  contrast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span><span class="op">)</span>,
-  pvalue_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
-  p_adjust <span class="op">=</span> <span class="st">"fdr"</span>
+    <span class="va">ps</span>,
+    <span class="st">"Enterotype"</span>,
+    contrast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span><span class="op">)</span>,
+    pvalue_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
+    p_adjust <span class="op">=</span> <span class="st">"fdr"</span>
 <span class="op">)</span>
 <span class="va">mm_lv_pair</span>
 <span class="co">#&gt; microbiomeMarker-class inherited from phyloseq-class</span>
@@ -631,7 +633,7 @@ fold-change between the sample and the reference.</li>
 <p>As mentioned above, the microbiome marker analysis will run on all levels of features by default. Users can plot a LEfSe cladogram using function <code><a href="../reference/plot_cladogram.html">plot_cladogram()</a></code>.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_cladogram.html">plot_cladogram</a></span><span class="op">(</span><span class="va">mm_lefse</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Healthy <span class="op">=</span> <span class="st">"darkgreen"</span>, Tumor <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/cladogram-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="auc-roc-curve-from-sl-methods" class="section level2">
@@ -677,7 +679,7 @@ fold-change between the sample and the reference.</li>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.1.1 (2021-08-10)</span>
 <span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
-<span class="co">#&gt; Running under: macOS Catalina 10.15.7</span>
+<span class="co">#&gt; Running under: macOS Big Sur 10.16</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
 <span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib</span>
@@ -690,91 +692,94 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt; [1] caret_6.0-88            ggplot2_3.3.5           lattice_0.20-44        </span>
-<span class="co">#&gt; [4] microbiomeMarker_0.99.0 BiocStyle_2.20.2       </span>
+<span class="co">#&gt; [1] caret_6.0-90            lattice_0.20-44         ggplot2_3.3.5          </span>
+<span class="co">#&gt; [4] microbiomeMarker_0.99.1 BiocStyle_2.20.2       </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;   [1] circlize_0.4.13             systemfonts_1.0.2          </span>
-<span class="co">#&gt;   [3] plyr_1.8.6                  igraph_1.2.6               </span>
-<span class="co">#&gt;   [5] lazyeval_0.2.2              splines_4.1.1              </span>
-<span class="co">#&gt;   [7] BiocParallel_1.26.2         GenomeInfoDb_1.28.2        </span>
-<span class="co">#&gt;   [9] digest_0.6.27               yulab.utils_0.0.2          </span>
-<span class="co">#&gt;  [11] foreach_1.5.1               htmltools_0.5.2            </span>
-<span class="co">#&gt;  [13] fansi_0.5.0                 magrittr_2.0.1             </span>
-<span class="co">#&gt;  [15] memoise_2.0.0               cluster_2.1.2              </span>
-<span class="co">#&gt;  [17] doParallel_1.0.16           limma_3.48.3               </span>
-<span class="co">#&gt;  [19] recipes_0.1.16              ComplexHeatmap_2.8.0       </span>
-<span class="co">#&gt;  [21] Biostrings_2.60.2           annotate_1.70.0            </span>
-<span class="co">#&gt;  [23] gower_0.2.2                 matrixStats_0.60.1         </span>
-<span class="co">#&gt;  [25] metagenomeSeq_1.34.0        pkgdown_1.6.1              </span>
-<span class="co">#&gt;  [27] colorspace_2.0-2            blob_1.2.2                 </span>
-<span class="co">#&gt;  [29] textshaping_0.3.5           rbibutils_2.2.3            </span>
-<span class="co">#&gt;  [31] xfun_0.25                   dplyr_1.0.7                </span>
-<span class="co">#&gt;  [33] crayon_1.4.1                RCurl_1.98-1.4             </span>
-<span class="co">#&gt;  [35] jsonlite_1.7.2              genefilter_1.74.0          </span>
-<span class="co">#&gt;  [37] survival_3.2-11             iterators_1.0.13           </span>
-<span class="co">#&gt;  [39] ape_5.5                     glue_1.4.2                 </span>
-<span class="co">#&gt;  [41] gtable_0.3.0                ipred_0.9-11               </span>
-<span class="co">#&gt;  [43] zlibbioc_1.38.0             XVector_0.32.0             </span>
-<span class="co">#&gt;  [45] GetoptLong_1.0.5            DelayedArray_0.18.0        </span>
-<span class="co">#&gt;  [47] phyloseq_1.36.0             Rhdf5lib_1.14.2            </span>
-<span class="co">#&gt;  [49] shape_1.4.6                 BiocGenerics_0.38.0        </span>
-<span class="co">#&gt;  [51] scales_1.1.1                edgeR_3.34.0               </span>
-<span class="co">#&gt;  [53] DBI_1.1.1                   Rcpp_1.0.7                 </span>
-<span class="co">#&gt;  [55] plotROC_2.2.1               xtable_1.8-4               </span>
-<span class="co">#&gt;  [57] clue_0.3-59                 tidytree_0.3.4             </span>
-<span class="co">#&gt;  [59] bit_4.0.4                   lava_1.6.9                 </span>
-<span class="co">#&gt;  [61] prodlim_2019.11.13          stats4_4.1.1               </span>
-<span class="co">#&gt;  [63] glmnet_4.1-2                httr_1.4.2                 </span>
-<span class="co">#&gt;  [65] gplots_3.1.1                RColorBrewer_1.1-2         </span>
-<span class="co">#&gt;  [67] ellipsis_0.3.2              farver_2.1.0               </span>
-<span class="co">#&gt;  [69] pkgconfig_2.0.3             XML_3.99-0.7               </span>
-<span class="co">#&gt;  [71] nnet_7.3-16                 sass_0.4.0                 </span>
-<span class="co">#&gt;  [73] locfit_1.5-9.4              utf8_1.2.2                 </span>
-<span class="co">#&gt;  [75] labeling_0.4.2              tidyselect_1.1.1           </span>
-<span class="co">#&gt;  [77] rlang_0.4.11                reshape2_1.4.4             </span>
-<span class="co">#&gt;  [79] AnnotationDbi_1.54.1        munsell_0.5.0              </span>
-<span class="co">#&gt;  [81] tools_4.1.1                 cachem_1.0.6               </span>
-<span class="co">#&gt;  [83] generics_0.1.0              RSQLite_2.2.8              </span>
-<span class="co">#&gt;  [85] ade4_1.7-17                 evaluate_0.14              </span>
-<span class="co">#&gt;  [87] biomformat_1.20.0           stringr_1.4.0              </span>
-<span class="co">#&gt;  [89] fastmap_1.1.0               yaml_2.2.1                 </span>
-<span class="co">#&gt;  [91] ragg_1.1.3                  ggtree_3.0.4               </span>
-<span class="co">#&gt;  [93] ModelMetrics_1.2.2.2        knitr_1.33                 </span>
-<span class="co">#&gt;  [95] bit64_4.0.5                 fs_1.5.0                   </span>
-<span class="co">#&gt;  [97] caTools_1.18.2              purrr_0.3.4                </span>
-<span class="co">#&gt;  [99] KEGGREST_1.32.0             ANCOMBC_1.2.2              </span>
-<span class="co">#&gt; [101] nlme_3.1-152                aplot_0.0.7                </span>
-<span class="co">#&gt; [103] compiler_4.1.1              png_0.1-7                  </span>
-<span class="co">#&gt; [105] ggsignif_0.6.2              treeio_1.16.2              </span>
-<span class="co">#&gt; [107] tibble_3.1.4                geneplotter_1.70.0         </span>
-<span class="co">#&gt; [109] bslib_0.2.5.1               stringi_1.7.4              </span>
-<span class="co">#&gt; [111] highr_0.9                   desc_1.3.0                 </span>
-<span class="co">#&gt; [113] Matrix_1.3-4                nloptr_1.2.2.2             </span>
-<span class="co">#&gt; [115] vegan_2.5-7                 microbiome_1.14.0          </span>
-<span class="co">#&gt; [117] permute_0.9-5               multtest_2.48.0            </span>
-<span class="co">#&gt; [119] vctrs_0.3.8                 pillar_1.6.2               </span>
-<span class="co">#&gt; [121] lifecycle_1.0.0             rhdf5filters_1.4.0         </span>
-<span class="co">#&gt; [123] BiocManager_1.30.16         Rdpack_2.1.2               </span>
-<span class="co">#&gt; [125] jquerylib_0.1.4             GlobalOptions_0.1.2        </span>
-<span class="co">#&gt; [127] data.table_1.14.0           bitops_1.0-7               </span>
-<span class="co">#&gt; [129] patchwork_1.1.1             GenomicRanges_1.44.0       </span>
-<span class="co">#&gt; [131] R6_2.5.1                    bookdown_0.23              </span>
-<span class="co">#&gt; [133] KernSmooth_2.23-20          IRanges_2.26.0             </span>
-<span class="co">#&gt; [135] codetools_0.2-18            gtools_3.9.2               </span>
-<span class="co">#&gt; [137] MASS_7.3-54                 Wrench_1.10.0              </span>
-<span class="co">#&gt; [139] rhdf5_2.36.0                SummarizedExperiment_1.22.0</span>
-<span class="co">#&gt; [141] DESeq2_1.32.0               rprojroot_2.0.2            </span>
-<span class="co">#&gt; [143] rjson_0.2.20                withr_2.4.2                </span>
-<span class="co">#&gt; [145] S4Vectors_0.30.0            GenomeInfoDbData_1.2.6     </span>
-<span class="co">#&gt; [147] mgcv_1.8-36                 parallel_4.1.1             </span>
-<span class="co">#&gt; [149] rpart_4.1-15                timeDate_3043.102          </span>
-<span class="co">#&gt; [151] grid_4.1.1                  ggfun_0.0.3                </span>
-<span class="co">#&gt; [153] class_7.3-19                tidyr_1.1.3                </span>
-<span class="co">#&gt; [155] rmarkdown_2.10              MatrixGenerics_1.4.3       </span>
-<span class="co">#&gt; [157] Cairo_1.5-12.2              Rtsne_0.15                 </span>
-<span class="co">#&gt; [159] pROC_1.17.0.1               lubridate_1.7.10           </span>
-<span class="co">#&gt; [161] Biobase_2.52.0</span></code></pre></div>
+<span class="co">#&gt;   [1] utf8_1.2.2                  tidyselect_1.1.1           </span>
+<span class="co">#&gt;   [3] RSQLite_2.2.8               AnnotationDbi_1.54.1       </span>
+<span class="co">#&gt;   [5] grid_4.1.1                  BiocParallel_1.26.2        </span>
+<span class="co">#&gt;   [7] Rtsne_0.15                  pROC_1.18.0                </span>
+<span class="co">#&gt;   [9] munsell_0.5.0               codetools_0.2-18           </span>
+<span class="co">#&gt;  [11] ragg_1.1.3                  future_1.22.1              </span>
+<span class="co">#&gt;  [13] withr_2.4.2                 colorspace_2.0-2           </span>
+<span class="co">#&gt;  [15] Biobase_2.52.0              phyloseq_1.36.0            </span>
+<span class="co">#&gt;  [17] highr_0.9                   knitr_1.36                 </span>
+<span class="co">#&gt;  [19] stats4_4.1.1                ggsignif_0.6.3             </span>
+<span class="co">#&gt;  [21] listenv_0.8.0               MatrixGenerics_1.4.3       </span>
+<span class="co">#&gt;  [23] Rdpack_2.1.2                labeling_0.4.2             </span>
+<span class="co">#&gt;  [25] GenomeInfoDbData_1.2.6      plotROC_2.2.1              </span>
+<span class="co">#&gt;  [27] farver_2.1.0                bit64_4.0.5                </span>
+<span class="co">#&gt;  [29] rhdf5_2.36.0                rprojroot_2.0.2            </span>
+<span class="co">#&gt;  [31] parallelly_1.28.1           vctrs_0.3.8                </span>
+<span class="co">#&gt;  [33] treeio_1.16.2               generics_0.1.0             </span>
+<span class="co">#&gt;  [35] ipred_0.9-12                xfun_0.26                  </span>
+<span class="co">#&gt;  [37] R6_2.5.1                    doParallel_1.0.16          </span>
+<span class="co">#&gt;  [39] GenomeInfoDb_1.28.4         clue_0.3-59                </span>
+<span class="co">#&gt;  [41] locfit_1.5-9.4              bitops_1.0-7               </span>
+<span class="co">#&gt;  [43] rhdf5filters_1.4.0          microbiome_1.14.0          </span>
+<span class="co">#&gt;  [45] cachem_1.0.6                gridGraphics_0.5-1         </span>
+<span class="co">#&gt;  [47] DelayedArray_0.18.0         scales_1.1.1               </span>
+<span class="co">#&gt;  [49] nnet_7.3-16                 gtable_0.3.0               </span>
+<span class="co">#&gt;  [51] Cairo_1.5-12.2              globals_0.14.0             </span>
+<span class="co">#&gt;  [53] timeDate_3043.102           rlang_0.4.11               </span>
+<span class="co">#&gt;  [55] genefilter_1.74.0           systemfonts_1.0.2          </span>
+<span class="co">#&gt;  [57] GlobalOptions_0.1.2         splines_4.1.1              </span>
+<span class="co">#&gt;  [59] lazyeval_0.2.2              ModelMetrics_1.2.2.2       </span>
+<span class="co">#&gt;  [61] BiocManager_1.30.16         yaml_2.2.1                 </span>
+<span class="co">#&gt;  [63] reshape2_1.4.4              tools_4.1.1                </span>
+<span class="co">#&gt;  [65] lava_1.6.10                 bookdown_0.24              </span>
+<span class="co">#&gt;  [67] ggplotify_0.1.0             ellipsis_0.3.2             </span>
+<span class="co">#&gt;  [69] gplots_3.1.1                jquerylib_0.1.4            </span>
+<span class="co">#&gt;  [71] biomformat_1.20.0           RColorBrewer_1.1-2         </span>
+<span class="co">#&gt;  [73] BiocGenerics_0.38.0         Rcpp_1.0.7                 </span>
+<span class="co">#&gt;  [75] plyr_1.8.6                  zlibbioc_1.38.0            </span>
+<span class="co">#&gt;  [77] purrr_0.3.4                 RCurl_1.98-1.5             </span>
+<span class="co">#&gt;  [79] rpart_4.1-15                Wrench_1.10.0              </span>
+<span class="co">#&gt;  [81] GetoptLong_1.0.5            S4Vectors_0.30.2           </span>
+<span class="co">#&gt;  [83] SummarizedExperiment_1.22.0 cluster_2.1.2              </span>
+<span class="co">#&gt;  [85] fs_1.5.0                    magrittr_2.0.1             </span>
+<span class="co">#&gt;  [87] data.table_1.14.2           circlize_0.4.13            </span>
+<span class="co">#&gt;  [89] matrixStats_0.61.0          patchwork_1.1.1            </span>
+<span class="co">#&gt;  [91] evaluate_0.14               xtable_1.8-4               </span>
+<span class="co">#&gt;  [93] XML_3.99-0.8                IRanges_2.26.0             </span>
+<span class="co">#&gt;  [95] shape_1.4.6                 compiler_4.1.1             </span>
+<span class="co">#&gt;  [97] tibble_3.1.5                KernSmooth_2.23-20         </span>
+<span class="co">#&gt;  [99] crayon_1.4.1                htmltools_0.5.2            </span>
+<span class="co">#&gt; [101] ggfun_0.0.4                 mgcv_1.8-36                </span>
+<span class="co">#&gt; [103] tidyr_1.1.4                 geneplotter_1.70.0         </span>
+<span class="co">#&gt; [105] aplot_0.1.1                 ANCOMBC_1.2.2              </span>
+<span class="co">#&gt; [107] lubridate_1.8.0             DBI_1.1.1                  </span>
+<span class="co">#&gt; [109] ComplexHeatmap_2.8.0        MASS_7.3-54                </span>
+<span class="co">#&gt; [111] Matrix_1.3-4                ade4_1.7-18                </span>
+<span class="co">#&gt; [113] permute_0.9-5               rbibutils_2.2.3            </span>
+<span class="co">#&gt; [115] parallel_4.1.1              gower_0.2.2                </span>
+<span class="co">#&gt; [117] igraph_1.2.6                GenomicRanges_1.44.0       </span>
+<span class="co">#&gt; [119] pkgconfig_2.0.3             pkgdown_1.6.1              </span>
+<span class="co">#&gt; [121] recipes_0.1.17              foreach_1.5.1              </span>
+<span class="co">#&gt; [123] ggtree_3.0.4                annotate_1.70.0            </span>
+<span class="co">#&gt; [125] bslib_0.3.1                 multtest_2.48.0            </span>
+<span class="co">#&gt; [127] XVector_0.32.0              prodlim_2019.11.13         </span>
+<span class="co">#&gt; [129] yulab.utils_0.0.4           stringr_1.4.0              </span>
+<span class="co">#&gt; [131] digest_0.6.28               vegan_2.5-7                </span>
+<span class="co">#&gt; [133] Biostrings_2.60.2           rmarkdown_2.11             </span>
+<span class="co">#&gt; [135] tidytree_0.3.5              edgeR_3.34.1               </span>
+<span class="co">#&gt; [137] gtools_3.9.2                rjson_0.2.20               </span>
+<span class="co">#&gt; [139] nloptr_1.2.2.2              lifecycle_1.0.1            </span>
+<span class="co">#&gt; [141] nlme_3.1-152                jsonlite_1.7.2             </span>
+<span class="co">#&gt; [143] Rhdf5lib_1.14.2             desc_1.4.0                 </span>
+<span class="co">#&gt; [145] limma_3.48.3                fansi_0.5.0                </span>
+<span class="co">#&gt; [147] pillar_1.6.3                KEGGREST_1.32.0            </span>
+<span class="co">#&gt; [149] fastmap_1.1.0               httr_1.4.2                 </span>
+<span class="co">#&gt; [151] survival_3.2-11             glue_1.4.2                 </span>
+<span class="co">#&gt; [153] png_0.1-7                   iterators_1.0.13           </span>
+<span class="co">#&gt; [155] glmnet_4.1-2                bit_4.0.4                  </span>
+<span class="co">#&gt; [157] class_7.3-19                stringi_1.7.5              </span>
+<span class="co">#&gt; [159] sass_0.4.0                  metagenomeSeq_1.34.0       </span>
+<span class="co">#&gt; [161] blob_1.2.2                  textshaping_0.3.5          </span>
+<span class="co">#&gt; [163] DESeq2_1.32.0               caTools_1.18.2             </span>
+<span class="co">#&gt; [165] memoise_2.0.0               dplyr_1.0.7                </span>
+<span class="co">#&gt; [167] future.apply_1.8.1          ape_5.5</span></code></pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
