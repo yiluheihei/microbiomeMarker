@@ -160,7 +160,7 @@ read_qza <- function(file, temp = tempdir()) {
 #' @return [`phyloseq::otu_table-class`] object.
 #' @noRd
 read_q2biom <- function(file) {
-    biomobj <- suppressWarnings(read_biom(file))
+    biomobj <- read_biom(file)
     feature_tab <- as(biom_data(biomobj), "matrix")
 
     otu_table(feature_tab, taxa_are_rows = TRUE)
@@ -215,13 +215,10 @@ parse_q2taxonomy <- function(taxa, sep = "; |;", trim_rank_prefix = TRUE) {
         taxa$Taxon <- gsub("D_\\d__", "", taxa$Taxon)
     }
 
-    taxa <- suppressWarnings(
-        tidyr::separate(
-            taxa, .data$Taxon,
-            c("Kingdom", "Phylum", "Class",
-                "Order", "Family", "Genus", "Species"),
-            sep = sep
-        )
+    taxa <- tidyr::separate(taxa, .data$Taxon, 
+        c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"),
+        sep = sep,
+        fill = "right"
     )
     taxa <- purrr::map_df(taxa, ~ ifelse(.x == "", NA_character_, .x)) %>%
         as.data.frame()
