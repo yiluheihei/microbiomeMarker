@@ -151,7 +151,8 @@ run_test_multiple_groups <- function(ps,
     # enriched group
     group_enriched_idx <- apply(abd_means, 1, which.max)
     groups_uniq <- unique(groups)
-    group_nms <- groups_uniq[charmatch(groups_uniq, names(abd_means))]
+    group_nms <- strsplit(names(abd_means), ":") %>% 
+        vapply(function(x)x[[1]], FUN.VALUE = "a")
     group_enriched <- group_nms[group_enriched_idx]
 
     res <- bind_cols(

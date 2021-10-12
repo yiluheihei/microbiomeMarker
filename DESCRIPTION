@@ -1,6 +1,6 @@
 Package: microbiomeMarker
 Title: microbiome biomarker analysis toolkit
-Version: 0.99.1
+Version: 0.99.2
 Authors@R: 
     person(given = "Yang",
            family = "Cao",
