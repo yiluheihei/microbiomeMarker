@@ -55,7 +55,7 @@ plot_abundance <- function(mm,
         marker <- marker[ind, ]
 
         # reorder to keep in increase order of effect size
-        marker <- marker[order(marker$effect_size), ]
+        marker <- marker[order(marker[[3]]), ]
     }
 
     abd <- as(otu_table(mm), "matrix")
