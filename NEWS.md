@@ -1,5 +1,8 @@
 # microbiomeMarker 0.99.2
 
++ Add a para `only_marker` in `plot_cladogram` to specify whether only show the 
+markers or all features in the cladogram.
+
 + Fix a bug in `run_test_multiple_groups()`, error group names for enrich 
 groups (2021-10-12, #48).
 

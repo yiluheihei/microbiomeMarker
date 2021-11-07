@@ -7,6 +7,7 @@
 plot_cladogram(
   mm,
   color,
+  only_marker = FALSE,
   branch_size = 0.2,
   alpha = 0.2,
   node_size_scale = 1,
@@ -25,6 +26,9 @@ plot_cladogram(
 biomarker. The values will be matched in order (usually alphabetical) with
 the groups. If this is a named vector, then the colors will be matched
 based on the names instead.}
+
+\item{only_marker}{logical, whether show all the features or only
+markers in the cladogram, default \code{FALSE}.}
 
 \item{branch_size}{numberic, size of branch, default \code{0.2}}
 

@@ -8,6 +8,8 @@
 #'   biomarker. The values will be matched in order (usually alphabetical) with
 #'   the groups. If this is a named vector, then the colors will be matched
 #'   based on the names instead.
+#' @param only_marker logical, whether show all the features or only 
+#'   markers in the cladogram, default `FALSE`.
 #' @param branch_size numberic, size of branch, default `0.2`
 #' @param alpha alpha parameter for shading, default `0.2`
 #' @param clade_label_level max level of taxa used to label the clade, other
@@ -48,6 +50,7 @@
 #' plot_cladogram(mm_lefse, color = c("darkgreen", "red"))
 plot_cladogram <- function(mm,
     color,
+    only_marker = FALSE,
     branch_size = 0.2,
     alpha = 0.2,
     node_size_scale = 1,
@@ -57,7 +60,7 @@ plot_cladogram <- function(mm,
     annotation_shape_size = 5,
     group_legend_param = list(),
     marker_legend_param = list()) {
-    ps <- phyloseq(mm@otu_table, mm@tax_table)
+    ps <- create_ps_from_mm(mm, only_marker = only_marker)
     tree <- get_treedata_phyloseq(ps) %>%
         generate_taxa_tree(size = branch_size)
 

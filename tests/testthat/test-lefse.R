@@ -29,3 +29,11 @@ test_that("lefse output of oxygen", {
         print = TRUE
     )
 })
+
+test_that("create phyloseq object from microbiomeMarker object", {
+    ps <- create_ps_from_mm(mm_lefse)
+    expect_true(all(marker_table(mm_lefse)$feature %in% taxa_names(ps)))
+    
+    ps2 <- create_ps_from_mm(mm_lefse, only_marker = FALSE)
+    expect_identical(taxa_names(ps2), taxa_names(mm_lefse))
+})

@@ -454,3 +454,39 @@ calc_ef_md_f <- function(feature_abd, group) {
 
     ef
 }
+
+# create phyloseq from microbiomeMarker object, 
+# and keep only nodes correlated with significant features
+create_ps_from_mm <- function(mm, only_marker = TRUE) {
+    ot <- otu_table(mm)
+    tt <- tax_table(mm)
+    st <- sample_data(mm)
+    mt <- marker_table(mm)
+    sig_features <- mt$feature
+    
+    # extract all nodes correlated with the significant features
+    # First, all parent nodes of marker
+    down_nodes <- strsplit(sig_features, "|", fixed = TRUE) %>%
+        purrr::map(~ purrr::map_chr(
+            seq_along(.x), function(y) paste(.x[1:y], collapse = "|")))
+    down_nodes <- unique(unlist(down_nodes))
+    # Two, all children nodes of marker
+    all_features <- tt@.Data[, 1]
+    up_nodes <- purrr::map(sig_features, 
+               ~ all_features[grepl(.x, all_features, fixed = TRUE)])
+    up_nodes <- unique(unlist(up_nodes))
+    idx <- match(unique(c(down_nodes, up_nodes)), all_features)
+
+    if (only_marker) {
+        ot <- ot[idx, ]
+        tt <- tt[idx, ]
+    }
+    ps <- phyloseq(ot, tt, st)
+    
+    ps
+}
+
+# a <- strsplit(mt$feature, "|", fixed = TRUE)
+# 
+# vapply(seq_along(a[[1]]), function(y) paste(a[[1]][1:y], collapse = "|"), "")
+
