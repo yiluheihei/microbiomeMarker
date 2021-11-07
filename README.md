@@ -120,11 +120,11 @@ Please cite the corresponding methods paper too:
     microbiota and Staphylococcus aureus CC398 carriage in pig truck
     drivers across one workweek. Applied and Environmental Microbiology.
     2021 Jun 30:AEM-01225. doi:
-    [10.1128/AEM.01225-21](https://doi.org/10.1128/AEM.01225-21)
+    [10.1128/AEM.01225-21](https://doi.org/10.1128/AEM.01225-21).
 -   Shibata T, Nakagawa M, Coleman HN, et al. Evaluation of DNA
     extraction protocols from liquid-based cytology specimens for
-    studying cervical microbiota. bioRxiv. 2021 Jan 1:2020-01.
-    <doi:%5B10.1101/2020.01.27.921619>\](<https://doi.org/10.1101/2020.01.27.921619>)
+    studying cervical microbiota. Plos one 16, no. 8 (2021). doi:
+    [10.1371/journal.pone.0237556](https://doi.org/10.1371/journal.pone.0237556)
 
 ## Question
 
