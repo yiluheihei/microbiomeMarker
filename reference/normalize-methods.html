@@ -210,7 +210,7 @@ recommended when very low values are present (as shown in the LEfSe galaxy).</p>
 <span class='fu'>norm_rle</span><span class='op'>(</span>
   <span class='va'>object</span>,
   locfunc <span class='op'>=</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/r/stats/median.html'>median</a></span>,
-  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"poscounts"</span>, <span class='st'>"ratio"</span><span class='op'>)</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"poscounts"</span>, <span class='st'>"ratio"</span><span class='op'>)</span>,
   geo_means <span class='op'>=</span> <span class='cn'>NULL</span>,
   control_genes <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span>
@@ -330,13 +330,22 @@ used for size factor estimation (e.g. core taxa).</p></td>
 <p><code><a href='https://rdrr.io/pkg/edgeR/man/calcNormFactors.html'>edgeR::calcNormFactors()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>caporaso</span><span class='op'>)</span>
-<span class='fu'>normalize</span><span class='op'>(</span><span class='va'>caporaso</span>, <span class='st'>"TSS"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘tidytree’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘tidytree’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘tidytree’</span></div><div class='output co'>#&gt; <span class='message'>Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span></div><div class='output co'>#&gt; <span class='message'>Also defined by ‘tidytree’</span></div><div class='output co'>#&gt; phyloseq-class experiment-level object
-#&gt; otu_table()   OTU Table:         [ 3426 taxa and 34 samples ]
-#&gt; sample_data() Sample Data:       [ 34 samples by 8 sample variables ]
-#&gt; tax_table()   Taxonomy Table:    [ 3426 taxa by 7 taxonomic ranks ]
-#&gt; phy_tree()    Phylogenetic Tree: [ 3426 tips and 3424 internal nodes ]</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>caporaso</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>normalize</span><span class='op'>(</span><span class='va'>caporaso</span>, <span class='st'>"TSS"</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Also defined by ‘tidytree’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Also defined by ‘tidytree’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Also defined by ‘tidytree’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Also defined by ‘tidytree’</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> phyloseq-class experiment-level object</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> otu_table()   OTU Table:         [ 3426 taxa and 34 samples ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> sample_data() Sample Data:       [ 34 samples by 8 sample variables ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> tax_table()   Taxonomy Table:    [ 3426 taxa by 7 taxonomic ranks ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> phy_tree()    Phylogenetic Tree: [ 3426 tips and 3424 internal nodes ]</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

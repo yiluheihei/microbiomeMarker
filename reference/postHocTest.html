@@ -139,7 +139,7 @@ developers.</p>
   <span class='va'>abundance</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
   method <span class='op'>=</span> <span class='st'>"tukey"</span>,
-  method_str <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"Posthoc multiple comparisons of means: "</span>, <span class='va'>method</span><span class='op'>)</span>
+  method_str <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/BiocGenerics/man/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"Posthoc multiple comparisons of means: "</span>, <span class='va'>method</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -173,43 +173,44 @@ test.</p></td>
     <p>a <code><a href='postHocTest-class.html'>postHocTest</a></code> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'><a href='https://bioconductor.org/packages/IRanges'>IRanges</a></span><span class='op'>)</span>
-<span class='va'>pht</span> <span class='op'>&lt;-</span> <span class='fu'>postHocTest</span><span class='op'>(</span>
-    result <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/IRanges/man/DataFrameList-class.html'>DataFrameList</a></span><span class='op'>(</span>
-        featureA <span class='op'>=</span> <span class='fu'>DataFrame</span><span class='op'>(</span>
-            comparisons <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"group2-group1"</span>, 
-                <span class='st'>"group3-group1"</span>, 
-                <span class='st'>"group3-group2"</span><span class='op'>)</span>,
-            diff_mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>,
-            pvalue <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>3</span><span class='op'>)</span>,
-            ci_lower <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>3</span><span class='op'>)</span>,
-            ci_upper <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.011</span>, <span class='fl'>3</span><span class='op'>)</span>
-        <span class='op'>)</span>,
-        featureB <span class='op'>=</span> <span class='fu'>DataFrame</span><span class='op'>(</span>
-            comparisons <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"group2-group1"</span>, 
-                <span class='st'>"group3-group1"</span>, 
-                <span class='st'>"group3-group2"</span><span class='op'>)</span>,
-            diff_mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>,
-            pvalue <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>3</span><span class='op'>)</span>,
-            ci_lower <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>3</span><span class='op'>)</span>,
-            ci_upper <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.011</span>, <span class='fl'>3</span><span class='op'>)</span>
-        <span class='op'>)</span>
-    <span class='op'>)</span>,
-    abundance <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
-        featureA <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>,
-        featureB <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>,
-        group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"group1"</span>, <span class='st'>"group2"</span>, <span class='st'>"grou3"</span><span class='op'>)</span>
-    <span class='op'>)</span>
-<span class='op'>)</span>
-<span class='va'>pht</span>
-</div><div class='output co'>#&gt; postHocTest-class object
-#&gt; Pairwise test result of 2  features,  DataFrameList object, each DataFrame has five variables:
-#&gt;         comparisons    : pair groups to test which separated by '-'
-#&gt;         diff_mean: difference in mean proportions
-#&gt;         pvalue        : post hoc test p values
-#&gt;         ci_lower : lower confidence interval
-#&gt;         ci_upper : upper confidence interval
-#&gt; Posthoc multiple comparisons of means  using  tukey  method</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'><a href='https://bioconductor.org/packages/IRanges'>IRanges</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pht</span> <span class='op'>&lt;-</span> <span class='fu'>postHocTest</span><span class='op'>(</span></span>
+<span class='r-in'>    result <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/IRanges/man/DataFrameList-class.html'>DataFrameList</a></span><span class='op'>(</span></span>
+<span class='r-in'>        featureA <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/DataFrame-class.html'>DataFrame</a></span><span class='op'>(</span></span>
+<span class='r-in'>            comparisons <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"group2-group1"</span>, </span>
+<span class='r-in'>                <span class='st'>"group3-group1"</span>, </span>
+<span class='r-in'>                <span class='st'>"group3-group2"</span><span class='op'>)</span>,</span>
+<span class='r-in'>            diff_mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>            pvalue <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>            ci_lower <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>            ci_upper <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.011</span>, <span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'>        <span class='op'>)</span>,</span>
+<span class='r-in'>        featureB <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/DataFrame-class.html'>DataFrame</a></span><span class='op'>(</span></span>
+<span class='r-in'>            comparisons <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"group2-group1"</span>, </span>
+<span class='r-in'>                <span class='st'>"group3-group1"</span>, </span>
+<span class='r-in'>                <span class='st'>"group3-group2"</span><span class='op'>)</span>,</span>
+<span class='r-in'>            diff_mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>            pvalue <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>            ci_lower <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>            ci_upper <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>rep</a></span><span class='op'>(</span><span class='fl'>0.011</span>, <span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'>        <span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span>,</span>
+<span class='r-in'>    abundance <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>        featureA <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>        featureB <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>        group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"group1"</span>, <span class='st'>"group2"</span>, <span class='st'>"grou3"</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pht</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> postHocTest-class object</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Pairwise test result of 2  features,  DataFrameList object, each DataFrame has five variables:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         comparisons    : pair groups to test which separated by '-'</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         diff_mean: difference in mean proportions</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         pvalue        : post hoc test p values</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         ci_lower : lower confidence interval</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         ci_upper : upper confidence interval</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Posthoc multiple comparisons of means  using  tukey  method</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

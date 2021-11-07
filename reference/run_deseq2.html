@@ -141,14 +141,14 @@ using <strong>DESeq2</strong>.</p>
   taxa_rank <span class='op'>=</span> <span class='st'>"all"</span>,
   norm <span class='op'>=</span> <span class='st'>"RLE"</span>,
   norm_para <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
-  transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
-  fitType <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"parametric"</span>, <span class='st'>"local"</span>, <span class='st'>"mean"</span>, <span class='st'>"glmGamPoi"</span><span class='op'>)</span>,
+  transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
+  fitType <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"parametric"</span>, <span class='st'>"local"</span>, <span class='st'>"mean"</span>, <span class='st'>"glmGamPoi"</span><span class='op'>)</span>,
   sfType <span class='op'>=</span> <span class='st'>"poscounts"</span>,
   betaPrior <span class='op'>=</span> <span class='cn'>FALSE</span>,
   <span class='va'>modelMatrixType</span>,
   useT <span class='op'>=</span> <span class='cn'>FALSE</span>,
   minmu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>fitType</span> <span class='op'>==</span> <span class='st'>"glmGamPoi"</span>, <span class='fl'>1e-06</span>, <span class='fl'>0.5</span><span class='op'>)</span>,
-  p_adjust <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"none"</span>, <span class='st'>"fdr"</span>, <span class='st'>"bonferroni"</span>, <span class='st'>"holm"</span>, <span class='st'>"hochberg"</span>, <span class='st'>"hommel"</span>, <span class='st'>"BH"</span>, <span class='st'>"BY"</span><span class='op'>)</span>,
+  p_adjust <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"none"</span>, <span class='st'>"fdr"</span>, <span class='st'>"bonferroni"</span>, <span class='st'>"holm"</span>, <span class='st'>"hochberg"</span>, <span class='st'>"hommel"</span>, <span class='st'>"BH"</span>, <span class='st'>"BY"</span><span class='op'>)</span>,
   pvalue_cutoff <span class='op'>=</span> <span class='fl'>0.05</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
@@ -174,10 +174,10 @@ there are multiple groups. For more please see the following details.</p></td>
       <th>taxa_rank</th>
       <td><p>character to specify taxonomic rank to perform
 differential analysis on. Should be one of
-<code><a href='https://rdrr.io/pkg/phyloseq/man/rank_names.html'>phyloseq::rank_names(phyloseq)</a></code>, or "all" means to summarize the taxa by
-the top taxa ranks (<code><a href='summarize_taxa.html'>summarize_taxa(ps, level = rank_names(ps)[1])</a></code>), or
+<code>phyloseq::rank_names(phyloseq)</code>, or "all" means to summarize the taxa by
+the top taxa ranks (<code>summarize_taxa(ps, level = rank_names(ps)[1])</code>), or
 "none" means perform differential analysis on the original taxa
-(<code><a href='https://rdrr.io/pkg/phyloseq/man/taxa_names-methods.html'>taxa_names(phyloseq)</a></code>, e.g., OTU or ASV).</p></td>
+(<code>taxa_names(phyloseq)</code>, e.g., OTU or ASV).</p></td>
     </tr>
     <tr>
       <th>norm</th>
@@ -211,9 +211,9 @@ abundance. See <code><a href='transform_abundances.html'>transform_abundances()<
 options include:</p><ul>
 <li><p>"identity", return the original data without any transformation
 (default).</p></li>
-<li><p>"log10", the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(object)</a></code>, and if the data contains
-zeros the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(1 + object)</a></code>.</p></li>
-<li><p>"log10p", the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(1 + object)</a></code>.</p></li>
+<li><p>"log10", the transformation is <code>log10(object)</code>, and if the data contains
+zeros the transformation is <code>log10(1 + object)</code>.</p></li>
+<li><p>"log10p", the transformation is <code>log10(1 + object)</code>.</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -296,39 +296,48 @@ biology 15.12 (2014): 1-21.</p>
     <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/DESeq2/man/results.html'>DESeq2::results()</a></code>,<code><a href='https://rdrr.io/pkg/DESeq2/man/DESeq.html'>DESeq2::DESeq()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
-<span class='va'>ps</span> <span class='op'>&lt;-</span> <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html'>subset_samples</a></span><span class='op'>(</span>
-    <span class='va'>enterotypes_arumugam</span>,
-    <span class='va'>Enterotype</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span><span class='op'>)</span>
-<span class='op'>)</span> <span class='op'>%&gt;%</span>
-    <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html'>subset_taxa</a></span><span class='op'>(</span><span class='va'>Phylum</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Firmicutes"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>run_deseq2</span><span class='op'>(</span><span class='va'>ps</span>, group <span class='op'>=</span> <span class='st'>"Enterotype"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Not all reads are integers, the reads are ceiled to integers.</span>
-#&gt; <span class='warning'>   Raw reads is recommended from the ALDEx2 paper.</span></div><div class='output co'>#&gt; <span class='message'>converting counts to integer mode</span></div><div class='output co'>#&gt; <span class='message'>  Note: levels of factors in the design contain characters other than</span>
-#&gt; <span class='message'>  letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
-#&gt; <span class='message'>  only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
-#&gt; <span class='message'>  for column names in R. [This is a message, not a warning or an error]</span></div><div class='output co'>#&gt; <span class='message'>  Note: levels of factors in the design contain characters other than</span>
-#&gt; <span class='message'>  letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
-#&gt; <span class='message'>  only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
-#&gt; <span class='message'>  for column names in R. [This is a message, not a warning or an error]</span></div><div class='output co'>#&gt; <span class='message'>  Note: levels of factors in the design contain characters other than</span>
-#&gt; <span class='message'>  letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
-#&gt; <span class='message'>  only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
-#&gt; <span class='message'>  for column names in R. [This is a message, not a warning or an error]</span></div><div class='output co'>#&gt; <span class='message'>  Note: levels of factors in the design contain characters other than</span>
-#&gt; <span class='message'>  letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
-#&gt; <span class='message'>  only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
-#&gt; <span class='message'>  for column names in R. [This is a message, not a warning or an error]</span></div><div class='output co'>#&gt; <span class='message'>  Note: levels of factors in the design contain characters other than</span>
-#&gt; <span class='message'>  letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
-#&gt; <span class='message'>  only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
-#&gt; <span class='message'>  for column names in R. [This is a message, not a warning or an error]</span></div><div class='output co'>#&gt; <span class='message'>  Note: levels of factors in the design contain characters other than</span>
-#&gt; <span class='message'>  letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
-#&gt; <span class='message'>  only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
-#&gt; <span class='message'>  for column names in R. [This is a message, not a warning or an error]</span></div><div class='output co'>#&gt; microbiomeMarker-class inherited from phyloseq-class
-#&gt; normalization method:              [ RLE ]
-#&gt; microbiome marker identity method: [ DESeq2: Wald ]
-#&gt; marker_table() Marker Table:       [ 6 microbiome markers with 5 variables ]
-#&gt; otu_table()    OTU Table:          [ 78 taxa and  24 samples ]
-#&gt; sample_data()  Sample Data:        [ 24 samples by  10 sample variables ]
-#&gt; tax_table()    Taxonomy Table:     [ 78 taxa by 1 taxonomic ranks ]</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ps</span> <span class='op'>&lt;-</span> <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html'>subset_samples</a></span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='va'>enterotypes_arumugam</span>,</span>
+<span class='r-in'>    <span class='va'>Enterotype</span> <span class='op'><a href='https://rdrr.io/pkg/BiocGenerics/man/match.html'>%in%</a></span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>    <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html'>subset_taxa</a></span><span class='op'>(</span><span class='va'>Phylum</span> <span class='op'><a href='https://rdrr.io/pkg/BiocGenerics/man/match.html'>%in%</a></span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"Firmicutes"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>run_deseq2</span><span class='op'>(</span><span class='va'>ps</span>, group <span class='op'>=</span> <span class='st'>"Enterotype"</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Not all reads are integers, the reads are ceiled to integers.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span>    Raw reads is recommended from the ALDEx2 paper.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> converting counts to integer mode</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Note: levels of factors in the design contain characters other than</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   for column names in R. [This is a message, not a warning or an error]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Note: levels of factors in the design contain characters other than</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   for column names in R. [This is a message, not a warning or an error]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Note: levels of factors in the design contain characters other than</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   for column names in R. [This is a message, not a warning or an error]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Note: levels of factors in the design contain characters other than</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   for column names in R. [This is a message, not a warning or an error]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Note: levels of factors in the design contain characters other than</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   for column names in R. [This is a message, not a warning or an error]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Note: levels of factors in the design contain characters other than</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   letters, numbers, '_' and '.'. It is recommended (but not required) to use</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   only letters, numbers, and delimiters '_' or '.', as these are safe characters</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   for column names in R. [This is a message, not a warning or an error]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> microbiomeMarker-class inherited from phyloseq-class</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> normalization method:              [ RLE ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> microbiome marker identity method: [ DESeq2: Wald ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> marker_table() Marker Table:       [ 6 microbiome markers with 5 variables ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> otu_table()    OTU Table:          [ 78 taxa and  24 samples ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> sample_data()  Sample Data:        [ 24 samples by  10 sample variables ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> tax_table()    Taxonomy Table:     [ 78 taxa by 1 taxonomic ranks ]</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

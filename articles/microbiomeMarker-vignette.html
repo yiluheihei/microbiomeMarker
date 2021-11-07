@@ -132,7 +132,7 @@
 <div id="input-phyloseq-class-object" class="section level2">
 <h2 class="hasAnchor">
 <a href="#input-phyloseq-class-object" class="anchor"></a>Input phyloseq-class object</h2>
-<p><em><a href="https://bioconductor.org/packages/3.13/phyloseq">phyloseq</a></em> is the most popular <a href="https://bioconductor.org/">Biocondcutor</a> package used by the microbiome research community, and <code>phyloseq-class</code> objects are a great data-standard for microbiome data in R. Therefore, the core functions in <code>microbiomeMarker</code> take <code>phyloseq-class</code> object as input. Conveniently, <code>microbiomeMarker</code> provides features to import external metagenomic abundance profiles from two popular microbiome analysis pipelines, <a href="http://qiime.org/">qiime2</a> <span class="citation">(Bolyen et al. 2019)</span> and <a href="https://benjjneb.github.io/dada2">dada2</a> <span class="citation">(Callahan et al. 2016)</span>, and return a <code>phyloseq-class</code> object.</p>
+<p><em><a href="https://bioconductor.org/packages/3.14/phyloseq">phyloseq</a></em> is the most popular <a href="https://bioconductor.org/">Biocondcutor</a> package used by the microbiome research community, and <code>phyloseq-class</code> objects are a great data-standard for microbiome data in R. Therefore, the core functions in <code>microbiomeMarker</code> take <code>phyloseq-class</code> object as input. Conveniently, <code>microbiomeMarker</code> provides features to import external metagenomic abundance profiles from two popular microbiome analysis pipelines, <a href="http://qiime.org/">qiime2</a> <span class="citation">(Bolyen et al. 2019)</span> and <a href="https://benjjneb.github.io/dada2">dada2</a> <span class="citation">(Callahan et al. 2016)</span>, and return a <code>phyloseq-class</code> object.</p>
 <div id="import-from-dada2" class="section level3">
 <h3 class="hasAnchor">
 <a href="#import-from-dada2" class="anchor"></a>Import from dada2</h3>
@@ -203,7 +203,7 @@
 <div id="other-import-functions-reexport-from-phyloseq" class="section level3">
 <h3 class="hasAnchor">
 <a href="#other-import-functions-reexport-from-phyloseq" class="anchor"></a>Other import functions reexport from phyloseq</h3>
-<p>Moreover, <code>microbiomeMarker</code> reexports three import functions from <em><a href="https://bioconductor.org/packages/3.13/phyloseq">phyloseq</a></em>, including <code><a href="https://rdrr.io/pkg/phyloseq/man/import_biom.html">import_biom()</a></code>, <code><a href="https://rdrr.io/pkg/phyloseq/man/import_qiime.html">import_qiime()</a></code> and <code><a href="https://rdrr.io/pkg/phyloseq/man/import_mothur.html">import_mothur()</a></code>, to help users to import abundance data from <a href="http://biom-format.org/">biom file</a>, <a href="http://www.qiime.org/">qiime1</a>, and <a href="http://www.mothur.org/">mothur</a>. More details on these three import functions can be see from <a href="https://joey711.github.io/phyloseq/import-data.html#the_import_family_of_functions">here</a>.</p>
+<p>Moreover, <code>microbiomeMarker</code> reexports three import functions from <em><a href="https://bioconductor.org/packages/3.14/phyloseq">phyloseq</a></em>, including <code><a href="https://rdrr.io/pkg/phyloseq/man/import_biom.html">import_biom()</a></code>, <code><a href="https://rdrr.io/pkg/phyloseq/man/import_qiime.html">import_qiime()</a></code> and <code><a href="https://rdrr.io/pkg/phyloseq/man/import_mothur.html">import_mothur()</a></code>, to help users to import abundance data from <a href="http://biom-format.org/">biom file</a>, <a href="http://www.qiime.org/">qiime1</a>, and <a href="http://www.mothur.org/">mothur</a>. More details on these three import functions can be see from <a href="https://joey711.github.io/phyloseq/import-data.html#the_import_family_of_functions">here</a>.</p>
 <p>Users can also import the external files into <code>phyloseq-class</code> object manually. For more details on how to create <code>phyloseq-class</code> object from manually imported data, please see <a href="http://joey711.github.io/phyloseq/import-data.html#manual">this tutorial</a>.</p>
 </div>
 </div>
@@ -268,7 +268,7 @@ fold-change between the sample and the reference.</li>
 <p><strong><em>Note</em></strong>: all the DA functions provides a para to specify the normalization method. We emphasize that users should specify the normalization method in the DA functions rather than using these normalization functions directly. If you use normalize data first and then perform DA, you should set the <code>norm_method</code> manually. We recommend to use the default normalization methods for the corresponding DA methods, e.g. “CPM” for LEfSe and “CSS” for metagenomeSeq, and the default values of <code>norm</code> in the DA functions is set as their default normalization methods.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span>
-<span class="va">mm_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalize,phyloseq-method.html">normalize</a></span><span class="op">(</span><span class="va">kostic_crc</span>, method <span class="op">=</span> <span class="st">"CPM"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="va">mm_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/normalize,phyloseq-method.html">normalize</a></span><span class="op">(</span><span class="va">kostic_crc</span>, method <span class="op">=</span> <span class="st">"CPM"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
     <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
         wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,
         norm <span class="op">=</span> <span class="st">"none"</span>, <span class="co"># must be "none" since the input has been normalized</span>
@@ -325,7 +325,7 @@ fold-change between the sample and the reference.</li>
 <code class="sourceCode R"><span class="co"># three groups</span>
 <span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html">subset_samples</a></span><span class="op">(</span>
     <span class="va">enterotypes_arumugam</span>,
-    <span class="va">Enterotype</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span>, <span class="st">"Enterotype 1"</span><span class="op">)</span>
+    <span class="va">Enterotype</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span>, <span class="st">"Enterotype 1"</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="va">mg_anova</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_test_multiple_groups.html">run_test_multiple_groups</a></span><span class="op">(</span>
     <span class="va">ps</span>,
@@ -387,7 +387,7 @@ fold-change between the sample and the reference.</li>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">cid_ying</span><span class="op">)</span>
 <span class="va">cid</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html">subset_samples</a></span><span class="op">(</span>
     <span class="va">cid_ying</span>,
-    <span class="va">Consistency</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"formed stool"</span>, <span class="st">"liquid"</span>, <span class="st">"semi-formed"</span><span class="op">)</span>
+    <span class="va">Consistency</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span><span class="st">"formed stool"</span>, <span class="st">"liquid"</span>, <span class="st">"semi-formed"</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="va">mm_edger_mg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_edger.html">run_edger</a></span><span class="op">(</span>
     <span class="va">cid</span>,
@@ -414,7 +414,7 @@ fold-change between the sample and the reference.</li>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span>
 <span class="va">kostic_crc_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html">subset_taxa</a></span><span class="op">(</span>
     <span class="va">kostic_crc</span>,
-    <span class="va">Phylum</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span><span class="op">)</span>
+    <span class="va">Phylum</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_lefse.html">run_lefse</a></span><span class="op">(</span>
     <span class="va">kostic_crc_small</span>,
@@ -442,12 +442,12 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; marker5                                                                k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales</span>
 <span class="co">#&gt; marker6                      k__Bacteria|p__Firmicutes|c__Clostridia|o__Clostridiales|f__Ruminococcaceae|g__Ruminococcaceae_g__</span>
 <span class="co">#&gt;         enrich_group   ef_lda       pvalue         padj</span>
-<span class="co">#&gt; marker1      Healthy 4.980882 7.154793e-05 7.154793e-05</span>
-<span class="co">#&gt; marker2      Healthy 4.854847 5.914547e-04 5.914547e-04</span>
-<span class="co">#&gt; marker3      Healthy 4.852778 6.043983e-04 6.043983e-04</span>
-<span class="co">#&gt; marker4      Healthy 4.684537 7.176046e-04 7.176046e-04</span>
-<span class="co">#&gt; marker5      Healthy 4.684537 7.176046e-04 7.176046e-04</span>
-<span class="co">#&gt; marker6      Healthy 4.258007 6.990210e-03 6.990210e-03</span></code></pre></div>
+<span class="co">#&gt; marker1      Healthy 4.995826 7.154793e-05 7.154793e-05</span>
+<span class="co">#&gt; marker2      Healthy 4.868926 5.914547e-04 5.914547e-04</span>
+<span class="co">#&gt; marker3      Healthy 4.867038 6.043983e-04 6.043983e-04</span>
+<span class="co">#&gt; marker4      Healthy 4.667389 7.176046e-04 7.176046e-04</span>
+<span class="co">#&gt; marker5      Healthy 4.667389 7.176046e-04 7.176046e-04</span>
+<span class="co">#&gt; marker6      Healthy 4.220878 6.990210e-03 6.990210e-03</span></code></pre></div>
 </div>
 <div id="supervised-machine-learning-methods" class="section level2">
 <h2 class="hasAnchor">
@@ -460,7 +460,7 @@ fold-change between the sample and the reference.</li>
 <span class="co"># small example phyloseq object for test</span>
 <span class="va">ps_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html">subset_taxa</a></span><span class="op">(</span>
     <span class="va">enterotypes_arumugam</span>,
-    <span class="va">Phylum</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span>, <span class="st">"Bacteroidetes"</span><span class="op">)</span>
+    <span class="va">Phylum</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span>, <span class="st">"Bacteroidetes"</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="va">mm_lr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_sl.html">run_sl</a></span><span class="op">(</span>
     <span class="va">ps_small</span>,
@@ -557,7 +557,7 @@ fold-change between the sample and the reference.</li>
 <span class="va">mm_lv_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_limma_voom.html">run_limma_voom</a></span><span class="op">(</span>
     <span class="va">ps</span>,
     <span class="st">"Enterotype"</span>,
-    contrast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span><span class="op">)</span>,
+    contrast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span><span class="op">)</span>,
     pvalue_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
     p_adjust <span class="op">=</span> <span class="st">"fdr"</span>
 <span class="op">)</span>
@@ -583,7 +583,7 @@ fold-change between the sample and the reference.</li>
 <div id="visualization" class="section level1">
 <h1 class="hasAnchor">
 <a href="#visualization" class="anchor"></a>Visualization</h1>
-<p>In <code>microbiomeMarker</code>, users can visualize the microbiome biomarker in different ways, such as box plot, bar plot, dot plot, heatmap, and cladogram. Except for heatmap, all these plots are generated using the most flexible and popular data visualization package <em><a href="https://CRAN.R-project.org/package=ggplot2">ggplot2</a></em>. Therefore, these plots can be easily customized before they are generated using the build-in functions of <em><a href="https://CRAN.R-project.org/package=ggplot2">ggplot2</a></em>, e.g. using <code><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme()</a></code> to modify the titles and labels. Heatmap is generated using a fantastic Bioconductor package <em><a href="https://bioconductor.org/packages/3.13/ComplexHeatmap">ComplexHeatmap</a></em> package.</p>
+<p>In <code>microbiomeMarker</code>, users can visualize the microbiome biomarker in different ways, such as box plot, bar plot, dot plot, heatmap, and cladogram. Except for heatmap, all these plots are generated using the most flexible and popular data visualization package <em><a href="https://CRAN.R-project.org/package=ggplot2">ggplot2</a></em>. Therefore, these plots can be easily customized before they are generated using the build-in functions of <em><a href="https://CRAN.R-project.org/package=ggplot2">ggplot2</a></em>, e.g. using <code><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme()</a></code> to modify the titles and labels. Heatmap is generated using a fantastic Bioconductor package <em><a href="https://bioconductor.org/packages/3.14/ComplexHeatmap">ComplexHeatmap</a></em> package.</p>
 <div id="abundance-box-plot" class="section level2">
 <h2 class="hasAnchor">
 <a href="#abundance-box-plot" class="anchor"></a>Abundance box plot</h2>
@@ -596,7 +596,7 @@ fold-change between the sample and the reference.</li>
 <code class="sourceCode R">
 <span class="co"># customize the plot with ggplot2, modify the fill color manually</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
-<span class="va">p_abd</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Healthy"</span> <span class="op">=</span> <span class="st">"grey"</span>, <span class="st">"Tumor"</span> <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">p_abd</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span><span class="st">"Healthy"</span> <span class="op">=</span> <span class="st">"grey"</span>, <span class="st">"Tumor"</span> <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/plot-abundance-2.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="heat-map" class="section level2">
@@ -632,7 +632,7 @@ fold-change between the sample and the reference.</li>
 <a href="#cladogram" class="anchor"></a>Cladogram</h2>
 <p>As mentioned above, the microbiome marker analysis will run on all levels of features by default. Users can plot a LEfSe cladogram using function <code><a href="../reference/plot_cladogram.html">plot_cladogram()</a></code>.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_cladogram.html">plot_cladogram</a></span><span class="op">(</span><span class="va">mm_lefse</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Healthy <span class="op">=</span> <span class="st">"darkgreen"</span>, Tumor <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_cladogram.html">plot_cladogram</a></span><span class="op">(</span><span class="va">mm_lefse</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">c</a></span><span class="op">(</span>Healthy <span class="op">=</span> <span class="st">"darkgreen"</span>, Tumor <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/cladogram-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
@@ -653,7 +653,7 @@ fold-change between the sample and the reference.</li>
 <code class="sourceCode R"><span class="va">p_pht</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_postHocTest.html">plot_postHocTest</a></span><span class="op">(</span><span class="va">pht</span>, feature <span class="op">=</span> <span class="st">"p__Bacteroidetes|g__Bacteroides"</span><span class="op">)</span>
 <span class="va">p_pht</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/plot-pht-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>The pot-hoc plots were wrapped using <em><a href="https://CRAN.R-project.org/package=patchwork">patchwork</a></em>, and users can modifying the themes of all subplots using <code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code>.</p>
+<p>The pot-hoc plots were wrapped using <em><a href="https://CRAN.R-project.org/package=patchwork">patchwork</a></em>, and users can modifying the themes of all subplots using <code>&amp;</code>.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p_pht</span> <span class="op">&amp;</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="microbiomeMarker-vignette_files/figure-html/customize-p-pht-1.png" width="700" style="display: block; margin: auto;"></p>
@@ -677,7 +677,7 @@ fold-change between the sample and the reference.</li>
 <p>This vignette was created under the following conditions:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; R version 4.1.1 (2021-08-10)</span>
+<span class="co">#&gt; R version 4.1.2 (2021-11-01)</span>
 <span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
 <span class="co">#&gt; Running under: macOS Big Sur 10.16</span>
 <span class="co">#&gt; </span>
@@ -692,28 +692,28 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt; [1] caret_6.0-90            lattice_0.20-44         ggplot2_3.3.5          </span>
+<span class="co">#&gt; [1] caret_6.0-90            lattice_0.20-45         ggplot2_3.3.5          </span>
 <span class="co">#&gt; [4] microbiomeMarker_0.99.2 BiocStyle_2.20.2       </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;   [1] utf8_1.2.2                  tidyselect_1.1.1           </span>
 <span class="co">#&gt;   [3] RSQLite_2.2.8               AnnotationDbi_1.54.1       </span>
-<span class="co">#&gt;   [5] grid_4.1.1                  BiocParallel_1.26.2        </span>
+<span class="co">#&gt;   [5] grid_4.1.2                  BiocParallel_1.26.2        </span>
 <span class="co">#&gt;   [7] Rtsne_0.15                  pROC_1.18.0                </span>
 <span class="co">#&gt;   [9] munsell_0.5.0               codetools_0.2-18           </span>
-<span class="co">#&gt;  [11] ragg_1.1.3                  future_1.22.1              </span>
+<span class="co">#&gt;  [11] ragg_1.1.3                  future_1.23.0              </span>
 <span class="co">#&gt;  [13] withr_2.4.2                 colorspace_2.0-2           </span>
 <span class="co">#&gt;  [15] Biobase_2.52.0              phyloseq_1.36.0            </span>
 <span class="co">#&gt;  [17] highr_0.9                   knitr_1.36                 </span>
-<span class="co">#&gt;  [19] stats4_4.1.1                ggsignif_0.6.3             </span>
+<span class="co">#&gt;  [19] stats4_4.1.2                ggsignif_0.6.3             </span>
 <span class="co">#&gt;  [21] listenv_0.8.0               MatrixGenerics_1.4.3       </span>
 <span class="co">#&gt;  [23] Rdpack_2.1.2                labeling_0.4.2             </span>
 <span class="co">#&gt;  [25] GenomeInfoDbData_1.2.6      plotROC_2.2.1              </span>
 <span class="co">#&gt;  [27] farver_2.1.0                bit64_4.0.5                </span>
 <span class="co">#&gt;  [29] rhdf5_2.36.0                rprojroot_2.0.2            </span>
 <span class="co">#&gt;  [31] parallelly_1.28.1           vctrs_0.3.8                </span>
-<span class="co">#&gt;  [33] treeio_1.16.2               generics_0.1.0             </span>
-<span class="co">#&gt;  [35] ipred_0.9-12                xfun_0.26                  </span>
+<span class="co">#&gt;  [33] treeio_1.16.2               generics_0.1.1             </span>
+<span class="co">#&gt;  [35] ipred_0.9-12                xfun_0.28                  </span>
 <span class="co">#&gt;  [37] R6_2.5.1                    doParallel_1.0.16          </span>
 <span class="co">#&gt;  [39] GenomeInfoDb_1.28.4         clue_0.3-60                </span>
 <span class="co">#&gt;  [41] locfit_1.5-9.4              bitops_1.0-7               </span>
@@ -722,12 +722,12 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt;  [47] DelayedArray_0.18.0         scales_1.1.1               </span>
 <span class="co">#&gt;  [49] nnet_7.3-16                 gtable_0.3.0               </span>
 <span class="co">#&gt;  [51] Cairo_1.5-12.2              globals_0.14.0             </span>
-<span class="co">#&gt;  [53] timeDate_3043.102           rlang_0.4.11               </span>
+<span class="co">#&gt;  [53] timeDate_3043.102           rlang_0.4.12               </span>
 <span class="co">#&gt;  [55] genefilter_1.74.1           systemfonts_1.0.2          </span>
-<span class="co">#&gt;  [57] GlobalOptions_0.1.2         splines_4.1.1              </span>
+<span class="co">#&gt;  [57] GlobalOptions_0.1.2         splines_4.1.2              </span>
 <span class="co">#&gt;  [59] lazyeval_0.2.2              ModelMetrics_1.2.2.2       </span>
 <span class="co">#&gt;  [61] BiocManager_1.30.16         yaml_2.2.1                 </span>
-<span class="co">#&gt;  [63] reshape2_1.4.4              tools_4.1.1                </span>
+<span class="co">#&gt;  [63] reshape2_1.4.4              tools_4.1.2                </span>
 <span class="co">#&gt;  [65] lava_1.6.10                 bookdown_0.24              </span>
 <span class="co">#&gt;  [67] ggplotify_0.1.0             ellipsis_0.3.2             </span>
 <span class="co">#&gt;  [69] gplots_3.1.1                jquerylib_0.1.4            </span>
@@ -743,17 +743,17 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt;  [89] matrixStats_0.61.0          patchwork_1.1.1            </span>
 <span class="co">#&gt;  [91] evaluate_0.14               xtable_1.8-4               </span>
 <span class="co">#&gt;  [93] XML_3.99-0.8                IRanges_2.26.0             </span>
-<span class="co">#&gt;  [95] shape_1.4.6                 compiler_4.1.1             </span>
+<span class="co">#&gt;  [95] shape_1.4.6                 compiler_4.1.2             </span>
 <span class="co">#&gt;  [97] tibble_3.1.5                KernSmooth_2.23-20         </span>
-<span class="co">#&gt;  [99] crayon_1.4.1                htmltools_0.5.2            </span>
-<span class="co">#&gt; [101] ggfun_0.0.4                 mgcv_1.8-36                </span>
+<span class="co">#&gt;  [99] crayon_1.4.2                htmltools_0.5.2            </span>
+<span class="co">#&gt; [101] ggfun_0.0.4                 mgcv_1.8-38                </span>
 <span class="co">#&gt; [103] tidyr_1.1.4                 geneplotter_1.70.0         </span>
 <span class="co">#&gt; [105] aplot_0.1.1                 ANCOMBC_1.2.2              </span>
 <span class="co">#&gt; [107] lubridate_1.8.0             DBI_1.1.1                  </span>
 <span class="co">#&gt; [109] ComplexHeatmap_2.8.0        MASS_7.3-54                </span>
 <span class="co">#&gt; [111] Matrix_1.3-4                ade4_1.7-18                </span>
 <span class="co">#&gt; [113] permute_0.9-5               rbibutils_2.2.4            </span>
-<span class="co">#&gt; [115] parallel_4.1.1              gower_0.2.2                </span>
+<span class="co">#&gt; [115] parallel_4.1.2              gower_0.2.2                </span>
 <span class="co">#&gt; [117] igraph_1.2.7                GenomicRanges_1.44.0       </span>
 <span class="co">#&gt; [119] pkgconfig_2.0.3             pkgdown_1.6.1              </span>
 <span class="co">#&gt; [121] recipes_0.1.17              foreach_1.5.1              </span>
@@ -765,18 +765,18 @@ fold-change between the sample and the reference.</li>
 <span class="co">#&gt; [133] Biostrings_2.60.2           rmarkdown_2.11             </span>
 <span class="co">#&gt; [135] tidytree_0.3.5              edgeR_3.34.1               </span>
 <span class="co">#&gt; [137] gtools_3.9.2                rjson_0.2.20               </span>
-<span class="co">#&gt; [139] nloptr_1.2.2.2              lifecycle_1.0.1            </span>
-<span class="co">#&gt; [141] nlme_3.1-152                jsonlite_1.7.2             </span>
+<span class="co">#&gt; [139] nloptr_1.2.2.3              lifecycle_1.0.1            </span>
+<span class="co">#&gt; [141] nlme_3.1-153                jsonlite_1.7.2             </span>
 <span class="co">#&gt; [143] Rhdf5lib_1.14.2             desc_1.4.0                 </span>
 <span class="co">#&gt; [145] limma_3.48.3                fansi_0.5.0                </span>
-<span class="co">#&gt; [147] pillar_1.6.3                KEGGREST_1.32.0            </span>
+<span class="co">#&gt; [147] pillar_1.6.4                KEGGREST_1.32.0            </span>
 <span class="co">#&gt; [149] fastmap_1.1.0               httr_1.4.2                 </span>
-<span class="co">#&gt; [151] survival_3.2-11             glue_1.4.2                 </span>
+<span class="co">#&gt; [151] survival_3.2-13             glue_1.5.0                 </span>
 <span class="co">#&gt; [153] png_0.1-7                   iterators_1.0.13           </span>
-<span class="co">#&gt; [155] glmnet_4.1-2                bit_4.0.4                  </span>
+<span class="co">#&gt; [155] glmnet_4.1-3                bit_4.0.4                  </span>
 <span class="co">#&gt; [157] class_7.3-19                stringi_1.7.5              </span>
 <span class="co">#&gt; [159] sass_0.4.0                  metagenomeSeq_1.34.0       </span>
-<span class="co">#&gt; [161] blob_1.2.2                  textshaping_0.3.5          </span>
+<span class="co">#&gt; [161] blob_1.2.2                  textshaping_0.3.6          </span>
 <span class="co">#&gt; [163] DESeq2_1.32.0               caTools_1.18.2             </span>
 <span class="co">#&gt; [165] memoise_2.0.0               dplyr_1.0.7                </span>
 <span class="co">#&gt; [167] future.apply_1.8.1          ape_5.5</span></code></pre></div>

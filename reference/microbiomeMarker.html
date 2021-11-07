@@ -131,7 +131,7 @@ use the new() constructor." />
 
     <div class="ref-description">
     <p>This the constructor to build the <code><a href='microbiomeMarker-class.html'>microbiomeMarker</a></code> object, don't
-use the <code>new()</code> constructor.</p>
+use the <code><a href='https://rdrr.io/r/methods/new.html'>new()</a></code> constructor.</p>
     </div>
 
     <pre class="usage"><span class='fu'>microbiomeMarker</span><span class='op'>(</span>
@@ -172,41 +172,42 @@ identification.</p></td>
     <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/phyloseq/man/phyloseq.html'>phyloseq::phyloseq()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>microbiomeMarker</span><span class='op'>(</span>
-    marker_table <span class='op'>=</span> <span class='fu'><a href='marker_table.html'>marker_table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
-        feature <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"speciesA"</span>, <span class='st'>"speciesB"</span><span class='op'>)</span>,
-        enrich_group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"groupA"</span>, <span class='st'>"groupB"</span><span class='op'>)</span>,
-        ef_logFC <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
-        pvalue <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.01</span><span class='op'>)</span>,
-        padj <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.01</span><span class='op'>)</span>,
-        row.names <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"marker1"</span>, <span class='st'>"marker2"</span><span class='op'>)</span>
-    <span class='op'>)</span><span class='op'>)</span>,
-    norm_method <span class='op'>=</span> <span class='st'>"TSS"</span>,
-    diff_method <span class='op'>=</span> <span class='st'>"DESeq2"</span>,
-    otu_table <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html'>otu_table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span>
-        <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>4</span><span class='op'>)</span>,
-        nrow <span class='op'>=</span> <span class='fl'>2</span>, byrow <span class='op'>=</span> <span class='cn'>TRUE</span>,
-        dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"speciesA"</span>, <span class='st'>"speciesB"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"sample1"</span>, <span class='st'>"sample2"</span><span class='op'>)</span><span class='op'>)</span>
-    <span class='op'>)</span>,
-    taxa_are_rows <span class='op'>=</span> <span class='cn'>TRUE</span>
-    <span class='op'>)</span>,
-    tax_table <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/tax_table-methods.html'>tax_table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span>
-        <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"speciesA"</span>, <span class='st'>"speciesB"</span><span class='op'>)</span>,
-        nrow <span class='op'>=</span> <span class='fl'>2</span>,
-        dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"speciesA"</span>, <span class='st'>"speciesB"</span><span class='op'>)</span>, <span class='st'>"Species"</span><span class='op'>)</span>
-    <span class='op'>)</span><span class='op'>)</span>,
-    sam_data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html'>sample_data</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
-        group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"groupA"</span>, <span class='st'>"groupB"</span><span class='op'>)</span>,
-        row.names <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"sample1"</span>, <span class='st'>"sample2"</span><span class='op'>)</span>
-    <span class='op'>)</span><span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; microbiomeMarker-class inherited from phyloseq-class
-#&gt; normalization method:              [ TSS ]
-#&gt; microbiome marker identity method: [ DESeq2 ]
-#&gt; marker_table() Marker Table:       [ 2 microbiome markers with 5 variables ]
-#&gt; otu_table()    OTU Table:          [ 2 taxa and  2 samples ]
-#&gt; sample_data()  Sample Data:        [ 2 samples by  1 sample variables ]
-#&gt; tax_table()    Taxonomy Table:     [ 2 taxa by 1 taxonomic ranks ]</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>microbiomeMarker</span><span class='op'>(</span></span>
+<span class='r-in'>    marker_table <span class='op'>=</span> <span class='fu'><a href='marker_table.html'>marker_table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>        feature <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"speciesA"</span>, <span class='st'>"speciesB"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        enrich_group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"groupA"</span>, <span class='st'>"groupB"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        ef_logFC <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>        pvalue <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.01</span><span class='op'>)</span>,</span>
+<span class='r-in'>        padj <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.01</span><span class='op'>)</span>,</span>
+<span class='r-in'>        row.names <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"marker1"</span>, <span class='st'>"marker2"</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>    norm_method <span class='op'>=</span> <span class='st'>"TSS"</span>,</span>
+<span class='r-in'>    diff_method <span class='op'>=</span> <span class='st'>"DESeq2"</span>,</span>
+<span class='r-in'>    otu_table <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html'>otu_table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span></span>
+<span class='r-in'>        <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>4</span><span class='op'>)</span>,</span>
+<span class='r-in'>        nrow <span class='op'>=</span> <span class='fl'>2</span>, byrow <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
+<span class='r-in'>        dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"speciesA"</span>, <span class='st'>"speciesB"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"sample1"</span>, <span class='st'>"sample2"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span>,</span>
+<span class='r-in'>    taxa_are_rows <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'>    <span class='op'>)</span>,</span>
+<span class='r-in'>    tax_table <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/tax_table-methods.html'>tax_table</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span></span>
+<span class='r-in'>        <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"speciesA"</span>, <span class='st'>"speciesB"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        nrow <span class='op'>=</span> <span class='fl'>2</span>,</span>
+<span class='r-in'>        dimnames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"speciesA"</span>, <span class='st'>"speciesB"</span><span class='op'>)</span>, <span class='st'>"Species"</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>    sam_data <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html'>sample_data</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>        group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"groupA"</span>, <span class='st'>"groupB"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        row.names <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"sample1"</span>, <span class='st'>"sample2"</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> microbiomeMarker-class inherited from phyloseq-class</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> normalization method:              [ TSS ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> microbiome marker identity method: [ DESeq2 ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> marker_table() Marker Table:       [ 2 microbiome markers with 5 variables ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> otu_table()    OTU Table:          [ 2 taxa and  2 samples ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> sample_data()  Sample Data:        [ 2 samples by  1 sample variables ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> tax_table()    Taxonomy Table:     [ 2 taxa by 1 taxonomic ranks ]</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

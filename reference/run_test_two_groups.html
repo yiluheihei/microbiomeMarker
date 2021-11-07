@@ -136,11 +136,11 @@
   <span class='va'>ps</span>,
   <span class='va'>group</span>,
   taxa_rank <span class='op'>=</span> <span class='st'>"all"</span>,
-  transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
+  transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
   norm <span class='op'>=</span> <span class='st'>"TSS"</span>,
   norm_para <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
-  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"welch.test"</span>, <span class='st'>"t.test"</span>, <span class='st'>"white.test"</span><span class='op'>)</span>,
-  p_adjust <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"none"</span>, <span class='st'>"fdr"</span>, <span class='st'>"bonferroni"</span>, <span class='st'>"holm"</span>, <span class='st'>"hochberg"</span>, <span class='st'>"hommel"</span>, <span class='st'>"BH"</span>, <span class='st'>"BY"</span><span class='op'>)</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"welch.test"</span>, <span class='st'>"t.test"</span>, <span class='st'>"white.test"</span><span class='op'>)</span>,
+  p_adjust <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"none"</span>, <span class='st'>"fdr"</span>, <span class='st'>"bonferroni"</span>, <span class='st'>"holm"</span>, <span class='st'>"hochberg"</span>, <span class='st'>"hommel"</span>, <span class='st'>"BH"</span>, <span class='st'>"BY"</span><span class='op'>)</span>,
   pvalue_cutoff <span class='op'>=</span> <span class='fl'>0.05</span>,
   diff_mean_cutoff <span class='op'>=</span> <span class='cn'>NULL</span>,
   ratio_cutoff <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -164,10 +164,10 @@
       <th>taxa_rank</th>
       <td><p>character to specify taxonomic rank to perform
 differential analysis on. Should be one of
-<code><a href='https://rdrr.io/pkg/phyloseq/man/rank_names.html'>phyloseq::rank_names(phyloseq)</a></code>, or "all" means to summarize the taxa by
-the top taxa ranks (<code><a href='summarize_taxa.html'>summarize_taxa(ps, level = rank_names(ps)[1])</a></code>), or
+<code>phyloseq::rank_names(phyloseq)</code>, or "all" means to summarize the taxa by
+the top taxa ranks (<code>summarize_taxa(ps, level = rank_names(ps)[1])</code>), or
 "none" means perform differential analysis on the original taxa
-(<code><a href='https://rdrr.io/pkg/phyloseq/man/taxa_names-methods.html'>taxa_names(phyloseq)</a></code>, e.g., OTU or ASV).</p></td>
+(<code>taxa_names(phyloseq)</code>, e.g., OTU or ASV).</p></td>
     </tr>
     <tr>
       <th>transform</th>
@@ -176,9 +176,9 @@ abundance. See <code><a href='transform_abundances.html'>transform_abundances()<
 options include:</p><ul>
 <li><p>"identity", return the original data without any transformation
 (default).</p></li>
-<li><p>"log10", the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(object)</a></code>, and if the data contains
-zeros the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(1 + object)</a></code>.</p></li>
-<li><p>"log10p", the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(1 + object)</a></code>.</p></li>
+<li><p>"log10", the transformation is <code>log10(object)</code>, and if the data contains
+zeros the transformation is <code>log10(1 + object)</code>.</p></li>
+<li><p>"log10p", the transformation is <code>log10(1 + object)</code>.</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -255,20 +255,22 @@ estimation</p></td>
     <p>Yang Cao</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
-<span class='va'>mm_welch</span> <span class='op'>&lt;-</span> <span class='fu'>run_test_two_groups</span><span class='op'>(</span>
-    <span class='va'>enterotypes_arumugam</span>,
-    group <span class='op'>=</span> <span class='st'>"Gender"</span>,
-    method <span class='op'>=</span> <span class='st'>"welch.test"</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: return the original feature table.</span></div><div class='input'><span class='va'>mm_welch</span>
-</div><div class='output co'>#&gt; microbiomeMarker-class inherited from phyloseq-class
-#&gt; normalization method:              [ TSS ]
-#&gt; microbiome marker identity method: [ welch.test ]
-#&gt; marker_table() Marker Table:       [ 3 microbiome markers with 5 variables ]
-#&gt; otu_table()    OTU Table:          [ 244 taxa and  39 samples ]
-#&gt; sample_data()  Sample Data:        [ 39 samples by  9 sample variables ]
-#&gt; tax_table()    Taxonomy Table:     [ 244 taxa by 1 taxonomic ranks ]</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>mm_welch</span> <span class='op'>&lt;-</span> <span class='fu'>run_test_two_groups</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='va'>enterotypes_arumugam</span>,</span>
+<span class='r-in'>    group <span class='op'>=</span> <span class='st'>"Gender"</span>,</span>
+<span class='r-in'>    method <span class='op'>=</span> <span class='st'>"welch.test"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>return the original feature table.</span>
+<span class='r-in'><span class='va'>mm_welch</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> microbiomeMarker-class inherited from phyloseq-class</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> normalization method:              [ TSS ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> microbiome marker identity method: [ welch.test ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> marker_table() Marker Table:       [ 3 microbiome markers with 5 variables ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> otu_table()    OTU Table:          [ 244 taxa and  39 samples ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> sample_data()  Sample Data:        [ 39 samples by  9 sample variables ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> tax_table()    Taxonomy Table:     [ 244 taxa by 1 taxonomic ranks ]</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

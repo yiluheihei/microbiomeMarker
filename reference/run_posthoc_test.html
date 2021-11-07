@@ -139,11 +139,11 @@ used to uncover specific mean differences between pair of groups.</p>
     <pre class="usage"><span class='fu'>run_posthoc_test</span><span class='op'>(</span>
   <span class='va'>ps</span>,
   <span class='va'>group</span>,
-  transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
+  transform <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"identity"</span>, <span class='st'>"log10"</span>, <span class='st'>"log10p"</span><span class='op'>)</span>,
   norm <span class='op'>=</span> <span class='st'>"TSS"</span>,
   norm_para <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"tukey"</span>, <span class='st'>"games_howell"</span>, <span class='st'>"scheffe"</span>, <span class='st'>"welch_uncorrected"</span><span class='op'>)</span>
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"tukey"</span>, <span class='st'>"games_howell"</span>, <span class='st'>"scheffe"</span>, <span class='st'>"welch_uncorrected"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -164,9 +164,9 @@ abundance. See <code><a href='transform_abundances.html'>transform_abundances()<
 options include:</p><ul>
 <li><p>"identity", return the original data without any transformation
 (default).</p></li>
-<li><p>"log10", the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(object)</a></code>, and if the data contains
-zeros the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(1 + object)</a></code>.</p></li>
-<li><p>"log10p", the transformation is <code><a href='https://rdrr.io/r/base/Log.html'>log10(1 + object)</a></code>.</p></li>
+<li><p>"log10", the transformation is <code>log10(object)</code>, and if the data contains
+zeros the transformation is <code>log10(1 + object)</code>.</p></li>
+<li><p>"log10p", the transformation is <code>log10(1 + object)</code>.</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -219,22 +219,23 @@ information.</p></td>
     <div class='dont-index'><p><a href='postHocTest-class.html'>postHocTest</a>, <code><a href='run_test_multiple_groups.html'>run_test_multiple_groups()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span>
-<span class='va'>ps</span> <span class='op'>&lt;-</span> <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html'>subset_samples</a></span><span class='op'>(</span>
-    <span class='va'>enterotypes_arumugam</span>,
-    <span class='va'>Enterotype</span> <span class='op'>%in%</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span>, <span class='st'>"Enterotype 1"</span><span class='op'>)</span>
-<span class='op'>)</span> <span class='op'>%&gt;%</span>
-    <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html'>subset_taxa</a></span><span class='op'>(</span><span class='va'>Phylum</span> <span class='op'>==</span> <span class='st'>"Bacteroidetes"</span><span class='op'>)</span>
-<span class='va'>pht</span> <span class='op'>&lt;-</span> <span class='fu'>run_posthoc_test</span><span class='op'>(</span><span class='va'>ps</span>, group <span class='op'>=</span> <span class='st'>"Enterotype"</span><span class='op'>)</span>
-<span class='va'>pht</span>
-</div><div class='output co'>#&gt; postHocTest-class object
-#&gt; Pairwise test result of 13  features,  DataFrameList object, each DataFrame has five variables:
-#&gt;         comparions    : pair groups to test which separated by '-'
-#&gt;         diff_mean: difference in mean proportions
-#&gt;         pvalue        : post hoc test p values
-#&gt;         ci_lower : lower confidence interval
-#&gt;         ci_upper : upper confidence interval
-#&gt; Posthoc multiple comparisons of means  using  tukey  method</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ps</span> <span class='op'>&lt;-</span> <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html'>subset_samples</a></span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='va'>enterotypes_arumugam</span>,</span>
+<span class='r-in'>    <span class='va'>Enterotype</span> <span class='op'><a href='https://rdrr.io/pkg/BiocGenerics/man/match.html'>%in%</a></span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span>, <span class='st'>"Enterotype 1"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>    <span class='fu'>phyloseq</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html'>subset_taxa</a></span><span class='op'>(</span><span class='va'>Phylum</span> <span class='op'>==</span> <span class='st'>"Bacteroidetes"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pht</span> <span class='op'>&lt;-</span> <span class='fu'>run_posthoc_test</span><span class='op'>(</span><span class='va'>ps</span>, group <span class='op'>=</span> <span class='st'>"Enterotype"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pht</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> postHocTest-class object</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Pairwise test result of 13  features,  DataFrameList object, each DataFrame has five variables:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         comparions    : pair groups to test which separated by '-'</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         diff_mean: difference in mean proportions</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         pvalue        : post hoc test p values</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         ci_lower : lower confidence interval</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         ci_upper : upper confidence interval</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Posthoc multiple comparisons of means  using  tukey  method</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
