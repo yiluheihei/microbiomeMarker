@@ -1,6 +1,4 @@
-# microbiomeMarker  1.1.1
-
-+ Devel version on Bioconductor
+# microbiomeMarker  1.0.1
 
 + Add a para `only_marker` in `plot_cladogram` to specify whether only show the 
 markers or all features in the cladogram.
