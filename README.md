@@ -7,6 +7,13 @@
 
 <!-- badges: start -->
 
+[![](https://img.shields.io/badge/release%20version-1.0.0-green.svg)](https://www.bioconductor.org/packages/microbiomeMarker)
+[![](https://img.shields.io/badge/devel%20version-1.1.1-green.svg)](https://github.com/yiluheihei/microbiomeMarker)
+[![platform](http://www.bioconductor.org/shields/availability/devel/microbiomeMarker.svg)](https://www.bioconductor.org/packages/devel/bioc/html/microbiomeMarker.html#archives)
+[![BioC
+status](http://www.bioconductor.org/shields/build/release/bioc/microbiomeMarker.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/microbiomeMarker)
+[![Bioc
+years](http://www.bioconductor.org/shields/years-in-bioc/microbiomeMarker.svg)](https://www.bioconductor.org/packages/devel/bioc/html/microbiomeMarker.html#since)
 [![R build
 status](https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/yiluheihei/microbiomeMarker/actions)
 [![License: GPL
@@ -14,6 +21,8 @@ v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/yil
 [![Codecov test
 coverage](https://codecov.io/gh/yiluheihei/microbiomeMarker/branch/master/graph/badge.svg)](https://codecov.io/gh/yiluheihei/microbiomeMarker?branch=master)
 [![DOI](https://zenodo.org/badge/215731961.svg)](https://zenodo.org/badge/latestdoi/215731961)
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 ![GitHub Repo
 stars](https://img.shields.io/github/stars/yiluheihei/microbiomeMarker?style=social)
 <!-- badges: end -->
