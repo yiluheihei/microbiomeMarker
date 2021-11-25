@@ -403,7 +403,7 @@ set_marker_annotation <- function(p,
             aes_(x = 0, y = 0, shape = ~label),
             size = 0, stroke = 0,
         ) +
-        scale_shape_manual(values = rep(shape, nrow(dat))) +
+        scale_shape_manual(values = rep(shape, nrow(dat)), limits = dat$label) +
         guides(
             shape = guide_legend(
                 override.aes = list(
