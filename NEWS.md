@@ -1,6 +1,12 @@
+# microbiomeMarker (development version)
+
++ keep color consistent between legend and plot in cladogram, #42. 
++ Add a new argument `clade_label_font_size` in `plot_cladogram()` to specify 
+font size of clade label, #49.
+
 # microbiomeMarker  1.1.1
 
-+ Devel version on Bioconductor
++ Development version on Bioconductor
 
 + Add a para `only_marker` in `plot_cladogram` to specify whether only show the 
 markers or all features in the cladogram.
