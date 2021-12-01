@@ -112,7 +112,10 @@ run_lefse <- function(ps,
         stop("`ps` must be phyloseq object", call. = FALSE)
     }
     
+    # check rank names and para taxa_rank
     ps <- check_rank_names(ps)
+    ps <- check_taxa_rank(ps, taxa_rank)
+    
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     strict <- match.arg(strict, c("0", "1", "2"))
     strict <- as.numeric(strict)
@@ -142,22 +145,18 @@ run_lefse <- function(ps,
     subgrp <- grp_info$subgroup
     grp_hie <- grp_info$group_hie
 
-    # check taxa_rank
-    check_taxa_rank(ps, taxa_rank)
-    if (taxa_rank == "all") {
-        ps_summarized <- summarize_taxa(ps_normed)
-    } else if (taxa_rank == "none") {
-        ps_summarized <- extract_rank(ps_normed, taxa_rank)
-    } else {
-        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
-
+    ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
+    
     otus <- abundances(ps_summarized, norm = TRUE)
     # transform it for test
     otus_test <- as.data.frame(t(otus), stringsAsFactors = FALSE)
     feature <- tax_table(ps_summarized)@.Data[, 1]
     names(otus_test) <- feature
+    
+    # tax table
+    tax <- matrix(feature) %>%
+        tax_table()
+    row.names(tax) <- row.names(otus)
 
     # kw rank sum test among classes
     kw_p <- purrr::map_dbl(otus_test, ~ kruskal.test(.x, grp)$p.value)
@@ -188,6 +187,20 @@ run_lefse <- function(ps,
         )
     )
     sig_otus <- sig_otus[, wilcoxon_p]
+    
+    if (ncol(sig_otus) == 0) {
+        mm <- microbiomeMarker(
+            marker_table = NULL,
+            norm_method = get_norm_method(norm),
+            diff_method = "lefse",
+            otu_table = otu_table(otus, taxa_are_rows = TRUE), # normalized
+            # new var norm_factor (if it is calculated in normalize)
+            sam_data = sample_data(ps_normed),
+            tax_table = tax
+        )
+        
+        return(mm)
+    }
 
     # mean abundance in each group
     otus_enriched_group <- get_feature_enrich_group(grp, sig_otus)
@@ -214,10 +227,6 @@ run_lefse <- function(ps,
     lefse_out <- return_marker(lefse_sig, lefse_res)
     lefse_out$padj <- lefse_out$pvalue
     row.names(lefse_out) <- paste0("marker", seq_len(nrow(lefse_out)))
-
-    tax <- matrix(feature) %>%
-        tax_table()
-    row.names(tax) <- row.names(otus)
 
     mm <- microbiomeMarker(
         marker_table = lefse_out,

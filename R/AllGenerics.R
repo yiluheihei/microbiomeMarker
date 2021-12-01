@@ -71,7 +71,7 @@ setMethod("marker_table", "microbiomeMarker", function(object) {
 #' marker_table(mm) <- mm_marker[1:2, ]
 #' marker_table(mm)
 "marker_table<-" <- function(object, value) {
-    if (!inherits(value, "marker_table")) {
+    if (!inherits(value, "marker_table") && !is.null(value)) {
         value <- marker_table(value)
     }
 
@@ -118,13 +118,21 @@ setMethod("show", "microbiomeMarker", function(object) {
             fill = TRUE
         )
     }
-
-    cat(
-        "marker_table() Marker Table:       [",
-        nrow(object@marker_table), "microbiome markers with",
-        ncol(object@marker_table), "variables ]",
-        fill = TRUE
-    )
+    
+    if (!is.null(object@marker_table)) {
+        cat(
+            "marker_table() Marker Table:       [",
+            nrow(object@marker_table), "microbiome markers with",
+            ncol(object@marker_table), "variables ]",
+            fill = TRUE
+        )
+    } else {
+        cat(
+            "marker_table() Marker Table:       [",
+            "no microbiome markers were identified ]",
+            fill = TRUE
+        )
+    }
 
     # print otu_table (always there).
     cat(
@@ -198,13 +206,14 @@ setGeneric("nmarker", function(object) standardGeneric("nmarker"))
 #' @rdname nmarker-methods
 #' @aliases nmarker,microbiomeMarker-method
 setMethod("nmarker", "microbiomeMarker", function(object) {
-    nrow(marker_table(object))
+    marker <- marker_table(object)
+    ifelse(is.null(marker), 0L,  nrow(marker))
 })
 
 #' @rdname nmarker-methods
 #' @aliases nmarker,marker_table-method
 setMethod("nmarker", "marker_table", function(object) {
-    nrow(object)
+    ifelse(is.null(object), 0L,  nrow(object))
 })
 
 # postHocTest class -------------------------------------------------------

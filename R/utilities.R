@@ -415,8 +415,8 @@ check_taxa_rank <- function(ps, taxa_rank) {
 # preprocess the ps according to para taxa_rank
 pre_ps_taxa_rank <- function(ps, taxa_rank) {
     if (is_picrust2(ps)) {
-        warning("para `taxa_rank`is ignored, ",
-                "is not worked for picrust2 function profile")
+        warning("para `taxa_rank` is not worked for picrust2 function profile",
+                " and it will be ignored")
         return(ps)
     }
     

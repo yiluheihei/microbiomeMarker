@@ -1,6 +1,8 @@
 # microbiomeMarker (development version)
 
-+ keep color consistent between legend and plot in cladogram, #42. 
++ Add new import function `import_picrust2()` to import prediction functional
+table from PICRUSt2.
++ Keep color consistent between legend and plot in cladogram, #42. 
 + Add a new argument `clade_label_font_size` in `plot_cladogram()` to specify 
 font size of clade label, #49.
 
