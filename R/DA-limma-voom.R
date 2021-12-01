@@ -88,6 +88,9 @@ run_limma_voom <- function(ps,
     pvalue_cutoff = 0.05,
     ...) {
     stopifnot(inherits(ps, "phyloseq"))
+    ps <- check_rank_names(ps) %>% 
+        check_taxa_rank(taxa_rank)
+    
     p_adjust <- match.arg(
         p_adjust,
         c(
@@ -124,21 +127,9 @@ run_limma_voom <- function(ps,
     # normalize the data
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
-
-    # summarize data
-    # create a function, extract_summarize
-    # check taxa_rank
-    check_taxa_rank(ps, taxa_rank)
-    if (taxa_rank == "all") {
-        ps_summarized <- summarize_taxa(ps_normed)
-    } else if (taxa_rank == "none") {
-        ps_summarized <- extract_rank(ps_normed, taxa_rank)
-    } else {
-        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
-
+    ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
     counts <- abundances(ps_summarized, norm = FALSE)
+    # row.names(counts) <- tax_table(ps_summarized)[, 1]
 
     # design matrix
     design <- model.matrix(~ 0 + groups)

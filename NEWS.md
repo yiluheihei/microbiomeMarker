@@ -1,6 +1,9 @@
 # microbiomeMarker (development version)
 
-+ keep color consistent between legend and plot in cladogram, #42. 
++ Set slot `marker_table` to `NULL` if no marker was identified.
++ Add new import function `import_picrust2()` to import prediction functional
+table from PICRUSt2, and all DA functions support for PICRUSt2 output data.
++ Keep color consistent between legend and plot in cladogram, #42. 
 + Add a new argument `clade_label_font_size` in `plot_cladogram()` to specify 
 font size of clade label, #49.
 

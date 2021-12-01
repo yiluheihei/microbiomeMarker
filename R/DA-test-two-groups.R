@@ -81,13 +81,26 @@ run_test_two_groups <- function(ps,
     nperm = 1000,
     ...) {
     stopifnot(inherits(ps, "phyloseq"))
-
-    if (!check_rank_names(ps)) {
-        stop(
-            "ranks of `ps` must be one of ",
-            paste(available_ranks, collapse = ", ")
-        )
-    }
+    ps <- check_rank_names(ps)
+    
+    # ps_rank <- rank_names(ps)
+    # if ("Picrust_trait" %in% ps_rank) {
+    #     picrust_rank <- c("Picrust_trait", "Picrust_description")
+    #     diff_rank <- setdiff(ps_rank, picrust_rank)
+    #     if (length(diff_rank)) {
+    #         stop("ranks of picrust2 functional profile must be one of ",
+    #              paste(picrust_rank, collapse = ", "))
+    #     }
+    #     warning("para `taxa_rank` is not worked for picrust2 function profile ",
+    #             "and is ignored")
+    # } else {
+    #     if (!check_rank_names(ps)) {
+    #         stop(
+    #             "ranks of `ps` must be one of ",
+    #             paste(available_ranks, collapse = ", ")
+    #         )
+    #     }
+    # }
 
     p_adjust <- match.arg(
         p_adjust,
@@ -101,29 +114,31 @@ run_test_two_groups <- function(ps,
 
     # original abundance for white test
     # check taxa_rank
-    check_taxa_rank(ps, taxa_rank)
-    if (taxa_rank == "all") {
-        ps_orig_summarized <- summarize_taxa(ps)
-    } else if (taxa_rank == "none") {
-        ps_orig_summarized <- extract_rank(ps, taxa_rank)
-    } else {
-        ps_orig_summarized <- aggregate_taxa(ps, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
+    ps <- check_taxa_rank(ps, taxa_rank)
+    ps_orig_summarized <- pre_ps_taxa_rank(ps, taxa_rank)
+    # if (taxa_rank == "all") {
+    #     ps_orig_summarized <- summarize_taxa(ps)
+    # } else if (taxa_rank == "none") {
+    #     ps_orig_summarized <- extract_rank(ps, taxa_rank)
+    # } else {
+    #     ps_orig_summarized <- aggregate_taxa(ps, taxa_rank) %>%
+    #         extract_rank(taxa_rank)
+    # }
     otus <- abundances(ps_orig_summarized, norm = FALSE)
     abd <- transpose_and_2df(otus)
 
     # normalize, normalize first, then summarize
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
-    if (taxa_rank == "all") {
-        ps_summarized <- summarize_taxa(ps_normed)
-    } else if (taxa_rank == "none") {
-        ps_summarized <- extract_rank(ps_normed, taxa_rank)
-    } else {
-        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
+    # if (taxa_rank == "all") {
+    #     ps_summarized <- summarize_taxa(ps_normed)
+    # } else if (taxa_rank == "none") {
+    #     ps_summarized <- extract_rank(ps_normed, taxa_rank)
+    # } else {
+    #     ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
+    #         extract_rank(taxa_rank)
+    # }
+    ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
     abd_norm <- abundances(ps_summarized, norm = TRUE) %>%
         transpose_and_2df()
 
@@ -208,7 +223,7 @@ run_test_two_groups <- function(ps,
         "feature", "enrich_group",
         "ef_diff_mean", "pvalue", "padj"
     )]
-    row.names(test_filtered) <- paste0("marker", seq_len(nrow(test_filtered)))
+    # row.names(test_filtered) <- paste0("marker", seq_len(nrow(test_filtered)))
 
     marker <- return_marker(test_filtered, test_res)
     marker <- microbiomeMarker(

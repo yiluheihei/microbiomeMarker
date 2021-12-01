@@ -170,6 +170,9 @@ run_deseq2 <- function(ps,
     ),
     pvalue_cutoff = 0.05,
     ...) {
+    ps <- check_rank_names(ps) %>% 
+        check_taxa_rank( taxa_rank)
+    
     norm_methods <- c("none", "rarefy", "RLE", "CSS", "TMM")
     if (!norm %in% norm_methods) {
         stop(
@@ -247,18 +250,7 @@ run_deseq2 <- function(ps,
     # prenormalize the data
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
-
-    # check taxa_rank
-    check_taxa_rank(ps, taxa_rank)
-    if (taxa_rank == "all") {
-        ps_summarized <- summarize_taxa(ps_normed)
-    } else if (taxa_rank == "none") {
-        ps_summarized <- extract_rank(ps_normed, taxa_rank)
-    } else {
-        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
-
+    ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
     dsg <- formula(paste("~", group))
     dds_summarized <- phyloseq2DESeq2(
         ps_summarized,
@@ -436,30 +428,25 @@ run_deseq2 <- function(ps,
     res_ordered <- res[order(res$padj), ]
     # filter sig feature
     padj <- res_ordered$padj
-    res_filtered <- res_ordered[!is.na(padj) & padj < pvalue_cutoff, ]
-
-    if (nrow(res_filtered) == 0) {
-        warning("No significant features were found, return all the features")
-        sig_feature <- cbind(feature = row.names(res_ordered), res_ordered)
-    } else {
-        sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
-    }
+    res_ordered <- cbind(feature = row.names(res_ordered), res_ordered)
     # rownames in the form of marker*
-    row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+    row.names(res_ordered) <- paste0("marker", seq_len(nrow(res_ordered)))
 
     # reorder columns: feature, enrich_group, other columns
-    other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
-    sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
-    row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+    other_col <- setdiff(names(res_ordered), c("feature", "enrich_group"))
+    res_ordered <- res_ordered[, c("feature", "enrich_group", other_col)]
+    row.names(res_ordered) <- paste0("marker", seq_len(nrow(res_ordered)))
 
     # only keep five variables: feature, enrich_group, effect_size (logFC),
     # pvalue, and padj
     keep_var <- c("feature", "enrich_group", ef_name, "pvalue", "padj")
-    sig_feature <- sig_feature[keep_var]
-    names(sig_feature)[3] <- paste0("ef_", ef_name)
+    res_ordered <- res_ordered[keep_var]
+    names(res_ordered)[3] <- paste0("ef_", ef_name)
+    sig_res <-  res_ordered[!is.na(padj) & padj < pvalue_cutoff, ]
+    marker <- return_marker(sig_res, res_ordered)
 
     marker <- microbiomeMarker(
-        marker_table = marker_table(sig_feature),
+        marker_table = marker,
         norm_method = get_norm_method(norm),
         diff_method = paste0("DESeq2: ", test),
         sam_data = sample_data(ps_normed),

@@ -76,13 +76,8 @@ run_test_multiple_groups <- function(ps,
     pvalue_cutoff = 0.05,
     effect_size_cutoff = NULL) {
     stopifnot(inherits(ps, "phyloseq"))
-
-    if (!check_rank_names(ps)) {
-        stop(
-            "ranks of `ps` must be one of ",
-            paste(available_ranks, collapse = ", ")
-        )
-    }
+    ps <- check_rank_names(ps)
+    ps <- check_taxa_rank(ps, taxa_rank)
 
     p_adjust <- match.arg(
         p_adjust,
@@ -98,15 +93,7 @@ run_test_multiple_groups <- function(ps,
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
     # summarize
-    check_taxa_rank(ps, taxa_rank)
-    if (taxa_rank == "all") {
-        ps_summarized <- summarize_taxa(ps_normed)
-    } else if (taxa_rank == "none") {
-        ps_summarized <- extract_rank(ps_normed, taxa_rank)
-    } else {
-        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
+    ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
 
     feature <- tax_table(ps_summarized)@.Data[, 1]
     abd_norm <- abundances(ps_summarized, norm = TRUE) %>%

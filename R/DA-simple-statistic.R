@@ -91,7 +91,7 @@ run_simple_stat <- function(ps,
     nperm = 1000,
     ...) {
     stopifnot(inherits(ps, "phyloseq"))
-
+    
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     method <- match.arg(
         method,
