@@ -16,13 +16,12 @@
 #'   the heatmap, default `FALSE`.
 #' @param scale_by_row logical, controls whether to scale the heatmap by the
 #'  row (marker) values, default `FALSE`.
-#' @param use_gghue logical, controls whether to use the default ggplot2
-#'  palette, default `TRUE`.
+#' @param annotation_col assign colors for the top annotation using a named
+#'  vector, passed to `col` in [`ComplexHeatmap::HeatmapAnnotation()`].
 #' @param ... extra arguments passed to [`ComplexHeatmap::Heatmap()`].
 #' @export
 #' @seealso [`transform_abundances`],[`ComplexHeatmap::Heatmap()`]
 #' @importFrom ComplexHeatmap Heatmap HeatmapAnnotation
-#' @importFrom grDevices hcl
 #' @return a [`ComplexHeatmap::Heatmap-class`] object.
 #' @examples
 #' data(kostic_crc)
@@ -48,7 +47,7 @@ plot_heatmap <- function(mm,
     max_label_len = 60,
     sample_label = FALSE,
     scale_by_row = FALSE,
-    use_gghue = TRUE,
+    annotation_col = NULL,
     group,
     ...) {
     stopifnot(inherits(mm, c("microbiomeMarker", "marker_table")))
@@ -120,19 +119,16 @@ plot_heatmap <- function(mm,
         lgd_title <- "Row Z-score"
     }
 
-    if (use_gghue) {
-        hues <- gg_hue(length(group_lvl))
-        names(hues) <- group_lvl
-        col_hues <- list(Group = hues)
-   } else {
-       col_hues <- NULL
-   }
+    if (!is.null(annotation_col)) {
+        annotation_col <- list(Group = annotation_col)
+    }
 
-    p <- Heatmap(
+     p <- Heatmap(
         as.matrix(marker_abd),
         cluster_rows = cluster_marker,
         cluster_columns = cluster_sample,
-        top_annotation = HeatmapAnnotation(Group = column_nms, col = col_hues),
+        top_annotation = HeatmapAnnotation(Group = column_nms,
+         col = annotation_col),
         name = lgd_title,
         ...
     )
@@ -144,15 +140,7 @@ plot_heatmap <- function(mm,
 #' @keywords internal
 #' @noRd
 scale_rows <- function(x) {
-    m <- apply(x, 1, mean, na.rm = T)
-    s <- apply(x, 1, sd, na.rm = T)
+    m = apply(x, 1, mean, na.rm = TRUE)
+    s = apply(x, 1, sd, na.rm = TRUE)
     return((x - m) / s)
     }
-
-#' Generate ggplot2 palette
-#' @keywords internal
-#' @noRd
-gg_hue <- function(n) {
-  hues <- seq(15, 375, length = n + 1)
-  hcl(h <- hues, l = 65, c = 100)[1:n]
-}

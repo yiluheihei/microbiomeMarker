@@ -14,7 +14,7 @@ plot_heatmap(
   max_label_len = 60,
   sample_label = FALSE,
   scale_by_row = FALSE,
-  use_gghue = TRUE,
+  annotation_col = NULL,
   group,
   ...
 )
@@ -49,8 +49,8 @@ the heatmap, default \code{FALSE}.}
 \item{scale_by_row}{logical, controls whether to scale the heatmap by the
 row (marker) values, default \code{FALSE}.}
 
-\item{use_gghue}{logical, controls whether to use the default ggplot2
-palette, default \code{TRUE}.}
+\item{annotation_col}{assign colors for the top annotation using a named
+vector, passed to \code{col} in \code{\link[ComplexHeatmap:HeatmapAnnotation]{ComplexHeatmap::HeatmapAnnotation()}}.}
 
 \item{group}{character, the variable to set the group}
 
