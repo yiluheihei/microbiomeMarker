@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Assign marker_table to object — marker_table&lt;- • microbiomeMarker</title>
+<title>Import function to read the output of picrust2 as phyloseq object — import_picrust2 • microbiomeMarker</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Assign marker_table to object — marker_table&lt;-" />
-<meta property="og:description" content="This function replace the marker_table slot of object with value." />
+<meta property="og:title" content="Import function to read the output of picrust2 as phyloseq object — import_picrust2" />
+<meta property="og:description" content="Import the output of picrust2 into phyloseq object" />
 
 
 
@@ -123,66 +123,72 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Assign marker_table to <code>object</code></h1>
-    <small class="dont-index">Source: <a href='https://github.com/yiluheihei/microbiomeMarker/blob/master/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
-    <div class="hidden name"><code>assign-marker_table.Rd</code></div>
+    <h1>Import function to read the output of picrust2 as phyloseq object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/yiluheihei/microbiomeMarker/blob/master/R/import-picrust2.R'><code>R/import-picrust2.R</code></a></small>
+    <div class="hidden name"><code>import_picrust2.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function replace the <code>marker_table</code> slot of <code>object</code> with <code>value</code>.</p>
+    <p>Import the output of picrust2 into phyloseq object</p>
     </div>
 
-    <pre class="usage"><span class='fu'><a href='marker_table.html'>marker_table</a></span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>value</span></pre>
+    <pre class="usage"><span class='fu'>import_picrust2</span><span class='op'>(</span>
+  <span class='va'>feature_tab</span>,
+  sam_tab <span class='op'>=</span> <span class='cn'>NULL</span>,
+  trait <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/S4Vectors/man/Vector-class.html'>c</a></span><span class='op'>(</span><span class='st'>"PATHWAY"</span>, <span class='st'>"COG"</span>, <span class='st'>"EC"</span>, <span class='st'>"KO"</span>, <span class='st'>"PFAM"</span>, <span class='st'>"TIGRFAM"</span>, <span class='st'>"PHENO"</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>a <code><a href='microbiomeMarker-class.html'>microbiomeMarker</a></code> object to modify.</p></td>
+      <th>feature_tab</th>
+      <td><p>character, file path of the prediction abundance table of
+functional feature.</p></td>
     </tr>
     <tr>
-      <th>value</th>
-      <td><p>new value to replace the <code>marker_table</code> slot of <code>object</code>.
-Either a <code>marker_table-class</code>, a <code>data.frame</code> that can be coerced
-into <code>marker_table-class</code>.</p></td>
+      <th>sam_tab</th>
+      <td><p>character, file path of the sample meta data.</p></td>
+    </tr>
+    <tr>
+      <th>trait</th>
+      <td><p>character, options are picrust2 function traits (including
+"COG", "EC", "KO", "PFAM", "TIGRFAM", and "PHENO") and "PATHWAY".</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a <code><a href='microbiomeMarker-class.html'>microbiomeMarker</a></code> object.</p>
+    <p><code><a href='https://rdrr.io/pkg/phyloseq/man/phyloseq-class.html'>phyloseq::phyloseq</a></code> object.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><a href='https://huttenhower.sph.harvard.edu/picrust/'>PICRUSt2</a> is a software for
+predicting abundances of functional profiles based on marker gene sequencing
+data. The functional profiles can be predicted from the taxonomic
+profiles using PICRUSt2. "Function" usually refers to gene families such as
+KEGG orthologs and Enzyme Classification numbers, but predictions can be
+made for any arbitrary trait.</p>
+<p>In the <code>phyloseq object</code>, the predicted function abundance profile is stored
+in <code>otu_table</code> slot. And the functional trait is saved in <code>tax_table</code> slot,
+if the descriptions of function features is not added to the predicted table,
+<code>tax_table</code> will have only one rank <code>Picrust_trait</code> to represent the function
+feature id, or if the desciptions are added one more rank
+<code>Picrust_description</code> will be added to represent the description of
+function feature.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>enterotypes_arumugam</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>mm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='run_limma_voom.html'>run_limma_voom</a></span><span class='op'>(</span></span>
-<span class='r-in'>    <span class='va'>enterotypes_arumugam</span>,</span>
-<span class='r-in'>    <span class='st'>"Enterotype"</span>,</span>
-<span class='r-in'>    contrast <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Enterotype 3"</span>, <span class='st'>"Enterotype 2"</span><span class='op'>)</span>,</span>
-<span class='r-in'>    pvalue_cutoff <span class='op'>=</span> <span class='fl'>0.1</span>,</span>
-<span class='r-in'>    p_adjust <span class='op'>=</span> <span class='st'>"fdr"</span></span>
-<span class='r-in'><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>row names of contrasts don't match col names of coefficients</span>
-<span class='r-in'><span class='va'>mm_marker</span> <span class='op'>&lt;-</span> <span class='fu'><a href='marker_table.html'>marker_table</a></span><span class='op'>(</span><span class='va'>mm</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>mm_marker</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Object of class "marker_table"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>                                   feature enrich_group  ef_logFC       pvalue</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> marker1    p__Bacteroidetes|g__Prevotella Enterotype 2  5.821020 3.082538e-11</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> marker2 p__Verrucomicrobia|g__Akkermansia Enterotype 3 -8.620727 3.304924e-05</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> marker3                p__Verrucomicrobia Enterotype 3 -8.266833 6.741864e-05</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>                 padj</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> marker1 7.521392e-09</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> marker2 4.032007e-03</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> marker3 5.483383e-03</span>
-<span class='r-in'><span class='fu'><a href='marker_table.html'>marker_table</a></span><span class='op'>(</span><span class='va'>mm</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>mm_marker</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='op'>]</span></span>
-<span class='r-in'><span class='fu'><a href='marker_table.html'>marker_table</a></span><span class='op'>(</span><span class='va'>mm</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Object of class "marker_table"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>                                   feature enrich_group  ef_logFC       pvalue</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> marker1    p__Bacteroidetes|g__Prevotella Enterotype 2  5.821020 3.082538e-11</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> marker2 p__Verrucomicrobia|g__Akkermansia Enterotype 3 -8.620727 3.304924e-05</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>                 padj</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> marker1 7.521392e-09</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> marker2 4.032007e-03</span>
+    <pre class="examples"><span class='r-in'><span class='va'>sam_tab</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='st'>"extdata"</span>, <span class='st'>"picrust2_metadata.tsv"</span>,</span>
+<span class='r-in'>    package <span class='op'>=</span> <span class='st'>"microbiomeMarker"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>feature_tab</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='st'>"extdata"</span>, <span class='st'>"path_abun_unstrat_descrip.tsv.gz"</span>,</span>
+<span class='r-in'>    package <span class='op'>=</span> <span class='st'>"microbiomeMarker"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ps</span> <span class='op'>&lt;-</span> <span class='fu'>import_picrust2</span><span class='op'>(</span><span class='va'>feature_tab</span>, <span class='va'>sam_tab</span>, trait <span class='op'>=</span> <span class='st'>"PATHWAY"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ps</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> phyloseq-class experiment-level object</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> otu_table()   OTU Table:         [ 195 taxa and 24 samples ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> sample_data() Sample Data:       [ 24 samples by 3 sample variables ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> tax_table()   Taxonomy Table:    [ 195 taxa by 2 taxonomic ranks ]</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
