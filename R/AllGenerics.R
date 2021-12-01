@@ -29,6 +29,7 @@ setGeneric(
 #' @rdname marker_table-methods
 setMethod("marker_table", "data.frame", function(object) {
     mt <- new("marker_table", object)
+    row.names(mt) <- paste0("marker", seq_len(nrow(object)))
 
     mt
 })

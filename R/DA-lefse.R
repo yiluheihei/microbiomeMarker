@@ -111,14 +111,8 @@ run_lefse <- function(ps,
     if (!inherits(ps, "phyloseq")) {
         stop("`ps` must be phyloseq object", call. = FALSE)
     }
-
-    if (!check_rank_names(ps)) {
-        stop(
-            "ranks of `ps` must be one of ",
-            paste(available_ranks, collapse = ", ")
-        )
-    }
-
+    
+    ps <- check_rank_names(ps)
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     strict <- match.arg(strict, c("0", "1", "2"))
     strict <- as.numeric(strict)

@@ -9,20 +9,34 @@ check_tax_summarize <- function(ps) {
     has_separate
 }
 
+
+# whether picrust functional profile
+is_picrust2 <- function(ps) {
+    ps_ranks <- rank_names(ps)
+    if ("Picrust_trait" %in% ps_ranks) TRUE else FALSE
+}
+
 #' check whether all names of taxonomic ranks include in available_ranks
 #' @noRd
 check_rank_names <- function(ps) {
-    summarized <- check_tax_summarize(ps)
-    if (summarized) {
-        return(TRUE)
-    }
-
     ps_ranks <- rank_names(ps)
-    if (!all(ps_ranks %in% available_ranks)) {
-        return(FALSE)
+    if (is_picrust2(ps)) {
+        picrust_rank <- c("Picrust_trait", "Picrust_description")
+        diff_rank <- setdiff(ps_ranks, picrust_rank)
+        if (length(diff_rank)) {
+            stop("ranks of picrust2 functional profile must be one of ",
+                 paste(picrust_rank, collapse = ", "))
+        }
     } else {
-        return(TRUE)
+        if (!all(ps_ranks %in% available_ranks)) {
+            stop(
+                "ranks of taxonimic profile must be one of ",
+                paste(available_ranks, collapse = ", ")
+            )
+        }
     }
+    
+    invisible(ps)
 }
 
 #' only first letter in lower case
@@ -204,14 +218,6 @@ fix_na_tax <- function(ps) {
 
 # extract the prefix of taxonomic ranks
 get_prefix <- function(ranks) {
-    diff_ranks <- setdiff(ranks, available_ranks)
-    if (length(diff_ranks) != 0) {
-        stop(
-            "ranks must be one of Kingdom, Phylum,",
-            " Class, Order, Family, Genus, Species",
-            call. = FALSE
-        )
-    }
     prefix <- substr(ranks, 1, 1) %>%
         tolower() %>%
         paste("__", sep = "")
@@ -394,14 +400,6 @@ extract_rank <- function(ps, taxa_rank) {
 # taxonomic rank to perform differential analysis on
 check_taxa_rank <- function(ps, taxa_rank) {
     ranks <- rank_names(ps)
-    if (!all(ranks %in% available_ranks)) {
-        stop(
-            "`rank_names(ps)` must be one of ",
-            paste(available_ranks, collapse = ", "),
-            call. = FALSE
-        )
-    }
-
     all_taxa_rank <- c("all", "none", ranks)
     if (!taxa_rank %in% all_taxa_rank) {
         stop(
@@ -414,10 +412,33 @@ check_taxa_rank <- function(ps, taxa_rank) {
     invisible(ps)
 }
 
+# preprocess the ps according to para taxa_rank
+pre_ps_taxa_rank <- function(ps, taxa_rank) {
+    if (is_picrust2(ps)) {
+        warning("para `taxa_rank`is ignored, ",
+                "is not worked for picrust2 function profile")
+        return(ps)
+    }
+    
+    ps <- check_taxa_rank(ps, taxa_rank)
+    if (taxa_rank == "all") {
+        ps_orig_summarized <- summarize_taxa(ps)
+    } else if (taxa_rank == "none") {
+        ps_orig_summarized <- extract_rank(ps, taxa_rank)
+    } else {
+        ps_orig_summarized <- aggregate_taxa(ps, taxa_rank) %>%
+            extract_rank(taxa_rank)
+    }
+    
+    return(ps_orig_summarized)
+}
+
 # return the marker_table, if no significant marker return all the features
 return_marker <- function(sig_feature, all_feature) {
     if (nrow(sig_feature)) {
+        row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
         marker <- marker_table(sig_feature)
+        
     } else {
         warning(
             "No significant feature identified, return all the features",
@@ -484,9 +505,5 @@ create_ps_from_mm <- function(mm, only_marker = TRUE) {
     ps <- phyloseq(ot, tt, st)
     
     ps
-}
-
-# a <- strsplit(mt$feature, "|", fixed = TRUE)
-# 
-# vapply(seq_along(a[[1]]), function(y) paste(a[[1]][1:y], collapse = "|"), "")
+} 
 

@@ -76,13 +76,7 @@ run_test_multiple_groups <- function(ps,
     pvalue_cutoff = 0.05,
     effect_size_cutoff = NULL) {
     stopifnot(inherits(ps, "phyloseq"))
-
-    if (!check_rank_names(ps)) {
-        stop(
-            "ranks of `ps` must be one of ",
-            paste(available_ranks, collapse = ", ")
-        )
-    }
+    ps <- check_rank_names(ps)
 
     p_adjust <- match.arg(
         p_adjust,
