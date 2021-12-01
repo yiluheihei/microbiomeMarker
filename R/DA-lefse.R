@@ -189,6 +189,7 @@ run_lefse <- function(ps,
     sig_otus <- sig_otus[, wilcoxon_p]
     
     if (ncol(sig_otus) == 0) {
+        warning("No marker was identified", call. = FALSE)
         mm <- microbiomeMarker(
             marker_table = NULL,
             norm_method = get_norm_method(norm),

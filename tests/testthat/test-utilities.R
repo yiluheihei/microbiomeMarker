@@ -197,8 +197,10 @@ test_that("create contrast", {
 test_that("marker_table, if no significant marker return all the features", {
     sig_ft1 <- data.frame()
     ft <- data.frame(feature = letters[1:3], ef = runif(3))
-    expect_warning(return_marker(sig_ft1, ft), "No significant feature")
-    expect_identical(marker_table(ft), return_marker(sig_ft1, ft))
+    expect_warning(
+        marker_null <- return_marker(sig_ft1, ft), 
+        "No marker was identified")
+    expect_identical(NULL, marker_null)
 
     sig_ft2 <- data.frame(feature = "a", ef = 1)
     expect_identical(marker_table(sig_ft2), return_marker(sig_ft2, ft))

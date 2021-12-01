@@ -440,11 +440,8 @@ return_marker <- function(sig_feature, all_feature) {
         marker <- marker_table(sig_feature)
         
     } else {
-        warning(
-            "No significant feature identified, return all the features",
-            call. = FALSE
-        )
-        marker <- marker_table(all_feature)
+        warning("No marker was identified", call. = FALSE)
+        marker <- NULL
     }
 
     marker

@@ -130,6 +130,9 @@ run_metagenomeseq <- function(ps,
     ),
     pvalue_cutoff = 0.05,
     ...) {
+    ps <- check_rank_names(ps) %>% 
+        check_taxa_rank(taxa_rank)
+    
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     method <- match.arg(method, c("ZILN", "ZIG"))
     p_adjust <- match.arg(
@@ -177,16 +180,7 @@ run_metagenomeseq <- function(ps,
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
 
-    # check taxa_rank
-    check_taxa_rank(ps, taxa_rank)
-    if (taxa_rank == "all") {
-        ps_summarized <- summarize_taxa(ps_normed)
-    } else if (taxa_rank == "none") {
-        ps_summarized <- extract_rank(ps_normed, taxa_rank)
-    } else {
-        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
+    ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
     mgs_summarized <- phyloseq2metagenomeSeq(ps_summarized)
 
     # extract norm factors and set the norm factors of MRexperiment
@@ -298,34 +292,23 @@ run_metagenomeseq <- function(ps,
         }
         res$enrich_group <- enrich_group
     }
-
-    res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
-
-    # write a function
-    if (nrow(res_filtered) == 0) {
-        warning("No significant features were found, return all the features")
-        sig_feature <- cbind(feature = row.names(res), res)
-    } else {
-        sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
-    }
-
-    # only keep five variables: feature, enrich_group, effect_size (e.g. logFC),
-    # pvalue, and padj
-    sig_feature <- sig_feature[, c(
+    res <- cbind(feature = row.names(res), res)
+    res <- res[, c(
         "feature", "enrich_group",
         ef_var, "pvalue", "padj"
     )]
-    row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+    row.names(res) <- paste0("marker", seq_len(nrow(res)))
 
     # rename the ef
-    names(sig_feature)[3] <- ifelse(
+    names(res)[3] <- ifelse(
         ef_var %in% c("logFC", "F"),
         paste0("ef_", ef_var),
         paste0("ef_", "coef")
     )
-
+    sig_res <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
+    marker <- return_marker(sig_res, res)
     marker <- microbiomeMarker(
-        marker_table = marker_table(sig_feature),
+        marker_table = marker,
         norm_method = get_norm_method(norm),
         diff_method = paste0("metagenomeSeq: ", method),
         otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE),

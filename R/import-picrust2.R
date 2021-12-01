@@ -55,7 +55,7 @@ import_picrust2 <- function(feature_tab,
     name_prefix <- ifelse(trait == "PATHWAY", "path", "func")
     n_feature <- nrow(feature_tab)
     feature_nms <- paste0(name_prefix, seq_len(n_feature))
-    row.names(tax_mat) <- feature_nms
+    row.names(tax_mat) <- tax_mat[, 1]
     colnames(tax_mat) <- tax_rank
     tax_tab <- tax_table(tax_mat)
     
@@ -66,7 +66,7 @@ import_picrust2 <- function(feature_tab,
     
     # set the names of the feature
     feature_tab <- feature_tab[setdiff(feature_tab_vars, tax_var)]
-    row.names(feature_tab) <- feature_nms
+    row.names(feature_tab) <- tax_mat[, 1]
     colnames(feature_tab) <- rownames(sam_tab)
     
     ps <- phyloseq(otu_table(as.matrix(feature_tab), taxa_are_rows = TRUE),

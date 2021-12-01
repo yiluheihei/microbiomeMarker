@@ -124,6 +124,8 @@ run_ancombc <- function(ps,
     conserve = FALSE,
     pvalue_cutoff = 0.05) {
     stopifnot(inherits(ps, "phyloseq"))
+    ps <- check_rank_names(ps) %>% 
+        check_taxa_rank( taxa_rank)
 
     # check whether group is valid, write a function
     sample_meta <- sample_data(ps)
@@ -179,17 +181,7 @@ run_ancombc <- function(ps,
     # normalize the data
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
-    # summarize data
-    # check taxa_rank
-    check_taxa_rank(ps, taxa_rank)
-    if (taxa_rank == "all") {
-        ps_summarized <- summarize_taxa(ps_normed)
-    } else if (taxa_rank == "none") {
-        ps_summarized <- extract_rank(ps_normed, taxa_rank)
-    } else {
-        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
+    ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
 
     global <- ifelse(n_lvl > 2, TRUE, FALSE)
     # ancombc differential abundance analysis
