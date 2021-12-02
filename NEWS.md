@@ -1,5 +1,7 @@
 # microbiomeMarker (development version)
 
++ Add two new arguments in `plot_heatmap()` `scale_by_row` and `annotation_col`
+to improve heatmap viaualization, #52.
 + Set slot `marker_table` to `NULL` if no marker was identified.
 + Add new import function `import_picrust2()` to import prediction functional
 table from PICRUSt2, and all DA functions support for PICRUSt2 output data.

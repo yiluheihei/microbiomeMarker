@@ -140,7 +140,7 @@ plot_heatmap <- function(mm,
 #' @keywords internal
 #' @noRd
 scale_rows <- function(x) {
-    m = apply(x, 1, mean, na.rm = TRUE)
-    s = apply(x, 1, sd, na.rm = TRUE)
+    m <- apply(x, 1, mean, na.rm = TRUE)
+    s <- apply(x, 1, sd, na.rm = TRUE)
     return((x - m) / s)
     }
