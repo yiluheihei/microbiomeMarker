@@ -143,6 +143,8 @@ marker and columns represents the samples.</p>
   label_level <span class='op'>=</span> <span class='fl'>1</span>,
   max_label_len <span class='op'>=</span> <span class='fl'>60</span>,
   sample_label <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  scale_by_row <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  annotation_col <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>group</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
@@ -188,6 +190,16 @@ default <code>60</code></p></td>
       <th>sample_label</th>
       <td><p>logical, controls whether to show the sample labels in
 the heatmap, default <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>scale_by_row</th>
+      <td><p>logical, controls whether to scale the heatmap by the
+row (marker) values, default <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>annotation_col</th>
+      <td><p>assign colors for the top annotation using a named
+vector, passed to <code>col</code> in <code><a href='https://rdrr.io/pkg/ComplexHeatmap/man/HeatmapAnnotation.html'>ComplexHeatmap::HeatmapAnnotation()</a></code>.</p></td>
     </tr>
     <tr>
       <th>group</th>
