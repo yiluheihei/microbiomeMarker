@@ -21,17 +21,7 @@ test_that("test two group result", {
         group = "Gender",
         method = "t.test"
     )
+    expect_snapshot(mm_welch)
 
-
-    expect_known_output(
-        mm_welch,
-        test_path("out/test-two-group-test-welch.txt"),
-        print = TRUE
-    )
-
-    expect_known_output(
-        mm_t,
-        test_path("out/test-two-group-test-t.txt"),
-        print = TRUE
-    )
+    expect_snapshot(mm_t)
 })

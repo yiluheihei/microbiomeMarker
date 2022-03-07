@@ -11,10 +11,6 @@ test_that("limma voom", {
         pvalue_cutoff = 0.05,
         p_adjust = "fdr"
     )
-
-    expect_output_file(
-        print(marker_table(mm_lv), digits = 5),
-        test_path("out/test-lv.txt"),
-        print = TRUE
-    )
+    
+    expect_snapshot(print(marker_table(mm_lv), digits = 5))
 })

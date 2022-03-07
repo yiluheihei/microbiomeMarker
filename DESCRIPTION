@@ -1,6 +1,6 @@
 Package: microbiomeMarker
 Title: microbiome biomarker analysis toolkit
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: 
     person(given = "Yang",
            family = "Cao",
@@ -71,3 +71,4 @@ Suggests:
     rmarkdown,
     BiocStyle
 VignetteBuilder: knitr
+Config/testthat/edition: 3

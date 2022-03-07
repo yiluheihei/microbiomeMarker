@@ -146,7 +146,9 @@ microbiomeMarker <- function(marker_table = NULL,
     }
 
     # set the rownmaes of marker_table as "markern"
-    rownames(marker_table) <- paste0("marker", seq_len(nrow(marker_table)))
+    if (!is.null(marker_table)) {
+        rownames(marker_table) <- paste0("marker", seq_len(nrow(marker_table)))
+    }
 
     new(
         "microbiomeMarker",

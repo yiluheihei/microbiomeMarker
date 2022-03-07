@@ -91,6 +91,9 @@ run_aldex <- function(ps,
     denom = c("all", "iqlr", "zero", "lvha"),
     paired = FALSE) {
     stopifnot(inherits(ps, "phyloseq"))
+    ps <- check_rank_names(ps) %>% 
+        check_taxa_rank( taxa_rank)
+    
     denom <- match.arg(denom, c("all", "iqlr", "zero", "lvha"))
     p_adjust <- match.arg(
         p_adjust,
@@ -130,19 +133,7 @@ run_aldex <- function(ps,
     # normalize the data
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
-
-    # summarize data
-    # create a function, extract_summarize
-    # check taxa_rank
-    check_taxa_rank(ps, taxa_rank)
-    if (taxa_rank == "all") {
-        ps_summarized <- summarize_taxa(ps_normed)
-    } else if (taxa_rank == "none") {
-        ps_summarized <- extract_rank(ps_normed, taxa_rank)
-    } else {
-        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
+    ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
     groups <- sample_meta[[group]]
     abd <- abundances(ps_summarized, norm = TRUE)
 

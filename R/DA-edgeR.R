@@ -111,6 +111,8 @@ run_edger <- function(ps,
     ),
     pvalue_cutoff = 0.05,
     ...) {
+    ps <- check_rank_names(ps) %>% 
+        check_taxa_rank( taxa_rank)
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     method <- match.arg(method, c("LRT", "QLFT"))
     p_adjust <- match.arg(
@@ -138,16 +140,7 @@ run_edger <- function(ps,
     ps_normed <- do.call(normalize, norm_para)
 
     # summarize data and  add norm.factors var to samples of DGEList
-    # check taxa_rank
-    check_taxa_rank(ps, taxa_rank)
-    if (taxa_rank == "all") {
-        ps_summarized <- summarize_taxa(ps_normed)
-    } else if (taxa_rank == "none") {
-        ps_summarized <- extract_rank(ps_normed, taxa_rank)
-    } else {
-        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
+    ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
     dge_summarized <- phyloseq2edgeR(ps_summarized)
 
     nf <- get_norm_factors(ps_normed)
@@ -216,24 +209,17 @@ run_edger <- function(ps,
     } else {
         enrich_group <- ifelse(res$logFC > 0, lvl[2], lvl[1])
     }
-
     res$enrich_group <- enrich_group
 
-    res_filtered <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
-    # edgeR::decideTestsDGE(), dentify which genes are significantly
+    # edgeR::decideTestsDGE(), identify which genes are significantly
     # differentially expressed from an edgeR fit object containing p-values and
     # test statistics.
-
-    if (nrow(res_filtered) == 0) {
-        warning("No significant features were found, return all the features")
-        sig_feature <- cbind(feature = row.names(res), res)
-    } else {
-        sig_feature <- cbind(feature = row.names(res_filtered), res_filtered)
-    }
+    
     # first two columns: feature enrich_group (write a function)
-    other_col <- setdiff(names(sig_feature), c("feature", "enrich_group"))
-    sig_feature <- sig_feature[, c("feature", "enrich_group", other_col)]
-    row.names(sig_feature) <- paste0("marker", seq_len(nrow(sig_feature)))
+    res <- cbind(feature = row.names(res), res)
+    other_col <- setdiff(names(res), c("feature", "enrich_group"))
+    res <- res[, c("feature", "enrich_group", other_col)]
+    row.names(res) <- paste0("marker", seq_len(nrow(res)))
 
     # var of effect size: named as ef_<name> of the actual effect size,
     # two groups: logFC, multiple groups: F for QLFT method, LR for LFT method
@@ -251,11 +237,13 @@ run_edger <- function(ps,
     # F for QLFT), pvalue, and padj, write a function? select_marker_var
     # (effect_size = "")
     keep_var <- c("feature", "enrich_group", ef_name, "pvalue", "padj")
-    sig_feature <- sig_feature[keep_var]
-    names(sig_feature)[3] <- paste0("ef_", ef_name)
+    res <- res[keep_var]
+    names(res)[3] <- paste0("ef_", ef_name)
+    sig_res <- res[res$padj < pvalue_cutoff & !is.na(res$padj), ]
+    marker <- return_marker(sig_res, res)
 
     marker <- microbiomeMarker(
-        marker_table = marker_table(sig_feature),
+        marker_table = marker,
         norm_method = get_norm_method(norm),
         diff_method = paste("edgeR:", method),
         sam_data = sample_data(ps_normed),

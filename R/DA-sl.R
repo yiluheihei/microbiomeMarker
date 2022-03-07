@@ -117,6 +117,8 @@ run_sl <- function(ps,
             call. = FALSE
         )
     }
+    ps <- check_rank_names(ps)
+    ps <- check_taxa_rank(ps, taxa_rank)
 
     # In current version, sl just for two groups comparisons
     groups <- sample_meta[[group]]
@@ -152,18 +154,7 @@ run_sl <- function(ps,
     ps_normed <- do.call(normalize, norm_para)
 
     # summarize data
-    # create a function, extract_summarize
-    # check taxa_rank
-    check_taxa_rank(ps, taxa_rank)
-    if (taxa_rank == "all") {
-        ps_summarized <- summarize_taxa(ps_normed)
-    } else if (taxa_rank == "none") {
-        ps_summarized <- extract_rank(ps_normed, taxa_rank)
-    } else {
-        ps_summarized <- aggregate_taxa(ps_normed, taxa_rank) %>%
-            extract_rank(taxa_rank)
-    }
-
+    ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
     counts_tab <- abundances(ps_summarized, norm = TRUE)
     tax_tab <- as.data.frame(tax_table(ps_summarized))
     # in the animalcules, the counts were transferred as cpm, counts per million
@@ -180,6 +171,7 @@ run_sl <- function(ps,
 
     # transpose for modeling train
     counts_tab <- transpose_and_2df(counts_tab)
+    colnames(counts_tab) <- tax_tab[, 1]
 
     # filter zero or near zero-variance predictors
     # https://topepo.github.io/caret/pre-processing.html#nzv
@@ -235,15 +227,17 @@ run_sl <- function(ps,
     marker$enrich_group <- enrich_group
     marker <- marker[c("feature", "enrich_group", "imp")]
     names(marker) <- c("feature", "enrich_group", "ef_imp")
-
+    ot <- otu_table(t(counts_tab), taxa_are_rows = TRUE)
+    tt <- tax_table(ps_summarized)
+    row.names(ot) <- row.names(tt)
 
     mm <- microbiomeMarker(
         marker_table = marker_table(marker),
         norm_method = get_norm_method(norm),
         diff_method = full_method,
-        otu_table = otu_table(t(counts_tab), taxa_are_rows = TRUE),
+        otu_table = ot,
         sam_data = sample_data(ps_summarized),
-        tax_table = tax_table(ps_summarized)
+        tax_table = tt
     )
 
     mm

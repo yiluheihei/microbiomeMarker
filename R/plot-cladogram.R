@@ -10,10 +10,11 @@
 #'   based on the names instead.
 #' @param only_marker logical, whether show all the features or only 
 #'   markers in the cladogram, default `FALSE`.
-#' @param branch_size numberic, size of branch, default `0.2`
+#' @param branch_size numeric, size of branch, default `0.2`
 #' @param alpha alpha parameter for shading, default `0.2`
 #' @param clade_label_level max level of taxa used to label the clade, other
-#' level of taxa  will be shown on the side
+#' level of taxa  will be shown on the side.
+#' @param clade_label_font_size font size of the clade label, default 4.
 #' @param node_size_scale the parameter 'a' controlling node size:
 #' `node_size=a*log(relative_abundance) + b`
 ##' @param node_size_offset the parameter 'b' controlling node size:
@@ -56,6 +57,7 @@ plot_cladogram <- function(mm,
     node_size_scale = 1,
     node_size_offset = 1,
     clade_label_level = 4,
+    clade_label_font_size = 4,
     annotation_shape = 22,
     annotation_shape_size = 5,
     group_legend_param = list(),
@@ -134,7 +136,7 @@ plot_cladogram <- function(mm,
         offset = get_offset(.data$level) - 0.4,
         angle = purrr::map_dbl(.data$id, get_angle, tree = tree) + 90,
         label = .data$label,
-        fontsize = 1.5 + sqrt(.data$level),
+        fontsize = clade_label_font_size,
         barsize = 0,
         hjust = 0.5,
         level = .data$level
@@ -403,7 +405,7 @@ set_marker_annotation <- function(p,
             aes_(x = 0, y = 0, shape = ~label),
             size = 0, stroke = 0,
         ) +
-        scale_shape_manual(values = rep(shape, nrow(dat))) +
+        scale_shape_manual(values = rep(shape, nrow(dat)), limits = dat$label) +
         guides(
             shape = guide_legend(
                 override.aes = list(

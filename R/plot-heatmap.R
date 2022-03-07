@@ -14,6 +14,10 @@
 #'  clustering in markers (rows) and samples (cols), default `FALSE`.
 #' @param sample_label logical, controls whether to show the sample labels in
 #'   the heatmap, default `FALSE`.
+#' @param scale_by_row logical, controls whether to scale the heatmap by the
+#'  row (marker) values, default `FALSE`.
+#' @param annotation_col assign colors for the top annotation using a named
+#'  vector, passed to `col` in [`ComplexHeatmap::HeatmapAnnotation()`].
 #' @param ... extra arguments passed to [`ComplexHeatmap::Heatmap()`].
 #' @export
 #' @seealso [`transform_abundances`],[`ComplexHeatmap::Heatmap()`]
@@ -42,6 +46,8 @@ plot_heatmap <- function(mm,
     label_level = 1,
     max_label_len = 60,
     sample_label = FALSE,
+    scale_by_row = FALSE,
+    annotation_col = NULL,
     group,
     ...) {
     stopifnot(inherits(mm, c("microbiomeMarker", "marker_table")))
@@ -78,6 +84,10 @@ plot_heatmap <- function(mm,
     }
 
     abd <- as(otu_table(mm), "matrix")
+    if (scale_by_row) {
+        abd <- scale_rows(abd)
+    }
+
     marker_abd <- abd[match(marker$feature, row.names(abd)), ] %>%
         as.data.frame()
 
@@ -105,15 +115,32 @@ plot_heatmap <- function(mm,
         lgd_title <- "Log10 Abundance"
     }
 
+    if (scale_by_row) {
+        lgd_title <- "Row Z-score"
+    }
 
-    p <- Heatmap(
+    if (!is.null(annotation_col)) {
+        annotation_col <- list(Group = annotation_col)
+    }
+
+     p <- Heatmap(
         as.matrix(marker_abd),
         cluster_rows = cluster_marker,
         cluster_columns = cluster_sample,
-        top_annotation = HeatmapAnnotation(Group = column_nms),
+        top_annotation = HeatmapAnnotation(Group = column_nms,
+         col = annotation_col),
         name = lgd_title,
         ...
     )
 
     p
 }
+
+#' Scale the heatmap by the row (marker) values
+#' @keywords internal
+#' @noRd
+scale_rows <- function(x) {
+    m <- apply(x, 1, mean, na.rm = TRUE)
+    s <- apply(x, 1, sd, na.rm = TRUE)
+    return((x - m) / s)
+    }

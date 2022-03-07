@@ -1,7 +1,0 @@
-          xmin         xmax y_position annotation           feature
-1 Enterotype 2 Enterotype 1    0.13116        NS. p__Actinobacteria
-2 Enterotype 3 Enterotype 1     0.2694        NS. p__Actinobacteria
-3 Enterotype 3 Enterotype 2    0.29804        NS. p__Actinobacteria
-4 Enterotype 2 Enterotype 1    0.57527        NS.  p__Bacteroidetes
-5 Enterotype 3 Enterotype 1    0.63693        ***  p__Bacteroidetes
-6 Enterotype 3 Enterotype 2    0.56712         **  p__Bacteroidetes

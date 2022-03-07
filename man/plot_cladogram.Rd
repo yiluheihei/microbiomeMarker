@@ -13,6 +13,7 @@ plot_cladogram(
   node_size_scale = 1,
   node_size_offset = 1,
   clade_label_level = 4,
+  clade_label_font_size = 4,
   annotation_shape = 22,
   annotation_shape_size = 5,
   group_legend_param = list(),
@@ -30,7 +31,7 @@ based on the names instead.}
 \item{only_marker}{logical, whether show all the features or only
 markers in the cladogram, default \code{FALSE}.}
 
-\item{branch_size}{numberic, size of branch, default \code{0.2}}
+\item{branch_size}{numeric, size of branch, default \code{0.2}}
 
 \item{alpha}{alpha parameter for shading, default \code{0.2}}
 
@@ -41,7 +42,9 @@ markers in the cladogram, default \code{FALSE}.}
 \code{node_size=a*log(relative_abundance) + b}}
 
 \item{clade_label_level}{max level of taxa used to label the clade, other
-level of taxa  will be shown on the side}
+level of taxa  will be shown on the side.}
+
+\item{clade_label_font_size}{font size of the clade label, default 4.}
 
 \item{annotation_shape}{shape used for annotation, default \code{22}}
 

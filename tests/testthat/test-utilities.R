@@ -7,19 +7,22 @@ test_that("check upper first letter", {
     )
 })
 
-test_that("check whether taxonomic ranks include in available_ranks", {
-    ps <- phyloseq::phyloseq(
-        otu_table = otu_table(
-            matrix(
-                sample(100, 40),
-                nrow = 4,
-                dimnames = list(
-                    paste0("otu", 1:4),
-                    paste0("sample", 1:10)
-                )
-            ),
-            taxa_are_rows = TRUE
+test_that("check rank names and para `taxa_rank`", {
+    ## check rank names
+    # taxonomic profile
+    ot <- otu_table(
+        matrix(
+            sample(100, 40),
+            nrow = 4,
+            dimnames = list(
+                paste0("otu", 1:4),
+                paste0("sample", 1:10)
+            )
         ),
+        taxa_are_rows = TRUE
+    )
+    ps <- phyloseq::phyloseq(
+        otu_table = ot,
         tax_table = tax_table(
             matrix(
                 c(rep("g1", 4), rep(c("s1", "s2"), 2)),
@@ -29,17 +32,7 @@ test_that("check whether taxonomic ranks include in available_ranks", {
         )
     )
     ps2 <- phyloseq::phyloseq(
-        otu_table = otu_table(
-            matrix(
-                sample(100, 40),
-                nrow = 4,
-                dimnames = list(
-                    paste0("otu", 1:4),
-                    paste0("sample", 1:10)
-                )
-            ),
-            taxa_are_rows = TRUE
-        ),
+        otu_table = ot,
         tax_table = tax_table(
             matrix(
                 c(rep("g1", 4), rep(c("s1", "s2"), 2)),
@@ -48,9 +41,59 @@ test_that("check whether taxonomic ranks include in available_ranks", {
             )
         )
     )
-    expect_true(check_rank_names(ps))
-
-    expect_false(check_rank_names(ps2))
+    
+    expect_invisible(check_rank_names(ps))
+    expect_error(check_rank_names(ps2), "ranks of taxonimic profile")
+    
+    # picrust2 functional profile
+    ot_picrust2 <- otu_table(
+        matrix(
+            sample(100, 40),
+            nrow = 4,
+            dimnames = list(
+                paste0("path", 1:4),
+                paste0("sample", 1:10)
+            )
+        ),
+        taxa_are_rows = TRUE
+    )
+    
+    ps_picrust2 <- phyloseq::phyloseq(
+        otu_table = ot_picrust2,
+        tax_table = tax_table(
+            matrix(
+                c(rep("pathway", 4), paste("desp", 1:4)),
+                nrow = 4, byrow = FALSE,
+                dimnames = list(paste0("path", 1:4), 
+                                c("Picrust_trait", "Picrust_description"))
+            )
+        )
+    )
+    ps_picrust2_err <- phyloseq::phyloseq(
+        otu_table = ot_picrust2,
+        tax_table = tax_table(
+            matrix(
+                c(rep("pathway", 4), paste("desp", 1:4)),
+                nrow = 4, byrow = FALSE,
+                dimnames = list(paste0("path", 1:4), 
+                                c("Picrust_trait", "xxxx"))
+            )
+        )
+    )
+    expect_invisible(check_rank_names(ps_picrust2))
+    expect_error(check_rank_names(ps_picrust2_err), 
+                 "ranks of picrust2 functional profile")
+    
+    # check whether the ps is created from picrust2 or not
+    expect_true(is_picrust2(ps_picrust2))
+    expect_false(is_picrust2(ps))
+    
+    
+    ## check para `taxa_rank`
+    expect_invisible(check_taxa_rank(ps, "all"))
+    expect_invisible(check_taxa_rank(ps, "none"))
+    expect_invisible(check_taxa_rank(ps, "Genus"))
+    expect_error(check_taxa_rank(ps, "xxx"), "`taxa_rank` must be one of")
 })
 
 test_that(
@@ -59,11 +102,14 @@ test_that(
 )
 
 test_that("var in sample_data", {
+    st <- sample_data(
+        data.frame(group = paste("group", 1:3))
+    )
     expect_error(
-        check_var_in_meta("abc", sample_data(ecam)),
+        check_var_in_meta("abc", st),
         "variable of `sample_meta`"
     )
-    expect_silent(check_var_in_meta("delivery", sample_data(ecam)))
+    expect_silent(check_var_in_meta("group", st))
 })
 
 
@@ -151,11 +197,13 @@ test_that("create contrast", {
 test_that("marker_table, if no significant marker return all the features", {
     sig_ft1 <- data.frame()
     ft <- data.frame(feature = letters[1:3], ef = runif(3))
-    expect_warning(return_marker(sig_ft1, ft), "No significant feature")
-    expect_equal(marker_table(ft), return_marker(sig_ft1, ft))
+    expect_warning(
+        marker_null <- return_marker(sig_ft1, ft), 
+        "No marker was identified")
+    expect_identical(NULL, marker_null)
 
     sig_ft2 <- data.frame(feature = "a", ef = 1)
-    expect_equal(marker_table(sig_ft2), return_marker(sig_ft2, ft))
+    expect_identical(marker_table(sig_ft2), return_marker(sig_ft2, ft))
 })
 
 

@@ -45,9 +45,7 @@ setMethod(
 
         if (norm) {
             nf <- get_norm_factors(object)
-            if (is.null(nf)) {
-                warning("return the original feature table.", call. = FALSE)
-            } else {
+            if (!is.null(nf)) {
                 abd <- sweep(abd, 2, nf, "/")
             }
         }

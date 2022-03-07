@@ -68,13 +68,7 @@ run_posthoc_test <- function(ps,
         "scheffe", "welch_uncorrected"
     )) {
     stopifnot(inherits(ps, "phyloseq"))
-
-    if (!check_rank_names(ps)) {
-        stop(
-            "ranks of `ps` must be one of ",
-            paste(available_ranks, collapse = ", ")
-        )
-    }
+    ps <- check_rank_names(ps)
 
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     method <- match.arg(
