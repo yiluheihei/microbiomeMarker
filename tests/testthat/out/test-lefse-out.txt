@@ -1,7 +1,0 @@
-microbiomeMarker-class inherited from phyloseq-class
-normalization method:              [ CPM ]
-microbiome marker identity method: [ lefse ]
-marker_table() Marker Table:       [ 12 microbiome markers with 5 variables ]
-otu_table()    OTU Table:          [ 276 taxa and  177 samples ]
-sample_data()  Sample Data:        [ 177 samples by  71 sample variables ]
-tax_table()    Taxonomy Table:     [ 276 taxa by 1 taxonomic ranks ]

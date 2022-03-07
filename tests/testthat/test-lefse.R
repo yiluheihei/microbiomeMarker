@@ -1,5 +1,3 @@
-context("test lefse output")
-
 set.seed(2020)
 # lefse - lda
 data(kostic_crc)
@@ -17,17 +15,8 @@ mm_lefse <- run_lefse(
 )
 
 test_that("lefse output of oxygen", {
-    expect_known_output(
-        mm_lefse,
-        test_path("out/test-lefse-out.txt"),
-        print = TRUE
-    )
-
-    expect_known_output(
-        marker_table(mm_lefse),
-        test_path("out/test-lefse-out_marker.txt"),
-        print = TRUE
-    )
+    expect_snapshot(mm_lefse)
+    expect_snapshot(marker_table(mm_lefse))
 })
 
 test_that("create phyloseq object from microbiomeMarker object", {

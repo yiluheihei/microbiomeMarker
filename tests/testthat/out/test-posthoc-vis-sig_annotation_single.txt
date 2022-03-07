@@ -1,4 +1,0 @@
-          xmin         xmax y_position annotation
-1 Enterotype 2 Enterotype 1    0.54668        ***
-2 Enterotype 3 Enterotype 1    0.61035        ***
-3 Enterotype 3 Enterotype 2    0.30558        NS.

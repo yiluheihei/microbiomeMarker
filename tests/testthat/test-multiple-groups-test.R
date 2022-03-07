@@ -1,5 +1,3 @@
-context("test multiple group enterotype test")
-
 data(enterotypes_arumugam)
 enterotype <- phyloseq::subset_samples(
     enterotypes_arumugam,
@@ -24,14 +22,9 @@ test_that("test multiple group enterotype result", {
 })
 
 test_that("test post hoc test result", {
-    expect_known_output(
-        print(
-            tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]],
-            digits = 5
-        ),
-        test_path("out/posthoc-turkey.txt"),
-        print = TRUE
-    )
+    res_test <- tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]] %>% 
+        data.frame
+    expect_snapshot(print(res_test, digits = 5))
 })
 
 test_that("test visualization of post hoc test, p value significance level ", {
@@ -58,11 +51,7 @@ test_that(
             format = "g",
             digits = 5
         )
-        expect_known_output(
-            annotation_single,
-            test_path("out/test-posthoc-vis-sig_annotation_single.txt"),
-            print = TRUE
-        )
+        expect_snapshot(annotation_single)
 
         # all features
         annotation_all <- get_sig_annotation(tukey_res)
@@ -71,10 +60,6 @@ test_that(
             format = "g",
             digits = 5
         )
-        expect_known_output(
-            head(annotation_all),
-            test_path("out/test-posthoc-vis-sig_annotation.txt"),
-            print = TRUE
-        )
+        expect_snapshot(head(annotation_all))
     }
 )
