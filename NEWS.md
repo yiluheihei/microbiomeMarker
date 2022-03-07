@@ -12,7 +12,7 @@ table from PICRUSt2, and all DA functions support for PICRUSt2 output data.
 + Add a new argument `clade_label_font_size` in `plot_cladogram()` to specify 
 font size of clade label, #49.
 
-# microbiomeMarker  1.1.1
+# microbiomeMarker  1.1.1 (2020-03-07)
 
 + Add a para `only_marker` in `plot_cladogram` to specify whether only show the 
 markers or all features in the cladogram.
