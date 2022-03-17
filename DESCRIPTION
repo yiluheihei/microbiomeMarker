@@ -55,7 +55,8 @@ Imports:
     limma,
     ALDEx2,
     multtest,
-    plotROC
+    plotROC,
+    vegan
 Encoding: UTF-8
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
@@ -69,6 +70,7 @@ Suggests:
     ranger,
     knitr,
     rmarkdown,
-    BiocStyle
+    BiocStyle,
+    withr
 VignetteBuilder: knitr
 Config/testthat/edition: 3

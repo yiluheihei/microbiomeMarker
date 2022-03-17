@@ -1,17 +1,18 @@
-set.seed(2020)
 # lefse - lda
 data(kostic_crc)
 kostic_crc_small <- phyloseq::subset_taxa(
     kostic_crc,
     Phylum == "Firmicutes"
 )
-mm_lefse <- run_lefse(
-    kostic_crc_small,
-    wilcoxon_cutoff = 0.01,
-    group = "DIAGNOSIS",
-    kw_cutoff = 0.01,
-    multigrp_strat = TRUE,
-    lda_cutoff = 4,
+mm_lefse <- withr::with_seed(
+    2020,
+    run_lefse(kostic_crc_small,
+        wilcoxon_cutoff = 0.01,
+        group = "DIAGNOSIS",
+        kw_cutoff = 0.01,
+        multigrp_strat = TRUE,
+        lda_cutoff = 4
+    )
 )
 
 test_that("lefse output of oxygen", {
