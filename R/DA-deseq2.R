@@ -36,9 +36,11 @@
 #' Differential expression analysis based on the Negative Binomial distribution
 #' using **DESeq2**.
 #'
-#' @param ps  ps a [`phyloseq::phyloseq-class`] object.
+#' @param ps  a [`phyloseq::phyloseq-class`] object.
 #' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
+#' @param confounders character vector, the confounding variables to be adjusted.
+#'   default `character(0)`, indicating no confounding variable.
 #' @param contrast this parameter only used for two groups comparison while
 #'   there are multiple groups. For more please see the following details.
 #' @param taxa_rank character to specify taxonomic rank to perform
@@ -152,6 +154,7 @@
 #' run_deseq2(ps, group = "Enterotype")
 run_deseq2 <- function(ps,
     group,
+    confounders = character(0),
     contrast = NULL,
     taxa_rank = "all",
     norm = "RLE",
@@ -179,6 +182,10 @@ run_deseq2 <- function(ps,
             "`norm` must be one of 'none', 'rarefy', 'RLE', 'CSS', or 'TMM'",
             call. = FALSE
         )
+    }
+    
+    if (length(confounders)) {
+        confounders <- check_confounder(ps, group, confounders)
     }
 
     # groups
@@ -251,7 +258,16 @@ run_deseq2 <- function(ps,
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
     ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
-    dsg <- formula(paste("~", group))
+    
+    if (!length(confounders)) {
+        dsg <- formula(paste("~", group))
+    } else {
+        dsg <- formula(paste(
+            "~", 
+            paste(c(confounders, group), collapse = " + ")
+        ))
+    }
+    
     dds_summarized <- phyloseq2DESeq2(
         ps_summarized,
         design = dsg
@@ -414,8 +430,13 @@ run_deseq2 <- function(ps,
         enrich_group <- ifelse(res$logFC > 0, contrast_new[2], contrast_new[3])
     } else {
         cf <- coef(dds_summarized)
-        # the first coef is intercept, set the coef of the reference group as 0
-        cf[, 1] <- 0
+        
+        # extract coef of interested var
+        target_idx <- grepl("SampleType", colnames(cf))
+        cf <- cf[, target_idx]
+        # the first coef is intercept, bind the coef of the reference group as 0
+        # (the first column)
+        cf <- cbind(0, cf)
         enrich_idx <- apply(
             cf, 1,
             function(x) ifelse(any(is.na(x)), NA, which.max(x))

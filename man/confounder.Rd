@@ -21,7 +21,7 @@ confounder(
 \item{norm}{norm the methods used to normalize the microbial abundance data. See
 \code{\link[=normalize]{normalize()}} for more details.}
 
-\item{confounders}{the confondering variables to be measured, if \code{NULL}, all
+\item{confounders}{the confounding variables to be measured, if \code{NULL}, all
 variables in the meta data will be analyzed.}
 
 \item{permutations}{the number of permutations, see \code{\link[vegan:anova.cca]{vegan::anova.cca()}}.}
@@ -29,7 +29,7 @@ variables in the meta data will be analyzed.}
 \item{...}{extra arguments passed to \code{\link[vegan:anova.cca]{vegan::anova.cca()}}.}
 }
 \value{
-a \code{data.frame} contains three variables represent confounder,
+a \code{data.frame} contains three variables: confounder,
 pseudo-F and p value.
 }
 \description{

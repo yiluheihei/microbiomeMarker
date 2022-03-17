@@ -504,3 +504,32 @@ create_ps_from_mm <- function(mm, only_marker = TRUE) {
     ps
 } 
 
+# check confounder
+check_confounder <- function(ps, target_var, confounders = NULL) {
+    meta <- sample_data(ps)
+    vars <- names(meta)
+    
+    if (! target_var %in% vars) {
+        stop(
+            "the interested var `target_var` must be contained in the meta data",
+            call. = FALSE
+        )
+    }
+    
+    other_vars <- setdiff(vars, target_var)
+    
+     if (is.null(confounders)) {
+        confounders <- other_vars
+        if (! length(confounders)) {
+            stop("No confounding var in sample meta data")
+        }
+    } else {
+        out_confounder <- setdiff(confounders, other_vars)
+        if (length(out_confounder)) {
+            stop("var(s) `", paste(out_confounder, collapse = "`, ` "),
+                 "` not be contained in the sample meta data")
+        }
+    }
+    
+    confounders
+}
