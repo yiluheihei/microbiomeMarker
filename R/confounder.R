@@ -13,12 +13,12 @@
 #' @param target_var character, the variable of interest 
 #' @param norm  norm the methods used to normalize the microbial abundance data. See
 #'   [`normalize()`] for more details.
-#' @param confounders the confondering variables to be measured, if `NULL`, all 
+#' @param confounders the confounding variables to be measured, if `NULL`, all 
 #'   variables in the meta data will be analyzed.
 #' @param permutations the number of permutations, see [`vegan::anova.cca()`].
 #' @param ... extra arguments passed to [`vegan::anova.cca()`].
 #' 
-#' @return a `data.frame` contains three variables represent confounder,  
+#' @return a `data.frame` contains three variables: confounder,  
 #' pseudo-F and p value.
 #' 
 #' @examples 
@@ -43,27 +43,7 @@ confounder <- function(ps,
     }
     
     meta <- data.frame(sample_data(ps))
-    vars <- names(meta)
-    if (!target_var %in% vars) {
-        stop(
-            "`target_var` must be contained in sample meta data", 
-            call. = FALSE
-        )
-    }
-    
-    # confounders
-    if (is.null(confounders)) {
-        confounders <- setdiff(vars, target_var)
-        if (!length(confounders)) {
-            stop("No confounder var in sample meta data")
-        }
-    } else {
-        out_confounder <- setdiff(confounders, vars)
-        if (length(out_confounder)) {
-            stop("var(s) `", paste(out_confounder, collapse = "`, ` "),
-                 "` not be contained in the sample meta data")
-        }
-    }
+    confounders <- check_confounder(ps, target_var, confounders)
     confounders_meta <- meta[confounders]
     cca_out <- cca(abd ~ ., data = confounders_meta)
     
