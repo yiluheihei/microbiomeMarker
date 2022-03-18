@@ -6,6 +6,8 @@
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
+#' @param confounders character vector, the confounding variables to be adjusted.
+#'   default `character(0)`, indicating no confounding variable.
 #' @param contrast this parameter only used for two groups comparison while
 #'   there are multiple groups. For more please see the following details.
 #' @param taxa_rank character to specify taxonomic rank to perform
@@ -98,6 +100,7 @@
 #' run_edger(ps, group = "Enterotype")
 run_edger <- function(ps,
     group,
+    confounders =  character(0),
     contrast = NULL,
     taxa_rank = "all",
     method = c("LRT", "QLFT"),
@@ -122,15 +125,23 @@ run_edger <- function(ps,
             "hochberg", "hommel", "BH", "BY"
         )
     )
+    
+    if (length(confounders)) {
+        confounders <- check_confounder(ps, group, confounders)
+    }
 
-    groups <- sample_data(ps)[[group]]
+    meta <- data.frame(sample_data(ps))
+    groups <- meta[[group]]
+    groups <- make.names(groups)
+    if (!is.null(contrast)) {
+        contrast <- make.names(contrast)
+    }
     if (!is.factor(groups)) {
         groups <- factor(groups)
     }
+    groups <- set_lvl(groups, contrast)
     lvl <- levels(groups)
     n_lvl <- length(lvl)
-    # create contrast
-    contrast_new <- create_contrast(groups, contrast)
 
     # preprocess phyloseq object
     ps <- preprocess_ps(ps)
@@ -154,7 +165,20 @@ run_edger <- function(ps,
     }
 
     # estimate dispersion
-    design <- stats::model.matrix(~ 0 + groups)
+    # if (!length(confounders)) {
+    #     model_data <- data.frame(group = groups)
+    #     design <- stats::model.matrix(~ 0 + group, data = model_data)
+    # } else {
+    #     model_data <- data.frame(group = groups)
+    #     model_data[confounders] <- meta[confounders]
+    #     design <- stats::model.matrix(
+    #         formula(paste(
+    #             "~ + ", 
+    #             paste(c(confounders, "group"), collapse = " + "))),
+    #         data = model_data
+    #     )
+    # }
+    design <- create_design(groups, meta, confounders)
     disp_para <- c(disp_para, y = list(dge_summarized), design = list(design))
     dge_summarized <- do.call(edgeR::estimateDisp, disp_para)
 
@@ -165,7 +189,9 @@ run_edger <- function(ps,
     fit_fun <- ifelse(method == "LRT", edgeR::glmFit, edgeR::glmQLFit)
     test_fun <- ifelse(method == "LRT", edgeR::glmLRT, edgeR::glmQLFTest)
     fit <- fit_fun(dge_summarized, design, ...)
-    lrt <- test_fun(fit, contrast = contrast_new)
+    para_cf <- calc_coef(groups, design, contrast)
+    lrt <- test_fun(fit, coef = para_cf)
+    # lrt <- test_fun(fit, contrast = contrast_new)
     res <- edgeR::topTags(
         lrt,
         n = ntaxa(ps_summarized),
@@ -198,10 +224,15 @@ run_edger <- function(ps,
 
     if (n_lvl > 2) {
         if (is.null(contrast)) {
-            coef <- fit$coefficients
-            enrich_group <- lvl[apply(coef, 1, which.max)]
+            cf <- fit$coefficients
+            target_idx <- grepl("group", colnames(cf))
+            cf <- cf[, target_idx]
+            # the first coef is intercept, bind the the reference group as 0
+            # (the first column)
+            cf <- cbind(0, cf)
+            enrich_group <- lvl[apply(cf, 1, which.max)]
             # sort the enrich_group according to the DE of topTags
-            de_idx <- match(row.names(res), row.names(coef))
+            de_idx <- match(row.names(res), row.names(cf))
             enrich_group <- enrich_group[de_idx]
         } else {
             enrich_group <- ifelse(res$logFC > 0, contrast[2], contrast[1])

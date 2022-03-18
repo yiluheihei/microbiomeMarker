@@ -27,5 +27,5 @@ mm <- run_limma_voom(
     pvalue_cutoff = 0.01,
     p_adjust = "none"
 )
-subset_marker(mm, enrich_group == "Enterotype 3")
+subset_marker(mm, pvalue < 0.005)
 }

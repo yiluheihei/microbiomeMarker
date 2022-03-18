@@ -3,6 +3,12 @@
 # https://github.com/biomedbigdata/namco/blob/647d3108a281eb0e36af31c44f5bf38d0c70c07d/app/R/server/confounding_server.R#L71-L100
 # vagan: https://fromthebottomoftheheap.net/slides/advanced-vegan-webinar-2020/advanced-vegan
 
+## adjust confounders: 
+  # deseq2, edger, voom, metagenomeSeq:  ~ covariates + interested_var (condition)
+  # ancom: adj_formula
+  # ancombc: formula
+  # maAsLin fixed effect https://forum.biobakery.org/t/confounding-factors/154
+
 #' Confounder analysis
 #' 
 #' Confounding variables may mask the actual differential features. This

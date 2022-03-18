@@ -148,8 +148,7 @@
 #' data(enterotypes_arumugam)
 #' ps <- phyloseq::subset_samples(
 #'     enterotypes_arumugam,
-#'     Enterotype %in% c("Enterotype 3", "Enterotype 2")
-#' ) %>%
+#'     Enterotype %in% c("Enterotype 3", "Enterotype 2")) %>%
 #'     phyloseq::subset_taxa(Phylum %in% c("Firmicutes"))
 #' run_deseq2(ps, group = "Enterotype")
 run_deseq2 <- function(ps,
@@ -189,19 +188,17 @@ run_deseq2 <- function(ps,
     }
 
     # groups
-    sam_tab <- sample_data(ps)
-    if (!group %in% names(sam_tab)) {
-        stop(
-            "`group` should one of the variable in the `sample_data` of ps",
-            call. = FALSE
-        )
+    meta <- sample_data(ps)
+    groups <- meta[[group]]
+    groups <- make.names(groups)
+    if (!is.null(contrast)) {
+        contrast <- make.names(contrast)
     }
-    groups <- sam_tab[[group]]
     if (!is.factor(groups)) {
         groups <- factor(groups)
-        sam_tab[[group]] <- groups
-        sample_data(ps) <- sam_tab
     }
+    groups <- set_lvl(groups, contrast)
+    sample_data(ps)[[group]] <- groups
     lvl <- levels(groups)
     n_lvl <- length(lvl)
 
@@ -432,7 +429,7 @@ run_deseq2 <- function(ps,
         cf <- coef(dds_summarized)
         
         # extract coef of interested var
-        target_idx <- grepl("SampleType", colnames(cf))
+        target_idx <- grepl(group, colnames(cf))
         cf <- cf[, target_idx]
         # the first coef is intercept, bind the coef of the reference group as 0
         # (the first column)

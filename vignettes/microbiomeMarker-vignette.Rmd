@@ -481,7 +481,7 @@ mm_lv_pair <- run_limma_voom(
     p_adjust = "fdr"
 )
 mm_lv_pair
-marker_table(mm_lv_pair)
+head(marker_table(mm_lv_pair))
 ```
 
 # Visualization

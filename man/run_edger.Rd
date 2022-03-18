@@ -7,6 +7,7 @@
 run_edger(
   ps,
   group,
+  confounders = character(0),
   contrast = NULL,
   taxa_rank = "all",
   method = c("LRT", "QLFT"),
@@ -24,6 +25,9 @@ run_edger(
 
 \item{group}{character, the variable to set the group, must be one of
 the var of the sample metadata.}
+
+\item{confounders}{character vector, the confounding variables to be adjusted.
+default \code{character(0)}, indicating no confounding variable.}
 
 \item{contrast}{this parameter only used for two groups comparison while
 there are multiple groups. For more please see the following details.}
