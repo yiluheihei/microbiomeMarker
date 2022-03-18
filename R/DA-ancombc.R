@@ -164,8 +164,8 @@ run_ancombc <- function(ps,
     }
     lvl <- levels(groups)
     n_lvl <- length(lvl)
-    # just for check the argument contrast, contrast_new is useless in ANCOMBC
-    contrast_new <- create_contrast(groups, contrast)
+    
+    contrast <- check_contrast(contrast)
 
     # set the reference level for pair-wise comparison from mutliple groups
     if (!is.null(contrast) && n_lvl > 2) {

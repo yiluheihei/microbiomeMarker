@@ -3,6 +3,8 @@
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
+#' @param confounders character vector, the confounding variables to be adjusted.
+#'   default `character(0)`, indicating no confounding variable.
 #' @param contrast this parameter only used for two groups comparison while
 #'   there are multiple groups. For more please see the following details.
 #' @param taxa_rank character to specify taxonomic rank to perform
@@ -75,6 +77,7 @@
 #' mm
 run_limma_voom <- function(ps,
     group,
+    confounders =  character(0),
     contrast = NULL,
     taxa_rank = "all",
     transform = c("identity", "log10", "log10p"),
@@ -98,25 +101,30 @@ run_limma_voom <- function(ps,
             "hochberg", "hommel", "BH", "BY"
         )
     )
-
-    # check whether group is valid, write a function
-    sample_meta <- sample_data(ps)
-    meta_nms <- names(sample_meta)
-    if (!group %in% meta_nms) {
-        stop(
-            group, " are not contained in the `sample_data` of `ps`",
-            call. = FALSE
-        )
+    
+     if (length(confounders)) {
+        confounders <- check_confounder(ps, group, confounders)
     }
-    groups <- sample_meta[[group]]
+
+    meta <- sample_data(ps)
+    # meta_nms <- names(meta)
+    # if (!group %in% meta_nms) {
+    #     stop(
+    #         group, " are not contained in the `sample_data` of `ps`",
+    #         call. = FALSE
+    #     )
+    # }
+    groups <- meta[[group]]
+    groups <- make.names(groups)
+    if (!is.null(contrast)) {
+        contrast <- make.names(contrast)
+    }
     if (!is.factor(groups)) {
         groups <- factor(groups)
     }
+    groups <- set_lvl(groups, contrast)
     lvl <- levels(groups)
     n_lvl <- length(lvl)
-
-    contrast_new <- create_contrast(groups, contrast)
-
 
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
 
@@ -132,7 +140,7 @@ run_limma_voom <- function(ps,
     # row.names(counts) <- tax_table(ps_summarized)[, 1]
 
     # design matrix
-    design <- model.matrix(~ 0 + groups)
+    design <- create_design(groups, meta, confounders)
 
     # library size
     nf <- get_norm_factors(ps_normed)
@@ -148,37 +156,57 @@ run_limma_voom <- function(ps,
         span = voom_span
     )
     fit_out <- limma::lmFit(voom_out, design = design)
-
-    if (length(contrast_new) == n_lvl) {
-        # warning: row names of contrasts don't match col names of coefficients
-        fit_out <- limma::contrasts.fit(fit_out, contrast_new)
-    }
+    
+    para_cf <- calc_coef(groups, design, contrast)
+    # fit_out <- limma::contrasts.fit(fit_out, coefficients = para_cf)
+    
+    # if (length(contrast_new) == n_lvl) {
+    #     # warning: row names of contrasts don't match col names of coefficients
+    #     fit_out <- limma::contrasts.fit(fit_out, contrast_new)
+    # }
     test_out <- limma::eBayes(fit_out, ...)
     test_df <- limma::topTable(
         test_out,
+        coef = para_cf,
         number = nrow(counts),
         adjust.method = p_adjust
     )
 
     counts_normed <- abundances(ps_summarized, norm = TRUE)
-    if (length(contrast_new) == n_lvl) {
-        exp_lvl <- lvl[contrast_new == 1]
-        ref_lvl <- lvl[contrast_new == -1]
-        enrich_group <- ifelse(test_df$logFC > 0, exp_lvl, ref_lvl)
-    } else {
-        cf <- fit_out$coefficients
-        enrich_idx <- apply(cf, 1, which.max)
-        enrich_group <- lvl[enrich_idx]
-        enrich_group <- enrich_group[match(row.names(test_df), row.names(cf))]
-    }
-
-    if (length(contrast_new) == n_lvl) {
+    if (n_lvl == 2 || !is.null(contrast)) {
+        enrich_group <- ifelse(test_df$logFC > 0, lvl[2], lvl[1])
+        
         ef <- test_df[["logFC"]]
         ef_name <- "ef_logFC"
     } else {
+        cf <- fit_out$coefficients
+        target_idx <- grepl("group", colnames(cf))
+        cf <- cf[, target_idx]
+        cf <- cbind(0, cf)
+        enrich_group <- lvl[apply(cf, 1, which.max)]
+        enrich_group <- enrich_group[match(row.names(test_df), row.names(cf))]
+        
         ef <- test_df[["F"]]
         ef_name <- "ef_F_statistic"
     }
+    # if (length(contrast_new) == n_lvl) {
+    #     exp_lvl <- lvl[contrast_new == 1]
+    #     ref_lvl <- lvl[contrast_new == -1]
+    #     enrich_group <- ifelse(test_df$logFC > 0, exp_lvl, ref_lvl)
+    # } else {
+    #     cf <- fit_out$coefficients
+    #     enrich_idx <- apply(cf, 1, which.max)
+    #     enrich_group <- lvl[enrich_idx]
+    #     enrich_group <- enrich_group[match(row.names(test_df), row.names(cf))]
+    # }
+
+    # if (length(contrast_new) == n_lvl) {
+    #     ef <- test_df[["logFC"]]
+    #     ef_name <- "ef_logFC"
+    # } else {
+    #     ef <- test_df[["F"]]
+    #     ef_name <- "ef_F_statistic"
+    # }
 
     marker <- data.frame(
         feature = row.names(test_df),
