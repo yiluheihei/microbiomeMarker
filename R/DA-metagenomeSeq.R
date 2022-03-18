@@ -19,6 +19,8 @@
 #' @param ps  ps a [`phyloseq::phyloseq-class`] object.
 #' @param group  character, the variable to set the group, must be one of
 #'   the var of the sample metadata.
+#' @param confounders character vector, the confounding variables to be adjusted.
+#'   default `character(0)`, indicating no confounding variable.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of `phyloseq::rank_names(ps)`,
 #'   or "all" means to summarize the taxa by the top taxa ranks
@@ -118,6 +120,7 @@
 #' run_metagenomeseq(ps, group = "Enterotype")
 run_metagenomeseq <- function(ps,
     group,
+    confounders =  character(0),
     contrast = NULL,
     taxa_rank = "all",
     transform = c("identity", "log10", "log10p"),
@@ -142,9 +145,21 @@ run_metagenomeseq <- function(ps,
             "hochberg", "hommel", "BH", "BY"
         )
     )
-
-    groups <- sample_data(ps)[[group]]
-    groups <- factor(groups)
+    
+    if (length(confounders)) {
+        confounders <- check_confounder(ps, group, confounders)
+    }
+    
+    meta <- sample_data(ps)
+    groups <- meta[[group]]
+    groups <- make.names(groups)
+    if (!is.null(contrast)) {
+        contrast <- make.names(contrast)
+    }
+    if (!is.factor(groups)) {
+        groups <- factor(groups)
+    }
+    groups <- set_lvl(groups, contrast)
     lvl <- levels(groups)
     n_lvl <- length(lvl)
 
@@ -156,20 +171,20 @@ run_metagenomeseq <- function(ps,
         )
     }
 
-    contrast_new <- create_contrast(groups, contrast)
+    # contrast_new <- create_contrast(groups, contrast)
     # When running fitZig by default there is an additional covariate added to
     # the design matrix (scalingFactor), add var scalingFactor (set as zero)
-    if (n_lvl > 2) {
-        old_contrast_nms <- row.names(contrast_new)
-        contrast_new <- rbind(contrast_new, rep(0, ncol(contrast_new)))
-        # row names of contrasts consistent with of coefficients
-        # otherwise, warning: row names of contrasts don't match col names of
-        # coefficients in the following `contrast.fit()`
-        row.names(contrast_new) <- c(
-            paste0("groups", old_contrast_nms),
-            "scalingFactor"
-        )
-    }
+    # if (n_lvl > 2) {
+    #     old_contrast_nms <- row.names(contrast_new)
+    #     contrast_new <- rbind(contrast_new, rep(0, ncol(contrast_new)))
+    #     # row names of contrasts consistent with of coefficients
+    #     # otherwise, warning: row names of contrasts don't match col names of
+    #     # coefficients in the following `contrast.fit()`
+    #     row.names(contrast_new) <- c(
+    #         paste0("groups", old_contrast_nms),
+    #         "scalingFactor"
+    #     )
+    # }
 
     # preprocess phyloseq object
     ps <- preprocess_ps(ps)
@@ -204,7 +219,8 @@ run_metagenomeseq <- function(ps,
         sl = sl
     )
 
-    mod <- model.matrix(~ 0 + groups)
+    # mod <- model.matrix(~ 0 + groups)
+    mod <- create_design(groups, meta, confounders)
 
     if (n_lvl == 2) {
         if (method == "ZILN") {
@@ -263,7 +279,8 @@ run_metagenomeseq <- function(ps,
         fit <- metagenomeSeq::fitZig(mgs_summarized, mod, ...)
         zigfit <- slot(fit, "fit")
         # warning: row names of contrasts don't match col names of coefficients
-        new_fit <- limma::contrasts.fit(zigfit, contrasts = contrast_new)
+        para_cf <- calc_coef(groups, mod, contrast)
+        new_fit <- limma::contrasts.fit(zigfit, coefficients = para_cf)
         new_fit <- limma::eBayes(new_fit)
         res <- limma::topTable(
             new_fit,
@@ -273,22 +290,22 @@ run_metagenomeseq <- function(ps,
         res <- dplyr::filter(res, .data$adj.P.Val <= pvalue_cutoff) %>%
             dplyr::rename(pvalue = .data$P.Value, padj = .data$adj.P.Val)
 
-        ef_var <- ifelse(
-            is.matrix(contrast_new) && ncol(contrast_new) > 2,
-            "F", "logFC"
-        )
+        ef_var <- ifelse(is.null(contrast), "F", "logFC")
 
         # enrich group
         if (ef_var == "logFC") {
-            exp_lvl <- lvl[contrast_new == 1]
-            ref_lvl <- lvl[contrast_new == -1]
-            enrich_group <- ifelse(res$logFC > 0, exp_lvl, ref_lvl)
+            # exp_lvl <- lvl[contrast_new == 1]
+            # ref_lvl <- lvl[contrast_new == -1]
+            # enrich_group <- ifelse(res$logFC > 0, exp_lvl, ref_lvl)
+            enrich_group <- ifelse(res$logFC > 0, lvl[2], lvl[1])
         } else {
-            coef <- zigfit$coefficients
-            enrich_group <- lvl[apply(coef[, seq_len(n_lvl)], 1, which.max)]
+            cf <- zigfit$coefficients
+            target_idx <- grepl("group", colnames(cf))
+            cf <- cf[, target_idx]
+            cf <- cbind(0, cf)
+            enrich_group <- lvl[apply(cf, 1, which.max)]
             # sort the enrich_group according to the DE of topTags
-            de_idx <- match(row.names(res), row.names(coef))
-            enrich_group <- enrich_group[de_idx]
+            enrich_group <- enrich_group[match(row.names(res), row.names(cf))]
         }
         res$enrich_group <- enrich_group
     }

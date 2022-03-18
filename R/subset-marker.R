@@ -16,7 +16,7 @@
 #'     pvalue_cutoff = 0.01,
 #'     p_adjust = "none"
 #' )
-#' subset_marker(mm, enrich_group == "Enterotype 3")
+#' subset_marker(mm, pvalue < 0.005)
 subset_marker <- function(mm, ...) {
     if (is.null(marker_table(mm))) {
         warning("No marker_table in `mm`")

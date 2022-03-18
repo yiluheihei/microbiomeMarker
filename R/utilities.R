@@ -288,20 +288,63 @@ remove_na_samples <- function(ps, group) {
 }
 
 
-## create contrast for edgeR, metagenomeSeq, and DESeq2
-
-# For two groups (contrast is a two-length vector), return a vector
-# in which the element 1 demotes the experiment group and -1 specifies the
-# reference (control) group.
+## calculate coef for edgeR, metagenomeSeq
+# if contrast is a two length character, set the first element as the first level
+# (reference group), the second element as the second level, return a single 
+# integer
 #
-# For multiple groups, return a matrix, consists of all pair-wise comparisons
-# (contrasts) for anova-like test.
-create_contrast <- function(groups, contrast = NULL) {
-    if (!is.factor(groups)) {
-        groups <- factor(groups)
+# if contrast is null, return a integer vector (number of levels - 1)
+check_contrast <- function(contrast) {
+    if (!is.null(contrast)) {
+        if (!is.character(contrast) || length(contrast) != 2) {
+            stop("`contrast` must be a two length character", call. = FALSE)
+        }
     }
+    
+    contrast
+}
+
+set_lvl <- function(groups, contrast) {
+    if (!is.factor(groups)) {
+        stop("`groups` must be a factor", call. = FALSE)
+    }
+    # this will will change the elements simultaneously
+    # levels(groups) <- c(contrast, setdiff(levels(groups), contrast))
+    groups <- factor(
+        groups, 
+        levels =  c(contrast, setdiff(levels(groups), contrast))
+    )
+    
+    groups
+}
+
+create_design <- function(groups, meta, confounders = character(0)) {
+    if (inherits(meta, "sample_data")) {
+        meta <- data.frame(meta)
+    }
+    model_data <- data.frame(group = groups)
+    if (!length(confounders)) {
+        design <- stats::model.matrix(~ group, data = model_data)
+    } else {
+        model_data[confounders] <- meta[confounders]
+        design <- stats::model.matrix(
+            formula(paste(
+                "~ + ", 
+                paste(c(confounders, "group"), collapse = " + "))),
+            data = model_data
+        )
+    }
+    
+    design
+}
+
+calc_coef <- function(groups, design, contrast = NULL) {
+    contrast <- check_contrast(contrast)
+    groups <- set_lvl(groups, contrast)
     lvl <- levels(groups)
     n_lvl <- length(lvl)
+    n_design <- ncol(design)
+    
     if (n_lvl < 2) {
         stop("Differential analysis requires at least two groups.")
     }
@@ -313,56 +356,85 @@ create_contrast <- function(groups, contrast = NULL) {
                 call. = FALSE
             )
         }
-        design <- rep(0, n_lvl)
-        design[1] <- -1
-        design[2] <- 1
+        coef <- n_design
     } else { # multiple groups
         if (!is.null(contrast)) {
-            if (!is.character(contrast) || length(contrast) != 2) {
-                stop("`contrast` must be a two length character", call. = FALSE)
-            }
-
-            idx <- match(contrast, lvl, nomatch = 0L)
-            if (!all(idx)) {
-                stop(
-                    "all elements of `contrast` must be contained in `groups`",
-                    call. = FALSE
-                )
-            }
-            design <- rep(0, n_lvl)
-            design[idx[1]] <- -1
-            design[idx[2]] <- 1
-            design <- matrix(design)
-            row.names(design) <- lvl
-            colnames(design) <- paste0(contrast[2], "-", contrast[1])
+            coef <- n_design - n_lvl + 2L
         } else {
-            design <- create_pairwise_contrast(lvl)
+            coef <- (n_design - n_lvl + 2L):n_design
         }
     }
-
-    design
+    
+    coef
 }
 
-# create all pair-wise comparisons (contrasts) for anova-like test
-create_pairwise_contrast <- function(groups) {
-    groups <- factor(groups)
-    lvl <- levels(groups)
-    n <- length(lvl)
-
-    design <- matrix(0, n, choose(n, 2))
-    rownames(design) <- lvl
-    colnames(design) <- seq_len(choose(n, 2))
-    k <- 0
-    for (i in seq_len(n - 1)) {
-        for (j in (i + 1):n) {
-            k <- k + 1
-            design[j, k] <- 1
-            design[i, k] <- -1
-            colnames(design)[k] <- paste(lvl[j], "-", lvl[i], sep = "")
-        }
-    }
-    design
-}
+# create_contrast <- function(groups, contrast = NULL) {
+#     if (!is.factor(groups)) {
+#         groups <- factor(groups)
+#     }
+#     lvl <- levels(groups)
+#     n_lvl <- length(lvl)
+#     if (n_lvl < 2) {
+#         stop("Differential analysis requires at least two groups.")
+#     }
+# 
+#     if (n_lvl == 2) { # two groups
+#         if (!is.null(contrast)) {
+#             warning(
+#                 "`contrast` is ignored, you do not need to set it",
+#                 call. = FALSE
+#             )
+#         }
+#         design <- rep(0, n_lvl)
+#         design[1] <- -1
+#         design[2] <- 1
+#     } else { # multiple groups
+#         if (!is.null(contrast)) {
+#             if (!is.character(contrast) || length(contrast) != 2) {
+#                 stop("`contrast` must be a two length character", call. = FALSE)
+#             }
+# 
+#             idx <- match(contrast, lvl, nomatch = 0L)
+#             if (!all(idx)) {
+#                 stop(
+#                     "all elements of `contrast` must be contained in `groups`",
+#                     call. = FALSE
+#                 )
+#             }
+#             design <- rep(0, n_lvl)
+#             design[idx[1]] <- -1
+#             design[idx[2]] <- 1
+#             design <- matrix(design)
+#             row.names(design) <- lvl
+#             colnames(design) <- paste0(contrast[2], "-", contrast[1])
+#         } else {
+#             design <- create_pairwise_contrast(lvl)
+#         }
+#     }
+# 
+#     design
+# }
+# 
+# # create all pair-wise comparisons (contrasts) for anova-like test
+# create_pairwise_contrast <- function(groups) {
+#     groups <- factor(groups)
+#     lvl <- levels(groups)
+#     n <- length(lvl)
+# 
+#     design <- matrix(0, n, choose(n, 2))
+#     rownames(design) <- lvl
+#     colnames(design) <- seq_len(choose(n, 2))
+#     k <- 0
+#     for (i in seq_len(n - 1)) {
+#         for (j in (i + 1):n) {
+#             k <- k + 1
+#             design[j, k] <- 1
+#             design[i, k] <- -1
+#             colnames(design)[k] <- paste(lvl[j], "-", lvl[i], sep = "")
+#         }
+#     }
+#     design
+# }
 
 
 # extract the specify rank of phyloseq object, return a phyloseq object

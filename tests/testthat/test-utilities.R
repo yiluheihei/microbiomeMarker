@@ -159,52 +159,133 @@ test_that("remove samples with missing values in the specified var", {
 })
 
 
-# create contrast
-test_that("create contrast", {
-    expect_error(create_contrast("a"), "at least two groups")
-
-    # multiple groups, pairwise comparisons
+# reset group levels according to the contrast
+test_that("reset group levels", {
     groups <- factor(rep(c("a", "b", "c"), each = 3))
-    mat <- matrix(c(-1, 1, 0, -1, 0, 1, 0, -1, 1), 3)
-    row.names(mat) <- c("a", "b", "c")
-    colnames(mat) <- c("b-a", "c-a", "c-b")
-    expect_identical(create_pairwise_contrast(levels(groups)), mat)
-    expect_error(create_contrast(groups, c("a", "d")), "contained in `groups`")
-    expect_error(create_contrast(groups, "a"), "two length")
-    expect_identical(
-        create_contrast(groups, c("a", "b")),
-        matrix(c(-1, 1, 0), dimnames = list(c("a", "b", "c"), "b-a"))
-    )
-    expect_identical(
-        create_contrast(groups, c("b", "c")),
-        matrix(c(0, -1, 1), dimnames = list(c("a", "b", "c"), "c-b"))
-    )
+    new_groups <- set_lvl(groups, c("b", "a"))
+    expect_identical(levels(new_groups), c("b", "a", "c"))
+    expect_identical(as.character(groups), as.character(new_groups))
+    
+    new_groups <- set_lvl(groups, NULL)
+    expect_identical(levels(new_groups), c("a", "b", "c"))
+})
 
-    # create contrast
-    groups_two <- factor(rep(c("a", "b"), each = 3))
-    expect_identical(create_contrast(groups_two), c(-1, 1))
-    expect_identical(create_contrast(groups), mat)
-    expect_warning(
-        ctra <- create_contrast(groups_two, c("a", "b")),
-        "`contrast` is ignored"
-    )
-    expect_identical(ctra, c(-1, 1))
-    expect_identical(ctra, create_contrast(groups_two))
+# check contrast
+test_that("check contrast", {
+    expect_null(check_contrast(contrast = NULL))
+    expect_error(check_contrast(c("a", "b", "c")), "two length character")
+    expect_error(check_contrast(c(1, 2)), "two length character")
+    expect_identical(check_contrast(c("a", "b")), c("a", "b"))
+})
+
+# create design
+test_that("create design", {
+    groups <- factor(rep(c("a", "b", "c"), each = 3))
+    meta <- data.frame(group = groups, conf = paste0("conf", 1:3), day = 1:3)
+    des <- create_design(groups, meta)
+    expect_identical(colnames(des), c("(Intercept)", "groupb", "groupc"))
+    
+    des <-  create_design(groups, meta, confounders = c("conf", "day"))
+    expect_identical(ncol(des), 6L)
+    
+    des <-  create_design(groups, meta, confounders = c("day", "conf"))
+    expect_identical(ncol(des), 6L)
+    
+    # support sample_data object for meta
+    meta <- sample_data(meta)
+    des <-  create_design(groups, meta, confounders = c("day", "conf"))
+    expect_identical(ncol(des), 6L)
+    
+})
+
+# calculate argument of ceof
+test_that("calculate coef", {
+    ## multiple groups
+    groups <- factor(rep(c("a", "b", "c"), each = 3))
+    meta <- data.frame(group = groups, conf = paste0("conf", 1:3), day = 1:3)
+    des <-  create_design(groups, meta, confounders = c("conf", "day"))
+    expect_identical(calc_coef(groups, des, contrast = NULL), c(5L, 6L))
+    
+    groups <- set_lvl(groups, contrast = c("b", "a"))
+    des <- create_design(groups, meta, confounders = c("conf", "day"))
+    expect_identical(calc_coef(groups, des, contrast = c("b", "a")), 5L)
+    
+    ## two groups
+    groups <- factor(rep(c("a", "b"), each = 3))
+    meta <- data.frame(group = groups, conf = paste0("conf", 1:2), day = 1:3)
+    des <-  create_design(groups, meta)
+    expect_identical(calc_coef(groups, des), 2L)
+    
+    groups <-set_lvl(groups, c("b", "a")) 
+    des <-  create_design(groups, meta)
+    expect_warning(calc_coef(groups, des, c("b", "a")), "`contrast` is ignored")
+    
+    des <-  create_design(groups, meta, confounders = "conf")
+    expect_warning(calc_coef(groups, des, c("b", "a")), "`contrast` is ignored")
 })
 
 
-# return marker
-test_that("marker_table, if no significant marker return all the features", {
-    sig_ft1 <- data.frame()
-    ft <- data.frame(feature = letters[1:3], ef = runif(3))
-    expect_warning(
-        marker_null <- return_marker(sig_ft1, ft), 
-        "No marker was identified")
-    expect_identical(NULL, marker_null)
-
-    sig_ft2 <- data.frame(feature = "a", ef = 1)
-    expect_identical(marker_table(sig_ft2), return_marker(sig_ft2, ft))
-})
+# create contrast
+# test_that("create contrast", {
+#     expect_error(create_contrast("a"), "at least two groups")
+# 
+#     # multiple groups, pairwise comparisons
+#     groups <- factor(rep(c("a", "b", "c"), each = 3))
+#     model_dat <- data.frame(group = groups, 
+#                             confounder1 = c("big", "small", "medium"), 
+#                             confounder2 = c(1, 2, 3))
+#     
+#     ## no confounders
+#     design1 <- stats::model.matrix(~ 0 + group, data = model_dat)
+#     mat <- matrix(c(-1, 1, 0, -1, 0, 1, 0, -1, 1), 3)
+#     row.names(mat) <- c("a", "b", "c")
+#     colnames(mat) <- c("b-a", "c-a", "c-b")
+#     
+#     expect_identical(create_pairwise_contrast(levels(groups)), mat)
+#     expect_identical(create_contrast(groups, design1), mat)
+#     
+#     expect_error(create_contrast(groups, design1, c("a", "d")), 
+#                  "contained in `groups`")
+#     expect_error(create_contrast(groups, design1, "a"), "two length")
+#     expect_identical(
+#         create_contrast(groups, design1, c("a", "b")),
+#         matrix(c(-1, 1, 0), dimnames = list(c("a", "b", "c"), "b-a"))
+#     )
+#     expect_identical(
+#         create_contrast(groups, design1, c("b", "c")),
+#         matrix(c(0, -1, 1), dimnames = list(c("a", "b", "c"), "c-b"))
+#     )
+#     
+#     ## confounders
+#     design2 <- stats::model.matrix(~ confounder2 + confounder1 + 0+ group,
+#                                    data = model_dat)
+#     create_contrast(groups, design2)
+# 
+#     # create contrast
+#     groups_two <- factor(rep(c("a", "b"), each = 3))
+#     expect_identical(create_contrast(groups_two), c(-1, 1))
+#     expect_identical(create_contrast(groups), mat)
+#     expect_warning(
+#         ctra <- create_contrast(groups_two, c("a", "b")),
+#         "`contrast` is ignored"
+#     )
+#     expect_identical(ctra, c(-1, 1))
+#     expect_identical(ctra, create_contrast(groups_two))
+# })
+# 
+# 
+# # return marker
+# test_that("marker_table, if no significant marker return all the features", {
+#     sig_ft1 <- data.frame()
+#     ft <- data.frame(feature = letters[1:3], ef = runif(3))
+#     expect_warning(
+#         marker_null <- return_marker(sig_ft1, ft), 
+#         "No marker was identified")
+#     expect_identical(NULL, marker_null)
+# 
+#     sig_ft2 <- data.frame(feature = "a", ef = 1)
+#     expect_identical(marker_table(sig_ft2), return_marker(sig_ft2, ft))
+# })
 
 
 # extract the specific taxa rank
