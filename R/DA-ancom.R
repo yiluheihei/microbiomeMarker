@@ -50,9 +50,6 @@
 #'   default 0.05.
 #' @param W_cutoff lower bound for the proportion for the W-statistic, default
 #'   0.7.
-#' @param test character, the test to determine the p value of log ratio,
-#'   one of "aov", "wilcox.test",  "kruskal.test".
-#' @param ... additional arguments passed to the test function.
 #'
 #' @details
 #' In an experiment with only two treatments, this tests the following
@@ -103,24 +100,8 @@ run_ancom <- function(ps,
         "hochberg", "hommel", "BH", "BY"
     ),
     pvalue_cutoff = 0.05,
-    W_cutoff = 0.75,
-    test = c("aov", "wilcox.test", "kruskal.test"),
-    ...) {
+    W_cutoff = 0.75) {
     stopifnot(inherits(ps, "phyloseq"))
-    ps <- check_rank_names(ps) %>% 
-        check_taxa_rank( taxa_rank)
-    test <- match.arg(test, c("aov", "wilcox.test", "kruskal.test"))
-
-    # check whether group is valid, write a function
-    sample_meta <- sample_data(ps)
-    meta_nms <- names(sample_meta)
-    if (!group %in% meta_nms) {
-        stop(
-            group, " are not contained in the `sample_data` of `ps`",
-            call. = FALSE
-        )
-    }
-
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     p_adjust <- match.arg(
         p_adjust,
@@ -129,6 +110,34 @@ run_ancom <- function(ps,
             "hochberg", "hommel", "BH", "BY"
         )
     )
+    
+    ps <- check_rank_names(ps) %>% 
+        check_taxa_rank( taxa_rank)
+    
+    if (length(confounders)) {
+        confounders <- check_confounder(ps, group, confounders)
+    }
+
+    # check whether group is valid, write a function
+    meta <- sample_data(ps)
+    meta_nms <- names(meta)
+    groups <- meta[[group]]
+    groups <- make.names(groups)
+   
+    if (!is.factor(groups)) {
+        groups <- factor(groups)
+    }
+    sample_data(ps)[[group]] <- groups
+    lvl <- levels(groups)
+    n_lvl <- length(lvl)
+    
+    if (!length(confounders)) {
+       tfun <- ifelse(n_lvl > 2, stats::kruskal.test, stats::wilcox.test)
+       fml <- paste("x ~ ", group)
+    } else {
+        tfun <- stats::aov
+        fml <- paste("x ~ ", group, "+",  paste(confounders, collapse = " + "))
+    }
 
     # preprocess phyloseq object
     ps <- preprocess_ps(ps)
@@ -138,11 +147,7 @@ run_ancom <- function(ps,
     norm_para <- c(norm_para, method = norm, object = list(ps))
     ps_normed <- do.call(normalize, norm_para)
     ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
-
     feature_table <- abundances(ps_summarized, norm = TRUE)
-    meta_data <- data.frame(sample_data(ps_summarized))
-    cls_full <- meta_data[[group]]
-    cls_n <- length(unique(cls_full))
 
     # effect size: CLR mean_difference or aov f statistic
     feature_table_clr <- norm_clr(
@@ -153,7 +158,7 @@ run_ancom <- function(ps,
         feature_table_clr,
         calc_ef_md_f,
         FUN.VALUE = 0.0,
-        group = cls_full
+        group = groups
     )
 
     # enrich_group
@@ -161,7 +166,7 @@ run_ancom <- function(ps,
         feature_table_clr,
         get_ancom_enrich_group,
         FUN.VALUE = character(1),
-        group = cls_full
+        group = groups
     )
 
     # ANCOM requires log transformation
@@ -171,7 +176,18 @@ run_ancom <- function(ps,
     n_samp <- ncol(feature_table)
 
     # Calculate the p-value for each pairwise comparison of taxa.
-    p <- calc_ancom_pmat(feature_table, cls_full, test, ...)
+    # para group is just for the main var in the formula
+    test_var_dat <- data.frame(groups)
+    names(test_var_dat) <- group
+    if (length(confounders)) {
+        test_var_dat[[confounders]] <- meta[[confounders]]
+    }
+    p <- calc_ancom_pmat(
+        feature_table, 
+        test_var_dat,
+        tfun, 
+        fml
+    )
 
     # Multiple comparisons correction.
     p_adjusted <- vapply(
@@ -198,7 +214,7 @@ run_ancom <- function(ps,
     # statistic. We perform (n_taxa - 1) hypothesis testings on each taxon, so
     # the maximum number of rejections is (n_taxa - 1).
     sig_out <- out_comp[out_comp$W > W_cutoff * (n_taxa - 1), ]
-    if (cls_n == 2) {
+    if (n_lvl == 2) {
         names(sig_out)[3] <- "ef_CLR_diff_mean"
     } else {
         names(sig_out)[3] <- "ef_CLR_F_statistic"
@@ -223,18 +239,14 @@ run_ancom <- function(ps,
 
 #' Calculates pairwise pvalues between all features
 #' @param feature_table matrix-like, logged feature table.
-#' @param classes character vector, the same length with `log_ratio`.
+#' @param test_var_dat data.frame, variables data (sample meta data)
 #' @param test  character, the test to determine the p value of log ratio,
 #'   one of "aov", "wilcox.test",  "kruskal.test".
 #' @param ... extra arguments passed to the test.
 #' @references 
 #' github/biocore/scikit-bio/blob/master/skbio/stats/composition.py#L811
 #' @noRd
-calc_ancom_pmat <- function(feature_table,
-    classes,
-    test = c("aov", "wilcox.test", "kruskal.test"),
-    ...) {
-    test_method <- match.arg(test, c("aov", "wilcox.test", "kruskal.test"))
+calc_ancom_pmat <- function(feature_table, test_var_dat, test, fml) {
 
     taxas <- row.names(feature_table)
     feature_table <- data.frame(t(feature_table))
@@ -250,7 +262,7 @@ calc_ancom_pmat <- function(feature_table,
             new_table,
             calc_ancom_p,
             FUN.VALUE = numeric(1),
-            classes = classes, test = test_method, ...
+            test_var_dat = test_var_dat, test = test, fml = fml
         )
     }
 
@@ -270,20 +282,21 @@ calc_ancom_pmat <- function(feature_table,
 #'   one of "aov", "wilcox.test",  "kruskal.test".
 #' @param ... extra arguments passed to the test.
 #' @noRd
-calc_ancom_p <- function(log_ratio, classes, test, ...) {
-    test_method <- match.arg(test, c("aov", "wilcox.test", "kruskal.test"))
-    test_fun <- match.fun(test_method)
-
-    fml <- formula(paste0("x ~ ", "class"))
-    dat <- data.frame(x = log_ratio, class = classes)
-    test_res <- test_fun(fml, data = dat, ...)
-    pvalue <- ifelse(
-        test_method == "aov",
-        summary(test_res)[[1]]["class", "Pr(>F)"],
-        test_res$p.value
-    )
-
-    pvalue
+calc_ancom_p <- function(log_ratio, test_var_dat, test, fml) {
+    # fist var is the target var (main var)
+    group <- names(test_var_dat)[1]
+    test_dat <- cbind(x = log_ratio, test_var_dat)
+    fml <- stats::formula(fml)
+    if (identical(test, stats::aov)) {
+        fit = test(fml, 
+                   data = test_dat, 
+                   na.action = na.omit)
+        p = summary(fit)[[1]][group, "Pr(>F)"]
+    } else {
+        suppressWarnings(p <- test(fml, data = test_dat)$p.value)
+    }
+   
+    p
 }
 
 
