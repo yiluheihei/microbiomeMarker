@@ -77,7 +77,7 @@ default 0.05.}
 \item{W_cutoff}{lower bound for the proportion for the W-statistic, default
 0.7.}
 
-\item{test}{character, the test to dtermine the p value of log ratio,
+\item{test}{character, the test to determine the p value of log ratio,
 one of "aov", "wilcox.test",  "kruskal.test".}
 
 \item{...}{additional arguments passed to the test function.}

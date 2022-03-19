@@ -8,7 +8,7 @@
 run_ancombc(
   ps,
   group,
-  formula,
+  confounders = character(0),
   contrast = NULL,
   taxa_rank = "all",
   transform = c("identity", "log10", "log10p"),
@@ -33,8 +33,8 @@ table, a sample metadata and a taxonomy table.}
 \code{group} is required for detecting structural zeros and performing
 global test.}
 
-\item{formula}{the character string expresses how the microbial absolute
-abundances for each taxon depend on the variables in metadata.}
+\item{confounders}{character vector, the confounding variables to be adjusted.
+default \code{character(0)}, indicating no confounding variable.}
 
 \item{contrast}{this parameter only used for two groups comparison while
 there are multiple groups. For more please see the following details.}
@@ -141,7 +141,7 @@ ps <- phyloseq::subset_samples(
     enterotypes_arumugam,
     Enterotype \%in\% c("Enterotype 3", "Enterotype 2")
 )
-run_ancombc(ps, group = "Enterotype", formula = "Enterotype")
+run_ancombc(ps, group = "Enterotype")
 }
 \references{
 Lin, Huang, and Shyamal Das Peddada. "Analysis of compositions of microbiomes
