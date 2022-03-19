@@ -7,21 +7,23 @@
 run_ancom(
   ps,
   group,
+  confounders = character(0),
   taxa_rank = "all",
   transform = c("identity", "log10", "log10p"),
   norm = "TSS",
   norm_para = list(),
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
   pvalue_cutoff = 0.05,
-  W_cutoff = 0.75,
-  test = c("aov", "wilcox.test", "kruskal.test"),
-  ...
+  W_cutoff = 0.75
 )
 }
 \arguments{
 \item{ps}{a \code{\link[phyloseq]{phyloseq-class}} object.}
 
 \item{group}{character, the variable to set the group.}
+
+\item{confounders}{character vector, the confounding variables to be adjusted.
+default \code{character(0)}, indicating no confounding variable.}
 
 \item{taxa_rank}{character to specify taxonomic rank to perform
 differential analysis on. Should be one of
@@ -76,11 +78,6 @@ default 0.05.}
 
 \item{W_cutoff}{lower bound for the proportion for the W-statistic, default
 0.7.}
-
-\item{test}{character, the test to determine the p value of log ratio,
-one of "aov", "wilcox.test",  "kruskal.test".}
-
-\item{...}{additional arguments passed to the test function.}
 }
 \value{
 a \linkS4class{microbiomeMarker} object, in which the \code{slot} of
