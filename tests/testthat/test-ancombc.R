@@ -67,7 +67,7 @@ test_that("ancombc works correctly", {
         res <- data.frame(
             feature = paste0("p__", rownames(global_res)),
             enrich_group = global_res$enrich_group,
-            effect_size = global_res$W,
+            ef_W = global_res$W,
             pvalue = global_res$p_val,
             padj = global_res$q_val
         )
@@ -76,7 +76,6 @@ test_that("ancombc works correctly", {
 
         out2 <- run_ancombc(
             phylum_data,
-            formula = "nation",
             p_adjust = "holm",
             zero_cut = 0.90,
             lib_cut = 1000,
