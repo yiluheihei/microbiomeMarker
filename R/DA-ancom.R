@@ -5,6 +5,8 @@
 #'
 #' @param ps a \code{\link[phyloseq]{phyloseq-class}} object.
 #' @param group character, the variable to set the group.
+#' @param confounders character vector, the confounding variables to be adjusted.
+#'   default `character(0)`, indicating no confounding variable.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of
 #'   `phyloseq::rank_names(phyloseq)`, or "all" means to summarize the taxa by
@@ -48,7 +50,7 @@
 #'   default 0.05.
 #' @param W_cutoff lower bound for the proportion for the W-statistic, default
 #'   0.7.
-#' @param test character, the test to dtermine the p value of log ratio,
+#' @param test character, the test to determine the p value of log ratio,
 #'   one of "aov", "wilcox.test",  "kruskal.test".
 #' @param ... additional arguments passed to the test function.
 #'
@@ -91,6 +93,7 @@
 #' }
 run_ancom <- function(ps,
     group,
+    confounders = character(0),
     taxa_rank = "all",
     transform = c("identity", "log10", "log10p"),
     norm = "TSS",
@@ -221,7 +224,7 @@ run_ancom <- function(ps,
 #' Calculates pairwise pvalues between all features
 #' @param feature_table matrix-like, logged feature table.
 #' @param classes character vector, the same length with `log_ratio`.
-#' @param test  character, the test to dtermine the p value of log ratio,
+#' @param test  character, the test to determine the p value of log ratio,
 #'   one of "aov", "wilcox.test",  "kruskal.test".
 #' @param ... extra arguments passed to the test.
 #' @references 

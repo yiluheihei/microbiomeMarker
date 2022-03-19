@@ -9,10 +9,10 @@
 #' @param group the name of the group variable in metadata. Specifying
 #'   `group` is required for detecting structural zeros and performing
 #'   global test.
+#' @param confounders character vector, the confounding variables to be adjusted.
+#'   default `character(0)`, indicating no confounding variable.
 #' @param contrast this parameter only used for two groups comparison while
 #'   there are multiple groups. For more please see the following details.
-#' @param formula the character string expresses how the microbial absolute
-#'   abundances for each taxon depend on the variables in metadata.
 #' @param taxa_rank character to specify taxonomic rank to perform
 #'   differential analysis on. Should be one of
 #'   `phyloseq::rank_names(phyloseq)`, or "all" means to summarize the taxa by
@@ -102,10 +102,10 @@
 #'     enterotypes_arumugam,
 #'     Enterotype %in% c("Enterotype 3", "Enterotype 2")
 #' )
-#' run_ancombc(ps, group = "Enterotype", formula = "Enterotype")
+#' run_ancombc(ps, group = "Enterotype")
 run_ancombc <- function(ps,
     group,
-    formula,
+    confounders = character(0),
     contrast = NULL,
     taxa_rank = "all",
     transform = c("identity", "log10", "log10p"),
@@ -127,27 +127,39 @@ run_ancombc <- function(ps,
     ps <- check_rank_names(ps) %>% 
         check_taxa_rank( taxa_rank)
 
-    # check whether group is valid, write a function
-    sample_meta <- sample_data(ps)
-    meta_nms <- names(sample_meta)
-    if (!is.null(group)) {
-        if (!group %in% meta_nms) {
-            stop(
-                group, " are not contained in the `sample_data` of `ps`",
-                call. = FALSE
-            )
-        }
+    if (length(confounders)) {
+        confounders <- check_confounder(ps, group, confounders)
     }
-
+    
     # if it contains missing values for any
     # variable specified in the formula, the corresponding sampling fraction
     # estimate for this sample will return NA since the sampling fraction is
     # not estimable with the presence of missing values.
     # remove this samples
-    vars_formula <- all.vars(stats::as.formula(paste("~", formula)))
-    for (var in vars_formula) {
+    fml_char <- paste(c(confounders, group), collapse = " + ")
+    fml <- stats::as.formula(paste("~", fml_char))
+    vars_fml <- all.vars(fml)
+    for (var in vars_fml) {
         ps <- remove_na_samples(ps, var)
     }
+    
+    # check whether group is valid, write a function
+    meta <- sample_data(ps)
+    meta_nms <- names(meta)
+    groups <- meta[[group]]
+    groups <- make.names(groups)
+    if (!is.null(contrast)) {
+        contrast <- make.names(contrast)
+    }
+    if (!is.factor(groups)) {
+        groups <- factor(groups)
+    }
+    groups <- set_lvl(groups, contrast)
+    sample_data(ps)[[group]] <- groups
+    lvl <- levels(groups)
+    n_lvl <- length(lvl)
+    
+    contrast <- check_contrast(contrast)
 
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     p_adjust <- match.arg(
@@ -158,20 +170,11 @@ run_ancombc <- function(ps,
         )
     )
 
-    groups <- sample_data(ps)[[group]]
-    if (!is.factor(groups)) {
-        groups <- factor(groups)
-    }
-    lvl <- levels(groups)
-    n_lvl <- length(lvl)
-    
-    contrast <- check_contrast(contrast)
-
     # set the reference level for pair-wise comparison from mutliple groups
-    if (!is.null(contrast) && n_lvl > 2) {
-        groups <- relevel(groups, ref = contrast[1])
-        sample_data(ps)[[group]] <- groups
-    }
+    # if (!is.null(contrast) && n_lvl > 2) {
+    #     groups <- relevel(groups, ref = contrast[1])
+    #     sample_data(ps)[[group]] <- groups
+    # }
 
 
     # preprocess phyloseq object
@@ -187,7 +190,7 @@ run_ancombc <- function(ps,
     # ancombc differential abundance analysis
     ancombc_out <- ANCOMBC::ancombc(
         ps_summarized,
-        formula = formula,
+        formula = fml_char,
         p_adj_method = p_adjust,
         zero_cut = zero_cut,
         lib_cut = lib_cut,
