@@ -124,25 +124,28 @@ run_ancombc <- function(ps,
     conserve = FALSE,
     pvalue_cutoff = 0.05) {
     stopifnot(inherits(ps, "phyloseq"))
-    ps <- check_rank_names(ps) %>% 
+    ps <- check_rank_names(ps) %>%
         check_taxa_rank( taxa_rank)
 
     if (length(confounders)) {
         confounders <- check_confounder(ps, group, confounders)
     }
-    
+
     # if it contains missing values for any
     # variable specified in the formula, the corresponding sampling fraction
     # estimate for this sample will return NA since the sampling fraction is
     # not estimable with the presence of missing values.
     # remove this samples
-    fml_char <- paste(c(confounders, group), collapse = " + ")
-    fml <- stats::as.formula(paste("~", fml_char))
-    vars_fml <- all.vars(fml)
-    for (var in vars_fml) {
+    fml_char <- ifelse(length(confounders),
+                       paste(c(confounders, group), collapse = " + "),
+                       group)
+    # fml_char <- paste(c(confounders, group), collapse = " + ")
+    # fml <- stats::as.formula(paste("~", fml_char))
+    # vars_fml <- all.vars(fml)
+    for (var in c(confounders, group)) {
         ps <- remove_na_samples(ps, var)
     }
-    
+
     # check whether group is valid, write a function
     meta <- sample_data(ps)
     meta_nms <- names(meta)
@@ -158,7 +161,7 @@ run_ancombc <- function(ps,
     sample_data(ps)[[group]] <- groups
     lvl <- levels(groups)
     n_lvl <- length(lvl)
-    
+
     contrast <- check_contrast(contrast)
 
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
@@ -208,7 +211,7 @@ run_ancombc <- function(ps,
     # variable has > 2 levels
     keep_var <- c("W", "p_val", "q_val", "diff_abn")
     if (n_lvl > 2) {
-        # ANCOM-BC global test to determine taxa that are differentially 
+        # ANCOM-BC global test to determine taxa that are differentially
         # abundant between three or more groups of multiple samples.
         # global result to marker_table
         if (is.null(contrast)) {
