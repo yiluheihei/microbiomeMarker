@@ -55,7 +55,10 @@ Imports:
     limma,
     ALDEx2,
     multtest,
-    plotROC
+    plotROC,
+    vegan,
+    pROC,
+    BiocParallel
 Encoding: UTF-8
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
