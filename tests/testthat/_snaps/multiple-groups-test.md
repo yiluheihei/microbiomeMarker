@@ -3,7 +3,7 @@
     Code
       print(res_test, digits = 5)
     Output
-                                               comparions diff_mean     pvalue
+                                              comparisons diff_mean     pvalue
       Enterotype 2-Enterotype 1 Enterotype 2-Enterotype 1  -0.28139 4.7701e-08
       Enterotype 3-Enterotype 1 Enterotype 3-Enterotype 1  -0.26045 1.6364e-09
       Enterotype 3-Enterotype 2 Enterotype 3-Enterotype 2   0.02094 7.8899e-01

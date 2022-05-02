@@ -118,14 +118,15 @@ run_posthoc_test <- function(ps,
     )
 
     # diff_means to diff_mean
-    result <- purrr::map(result, ~ mutate(
+    result <- purrr::map(result, ~ dplyr::mutate(
         .x,
-        comparions = .data$comparisons,
+        # comparions = .data$comparisons,
         diff_mean = .data$diff_means,
-        pvalue = .data$pvalue,
-        ci_lower = .data$ci_lower,
-        ci_upper = .data$ci_upper,
-        .keep = "none"
+        .after = .data$comparisons,
+        # pvalue = .data$pvalue,
+        # ci_lower = .data$ci_lower,
+        # ci_upper = .data$ci_upper,
+        .keep = "unused"
     ))
 
     abundance <- abd_norm
