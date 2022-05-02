@@ -47,7 +47,7 @@ plot_postHocTest <- function(pht,
     )
 
     test_res <- as.data.frame(pht@result[[feature]])
-    p_test <- ggplot(test_res, aes(x = .data$comparions)) +
+    p_test <- ggplot(test_res, aes(x = .data$comparisons)) +
         geom_errorbar(
             aes(ymin = .data$ci_lower, ymax = .data$ci_upper),
             width = 0.2
@@ -110,7 +110,7 @@ get_sig_annotation_single <- function(abd,
         purrr::map_dbl(2)
     y_range <- max(abd) - min(abd)
 
-    comps <- strsplit(pht_df$comparions, "-", fixed = TRUE)
+    comps <- strsplit(pht_df$comparisons, "-", fixed = TRUE)
     start <- purrr::map_chr(comps, 1)
     end <- purrr::map_chr(comps, 2)
     y_max <- purrr::map2_dbl(start, end, ~ max(y_max[.x], y_max[.y]))
