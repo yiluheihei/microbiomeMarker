@@ -288,9 +288,9 @@ are frequently used for metagenomic differential analysis. STAMP
 "best pratices" in choose appropriate statistical methods for metagenomic 
 analysis. Here in `microbiomeMarker`, `t-test`, Welch’s `t-test`, and White’s
 non-parametric `t-test` are provided for two groups comparison, and  ANOVA and
-Kruskal–Wallis test for multiple groups comparions.
+Kruskal–Wallis test for multiple groups comparisons.
 
-We can use `test_two_groups()` to perferm simple statistical differential test 
+We can use `test_two_groups()` to perform simple statistical differential test 
 between two groups.
 
 ```{r two-group-test}
