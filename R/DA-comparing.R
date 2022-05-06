@@ -179,12 +179,17 @@ compare_DA <- function(ps,
     spiked_features <- rep(spiked_features, each = length(methods))
 
     # spiked phyloseq objects
-    generate_spiked_ps <- function(spiked_count, ps = ps) {
+    generate_spiked_ps <- function(spiked_count, rand, group, ps = ps) {
         otu_table(ps) <- otu_table(spiked_count, taxa_are_rows = TRUE)
+        meta <- sample_data(ps)
+        meta[[group]] <- rand
+        sample_data(ps) <- meta
 
         ps
     }
-    pss <- lapply(count_tabs, generate_spiked_ps, ps = ps)
+    pss <- mapply(generate_spiked_ps, 
+                  count_tabs, rands,
+                  MoreArgs = list(group = group, ps = ps))
     pss <- rep(pss, each = length(methods))
     # rep methods
     rep_methods <- rep(methods, n_rep)
@@ -254,7 +259,7 @@ compare_DA <- function(ps,
         false_pos <- n_pos - true_pos
         true_neg <- n_neg - false_neg
 
-        # FDR
+        # fpr
         fpr <- ifelse((false_pos + true_neg) != 0,
                       false_pos / (false_pos + true_neg),
                       0)
