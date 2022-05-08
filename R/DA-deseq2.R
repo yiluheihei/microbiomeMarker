@@ -465,7 +465,9 @@ run_deseq2 <- function(ps,
 
     marker <- microbiomeMarker(
         marker_table = marker,
-        norm_method = get_norm_method(norm),
+        # if no pre-calculated size factors, DESeq2 will calculate the 
+        # size factors internally, so norm method shoule be RLE
+        norm_method = ifelse(is.null(nf), "RLE", get_norm_method(norm)),
         diff_method = paste0("DESeq2: ", test),
         sam_data = sample_data(ps_normed),
         tax_table = tax_table(ps_summarized),
@@ -525,8 +527,8 @@ phyloseq2DESeq2 <- function(ps, design, ...) {
     if (inherits(dds, "error") &&
         conditionMessage(dds) == "some values in assay are not integers") {
         warning(
-            "Not all reads are integers, the reads are ceiled to integers.\n",
-            "   Raw reads is recommended from the ALDEx2 paper.",
+            "Some counts are non-integers, they are rounded to integers.\n",
+            "Raw count is recommended for reliable results for deseq2 method.",
             call. = FALSE
         )
         dds <- DESeq2::DESeqDataSetFromMatrix(
