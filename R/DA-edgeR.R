@@ -275,7 +275,7 @@ run_edger <- function(ps,
 
     marker <- microbiomeMarker(
         marker_table = marker,
-        norm_method = get_norm_method(norm),
+        norm_method = ifelse(is.null(nf), "TMM", get_norm_method(norm)),
         diff_method = paste("edgeR:", method),
         sam_data = sample_data(ps_normed),
         otu_table = otu_table(counts_normalized, taxa_are_rows = TRUE),
@@ -303,6 +303,14 @@ run_edger <- function(ps,
 phyloseq2edgeR <- function(ps, ...) {
     ps <- keep_taxa_in_rows(ps)
     abd <- as(otu_table(ps), "matrix")
+    
+    if (any(round(abd) != abd)) {
+        warning(
+            "Some counts are non-integers, they are rounded to integers.\n",
+            "Raw count is recommended for reliable results for edger method.",
+            call. = FALSE
+        )
+    }
 
     # tax_table: annotation information
     taxa <- tax_table(ps, FALSE)
