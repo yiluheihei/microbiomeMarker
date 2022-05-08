@@ -532,7 +532,7 @@ phyloseq2DESeq2 <- function(ps, design, ...) {
             call. = FALSE
         )
         dds <- DESeq2::DESeqDataSetFromMatrix(
-            countData = ceiling(ct),
+            countData = round(ct),
             colData = data.frame(samp),
             design = design,
             ...
