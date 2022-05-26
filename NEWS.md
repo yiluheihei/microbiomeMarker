@@ -1,3 +1,16 @@
+# microbiomeMarker 1.3.1
+
++ Development version on Bioconductor.
+
+# microbiomeMarker 1.2.1 (2022-05-26)
+
++ Confounder analysis.
++ Comparison of different methods.
+
+# microbiomeMarker 1.2.0 (2022-04-27) 
+
++ Released on Bioconductor 3.15.
+
 # microbiomeMarker 1.1.2
 
 + Development version on Bioconductor
@@ -23,7 +36,7 @@ groups (2021-10-12, #48).
 
 # microbiomeMarker 1.0.0 (2021-10-27)
 
-+ Released on Bioconductor,
++ Released on Bioconductor.
 
 # microbiomeMarker 0.99.1 (2021-10-11)
 

@@ -27,4 +27,3 @@ test_that("create phyloseq object from microbiomeMarker object", {
     ps2 <- create_ps_from_mm(mm_lefse, only_marker = FALSE)
     expect_identical(taxa_names(ps2), taxa_names(mm_lefse))
 })
-
