@@ -72,6 +72,7 @@ Suggests:
     ranger,
     knitr,
     rmarkdown,
-    BiocStyle
+    BiocStyle,
+    withr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
