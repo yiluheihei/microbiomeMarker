@@ -1,4 +1,3 @@
-set.seed(2020)
 # lefse - lda
 data(kostic_crc)
 kostic_crc_small <- phyloseq::subset_taxa(
