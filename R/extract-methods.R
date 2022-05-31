@@ -4,7 +4,8 @@
 #'
 #' @name [
 #' @aliases [,marker_table,ANY,ANY,ANY-method
-#' @inheritParams base::Extract
+#' @param x a [`marker_table`] object.
+#' @param i,j elements to extract.
 #' @param ... see [`base::Extract()`].
 #' @param drop ignored now.
 #' @return a `marker_table` object.

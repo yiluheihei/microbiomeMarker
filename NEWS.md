@@ -1,4 +1,8 @@
-# microbiomeMarker 1.3.1
+# microbiomeMarker 1.3.2
+
++ fix error on subgroup in lefse, #62, #55
+
+# microbiomeMarker 1.3.1 (2022-05-26)
 
 + Development version on Bioconductor.
 

@@ -429,15 +429,15 @@ lefse_format_grp <- function(sample_meta, group, subgroup = NULL) {
     group_nms <- unique(groups)
 
     if (is.null(subgroup)) {
-        subgroup <- paste0(groups, "_subgrp")
+        subgroups <- paste0(groups, "_subgrp")
     } else {
-        subgroup <- sample_meta[[subgroup]]
+        subgroups <- paste(groups, sample_meta[[subgroup]], sep = "_")
     }
 
-    group_hie <- split(subgroup, groups) %>%
+    group_hie <- split(subgroups, groups) %>%
         purrr::map(unique)
 
-    return(list(group = groups, subgroup = subgroup, group_hie = group_hie))
+    return(list(group = groups, subgroup = subgroups, group_hie = group_hie))
 }
 
 #' add missing levels, used for summarized taxa
