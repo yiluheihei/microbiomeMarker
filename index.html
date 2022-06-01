@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,23 +42,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">microbiomeMarker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -73,7 +69,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/yiluheihei/microbiomeMarker/">
+  <a href="https://github.com/yiluheihei/microbiomeMarker/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -90,101 +86,100 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="microbiomemarker" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#microbiomemarker" class="anchor"></a>microbiomeMarker</h1></div>
-<p><a href="https://github.com/yiluheihei/microbiomeMarker"></a><img src="reference/figures/microbiomeMarker.png" height="150" align="right"></p>
+<div class="section level1">
+<div class="page-header"><h1 id="microbiomemarker">microbiomeMarker<a class="anchor" aria-label="anchor" href="#microbiomemarker"></a>
+</h1></div>
+<p><a href="https://github.com/yiluheihei/microbiomeMarker" class="external-link"></a><img src="reference/figures/microbiomeMarker.png" height="150" align="right" style="float:right; height:150px;"></p>
 <!-- badges: start -->
-<p><a href="https://www.bioconductor.org/packages/microbiomeMarker"><img src="https://img.shields.io/badge/release%20version-1.0.0-green.svg"></a> <a href="https://github.com/yiluheihei/microbiomeMarker"><img src="https://img.shields.io/badge/devel%20version-1.1.1-green.svg"></a> <a href="https://www.bioconductor.org/packages/devel/bioc/html/microbiomeMarker.html#archives"><img src="http://www.bioconductor.org/shields/availability/devel/microbiomeMarker.svg" alt="platform"></a> <a href="https://bioconductor.org/checkResults/release/bioc-LATEST/microbiomeMarker"><img src="http://www.bioconductor.org/shields/build/release/bioc/microbiomeMarker.svg" alt="BioC status"></a> <a href="https://www.bioconductor.org/packages/devel/bioc/html/microbiomeMarker.html#since"><img src="http://www.bioconductor.org/shields/years-in-bioc/microbiomeMarker.svg" alt="Bioc years"></a> <a href="https://github.com/yiluheihei/microbiomeMarker/actions"><img src="https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check-bioc/badge.svg" alt="R build status"></a> <a href="https://github.com/yiluheihei/microbiomeMarker/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a> <a href="https://codecov.io/gh/yiluheihei/microbiomeMarker?branch=master"><img src="https://codecov.io/gh/yiluheihei/microbiomeMarker/branch/master/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://zenodo.org/badge/latestdoi/215731961"><img src="https://zenodo.org/badge/215731961.svg" alt="DOI"></a> <a href="https://lifecycle.r-lib.org/articles/stages.html#stable"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a> <img src="https://img.shields.io/github/stars/yiluheihei/microbiomeMarker?style=social" alt="GitHub Repo stars"><!-- badges: end --></p>
 <p><strong><em>microbiomeMarker</em></strong> is still under development, your suggestion and contribution will be highly appreciated. If you think this project is helpful to you, you can give this project a <span class="emoji" data-emoji="star">⭐</span>.</p>
-<div id="motivation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#motivation" class="anchor"></a>Motivation</h2>
+<div class="section level2">
+<h2 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
+</h2>
 <p>The aim of this package is to build a unified toolbox in R for microbiome biomarker discovery by integrating existing widely used differential analysis methods.</p>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>Install the package from Bioconductor directly:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
 
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"microbiomeMarker"</span><span class="op">)</span></code></pre></div>
-<p>Or install the development version of the package from <a href="https://github.com/yiluheihei/microbiomeMarker">Github</a>.</p>
+<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"microbiomeMarker"</span><span class="op">)</span></code></pre></div>
+<p>Or install the development version of the package from <a href="https://github.com/yiluheihei/microbiomeMarker" class="external-link">Github</a>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"yiluheihei/microbiomeMarker"</span><span class="op">)</span></code></pre></div>
-<p>For more details on how to use <strong><em>microbiomeMarker</em></strong>, please see the help page or <a href="https://yiluheihei.github.io/microbiomeMarker/index.html">website</a> of our package.</p>
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"yiluheihei/microbiomeMarker"</span><span class="op">)</span></code></pre></div>
+<p>For more details on how to use <strong><em>microbiomeMarker</em></strong>, please see the help page or <a href="https://yiluheihei.github.io/microbiomeMarker/index.html" class="external-link">website</a> of our package.</p>
 </div>
-<div id="citation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#citation" class="anchor"></a>Citation</h2>
-<p>Kindly cite as follows: Yang Cao (2020). microbiomeMarker: microbiome biomarker analysis toolkit. R package version 0.99.0. <a href="https://github.com/yiluheihei/microbiomeMarker" class="uri">https://github.com/yiluheihei/microbiomeMarker</a>. doi: <a href="https://doi.org/10.5281/zenodo.3749415">10.5281/zenodo.3749415</a>.</p>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>Kindly cite as follows: Yang Cao (2020). microbiomeMarker: microbiome biomarker analysis toolkit. R package version 0.99.0. <a href="https://github.com/yiluheihei/microbiomeMarker" class="external-link uri">https://github.com/yiluheihei/microbiomeMarker</a>. doi: <a href="https://doi.org/10.5281/zenodo.3749415" class="external-link">10.5281/zenodo.3749415</a>.</p>
 <p>Please cite the corresponding methods paper too:</p>
 <ul>
-<li>LEfSe: Segata, Nicola, Jacques Izard, et al. 2011. Metagenomic Biomarker Discovery and Explanation. Genome Biology 12 (6): 1–18. doi: <a href="https://doi.org/10.1186/gb-2011-12-6-r60">10.1186/gb-2011-12-6-r60</a>
+<li>LEfSe: Segata, Nicola, Jacques Izard, et al. 2011. Metagenomic Biomarker Discovery and Explanation. Genome Biology 12 (6): 1–18. doi: <a href="https://doi.org/10.1186/gb-2011-12-6-r60" class="external-link">10.1186/gb-2011-12-6-r60</a>
 </li>
-<li>metagenomeSeq: Paulson, Joseph N, O Colin Stine, et al. 2013. Differential Abundance Analysis for Microbial Marker-Gene Surveys. Nature Methods 10 (12): 1200–1202. doi: <a href="https://doi.org/10.1038/nmeth.2658">10.1038/nmeth.2658</a>
+<li>metagenomeSeq: Paulson, Joseph N, O Colin Stine, et al. 2013. Differential Abundance Analysis for Microbial Marker-Gene Surveys. Nature Methods 10 (12): 1200–1202. doi: <a href="https://doi.org/10.1038/nmeth.2658" class="external-link">10.1038/nmeth.2658</a>
 </li>
-<li>ANCOM: Mandal, Siddhartha, Will Van Treuren, et al. 2015. Analysis of Composition of Microbiomes: A Novel Method for Studying Microbial Composition. Microbial Ecology in Health and Disease 26 (1): 27663. doi: <a href="https://doi.org/10.3402/mehd.v26.27663">10.3402/mehd.v26.27663</a>
+<li>ANCOM: Mandal, Siddhartha, Will Van Treuren, et al. 2015. Analysis of Composition of Microbiomes: A Novel Method for Studying Microbial Composition. Microbial Ecology in Health and Disease 26 (1): 27663. doi: <a href="https://doi.org/10.3402/mehd.v26.27663" class="external-link">10.3402/mehd.v26.27663</a>
 </li>
-<li>ANCOMBC: Lin, Huang, and Shyamal Das Peddada. 2020. Analysis of Compositions of Microbiomes with Bias Correction. Nature Communications 11 (1): 1–11. doi: <a href="https://doi.org/10.1038/s41522-020-00160-w">10.1038/s41522-020-00160-w</a>
+<li>ANCOMBC: Lin, Huang, and Shyamal Das Peddada. 2020. Analysis of Compositions of Microbiomes with Bias Correction. Nature Communications 11 (1): 1–11. doi: <a href="https://doi.org/10.1038/s41522-020-00160-w" class="external-link">10.1038/s41522-020-00160-w</a>
 </li>
-<li>ALDEx2: Fernandes, Andrew D, Jennifer Ns Reid, et al. 2014. Unifying the Analysis of High-Throughput Sequencing Datasets: Characterizing Rna-Seq, 16S rRNA Gene Sequencing and Selective Growth Experiments by Compositional Data Analysis. Genome Biology 15(2): 1–17. doi: <a href="https://doi.org/10.1186/2049-2618-2-15">10.1186/2049-2618-2-15</a>
+<li>ALDEx2: Fernandes, Andrew D, Jennifer Ns Reid, et al. 2014. Unifying the Analysis of High-Throughput Sequencing Datasets: Characterizing Rna-Seq, 16S rRNA Gene Sequencing and Selective Growth Experiments by Compositional Data Analysis. Genome Biology 15(2): 1–17. doi: <a href="https://doi.org/10.1186/2049-2618-2-15" class="external-link">10.1186/2049-2618-2-15</a>
 </li>
-<li>edgeR: Robinson, Mark D, Davis J McCarthy, and Gordon K Smyth. 2010. EdgeR: A Bioconductor Package for Differential Expression Analysis of Digital Gene Expression Data. Bioinformatics 26 (1): 139–40. doi: <a href="https://doi.org/10.1093/bioinformatics/btp616">10.1093/bioinformatics/btp616</a>
+<li>edgeR: Robinson, Mark D, Davis J McCarthy, and Gordon K Smyth. 2010. EdgeR: A Bioconductor Package for Differential Expression Analysis of Digital Gene Expression Data. Bioinformatics 26 (1): 139–40. doi: <a href="https://doi.org/10.1093/bioinformatics/btp616" class="external-link">10.1093/bioinformatics/btp616</a>
 </li>
-<li>DESeq2: Love, Michael I, Wolfgang Huber, and Simon Anders. 2014. Moderated Estimation of Fold Change and Dispersion for Rna-Seq Data with Deseq2. Genome Biology 15 (12): 1–21. doi: <a href="https://doi.org/10.1186/s13059-014-0550-8">10.1186/s13059-014-0550-8</a>
+<li>DESeq2: Love, Michael I, Wolfgang Huber, and Simon Anders. 2014. Moderated Estimation of Fold Change and Dispersion for Rna-Seq Data with Deseq2. Genome Biology 15 (12): 1–21. doi: <a href="https://doi.org/10.1186/s13059-014-0550-8" class="external-link">10.1186/s13059-014-0550-8</a>
 </li>
-<li>limma-voom: Law, Charity W, Yunshun Chen, et al. 2014. Voom: Precision Weights Unlock Linear Model Analysis Tools for Rna-Seq Read Counts. Genome biology, 15(2), 1-17. doi: <a href="https://doi.org/10.1186/gb-2014-15-2-r29">10.1186/gb-2014-15-2-r29</a>
+<li>limma-voom: Law, Charity W, Yunshun Chen, et al. 2014. Voom: Precision Weights Unlock Linear Model Analysis Tools for Rna-Seq Read Counts. Genome biology, 15(2), 1-17. doi: <a href="https://doi.org/10.1186/gb-2014-15-2-r29" class="external-link">10.1186/gb-2014-15-2-r29</a>
 </li>
 </ul>
-<div id="publications-citing-microbiomemarker" class="section level3">
-<h3 class="hasAnchor">
-<a href="#publications-citing-microbiomemarker" class="anchor"></a>Publications citing microbiomeMarker</h3>
+<div class="section level3">
+<h3 id="publications-citing-microbiomemarker">Publications citing microbiomeMarker<a class="anchor" aria-label="anchor" href="#publications-citing-microbiomemarker"></a>
+</h3>
 <ul>
-<li>Shanmugam G, Lee SH, Jeon J. EzMAP: Easy Microbiome Analysis Platform. BMC bioinformatics. 2021 Dec;22(1):1-0. doi: <a href="https://doi.org/10.1186/s12859-021-04106-7">10.1186/s12859-021-04106-7</a>
+<li>Shanmugam G, Lee SH, Jeon J. EzMAP: Easy Microbiome Analysis Platform. BMC bioinformatics. 2021 Dec;22(1):1-0. doi: <a href="https://doi.org/10.1186/s12859-021-04106-7" class="external-link">10.1186/s12859-021-04106-7</a>
 </li>
-<li>Altaib H, Nakamura K, Abe M, et al. Differences in the concentration of the fecal neurotransmitters GABA and glutamate are associated with microbial composition among healthy human subjects. Microorganisms. 2021. Feb;9(2):378. doi: <a href="https://doi.org/10.3390/microorganisms9020378">10.3390/microorganisms9020378</a>
+<li>Altaib H, Nakamura K, Abe M, et al. Differences in the concentration of the fecal neurotransmitters GABA and glutamate are associated with microbial composition among healthy human subjects. Microorganisms. 2021. Feb;9(2):378. doi: <a href="https://doi.org/10.3390/microorganisms9020378" class="external-link">10.3390/microorganisms9020378</a>
 </li>
-<li>Ingham AC, Kielsen K, Mordhorst H, et al. Microbiota long-term dynamics and prediction of acute graft-versus-host-disease in pediatric allogeneic stem cell transplantation. medRxiv. 2021 Jan 1. doi: <a href="https://doi.org/10.1101/2021.02.19.21252040">10.1101/2021.02.19.21252040</a>
+<li>Ingham AC, Kielsen K, Mordhorst H, et al. Microbiota long-term dynamics and prediction of acute graft-versus-host-disease in pediatric allogeneic stem cell transplantation. medRxiv. 2021 Jan 1. doi: <a href="https://doi.org/10.1101/2021.02.19.21252040" class="external-link">10.1101/2021.02.19.21252040</a>
 </li>
 <li>Künstner A, Aherrahrou R, Hirose M, et al. Effect of Differences in the Microbiome of Cyp17a1-Deficient Mice on Atherosclerotic Background. Cells. 2021 Jun;10(6):1292.<br>
-doi: <a href="https://doi.org/10.3390/cells10061292">10.3390/cells10061292</a>
+doi: <a href="https://doi.org/10.3390/cells10061292" class="external-link">10.3390/cells10061292</a>
 </li>
-<li>Ingham AC, Urth TR, Sieber RN, et al. Dynamics of the human nasal microbiota and Staphylococcus aureus CC398 carriage in pig truck drivers across one workweek. Applied and Environmental Microbiology. 2021 Jun 30:AEM-01225. doi: <a href="https://doi.org/10.1128/AEM.01225-21">10.1128/AEM.01225-21</a>.</li>
-<li>Shibata T, Nakagawa M, Coleman HN, et al. Evaluation of DNA extraction protocols from liquid-based cytology specimens for studying cervical microbiota. Plos one 16, no. 8 (2021). doi: <a href="https://doi.org/10.1371/journal.pone.0237556">10.1371/journal.pone.0237556</a>
+<li>Ingham AC, Urth TR, Sieber RN, et al. Dynamics of the human nasal microbiota and Staphylococcus aureus CC398 carriage in pig truck drivers across one workweek. Applied and Environmental Microbiology. 2021 Jun 30:AEM-01225. doi: <a href="https://doi.org/10.1128/AEM.01225-21" class="external-link">10.1128/AEM.01225-21</a>.</li>
+<li>Shibata T, Nakagawa M, Coleman HN, et al. Evaluation of DNA extraction protocols from liquid-based cytology specimens for studying cervical microbiota. Plos one 16, no. 8 (2021). doi: <a href="https://doi.org/10.1371/journal.pone.0237556" class="external-link">10.1371/journal.pone.0237556</a>
 </li>
 </ul>
 </div>
 </div>
-<div id="question" class="section level2">
-<h2 class="hasAnchor">
-<a href="#question" class="anchor"></a>Question</h2>
+<div class="section level2">
+<h2 id="question">Question<a class="anchor" aria-label="anchor" href="#question"></a>
+</h2>
 <p>If you have any question, please file an issue on the issue tracker following the instructions in the issue template:</p>
 <p>Please briefly describe your problem, what output actually happened, and what output you expect.</p>
-<p>Please provide a minimal reproducible example. For more details on how to make a great minimal reproducible example, see <a href="https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example" class="uri">https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example</a> and <a href="https://www.tidyverse.org/help/#reprex" class="uri">https://www.tidyverse.org/help/#reprex</a>.</p>
+<p>Please provide a minimal reproducible example. For more details on how to make a great minimal reproducible example, see <a href="https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example" class="external-link uri">https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example</a> and <a href="https://www.tidyverse.org/help/#reprex" class="external-link uri">https://www.tidyverse.org/help/#reprex</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>Brief description of the problem</span>
 <span id="cb3-2"><a href="#cb3-2"></a></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="co"># insert minimal reprducible example here</span></span></code></pre></div>
 </div>
-<div id="acknowledgement" class="section level2">
-<h2 class="hasAnchor">
-<a href="#acknowledgement" class="anchor"></a>Acknowledgement</h2>
+<div class="section level2">
+<h2 id="acknowledgement">Acknowledgement<a class="anchor" aria-label="anchor" href="#acknowledgement"></a>
+</h2>
 <p>We thanks all the developers of the methods integrated into our package.</p>
 <ul>
 <li>
-<a href="https://bitbucket.org/biobakery/biobakery/wiki/lefse">lefse python script</a>, The main lefse code are translated from <strong><em>lefse python script</em></strong>,</li>
+<a href="https://bitbucket.org/biobakery/biobakery/wiki/lefse" class="external-link">lefse python script</a>, The main lefse code are translated from <strong><em>lefse python script</em></strong>,</li>
 <li>
-<a href="https://github.com/lch14forever/microbiomeViz">microbiomeViz</a>, cladogram visualization of lefse is modified from <strong><em>microbiomeViz</em></strong>.</li>
+<a href="https://github.com/lch14forever/microbiomeViz" class="external-link">microbiomeViz</a>, cladogram visualization of lefse is modified from <strong><em>microbiomeViz</em></strong>.</li>
 <li>
-<a href="https://github.com/joey711/phyloseq">phyloseq</a>, the main data structures used in <strong><em>microbiomeMarker</em></strong> are from or inherit from <code>phyloseq-class</code> in package <strong><em>phyloseq</em></strong>.</li>
+<a href="https://github.com/joey711/phyloseq" class="external-link">phyloseq</a>, the main data structures used in <strong><em>microbiomeMarker</em></strong> are from or inherit from <code>phyloseq-class</code> in package <strong><em>phyloseq</em></strong>.</li>
 <li>
-<a href="https://github.com/YuLab-SMU/MicrobiotaProcess">MicrobiotaProcess</a>, function <code><a href="reference/import_dada2.html">import_dada2()</a></code> and <code><a href="reference/import_qiime2.html">import_qiime2()</a></code> are modified from the <code>MicrobiotaProcess::import_dada2()</code>.</li>
+<a href="https://github.com/YuLab-SMU/MicrobiotaProcess" class="external-link">MicrobiotaProcess</a>, function <code><a href="reference/import_dada2.html">import_dada2()</a></code> and <code><a href="reference/import_qiime2.html">import_qiime2()</a></code> are modified from the <code>MicrobiotaProcess::import_dada2()</code>.</li>
 <li>
-<a href="https://github.com/jbisanz/qiime2R">qiime2R</a>, <code><a href="reference/import_qiime2.html">import_qiime2()</a></code> are refer to the functions in <strong><em>qiime2R</em></strong>.</li>
+<a href="https://github.com/jbisanz/qiime2R" class="external-link">qiime2R</a>, <code><a href="reference/import_qiime2.html">import_qiime2()</a></code> are refer to the functions in <strong><em>qiime2R</em></strong>.</li>
 </ul>
 </div>
 </div>
@@ -192,33 +187,50 @@ doi: <a href="https://doi.org/10.3390/cells10061292">10.3390/cells10061292</a>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from BIOC at <br><a href="https://www.bioconductor.org/packages/microbiomeMarker">https://​www.bioconductor.org/​packages/​microbiomeMarker</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/yiluheihei/microbiomeMarker/">https://​github.com/​yiluheihei/​microbiomeMarker/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/yiluheihei/microbiomeMarker/issues">https://​github.com/​yiluheihei/​microbiomeMarker/​issues</a>
-</li>
+<li><a href="https://www.bioconductor.org/packages/microbiomeMarker" class="external-link">View on Bioconductor</a></li>
+<li><a href="https://github.com/yiluheihei/microbiomeMarker/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/yiluheihei/microbiomeMarker/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></small></li>
+<li><small><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></small></li>
 </ul>
 </div>
+
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html">Citing microbiomeMarker</a></li>
+<li><a href="authors.html#citation">Citing microbiomeMarker</a></li>
 </ul>
 </div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Yang Cao <br><small class="roles"> Author, maintainer </small>  </li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://www.bioconductor.org/packages/microbiomeMarker" class="external-link"><img src="https://img.shields.io/badge/release%20version-1.0.0-green.svg"></a></li>
+<li><a href="https://github.com/yiluheihei/microbiomeMarker" class="external-link"><img src="https://img.shields.io/badge/devel%20version-1.1.1-green.svg"></a></li>
+<li><a href="https://www.bioconductor.org/packages/devel/bioc/html/microbiomeMarker.html#archives" class="external-link"><img src="http://www.bioconductor.org/shields/availability/devel/microbiomeMarker.svg" alt="platform"></a></li>
+<li><a href="https://bioconductor.org/checkResults/release/bioc-LATEST/microbiomeMarker" class="external-link"><img src="http://www.bioconductor.org/shields/build/release/bioc/microbiomeMarker.svg" alt="BioC status"></a></li>
+<li><a href="https://www.bioconductor.org/packages/devel/bioc/html/microbiomeMarker.html#since" class="external-link"><img src="http://www.bioconductor.org/shields/years-in-bioc/microbiomeMarker.svg" alt="Bioc years"></a></li>
+<li><a href="https://github.com/yiluheihei/microbiomeMarker/actions" class="external-link"><img src="https://github.com/yiluheihei/microbiomeMarker/workflows/R-CMD-check-bioc/badge.svg" alt="R build status"></a></li>
+<li><a href="https://github.com/yiluheihei/microbiomeMarker/blob/master/LICENSE.md" class="external-link"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a></li>
+<li><a href="https://codecov.io/gh/yiluheihei/microbiomeMarker?branch=master" class="external-link"><img src="https://codecov.io/gh/yiluheihei/microbiomeMarker/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://zenodo.org/badge/latestdoi/215731961" class="external-link"><img src="https://zenodo.org/badge/215731961.svg" alt="DOI"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
 </ul>
 </div>
 
@@ -227,11 +239,13 @@ doi: <a href="https://doi.org/10.3390/cells10061292">10.3390/cells10061292</a>
 
 
       <footer><div class="copyright">
-  <p>Developed by Yang Cao.</p>
+  <p></p>
+<p>Developed by Yang Cao.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
@@ -239,6 +253,8 @@ doi: <a href="https://doi.org/10.3390/cells10061292">10.3390/cells10061292</a>
 
   
 
+
+  
 
   </body>
 </html>
