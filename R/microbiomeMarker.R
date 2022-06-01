@@ -14,4 +14,5 @@
 #' @importClassesFrom phyloseq phyloseq
 #' @importFrom rlang .data
 #' @importFrom methods setClass setGeneric setMethod
+#' @keywords internal
 NULL

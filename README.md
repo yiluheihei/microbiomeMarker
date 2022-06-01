@@ -3,7 +3,7 @@
 
 # microbiomeMarker
 
-<a href='https://github.com/yiluheihei/microbiomeMarker'/><img src='man/figures/microbiomeMarker.png' height="150" align="right" />
+<a href='https://github.com/yiluheihei/microbiomeMarker'/><img src='man/figures/microbiomeMarker.png' height="150" align="right" style="float:right; height:150px;" />
 
 <!-- badges: start -->
 

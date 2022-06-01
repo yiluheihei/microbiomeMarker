@@ -209,6 +209,7 @@ get_unique_id <- function(n, depth = 1) {
 #' @param sep character, separate between different levels of taxa, default `|`
 #' @author Yang Cao
 #' @return a [`tidytree::treedata-class`] object
+#' @keywords internal
 get_treedata_phyloseq <- function(ps, sep = "|") {
     if (!taxa_are_rows(ps)) {
         stop("Requires taxa in rows of phyloseq")

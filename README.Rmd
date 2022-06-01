@@ -7,7 +7,7 @@ output: github_document
 
 # microbiomeMarker
 
-<a href='https://github.com/yiluheihei/microbiomeMarker'/><img src='man/figures/microbiomeMarker.png' height="150" align="right" />
+<a href='https://github.com/yiluheihei/microbiomeMarker'/><img src='man/figures/microbiomeMarker.png' height="150" align="right" style="float:right; height:150px;" />
 
 <!-- badges: start -->
 [![](https://img.shields.io/badge/release%20version-1.0.0-green.svg)](https://www.bioconductor.org/packages/microbiomeMarker)

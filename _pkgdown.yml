@@ -20,9 +20,11 @@ reference:
       - marker_table<-
       - assign-otu_table
       - abundances
-      - nclass
       - nmarker
+      - "["
       - starts_with("postHocTest-class")
+      - postHocTest
+      - extract_posthoc_res
   - title: Functions reexports from phyloseq
     contents: reexports
       # - nsamples
@@ -40,7 +42,12 @@ reference:
   - title: "Differential analysis"
     desc: Functions for identifying the microbiome markers
     contents:
+      - confounder
       - starts_with("run")
+  - title: "Comparison of different methods"
+    contents: 
+      - compare_DA
+      - summary.compareDA
   - title: "Visualization"
     contents:
       - starts_with("plot")

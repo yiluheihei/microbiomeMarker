@@ -20,3 +20,4 @@ Generate tree data from phyloseq object
 \author{
 Yang Cao
 }
+\keyword{internal}
