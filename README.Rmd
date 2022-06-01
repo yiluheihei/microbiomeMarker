@@ -56,10 +56,11 @@ package.
 
 ## Citation
 
-Kindly cite as follows:  Yang Cao (2020). microbiomeMarker: microbiome biomarker
-analysis toolkit. R package version 0.99.0. 
-https://github.com/yiluheihei/microbiomeMarker. 
-doi: [10.5281/zenodo.3749415](https://doi.org/10.5281/zenodo.3749415).
+Kindly cite as follows: 
+
+```{r cite,warning=FALSE}
+citation("microbiomeMarker")
+```
 
 Please cite the corresponding methods paper too:
 
