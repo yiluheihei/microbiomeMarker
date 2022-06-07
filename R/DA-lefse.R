@@ -227,7 +227,6 @@ run_lefse <- function(ps,
 
     lefse_out <- return_marker(lefse_sig, lefse_res)
     lefse_out$padj <- lefse_out$pvalue
-    row.names(lefse_out) <- paste0("marker", seq_len(nrow(lefse_out)))
 
     mm <- microbiomeMarker(
         marker_table = lefse_out,
