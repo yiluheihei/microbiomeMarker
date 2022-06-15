@@ -54,9 +54,9 @@
 #' @param p_adjust method to adjust p-values by. Default is "holm".
 #'   Options include "holm", "hochberg", "hommel", "bonferroni", "BH", "BY",
 #'   "fdr", "none". See [`stats::p.adjust()`] for more details.
-#' @param zero_cut a numerical fraction between 0 and 1. Taxa with proportion of
-#'   zeroes greater than `zero_cut` will be excluded in the analysis. Default
-#'   is 0.90.
+#' @param prv_cut a numerical fraction between 0 and 1. Taxa with prevalences
+#'   less than `prv_cut` will be excluded in the analysis. Default
+#'   is 0.10.
 #' @param lib_cut a numerical threshold for filtering samples based on library
 #'   sizes. Samples with library sizes less than `lib_cut` will be excluded
 #'   in the analysis. Default is 0, i.e. do not filter any sample.
@@ -115,7 +115,7 @@ run_ancombc <- function(ps,
         "none", "fdr", "bonferroni", "holm",
         "hochberg", "hommel", "BH", "BY"
     ),
-    zero_cut = 0.9,
+    prv_cut = 0.1,
     lib_cut = 0,
     struc_zero = FALSE,
     neg_lb = FALSE,
@@ -195,7 +195,7 @@ run_ancombc <- function(ps,
         ps_summarized,
         formula = fml_char,
         p_adj_method = p_adjust,
-        zero_cut = zero_cut,
+        prv_cut = prv_cut,
         lib_cut = lib_cut,
         group = group,
         struc_zero = struc_zero,
@@ -232,7 +232,7 @@ run_ancombc <- function(ps,
     names(mtab) <- keep_var
 
     # determine enrich group based on coefficients
-    cf <- ancombc_out$res$beta
+    cf <- ancombc_out$res$lfc
     if (n_lvl > 2) {
         if (!is.null(contrast)) {
             cf <- cf[exp_lvl]
