@@ -164,6 +164,8 @@ recommended when very low values are present (as shown in the LEfSe galaxy).</p>
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>a <a href="https://rdrr.io/pkg/phyloseq/man/phyloseq-class.html" class="external-link">phyloseq::phyloseq</a> or <a href="https://rdrr.io/pkg/phyloseq/man/otu_table-class.html" class="external-link">phyloseq::otu_table</a></p></dd>
+
+
 <dt>method</dt>
 <dd><p>the methods used to normalize the microbial abundance data.
 Options includes:</p><ul><li><p>"none": do not normalize.</p></li>
@@ -185,42 +187,69 @@ cumulative sum of gene abundances up to a data-derived threshold.</p></li>
 <li><p>"CLR": centered log-ratio normalization.</p></li>
 <li><p>"CPM": pre-sample normalization of the sum of the values to 1e+06.</p></li>
 </ul></dd>
+
+
 <dt>...</dt>
 <dd><p>other arguments passed to the corresponding normalization
 methods.</p></dd>
+
+
 <dt>size, rng_seed, replace, trim_otus, verbose</dt>
 <dd><p>extra arguments passed to
 <code><a href="https://rdrr.io/pkg/phyloseq/man/rarefy_even_depth.html" class="external-link">phyloseq::rarefy_even_depth()</a></code>.</p></dd>
+
+
 <dt>sl</dt>
 <dd><p>The value to scale.</p></dd>
+
+
 <dt>locfunc</dt>
 <dd><p>a function to compute a location for a sample. By default,
 the median is used.</p></dd>
+
+
 <dt>type</dt>
 <dd><p>method for estimation: either "ratio"or "poscounts" (recommend).</p></dd>
+
+
 <dt>geo_means</dt>
 <dd><p>default <code>NULL</code>, which means the geometric means of the
 counts are used. A vector of geometric means from another count matrix can
 be provided for a "frozen" size factor calculation.</p></dd>
+
+
 <dt>control_genes</dt>
 <dd><p>default <code>NULL</code>, which means all taxa are used for size
 factor estimation, numeric or logical index vector specifying the taxa
 used for size factor estimation (e.g. core taxa).</p></dd>
+
+
 <dt>ref_column</dt>
 <dd><p>column to use as reference</p></dd>
+
+
 <dt>logratio_trim</dt>
 <dd><p>amount of trim to use on log-ratios</p></dd>
+
+
 <dt>sum_trim</dt>
 <dd><p>amount of trim to use on the combined absolute levels
 ("A" values)</p></dd>
+
+
 <dt>do_weighting</dt>
 <dd><p>whether to compute the weights or not</p></dd>
+
+
 <dt>Acutoff</dt>
 <dd><p>cutoff on "A" values to use before trimming</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>the same class with <code>object</code>.</p>
+    
+
+<p>the same class with <code>object</code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -263,7 +292,7 @@ used for size factor estimation (e.g. core taxa).</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

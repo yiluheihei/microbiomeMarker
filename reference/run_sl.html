@@ -86,8 +86,12 @@ vector machine.</p>
     <h2>Arguments</h2>
     <dl><dt>ps</dt>
 <dd><p>a <code><a href="https://rdrr.io/pkg/phyloseq/man/phyloseq-class.html" class="external-link">phyloseq-class</a></code> object.</p></dd>
+
+
 <dt>group</dt>
 <dd><p>character, the variable to set the group.</p></dd>
+
+
 <dt>taxa_rank</dt>
 <dd><p>character to specify taxonomic rank to perform
 differential analysis on. Should be one of
@@ -95,6 +99,8 @@ differential analysis on. Should be one of
 the top taxa ranks (<code>summarize_taxa(ps, level = rank_names(ps)[1])</code>), or
 "none" means perform differential analysis on the original taxa
 (<code>taxa_names(phyloseq)</code>, e.g., OTU or ASV).</p></dd>
+
+
 <dt>transform</dt>
 <dd><p>character, the methods used to transform the microbial
 abundance. See <code><a href="transform_abundances.html">transform_abundances()</a></code> for more details. The
@@ -104,6 +110,8 @@ options include:</p><ul><li><p>"identity", return the original data without any 
 zeros the transformation is <code>log10(1 + object)</code>.</p></li>
 <li><p>"log10p", the transformation is <code>log10(1 + object)</code>.</p></li>
 </ul></dd>
+
+
 <dt>norm</dt>
 <dd><p>the methods used to normalize the microbial abundance data. See
 <code><a href="normalize-methods.html">normalize()</a></code> for more details.
@@ -126,35 +134,54 @@ cumulative sum of gene abundances up to a data-derived threshold.</p></li>
 <li><p>"CLR": centered log-ratio normalization.</p></li>
 <li><p>"CPM": pre-sample normalization of the sum of the values to 1e+06.</p></li>
 </ul></dd>
+
+
 <dt>norm_para</dt>
 <dd><p>named <code>list</code>. other arguments passed to specific
 normalization methods.  Most users will not need to pass any additional
 arguments here.</p></dd>
+
+
 <dt>nfolds</dt>
 <dd><p>the number of splits in CV.</p></dd>
+
+
 <dt>nrepeats</dt>
 <dd><p>the number of complete sets of folds to compute.</p></dd>
+
+
 <dt>sampling</dt>
 <dd><p>a single character value describing the type of additional
 sampling that is conducted after resampling (usually to resolve class
 imbalances). Values are "none", "down", "up", "smote", or "rose". For
 more details see <code><a href="https://rdrr.io/pkg/caret/man/trainControl.html" class="external-link">caret::trainControl()</a></code>.</p></dd>
+
+
 <dt>tune_length</dt>
 <dd><p>an integer denoting the amount of granularity in the
 tuning parameter grid. For more details see <code><a href="https://rdrr.io/pkg/caret/man/train.html" class="external-link">caret::train()</a></code>.</p></dd>
+
+
 <dt>top_n</dt>
 <dd><p>an integer denoting the top <code>n</code> features as the biomarker
 according the importance score.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>supervised learning method, options are "LR" (logistic
 regression), "RF" (rando forest), or "SVM" (support vector machine).</p></dd>
+
+
 <dt>...</dt>
 <dd><p>extra arguments passed to the classification. e.g., <code>importance</code>
 for <code>randomForest::randomForest</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a <a href="microbiomeMarker-class.html">microbiomeMarker</a> object.</p>
+    
+
+<p>a <a href="microbiomeMarker-class.html">microbiomeMarker</a> object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -220,7 +247,7 @@ the performance of the marker predictions for the testing data.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

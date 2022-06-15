@@ -70,19 +70,26 @@
     <h2>Arguments</h2>
     <dl><dt>ps</dt>
 <dd><p>the [phyloseq::phyloseq-class<code>] object to convert, which must have a [</code>phyloseq::sample_data()`] component.</p></dd>
+
+
 <dt>design</dt>
 <dd><p>a <code>formula</code> or <code>matrix</code>, the formula expresses how the counts
 for each gene depend on the variables in colData. Many R formula are valid,
 including designs with multiple variables, e.g., <code>~ group + condition</code>.
 This argument is passed to <code><a href="https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html" class="external-link">DESeq2::DESeqDataSetFromMatrix()</a></code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional arguments passed to
 <code><a href="https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html" class="external-link">DESeq2::DESeqDataSetFromMatrix()</a></code>, Most users will not need to pass any
 additional arguments here.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a <code><a href="https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html" class="external-link">DESeq2::DESeqDataSet</a></code> object.</p>
+    
+
+<p>a <code><a href="https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html" class="external-link">DESeq2::DESeqDataSet</a></code> object.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -122,7 +129,7 @@ additional arguments here.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

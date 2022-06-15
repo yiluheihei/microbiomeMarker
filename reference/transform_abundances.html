@@ -73,16 +73,21 @@ the counts of each sample will be transformed individually.</p>
     <dl><dt>object</dt>
 <dd><p><code>otu_table</code>, <code>phyloseq</code>, or
 <code><a href="microbiomeMarker-class.html">microbiomeMarker</a></code>.</p></dd>
+
+
 <dt>transform</dt>
 <dd><p>transformation to apply, the options inclulde:</p><ul><li><p>"identity", return the original data without any transformation.</p></li>
 <li><p>"log10", the transformation is <code>log10(object)</code>, and if the data contains
 zeros the transformation is <code>log10(1 + object)</code>.</p></li>
 <li><p>"log10p", the transformation is <code>log10(1 + object)</code>.</p></li>
 </ul></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A object matches the class of argument <code>object</code> with the transformed
+    
+
+<p>A object matches the class of argument <code>object</code> with the transformed
 <code>otu_table</code>.</p>
     </div>
     <div id="see-also">
@@ -1934,7 +1939,7 @@ zeros the transformation is <code>log10(1 + object)</code>.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

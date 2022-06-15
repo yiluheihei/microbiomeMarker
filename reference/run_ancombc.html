@@ -78,7 +78,7 @@ function is a wrapper of <code><a href="https://rdrr.io/pkg/ANCOMBC/man/ancombc.
   norm <span class="op">=</span> <span class="st">"none"</span>,
   norm_para <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
   p_adjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"fdr"</span>, <span class="st">"bonferroni"</span>, <span class="st">"holm"</span>, <span class="st">"hochberg"</span>, <span class="st">"hommel"</span>, <span class="st">"BH"</span>, <span class="st">"BY"</span><span class="op">)</span>,
-  zero_cut <span class="op">=</span> <span class="fl">0.9</span>,
+  prv_cut <span class="op">=</span> <span class="fl">0.1</span>,
   lib_cut <span class="op">=</span> <span class="fl">0</span>,
   struc_zero <span class="op">=</span> <span class="cn">FALSE</span>,
   neg_lb <span class="op">=</span> <span class="cn">FALSE</span>,
@@ -94,16 +94,24 @@ function is a wrapper of <code><a href="https://rdrr.io/pkg/ANCOMBC/man/ancombc.
     <dl><dt>ps</dt>
 <dd><p>a <code><a href="https://rdrr.io/pkg/phyloseq/man/phyloseq-class.html" class="external-link">phyloseq::phyloseq</a></code> object, which consists of a feature
 table, a sample metadata and a taxonomy table.</p></dd>
+
+
 <dt>group</dt>
 <dd><p>the name of the group variable in metadata. Specifying
 <code>group</code> is required for detecting structural zeros and performing
 global test.</p></dd>
+
+
 <dt>confounders</dt>
 <dd><p>character vector, the confounding variables to be adjusted.
 default <code>character(0)</code>, indicating no confounding variable.</p></dd>
+
+
 <dt>contrast</dt>
 <dd><p>this parameter only used for two groups comparison while
 there are multiple groups. For more please see the following details.</p></dd>
+
+
 <dt>taxa_rank</dt>
 <dd><p>character to specify taxonomic rank to perform
 differential analysis on. Should be one of
@@ -111,6 +119,8 @@ differential analysis on. Should be one of
 the top taxa ranks (<code>summarize_taxa(ps, level = rank_names(ps)[1])</code>), or
 "none" means perform differential analysis on the original taxa
 (<code>taxa_names(phyloseq)</code>, e.g., OTU or ASV).</p></dd>
+
+
 <dt>transform</dt>
 <dd><p>character, the methods used to transform the microbial
 abundance. See <code><a href="transform_abundances.html">transform_abundances()</a></code> for more details. The
@@ -120,6 +130,8 @@ options include:</p><ul><li><p>"identity", return the original data without any 
 zeros the transformation is <code>log10(1 + object)</code>.</p></li>
 <li><p>"log10p", the transformation is <code>log10(1 + object)</code>.</p></li>
 </ul></dd>
+
+
 <dt>norm</dt>
 <dd><p>the methods used to normalize the microbial abundance data. See
 <code><a href="normalize-methods.html">normalize()</a></code> for more details.
@@ -142,45 +154,68 @@ cumulative sum of gene abundances up to a data-derived threshold.</p></li>
 <li><p>"CLR": centered log-ratio normalization.</p></li>
 <li><p>"CPM": pre-sample normalization of the sum of the values to 1e+06.</p></li>
 </ul></dd>
+
+
 <dt>norm_para</dt>
 <dd><p>named <code>list</code>. other arguments passed to specific
 normalization methods.  Most users will not need to pass any additional
 arguments here.</p></dd>
+
+
 <dt>p_adjust</dt>
 <dd><p>method to adjust p-values by. Default is "holm".
 Options include "holm", "hochberg", "hommel", "bonferroni", "BH", "BY",
 "fdr", "none". See <code><a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">stats::p.adjust()</a></code> for more details.</p></dd>
-<dt>zero_cut</dt>
-<dd><p>a numerical fraction between 0 and 1. Taxa with proportion of
-zeroes greater than <code>zero_cut</code> will be excluded in the analysis. Default
-is 0.90.</p></dd>
+
+
+<dt>prv_cut</dt>
+<dd><p>a numerical fraction between 0 and 1. Taxa with prevalences
+less than <code>prv_cut</code> will be excluded in the analysis. Default
+is 0.10.</p></dd>
+
+
 <dt>lib_cut</dt>
 <dd><p>a numerical threshold for filtering samples based on library
 sizes. Samples with library sizes less than <code>lib_cut</code> will be excluded
 in the analysis. Default is 0, i.e. do not filter any sample.</p></dd>
+
+
 <dt>struc_zero</dt>
 <dd><p>whether to detect structural zeros. Default is FALSE.</p></dd>
+
+
 <dt>neg_lb</dt>
 <dd><p>whether to classify a taxon as a structural zero in the
 corresponding study group using its asymptotic lower bound.
 Default is FALSE.</p></dd>
+
+
 <dt>tol</dt>
 <dd><p>the iteration convergence tolerance for the E-M algorithm.
 Default is 1e-05.</p></dd>
+
+
 <dt>max_iter</dt>
 <dd><p>the maximum number of iterations for the E-M algorithm.
 Default is 100.</p></dd>
+
+
 <dt>conserve</dt>
 <dd><p>whether to use a conservative variance estimate of
 the test statistic. It is recommended if the sample size is small and/or
 the number of differentially abundant taxa is believed to be large.
 Default is FALSE.</p></dd>
+
+
 <dt>pvalue_cutoff</dt>
 <dd><p>level of significance. Default is 0.05.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a <code><a href="microbiomeMarker-class.html">microbiomeMarker</a></code> object.</p>
+    
+
+<p>a <code><a href="microbiomeMarker-class.html">microbiomeMarker</a></code> object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -213,7 +248,8 @@ with bias correction." Nature communications 11.1 (2020): 1-11.</p>
 <span class="r-in">    <span class="va">Enterotype</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="fu">run_ancombc</span><span class="op">(</span><span class="va">ps</span>, group <span class="op">=</span> <span class="st">"Enterotype"</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The multi-group comparison will be deactivated as the group variable has &lt; 3 categories</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The group variable has &lt; 3 categories</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> The multi-group comparison will be deactivated (global = FALSE)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> microbiomeMarker-class inherited from phyloseq-class</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> normalization method:              [ none ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> microbiome marker identity method: [ ancombc ]</span>
@@ -235,7 +271,7 @@ with bias correction." Nature communications 11.1 (2020): 1-11.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

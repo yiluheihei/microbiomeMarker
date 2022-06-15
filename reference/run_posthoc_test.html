@@ -82,8 +82,12 @@ used to uncover specific mean differences between pair of groups.</p>
     <h2>Arguments</h2>
     <dl><dt>ps</dt>
 <dd><p>a <code><a href="https://rdrr.io/pkg/phyloseq/man/phyloseq-class.html" class="external-link">phyloseq::phyloseq</a></code> object</p></dd>
+
+
 <dt>group</dt>
 <dd><p>character, the variable to set the group</p></dd>
+
+
 <dt>transform</dt>
 <dd><p>character, the methods used to transform the microbial
 abundance. See <code><a href="transform_abundances.html">transform_abundances()</a></code> for more details. The
@@ -93,6 +97,8 @@ options include:</p><ul><li><p>"identity", return the original data without any 
 zeros the transformation is <code>log10(1 + object)</code>.</p></li>
 <li><p>"log10p", the transformation is <code>log10(1 + object)</code>.</p></li>
 </ul></dd>
+
+
 <dt>norm</dt>
 <dd><p>the methods used to normalize the microbial abundance data. See
 <code><a href="normalize-methods.html">normalize()</a></code> for more details.
@@ -116,18 +122,27 @@ gene counts ratios between the samples and the reference.</p></li>
 cumulative sum of gene abundances up to a data-derived threshold.</p></li>
 <li><p>"CLR": centered log-ratio normalization.</p></li>
 </ul></dd>
+
+
 <dt>norm_para</dt>
 <dd><p>arguments passed to specific normalization methods</p></dd>
+
+
 <dt>conf_level</dt>
 <dd><p>confidence level, default 0.95</p></dd>
+
+
 <dt>method</dt>
 <dd><p>one of "tukey", "games_howell", "scheffe", "welch_uncorrected",
 defining the method for the pairwise comparisons. See details for more
 information.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a <a href="postHocTest-class.html">postHocTest</a> object</p>
+    
+
+<p>a <a href="postHocTest-class.html">postHocTest</a> object</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -166,7 +181,7 @@ information.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

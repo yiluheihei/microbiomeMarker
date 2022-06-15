@@ -93,18 +93,28 @@ the variable to set the group, must be one of the var of the sample
 metadata; <code>taxa_rank</code>: character, taxonomic rank, please not that <strong>since
 the abundance table is spiked in the lowest level, only
 <code>taxa_rank = "none"</code> is allowed</strong>.</p></dd>
+
+
 <dt>methods</dt>
 <dd><p>character vector, differential analysis methods to be
 compared, available methods are "aldex", "ancom", "ancombc", "deseq2",
 "edger", "lefse", "limma_voom", "metagenomeseq", "simple_stat".</p></dd>
+
+
 <dt>args</dt>
 <dd><p>named list, which used to set the extra arguments of the
 differential analysis methods, so the names must be contained in <code>methods</code>.
 For more see details below.</p></dd>
+
+
 <dt>n_rep</dt>
 <dd><p>integer, number of times to run the differential analyses.</p></dd>
+
+
 <dt>effect_size</dt>
 <dd><p>numeric, the effect size for the spike-ins. Default 5.</p></dd>
+
+
 <dt>k</dt>
 <dd><p>numeric vector of length 3, number of features to spike in each
 tertile (lower, mid, upper), e.g. <code>k=c(5,10,15)</code> means 5 features spiked
@@ -112,17 +122,24 @@ in low abundance tertile, 10 features spiked in mid abundance tertile and
 15 features spiked in high abundance tertile. Default <code>NULL</code>, which will
 spike 2 percent of the total amount of features in each tertile (a total
 of 6 percent), but minimum c(5,5,5).</p></dd>
+
+
 <dt>relative</dt>
 <dd><p>logical, whether rescale the total number of individuals
 observed for each sample to the original level after spike-in. Default
 <code>TRUE</code>.</p></dd>
+
+
 <dt>BPPARAM</dt>
 <dd><p><code><a href="https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html" class="external-link">BiocParallel::BiocParallelParam</a></code> instance defining the
 parallel back-end.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an <code>compareDA</code> object, which contains a two-length list of:</p><ul><li><p><code>metrics</code>: <code>data.frame</code>, FPR, AUC and spike detection rate for each run.</p></li>
+    
+
+<p>an <code>compareDA</code> object, which contains a two-length list of:</p><ul><li><p><code>metrics</code>: <code>data.frame</code>, FPR, AUC and spike detection rate for each run.</p></li>
 <li><p><code>mm</code>: differential analysis results.</p></li>
 </ul></div>
     <div id="details">
@@ -146,7 +163,7 @@ not "none", it will be forced to "none" internally.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>
