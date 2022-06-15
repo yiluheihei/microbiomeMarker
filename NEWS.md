@@ -13,11 +13,7 @@
 
 + Released on Bioconductor 3.15.
 
-<<<<<<< HEAD
-# microbiomeMarker 1.1.2
-=======
 # microbiomeMarker 1.1.2 (2022-03-07)
->>>>>>> master
 
 + Development version on Bioconductor
 + Use 3rd version of testthat to fix test error (use `expect_snapshot()` rather 
