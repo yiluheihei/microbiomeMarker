@@ -1,6 +1,6 @@
 Package: microbiomeMarker
 Title: microbiome biomarker analysis toolkit
-Version: 1.2.1
+Version: 1.2.2
 Authors@R: 
     person(given = "Yang",
            family = "Cao",
@@ -60,7 +60,7 @@ Imports:
     pROC,
     BiocParallel
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Roxygen: list(markdown = TRUE)
 Suggests: 
     testthat,

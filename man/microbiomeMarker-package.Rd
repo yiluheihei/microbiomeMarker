@@ -8,3 +8,4 @@
 The microboimeMarker package provides several methods to identify micribome
 biomarker, such as lefse, deseq2.
 }
+\keyword{internal}

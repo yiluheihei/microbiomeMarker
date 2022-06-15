@@ -142,7 +142,7 @@ run_lefse <- function(ps,
     sample_meta <- sample_data(ps_normed)
     grp_info <- lefse_format_grp(sample_meta, group, subgroup = subgroup)
     grp <- grp_info$group
-    subgrp <- grp_info$subgroup
+    subgrps <- grp_info$subgroup
     grp_hie <- grp_info$group_hie
 
     ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
@@ -176,7 +176,7 @@ run_lefse <- function(ps,
     wilcoxon_p <- purrr::map2_lgl(
         sig_otus, features_nms,
         ~ test_rep_wilcoxon(
-            subgroup, grp_hie,
+            subgrps, grp_hie,
             .x, .y,
             wilcoxon_cutoff = wilcoxon_cutoff,
             multicls_strat = multigrp_strat,
@@ -186,7 +186,7 @@ run_lefse <- function(ps,
             curv = curv
         )
     )
-    sig_otus <- sig_otus[, wilcoxon_p]
+    sig_otus <- sig_otus[, wilcoxon_p, drop = FALSE]
     
     if (ncol(sig_otus) == 0) {
         warning("No marker was identified", call. = FALSE)
@@ -227,7 +227,6 @@ run_lefse <- function(ps,
 
     lefse_out <- return_marker(lefse_sig, lefse_res)
     lefse_out$padj <- lefse_out$pvalue
-    row.names(lefse_out) <- paste0("marker", seq_len(nrow(lefse_out)))
 
     mm <- microbiomeMarker(
         marker_table = lefse_out,

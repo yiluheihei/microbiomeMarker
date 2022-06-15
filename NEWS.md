@@ -1,6 +1,8 @@
-# microbiomeMarker 1.3.1
+# microbiomeMarker 1.2.2 (2022-06-15)
 
-+ Development version on Bioconductor.
++ Fix for compatibility ANCOMBC 1.6.1
+
++ fix error on subgroup in lefse, #62, #55
 
 # microbiomeMarker 1.2.1 (2022-05-26)
 
@@ -11,7 +13,11 @@
 
 + Released on Bioconductor 3.15.
 
+<<<<<<< HEAD
 # microbiomeMarker 1.1.2
+=======
+# microbiomeMarker 1.1.2 (2022-03-07)
+>>>>>>> master
 
 + Development version on Bioconductor
 + Use 3rd version of testthat to fix test error (use `expect_snapshot()` rather 
@@ -25,7 +31,7 @@ table from PICRUSt2, and all DA functions support for PICRUSt2 output data.
 + Add a new argument `clade_label_font_size` in `plot_cladogram()` to specify 
 font size of clade label, #49.
 
-# microbiomeMarker  1.1.1 (2020-03-07)
+# microbiomeMarker  1.1.1 (2021-03-07)
 
 + Add a para `only_marker` in `plot_cladogram` to specify whether only show the 
 markers or all features in the cladogram.

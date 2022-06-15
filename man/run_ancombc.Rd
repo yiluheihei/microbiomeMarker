@@ -15,7 +15,7 @@ run_ancombc(
   norm = "none",
   norm_para = list(),
   p_adjust = c("none", "fdr", "bonferroni", "holm", "hochberg", "hommel", "BH", "BY"),
-  zero_cut = 0.9,
+  prv_cut = 0.1,
   lib_cut = 0,
   struc_zero = FALSE,
   neg_lb = FALSE,
@@ -89,9 +89,9 @@ arguments here.}
 Options include "holm", "hochberg", "hommel", "bonferroni", "BH", "BY",
 "fdr", "none". See \code{\link[stats:p.adjust]{stats::p.adjust()}} for more details.}
 
-\item{zero_cut}{a numerical fraction between 0 and 1. Taxa with proportion of
-zeroes greater than \code{zero_cut} will be excluded in the analysis. Default
-is 0.90.}
+\item{prv_cut}{a numerical fraction between 0 and 1. Taxa with prevalences
+less than \code{prv_cut} will be excluded in the analysis. Default
+is 0.10.}
 
 \item{lib_cut}{a numerical threshold for filtering samples based on library
 sizes. Samples with library sizes less than \code{lib_cut} will be excluded
