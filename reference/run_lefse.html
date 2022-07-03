@@ -63,25 +63,25 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">run_lefse</span><span class="op">(</span>
-  <span class="va">ps</span>,
-  <span class="va">group</span>,
-  subgroup <span class="op">=</span> <span class="cn">NULL</span>,
-  taxa_rank <span class="op">=</span> <span class="st">"all"</span>,
-  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"log10"</span>, <span class="st">"log10p"</span><span class="op">)</span>,
-  norm <span class="op">=</span> <span class="st">"CPM"</span>,
-  norm_para <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  kw_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
-  lda_cutoff <span class="op">=</span> <span class="fl">2</span>,
-  bootstrap_n <span class="op">=</span> <span class="fl">30</span>,
-  bootstrap_fraction <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>,
-  wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
-  multigrp_strat <span class="op">=</span> <span class="cn">FALSE</span>,
-  strict <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"1"</span>, <span class="st">"2"</span><span class="op">)</span>,
-  sample_min <span class="op">=</span> <span class="fl">10</span>,
-  only_same_subgrp <span class="op">=</span> <span class="cn">FALSE</span>,
-  curv <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_lefse</span><span class="op">(</span></span>
+<span>  <span class="va">ps</span>,</span>
+<span>  <span class="va">group</span>,</span>
+<span>  subgroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  taxa_rank <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"log10"</span>, <span class="st">"log10p"</span><span class="op">)</span>,</span>
+<span>  norm <span class="op">=</span> <span class="st">"CPM"</span>,</span>
+<span>  norm_para <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  kw_cutoff <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  lda_cutoff <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  bootstrap_n <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  bootstrap_fraction <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>,</span>
+<span>  wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  multigrp_strat <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  strict <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"1"</span>, <span class="st">"2"</span><span class="op">)</span>,</span>
+<span>  sample_min <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  only_same_subgrp <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  curv <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -225,19 +225,19 @@ explanation. Genome biology 12.6 (2011): R60.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">kostic_crc_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html" class="external-link">subset_taxa</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">kostic_crc</span>,</span>
-<span class="r-in">    <span class="va">Phylum</span> <span class="op">==</span> <span class="st">"Firmicutes"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu">run_lefse</span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">kostic_crc_small</span>,</span>
-<span class="r-in">    wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span class="r-in">    group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,</span>
-<span class="r-in">    kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span class="r-in">    multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">    lda_cutoff <span class="op">=</span> <span class="fl">4</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">kostic_crc_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html" class="external-link">subset_taxa</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">kostic_crc</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Phylum</span> <span class="op">==</span> <span class="st">"Firmicutes"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu">run_lefse</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">kostic_crc_small</span>,</span></span>
+<span class="r-in"><span>    wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
+<span class="r-in"><span>    group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,</span></span>
+<span class="r-in"><span>    kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
+<span class="r-in"><span>    multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    lda_cutoff <span class="op">=</span> <span class="fl">4</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -252,7 +252,7 @@ explanation. Genome biology 12.6 (2011): R60.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

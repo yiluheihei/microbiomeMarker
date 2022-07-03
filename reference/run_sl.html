@@ -65,21 +65,21 @@ vector machine.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">run_sl</span><span class="op">(</span>
-  <span class="va">ps</span>,
-  <span class="va">group</span>,
-  taxa_rank <span class="op">=</span> <span class="st">"all"</span>,
-  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"log10"</span>, <span class="st">"log10p"</span><span class="op">)</span>,
-  norm <span class="op">=</span> <span class="st">"none"</span>,
-  norm_para <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  nfolds <span class="op">=</span> <span class="fl">3</span>,
-  nrepeats <span class="op">=</span> <span class="fl">3</span>,
-  sampling <span class="op">=</span> <span class="cn">NULL</span>,
-  tune_length <span class="op">=</span> <span class="fl">5</span>,
-  top_n <span class="op">=</span> <span class="fl">10</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LR"</span>, <span class="st">"RF"</span>, <span class="st">"SVM"</span><span class="op">)</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_sl</span><span class="op">(</span></span>
+<span>  <span class="va">ps</span>,</span>
+<span>  <span class="va">group</span>,</span>
+<span>  taxa_rank <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"log10"</span>, <span class="st">"log10p"</span><span class="op">)</span>,</span>
+<span>  norm <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  norm_para <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  nfolds <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  nrepeats <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  sampling <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tune_length <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  top_n <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LR"</span>, <span class="st">"RF"</span>, <span class="st">"SVM"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -207,25 +207,25 @@ the performance of the marker predictions for the testing data.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">enterotypes_arumugam</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># small example phyloseq object for test</span></span>
-<span class="r-in"><span class="va">ps_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html" class="external-link">subset_taxa</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">enterotypes_arumugam</span>,</span>
-<span class="r-in">    <span class="va">Phylum</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span>, <span class="st">"Bacteroidetes"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2021</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu">run_sl</span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">ps_small</span>,</span>
-<span class="r-in">    group <span class="op">=</span> <span class="st">"Gender"</span>,</span>
-<span class="r-in">    taxa_rank <span class="op">=</span> <span class="st">"Genus"</span>,</span>
-<span class="r-in">    nfolds <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">    nrepeats <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">    top_n <span class="op">=</span> <span class="fl">15</span>,</span>
-<span class="r-in">    norm <span class="op">=</span> <span class="st">"TSS"</span>,</span>
-<span class="r-in">    method <span class="op">=</span> <span class="st">"LR"</span>,</span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">mm</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">enterotypes_arumugam</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># small example phyloseq object for test</span></span></span>
+<span class="r-in"><span><span class="va">ps_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html" class="external-link">subset_taxa</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">enterotypes_arumugam</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Phylum</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span>, <span class="st">"Bacteroidetes"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2021</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu">run_sl</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">ps_small</span>,</span></span>
+<span class="r-in"><span>    group <span class="op">=</span> <span class="st">"Gender"</span>,</span></span>
+<span class="r-in"><span>    taxa_rank <span class="op">=</span> <span class="st">"Genus"</span>,</span></span>
+<span class="r-in"><span>    nfolds <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>    nrepeats <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>    top_n <span class="op">=</span> <span class="fl">15</span>,</span></span>
+<span class="r-in"><span>    norm <span class="op">=</span> <span class="st">"TSS"</span>,</span></span>
+<span class="r-in"><span>    method <span class="op">=</span> <span class="st">"LR"</span>,</span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mm</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> microbiomeMarker-class inherited from phyloseq-class</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> normalization method:              [ TSS ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> microbiome marker identity method: [ logistic regression ]</span>
@@ -247,7 +247,7 @@ the performance of the marker predictions for the testing data.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -63,22 +63,22 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">run_test_two_groups</span><span class="op">(</span>
-  <span class="va">ps</span>,
-  <span class="va">group</span>,
-  taxa_rank <span class="op">=</span> <span class="st">"all"</span>,
-  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"log10"</span>, <span class="st">"log10p"</span><span class="op">)</span>,
-  norm <span class="op">=</span> <span class="st">"TSS"</span>,
-  norm_para <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"welch.test"</span>, <span class="st">"t.test"</span>, <span class="st">"white.test"</span><span class="op">)</span>,
-  p_adjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"fdr"</span>, <span class="st">"bonferroni"</span>, <span class="st">"holm"</span>, <span class="st">"hochberg"</span>, <span class="st">"hommel"</span>, <span class="st">"BH"</span>, <span class="st">"BY"</span><span class="op">)</span>,
-  pvalue_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
-  diff_mean_cutoff <span class="op">=</span> <span class="cn">NULL</span>,
-  ratio_cutoff <span class="op">=</span> <span class="cn">NULL</span>,
-  conf_level <span class="op">=</span> <span class="fl">0.95</span>,
-  nperm <span class="op">=</span> <span class="fl">1000</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_test_two_groups</span><span class="op">(</span></span>
+<span>  <span class="va">ps</span>,</span>
+<span>  <span class="va">group</span>,</span>
+<span>  taxa_rank <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"log10"</span>, <span class="st">"log10p"</span><span class="op">)</span>,</span>
+<span>  norm <span class="op">=</span> <span class="st">"TSS"</span>,</span>
+<span>  norm_para <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"welch.test"</span>, <span class="st">"t.test"</span>, <span class="st">"white.test"</span><span class="op">)</span>,</span>
+<span>  p_adjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"fdr"</span>, <span class="st">"bonferroni"</span>, <span class="st">"holm"</span>, <span class="st">"hochberg"</span>, <span class="st">"hommel"</span>, <span class="st">"BH"</span>, <span class="st">"BY"</span><span class="op">)</span>,</span>
+<span>  pvalue_cutoff <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  diff_mean_cutoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ratio_cutoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  nperm <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -188,13 +188,13 @@ estimation</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">enterotypes_arumugam</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">mm_welch</span> <span class="op">&lt;-</span> <span class="fu">run_test_two_groups</span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">enterotypes_arumugam</span>,</span>
-<span class="r-in">    group <span class="op">=</span> <span class="st">"Gender"</span>,</span>
-<span class="r-in">    method <span class="op">=</span> <span class="st">"welch.test"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">mm_welch</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">enterotypes_arumugam</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mm_welch</span> <span class="op">&lt;-</span> <span class="fu">run_test_two_groups</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">enterotypes_arumugam</span>,</span></span>
+<span class="r-in"><span>    group <span class="op">=</span> <span class="st">"Gender"</span>,</span></span>
+<span class="r-in"><span>    method <span class="op">=</span> <span class="st">"welch.test"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mm_welch</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> microbiomeMarker-class inherited from phyloseq-class</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> normalization method:              [ TSS ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> microbiome marker identity method: [ welch.test ]</span>
@@ -216,7 +216,7 @@ estimation</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -63,21 +63,21 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_cladogram</span><span class="op">(</span>
-  <span class="va">mm</span>,
-  <span class="va">color</span>,
-  only_marker <span class="op">=</span> <span class="cn">FALSE</span>,
-  branch_size <span class="op">=</span> <span class="fl">0.2</span>,
-  alpha <span class="op">=</span> <span class="fl">0.2</span>,
-  node_size_scale <span class="op">=</span> <span class="fl">1</span>,
-  node_size_offset <span class="op">=</span> <span class="fl">1</span>,
-  clade_label_level <span class="op">=</span> <span class="fl">4</span>,
-  clade_label_font_size <span class="op">=</span> <span class="fl">4</span>,
-  annotation_shape <span class="op">=</span> <span class="fl">22</span>,
-  annotation_shape_size <span class="op">=</span> <span class="fl">5</span>,
-  group_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  marker_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_cladogram</span><span class="op">(</span></span>
+<span>  <span class="va">mm</span>,</span>
+<span>  <span class="va">color</span>,</span>
+<span>  only_marker <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  branch_size <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  node_size_scale <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  node_size_offset <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  clade_label_level <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  clade_label_font_size <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  annotation_shape <span class="op">=</span> <span class="fl">22</span>,</span>
+<span>  annotation_shape_size <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  group_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  marker_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -161,20 +161,20 @@ legends). See <code><a href="https://ggplot2.tidyverse.org/reference/guide_legen
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">kostic_crc_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html" class="external-link">subset_taxa</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">kostic_crc</span>,</span>
-<span class="r-in">    <span class="va">Phylum</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_lefse.html">run_lefse</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">kostic_crc_small</span>,</span>
-<span class="r-in">    wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span class="r-in">    group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,</span>
-<span class="r-in">    kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span class="r-in">    multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">    lda_cutoff <span class="op">=</span> <span class="fl">4</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu">plot_cladogram</span><span class="op">(</span><span class="va">mm_lefse</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"darkgreen"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">kostic_crc</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">kostic_crc_small</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_taxa-methods.html" class="external-link">subset_taxa</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">kostic_crc</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Phylum</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Firmicutes"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mm_lefse</span> <span class="op">&lt;-</span> <span class="fu"><a href="run_lefse.html">run_lefse</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">kostic_crc_small</span>,</span></span>
+<span class="r-in"><span>    wilcoxon_cutoff <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
+<span class="r-in"><span>    group <span class="op">=</span> <span class="st">"DIAGNOSIS"</span>,</span></span>
+<span class="r-in"><span>    kw_cutoff <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
+<span class="r-in"><span>    multigrp_strat <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>    lda_cutoff <span class="op">=</span> <span class="fl">4</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_cladogram</span><span class="op">(</span><span class="va">mm_lefse</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"darkgreen"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_cladogram-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -190,7 +190,7 @@ legends). See <code><a href="https://ggplot2.tidyverse.org/reference/guide_legen
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

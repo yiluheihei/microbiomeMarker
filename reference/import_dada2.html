@@ -63,13 +63,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">import_dada2</span><span class="op">(</span>
-  <span class="va">seq_tab</span>,
-  tax_tab <span class="op">=</span> <span class="cn">NULL</span>,
-  sam_tab <span class="op">=</span> <span class="cn">NULL</span>,
-  phy_tree <span class="op">=</span> <span class="cn">NULL</span>,
-  keep_taxa_rows <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">import_dada2</span><span class="op">(</span></span>
+<span>  <span class="va">seq_tab</span>,</span>
+<span>  tax_tab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sam_tab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  phy_tree <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  keep_taxa_rows <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -117,17 +117,17 @@ traditional OTU table. Conveniently, taxa names are saved as ASV1, ASV2,
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">seq_tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"dada2_seqtab.rds"</span>,</span>
-<span class="r-in">    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span>
-<span class="r-in"><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">tax_tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"dada2_taxtab.rds"</span>,</span>
-<span class="r-in">    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span>
-<span class="r-in"><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sam_tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"dada2_samdata.txt"</span>,</span>
-<span class="r-in">    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span>
-<span class="r-in"><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu">import_dada2</span><span class="op">(</span>seq_tab <span class="op">=</span> <span class="va">seq_tab</span>, tax_tab <span class="op">=</span> <span class="va">tax_tab</span>, sam_tab <span class="op">=</span> <span class="va">sam_tab</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ps</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">seq_tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"dada2_seqtab.rds"</span>,</span></span>
+<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tax_tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"dada2_taxtab.rds"</span>,</span></span>
+<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sam_tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"dada2_samdata.txt"</span>,</span></span>
+<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span></span>
+<span class="r-in"><span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\t"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu">import_dada2</span><span class="op">(</span>seq_tab <span class="op">=</span> <span class="va">seq_tab</span>, tax_tab <span class="op">=</span> <span class="va">tax_tab</span>, sam_tab <span class="op">=</span> <span class="va">sam_tab</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ps</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> phyloseq-class experiment-level object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> otu_table()   OTU Table:         [ 232 taxa and 20 samples ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sample_data() Sample Data:       [ 20 samples by 4 sample variables ]</span>
@@ -147,7 +147,7 @@ traditional OTU table. Conveniently, taxa names are saved as ASV1, ASV2,
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

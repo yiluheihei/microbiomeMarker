@@ -63,20 +63,20 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">run_aldex</span><span class="op">(</span>
-  <span class="va">ps</span>,
-  <span class="va">group</span>,
-  taxa_rank <span class="op">=</span> <span class="st">"all"</span>,
-  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"log10"</span>, <span class="st">"log10p"</span><span class="op">)</span>,
-  norm <span class="op">=</span> <span class="st">"none"</span>,
-  norm_para <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"t.test"</span>, <span class="st">"wilcox.test"</span>, <span class="st">"kruskal"</span>, <span class="st">"glm_anova"</span><span class="op">)</span>,
-  p_adjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"fdr"</span>, <span class="st">"bonferroni"</span>, <span class="st">"holm"</span>, <span class="st">"hochberg"</span>, <span class="st">"hommel"</span>, <span class="st">"BH"</span>, <span class="st">"BY"</span><span class="op">)</span>,
-  pvalue_cutoff <span class="op">=</span> <span class="fl">0.05</span>,
-  mc_samples <span class="op">=</span> <span class="fl">128</span>,
-  denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"iqlr"</span>, <span class="st">"zero"</span>, <span class="st">"lvha"</span><span class="op">)</span>,
-  paired <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_aldex</span><span class="op">(</span></span>
+<span>  <span class="va">ps</span>,</span>
+<span>  <span class="va">group</span>,</span>
+<span>  taxa_rank <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"log10"</span>, <span class="st">"log10p"</span><span class="op">)</span>,</span>
+<span>  norm <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  norm_para <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"t.test"</span>, <span class="st">"wilcox.test"</span>, <span class="st">"kruskal"</span>, <span class="st">"glm_anova"</span><span class="op">)</span>,</span>
+<span>  p_adjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"fdr"</span>, <span class="st">"bonferroni"</span>, <span class="st">"holm"</span>, <span class="st">"hochberg"</span>, <span class="st">"hommel"</span>, <span class="st">"BH"</span>, <span class="st">"BY"</span><span class="op">)</span>,</span>
+<span>  pvalue_cutoff <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  mc_samples <span class="op">=</span> <span class="fl">128</span>,</span>
+<span>  denom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"iqlr"</span>, <span class="st">"zero"</span>, <span class="st">"lvha"</span><span class="op">)</span>,</span>
+<span>  paired <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -195,12 +195,12 @@ data analysis. Microbiome 2, 15 (2014).</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">enterotypes_arumugam</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html" class="external-link">subset_samples</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="va">enterotypes_arumugam</span>,</span>
-<span class="r-in">    <span class="va">Enterotype</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu">run_aldex</span><span class="op">(</span><span class="va">ps</span>, group <span class="op">=</span> <span class="st">"Enterotype"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">enterotypes_arumugam</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu">phyloseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/subset_samples-methods.html" class="external-link">subset_samples</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">enterotypes_arumugam</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Enterotype</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Enterotype 3"</span>, <span class="st">"Enterotype 2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">run_aldex</span><span class="op">(</span><span class="va">ps</span>, group <span class="op">=</span> <span class="st">"Enterotype"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> operating in serial mode</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Not all reads are integers, the reads are ceiled to integers.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>    Raw reads is recommended from the ALDEx2 paper.</span>
@@ -356,7 +356,7 @@ data analysis. Microbiome 2, 15 (2014).</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

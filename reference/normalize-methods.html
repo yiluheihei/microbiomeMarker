@@ -113,51 +113,51 @@ recommended when very low values are present (as shown in the LEfSe galaxy).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for phyloseq</span>
-<span class="fu">normalize</span><span class="op">(</span><span class="va">object</span>, method <span class="op">=</span> <span class="st">"TSS"</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S4 method for otu_table</span>
-<span class="fu">normalize</span><span class="op">(</span><span class="va">object</span>, method <span class="op">=</span> <span class="st">"TSS"</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S4 method for data.frame</span>
-<span class="fu">normalize</span><span class="op">(</span><span class="va">object</span>, method <span class="op">=</span> <span class="st">"TSS"</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S4 method for matrix</span>
-<span class="fu">normalize</span><span class="op">(</span><span class="va">object</span>, method <span class="op">=</span> <span class="st">"TSS"</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">norm_rarefy</span><span class="op">(</span>
-  <span class="va">object</span>,
-  size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu">sample_sums</span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span>,
-  rng_seed <span class="op">=</span> <span class="cn">FALSE</span>,
-  replace <span class="op">=</span> <span class="cn">TRUE</span>,
-  trim_otus <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">norm_tss</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>
-
-<span class="fu">norm_css</span><span class="op">(</span><span class="va">object</span>, sl <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
-
-<span class="fu">norm_rle</span><span class="op">(</span>
-  <span class="va">object</span>,
-  locfunc <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"poscounts"</span>, <span class="st">"ratio"</span><span class="op">)</span>,
-  geo_means <span class="op">=</span> <span class="cn">NULL</span>,
-  control_genes <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span>
-
-<span class="fu">norm_tmm</span><span class="op">(</span>
-  <span class="va">object</span>,
-  ref_column <span class="op">=</span> <span class="cn">NULL</span>,
-  logratio_trim <span class="op">=</span> <span class="fl">0.3</span>,
-  sum_trim <span class="op">=</span> <span class="fl">0.05</span>,
-  do_weighting <span class="op">=</span> <span class="cn">TRUE</span>,
-  Acutoff <span class="op">=</span> <span class="op">-</span><span class="fl">1e+10</span>
-<span class="op">)</span>
-
-<span class="fu">norm_clr</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>
-
-<span class="fu">norm_cpm</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for phyloseq</span></span>
+<span><span class="fu">normalize</span><span class="op">(</span><span class="va">object</span>, method <span class="op">=</span> <span class="st">"TSS"</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for otu_table</span></span>
+<span><span class="fu">normalize</span><span class="op">(</span><span class="va">object</span>, method <span class="op">=</span> <span class="st">"TSS"</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for data.frame</span></span>
+<span><span class="fu">normalize</span><span class="op">(</span><span class="va">object</span>, method <span class="op">=</span> <span class="st">"TSS"</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for matrix</span></span>
+<span><span class="fu">normalize</span><span class="op">(</span><span class="va">object</span>, method <span class="op">=</span> <span class="st">"TSS"</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">norm_rarefy</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu">sample_sums</span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  rng_seed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  replace <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  trim_otus <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">norm_tss</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">norm_css</span><span class="op">(</span><span class="va">object</span>, sl <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">norm_rle</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  locfunc <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"poscounts"</span>, <span class="st">"ratio"</span><span class="op">)</span>,</span>
+<span>  geo_means <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  control_genes <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">norm_tmm</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  ref_column <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  logratio_trim <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>  sum_trim <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  do_weighting <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  Acutoff <span class="op">=</span> <span class="op">-</span><span class="fl">1e+10</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">norm_clr</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">norm_cpm</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -263,8 +263,8 @@ used for size factor estimation (e.g. core taxa).</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">caporaso</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">normalize</span><span class="op">(</span><span class="va">caporaso</span>, <span class="st">"TSS"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">caporaso</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">normalize</span><span class="op">(</span><span class="va">caporaso</span>, <span class="st">"TSS"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘tidytree’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span>
@@ -292,7 +292,7 @@ used for size factor estimation (e.g. core taxa).</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

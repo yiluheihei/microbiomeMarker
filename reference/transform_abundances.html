@@ -65,7 +65,7 @@ the counts of each sample will be transformed individually.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">transform_abundances</span><span class="op">(</span><span class="va">object</span>, transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"log10"</span>, <span class="st">"log10p"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">transform_abundances</span><span class="op">(</span><span class="va">object</span>, transform <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"log10"</span>, <span class="st">"log10p"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -97,9 +97,9 @@ zeros the transformation is <code>log10(1 + object)</code>.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">oxygen</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu">transform_abundances</span><span class="op">(</span><span class="va">oxygen</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html" class="external-link">otu_table</a></span><span class="op">(</span><span class="va">x1</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">oxygen</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu">transform_abundances</span><span class="op">(</span><span class="va">oxygen</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html" class="external-link">otu_table</a></span><span class="op">(</span><span class="va">x1</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> OTU Table:          [10 taxa and 55 samples]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      taxa are rows</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                           sa1</span>
@@ -707,8 +707,8 @@ zeros the transformation is <code>log10(1 + object)</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> k__Bacteria|p__Acidobacteria|c__Acidobacteria_Gp1|o__Gp1                                                          2.28733e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> k__Bacteria|p__Acidobacteria|c__Acidobacteria_Gp22|o__Gp22                                                        2.28733e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> k__Bacteria|p__Acidobacteria|c__Acidobacteria_Gp3|o__Gp3                                                          2.28733e-05</span>
-<span class="r-in"><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu">transform_abundances</span><span class="op">(</span><span class="va">oxygen</span>, <span class="st">"log10"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html" class="external-link">otu_table</a></span><span class="op">(</span><span class="va">x2</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu">transform_abundances</span><span class="op">(</span><span class="va">oxygen</span>, <span class="st">"log10"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html" class="external-link">otu_table</a></span><span class="op">(</span><span class="va">x2</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> OTU Table:          [10 taxa and 55 samples]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      taxa are rows</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                             sa1</span>
@@ -1316,8 +1316,8 @@ zeros the transformation is <code>log10(1 + object)</code>.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> k__Bacteria|p__Acidobacteria|c__Acidobacteria_Gp1|o__Gp1                                                          -4.640671e+00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> k__Bacteria|p__Acidobacteria|c__Acidobacteria_Gp22|o__Gp22                                                        -4.640671e+00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> k__Bacteria|p__Acidobacteria|c__Acidobacteria_Gp3|o__Gp3                                                          -4.640671e+00</span>
-<span class="r-in"><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu">transform_abundances</span><span class="op">(</span><span class="va">oxygen</span>, <span class="st">"log10p"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html" class="external-link">otu_table</a></span><span class="op">(</span><span class="va">x3</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu">transform_abundances</span><span class="op">(</span><span class="va">oxygen</span>, <span class="st">"log10p"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html" class="external-link">otu_table</a></span><span class="op">(</span><span class="va">x3</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> OTU Table:          [10 taxa and 55 samples]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      taxa are rows</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                            sa1</span>
@@ -1939,7 +1939,7 @@ zeros the transformation is <code>log10(1 + object)</code>.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

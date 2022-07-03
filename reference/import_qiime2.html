@@ -67,13 +67,13 @@ phyloseq object.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">import_qiime2</span><span class="op">(</span>
-  <span class="va">otu_qza</span>,
-  taxa_qza <span class="op">=</span> <span class="cn">NULL</span>,
-  sam_tab <span class="op">=</span> <span class="cn">NULL</span>,
-  refseq_qza <span class="op">=</span> <span class="cn">NULL</span>,
-  tree_qza <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">import_qiime2</span><span class="op">(</span></span>
+<span>  <span class="va">otu_qza</span>,</span>
+<span>  taxa_qza <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sam_tab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  refseq_qza <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tree_qza <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -111,26 +111,26 @@ qiime2, default <code>NULL</code>.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">otuqza_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"extdata"</span>, <span class="st">"table.qza"</span>,</span>
-<span class="r-in">    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">taxaqza_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"extdata"</span>, <span class="st">"taxonomy.qza"</span>,</span>
-<span class="r-in">    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">sample_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"extdata"</span>, <span class="st">"sample-metadata.tsv"</span>,</span>
-<span class="r-in">    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">treeqza_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"extdata"</span>, <span class="st">"tree.qza"</span>,</span>
-<span class="r-in">    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu">import_qiime2</span><span class="op">(</span></span>
-<span class="r-in">    otu_qza <span class="op">=</span> <span class="va">otuqza_file</span>, taxa_qza <span class="op">=</span> <span class="va">taxaqza_file</span>,</span>
-<span class="r-in">    sam_tab <span class="op">=</span> <span class="va">sample_file</span>, tree_qza <span class="op">=</span> <span class="va">treeqza_file</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">otuqza_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"extdata"</span>, <span class="st">"table.qza"</span>,</span></span>
+<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">taxaqza_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"extdata"</span>, <span class="st">"taxonomy.qza"</span>,</span></span>
+<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sample_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"extdata"</span>, <span class="st">"sample-metadata.tsv"</span>,</span></span>
+<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">treeqza_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"extdata"</span>, <span class="st">"tree.qza"</span>,</span></span>
+<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"microbiomeMarker"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu">import_qiime2</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    otu_qza <span class="op">=</span> <span class="va">otuqza_file</span>, taxa_qza <span class="op">=</span> <span class="va">taxaqza_file</span>,</span></span>
+<span class="r-in"><span>    sam_tab <span class="op">=</span> <span class="va">sample_file</span>, tree_qza <span class="op">=</span> <span class="va">treeqza_file</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘tidytree’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span>
@@ -145,7 +145,7 @@ qiime2, default <code>NULL</code>.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘tidytree’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "phylo" in cache; using the first, from namespace 'phyloseq'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘tidytree’</span>
-<span class="r-in"><span class="va">ps</span></span>
+<span class="r-in"><span><span class="va">ps</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> phyloseq-class experiment-level object</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> otu_table()   OTU Table:         [ 770 taxa and 34 samples ]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sample_data() Sample Data:       [ 34 samples by 9 sample variables ]</span>
@@ -165,7 +165,7 @@ qiime2, default <code>NULL</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>
