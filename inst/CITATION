@@ -1,0 +1,22 @@
+citHeader("To cite microbiomeMarker in publications use:")
+
+citEntry(
+    entry  = "article",
+    title  = "microbiomeMarker: an R/Bioconductor package for microbiome marker identification and visualization",
+    author = personList(
+        as.person("Yang Cao"),
+        as.person("Qingyang Dong"),
+        as.person("Dan Wang"),
+        as.person("Pengcheng Zhang"),
+        as.person("Ying Liu"),
+        as.person("Chao Niu")
+        ),
+    journal = "Bioinformatics",
+    year    = "2022",
+    month   = "06",
+    doi     = "10.1093/bioinformatics/btac438",
+    PMID    = "35771644",
+    textVersion = paste("Yang Cao, Qingyang Dong, Dan Wang, Pengcheng Zhang, Ying Liu, Chao Niu.",
+                        "microbiomeMarker: an R/Bioconductor package for microbiome marker identification and visualization.",
+                        "Bioinformatics, 2022, btac438. doi: 10.1093/bioinformatics/btac438")
+)

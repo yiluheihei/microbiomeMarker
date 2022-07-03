@@ -66,26 +66,10 @@ our package.
 
 Kindly cite as follows:
 
-``` r
-citation("microbiomeMarker")
-```
-
-    ## 
-    ## 在出版物中使用程序包时引用'microbiomeMarker':
-    ## 
-    ##   Cao Y (2022). _microbiomeMarker: microbiome biomarker analysis
-    ##   toolkit_. R package version 1.3.2,
-    ##   <https://github.com/yiluheihei/microbiomeMarker>.
-    ## 
-    ## LaTeX的用户的BibTeX条目是
-    ## 
-    ##   @Manual{,
-    ##     title = {microbiomeMarker: microbiome biomarker analysis toolkit},
-    ##     author = {Yang Cao},
-    ##     year = {2022},
-    ##     note = {R package version 1.3.2},
-    ##     url = {https://github.com/yiluheihei/microbiomeMarker},
-    ##   }
+**Yang Cao**, Qingyang Dong, Dan Wang, Pengcheng Zhang, Ying Liu, Chao
+Niu, microbiomeMarker: an R/Bioconductor package for microbiome marker
+identification and visualization. Bioinformatics, 2022, btac438. doi:
+[10.1093/bioinformatics/btac438](https://doi.org/10.1093/bioinformatics/btac438)
 
 Please cite the corresponding methods paper too:
 
