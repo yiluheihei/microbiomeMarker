@@ -63,9 +63,14 @@ summarize_taxa <- function(ps,
     row.names(tax_summarized) <- row.names(otu_summarized)
     row.names(otu_summarized) <- row.names(tax_summarized)
 
-    # set the colnames of tax_table in the form of k|p|c|o
-    rank_prefix <- extract_prefix(ps_ranks)
-    colnames(tax_summarized) <- paste0(rank_prefix, collapse = sep)
+    # To ensure the rank of the summarized object is valid (one of  "domain"  
+    # "kingdom" "phylum"  "class"   "order"   "family"  "genus"   "species"),  
+    # set it (column names of tax_summarized) as the top level rank in the ps
+    # object.
+    #  
+    # rank_prefix <- extract_prefix(ps_ranks)
+    # colnames(tax_summarized) <- paste0(rank_prefix, collapse = sep)
+    colnames(tax_summarized) <- ps_ranks[1]
 
     return(phyloseq(otu_summarized, tax_summarized, sample_data(ps)))
 }

@@ -191,8 +191,16 @@ run_ancombc <- function(ps,
 
     global <- ifelse(n_lvl > 2, TRUE, FALSE)
     # ancombc differential abundance analysis
+    
+    if (taxa_rank == "all") {
+        ancombc_taxa_rank <- rank_names(ps_summarized)[1]
+    } else {
+        ancombc_taxa_rank <- taxa_rank
+    }
+    
     ancombc_out <- ANCOMBC::ancombc(
         ps_summarized,
+        tax_level = ancombc_taxa_rank,
         formula = fml_char,
         p_adj_method = p_adjust,
         prv_cut = prv_cut,
@@ -224,6 +232,10 @@ run_ancombc <- function(ps,
         }
     } else {
         ancombc_out_res <- ancombc_out$res
+        # drop intercept
+        ancombc_out_res <- lapply(
+            ancombc_out_res,
+            function(x) x[-1])
         mtab <- do.call(
             cbind,
             ancombc_out_res[c("W", "p_val", "q_val", "diff_abn")]
@@ -232,7 +244,8 @@ run_ancombc <- function(ps,
     names(mtab) <- keep_var
 
     # determine enrich group based on coefficients
-    cf <- ancombc_out$res$lfc
+    # drop intercept
+    cf <- ancombc_out$res$lfc[-1]
     if (n_lvl > 2) {
         if (!is.null(contrast)) {
             cf <- cf[exp_lvl]
