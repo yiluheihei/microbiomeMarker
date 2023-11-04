@@ -25,51 +25,80 @@ x <- as(phyloseq::otu_table(kostic_crc), "matrix")[1:20, 1:20]
 groups <- phyloseq::sample_data(kostic_crc)[["DIAGNOSIS"]][1:20]
 idx1 <- groups == "Tumor"
 idx2 <- groups == "Healthy"
-x_clr <- ALDEx2::aldex.clr(x, groups, mc.samples = 12)
+x_clr <- suppressWarnings(ALDEx2::aldex.clr(x, groups, mc.samples = 12))
 instance <- convert_instance(x_clr@analysisData, 12)[[1]]
 # keep the same number of samples for two groups
 idx2 <- which(idx2)[1:4]
 instance <- instance[c(which(idx1), idx2)]
 new_groups <- groups[c(which(idx1), idx2)]
 
-test_that("t_fast equal to t.test", {
+test_that("t_fast equal to t.test and ALDEx2:::t.fast", {
+    # unpaired
+    t_res_up <-  apply(
+        instance, 1,
+        function(x) t.test(x[1:4], x[5:8], alternative = "greater")$p.value
+    )
+    expect_equal(t_res_up, t_fast(instance, new_groups))
     expect_equal(
-        apply(
-            instance, 1,
-            function(x) t.test(x[1:4], x[5:8])$p.value
-        ),
-        t_fast(instance, new_groups)
+       t_res_up,
+       ALDEx2:::t.fast(instance, new_groups, paired = FALSE)$p
+    )
+
+    # paired
+    t_res_p <- apply(
+        instance, 1,
+        function(x) t.test(x[1:4], x[5:8],
+                           paired = TRUE,
+                           alternative = "greater")$p.value
     )
     expect_equal(
-        apply(
-            instance, 1,
-            function(x) t.test(x[1:4], x[5:8], paired = TRUE)$p.value
-        ),
+        t_res_p,
         t_fast(instance, new_groups, paired = TRUE)
     )
+    expect_equal(
+        t_res_p,
+        ALDEx2:::t.fast(instance, new_groups, paired = TRUE)$p
+    )
+
 })
 
 test_that("wilcox_fast equal to wilcox.test", {
+    # unpaired
+    wilcox_res_p <- apply(
+        instance, 1,
+        function(x) wilcox.test(x[1:4], x[5:8],
+                                alternative = "greater")$p.value
+    )
     expect_equal(
-        apply(
-            instance, 1,
-            function(x) wilcox.test(x[1:4], x[5:8])$p.value
-        ),
+        wilcox_res_p,
         wilcox_fast(instance, new_groups)
     )
-
     expect_equal(
-        apply(
-            instance, 1,
-            function(x) wilcox.test(x[1:4], x[5:8], paired = TRUE)$p.value
-        ),
+        wilcox_res_p,
+        ALDEx2:::wilcox.fast(instance, new_groups, paired = FALSE))
+
+    # paired
+    wilcox_res_p <- apply(
+        instance, 1,
+        function(x) wilcox.test(x[1:4], x[5:8],
+                                paired = TRUE,
+                                alternative = "greater")$p.value
+    )
+    expect_equal(
+        wilcox_res_p,
         wilcox_fast(instance, new_groups, paired = TRUE)
+    )
+    expect_equal(
+        wilcox_res_p,
+        ALDEx2:::wilcox.fast(instance, new_groups, paired = TRUE)
     )
 
     expect_equal(
         apply(
             instance, 1, function(x) {
-                wilcox.test(x[1:4], x[5:8], paired = TRUE, exact = TRUE)$p.value
+                wilcox.test(x[1:4], x[5:8],
+                            alternative = "greater",
+                            paired = TRUE, exact = TRUE)$p.value
             }
         ),
         wilcox_fast(instance, new_groups, paired = TRUE)

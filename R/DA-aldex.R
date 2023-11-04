@@ -91,9 +91,9 @@ run_aldex <- function(ps,
     denom = c("all", "iqlr", "zero", "lvha"),
     paired = FALSE) {
     stopifnot(inherits(ps, "phyloseq"))
-    ps <- check_rank_names(ps) %>% 
+    ps <- check_rank_names(ps) %>%
         check_taxa_rank( taxa_rank)
-    
+
     denom <- match.arg(denom, c("all", "iqlr", "zero", "lvha"))
     p_adjust <- match.arg(
         p_adjust,
@@ -109,9 +109,9 @@ run_aldex <- function(ps,
         c("t.test", "wilcox.test", "kruskal", "glm_anova")
     )
     if (method %in% c("t.test", "wilcox.test")) {
-        test <- "t"
+        test_method <- "t"
     } else {
-        test <- "kw"
+        test_method <- "kw"
     }
 
     # check whether group is valid, write a function
@@ -137,7 +137,7 @@ run_aldex <- function(ps,
     groups <- sample_meta[[group]]
     abd <- abundances(ps_summarized, norm = TRUE)
 
-    test_fun <- ifelse(test == "t", aldex_t, aldex_kw)
+    test_fun <- ifelse(test_method == "t", aldex_t, aldex_kw)
     test_para <- list(
         reads = abd,
         conditions = groups,
@@ -146,7 +146,7 @@ run_aldex <- function(ps,
         denom = denom,
         p_adjust = p_adjust
     )
-    if (test == "t") {
+    if (test_method == "t") {
         test_para <- c(test_para, paired = paired)
     }
 
@@ -217,7 +217,7 @@ aldex_t <- function(reads,
     if (!inherits(reads, "aldex.clr")) {
         reads_clr <- ALDEx2::aldex.clr(
             reads = reads,
-            conds = conditions,
+            conds = as.character(conditions),
             mc.samples = mc_samples,
             denom = denom
         )
@@ -234,8 +234,7 @@ aldex_t <- function(reads,
         pvalue <- purrr::map_dfc(
             mc_instance_ldf,
             t_fast,
-            group = conditions, paired = paired
-        )
+            group = conditions, paired = paired)
     } else {
         pvalue <- purrr::map_dfc(
             mc_instance_ldf,
@@ -244,10 +243,28 @@ aldex_t <- function(reads,
         )
     }
 
-    padj <- purrr::map_dfc(pvalue, p.adjust, method = p_adjust)
-    # expect value
-    e_pvalue <- rowMeans(pvalue)
-    e_padj <- rowMeans(padj)
+    padj_greater <- purrr::map_dfc(
+        pvalue,
+        \(x) p.adjust (2 * x, method = p_adjust)
+    )
+    padj_less <- purrr::map_dfc(
+        pvalue,
+        \(x) p.adjust (2 * (1 - x), method = p_adjust)
+    )
+
+    # making this into a two-sided test
+    pvalue_greater <-2 * pvalue
+    pvalue_less <- 2 * (1 -  pvalue)
+
+    # making sure the max p-value is 1
+    pvalue_greater <- apply(pvalue_greater, c(1, 2), \(x) min(x, 1))
+    pvalue_less <- apply(pvalue_less, c(1, 2), \(x) min(x, 1))
+
+    # get the expected value of p value and adjusted p value
+    e_pvalue <- cbind(rowMeans(pvalue_greater), rowMeans(pvalue_less)) |>
+        apply(1, min)
+    e_padj <- cbind(rowMeans(padj_greater), rowMeans(padj_less)) |>
+        apply(1, min)
 
     # effect size
     ef <- ALDEx2::aldex.effect(
@@ -404,7 +421,7 @@ convert_instance <- function(mc_instance, mc_samples) {
 }
 
 
-# fast test function modified from ALDEx2
+# fast test function modified from ALDEx2::t.fast
 #' @importFrom stats pt
 t_fast <- function(x, group, paired = FALSE) {
     grp1 <- group == unique(group)[1]
@@ -431,21 +448,19 @@ t_fast <- function(x, group, paired = FALSE) {
             nonpara = "n"
         )
         df <- length(idx1) - 1
-        res <- pt(abs(t), df = df, lower.tail = FALSE) * 2
     } else {
-        t <- multtest::mt.teststat(x, 
-            as.numeric(grp1), 
-            test = "t", 
+        t <- multtest::mt.teststat(x,
+            as.numeric(grp1),
+            test = "t",
             nonpara = "n"
         )
         s1 <- apply(x[, grp1], 1, sd)
         s2 <- apply(x[, grp2], 1, sd)
-        df <- ((s1^2 / n1 + s2^2 / n2)^2) / ((s1^2 / n1)^2 / (n1 - 1) + 
+        df <- ((s1^2 / n1 + s2^2 / n2)^2) / ((s1^2 / n1)^2 / (n1 - 1) +
                 (s2^2 / n2)^2 / (n2 - 1))
-        res <- pt(abs(t), df = df, lower.tail = FALSE) * 2
     }
 
-    res
+    return(pt(t, df = df, lower.tail = FALSE))
 }
 
 # wilcox.fast function replaces wilcox.test
@@ -457,6 +472,7 @@ t_fast <- function(x, group, paired = FALSE) {
 #  * uses multtest
 #' @importFrom stats psignrank pnorm pwilcox wilcox.test
 wilcox_fast <- function(x, group, paired = FALSE) {
+    stopifnot(ncol(x) == length(group))
     grp1 <- group == unique(group)[1]
     grp2 <- group == unique(group)[2]
     n1 <- sum(grp1)
@@ -466,17 +482,12 @@ wilcox_fast <- function(x, group, paired = FALSE) {
     xt <- t(x)
     if (paired) {
         any_ties <- any(
-            apply(
-                xt[grp1, ] - xt[grp2, ], 2,
-                function(y) length(unique(y))
-            ) != ncol(x) / 2
+            apply(xt[grp1, ] - xt[grp2, ], 2, function(y) length(unique(y))) !=
+                ncol(x) / 2
         )
     } else {
         any_ties <- any(
-            apply(
-                xt, 2,
-                function(y) length(unique(y))
-            ) != ncol(x)
+            apply(xt, 2, function(y) length(unique(y))) != ncol(x)
         )
     }
 
@@ -487,10 +498,14 @@ wilcox_fast <- function(x, group, paired = FALSE) {
             function(i) {
                 wilcox.test(
                     i[grp1], i[grp2],
-                    paired = paired, correct = FALSE
+                    paired = paired,
+                    alternative = "greater",
+                    correct = FALSE
                 )$p.value
             }
         )
+
+        return(res)
     }
 
     if (paired) {
@@ -498,28 +513,23 @@ wilcox_fast <- function(x, group, paired = FALSE) {
         x_diff <- xt[grp1, ] - xt[grp2, ]
         v <- apply(x_diff, 2, function(y) sum(rank(abs(y))[y > 0]))
         topscore <- (n1 * (n1 + 1)) / 2
-        v_lower <- ifelse(v > topscore / 2, topscore - v, v)
-        if (sum(grp1) < 50) { 
+        if (sum(grp1) < 50) {
             # as per wilcox test, use exact -- ASSUMES NO TIES!!
-            v_p <- psignrank(v_lower, n1) * 2
-            # psignrank returns non-zero for W = mean
-            res <- ifelse(v_p > 1, 1, v_p)
+            res <- psignrank(v - 1, n1, lower.tail = FALSE)
         } else { # Use normal approximation
-            v_std <- (topscore / 2 - v_lower) / 
+            v_std <- (v - topscore / 2) /
                 sqrt(n1 * (n1 + 1) * (2 * n1 + 1) / 24)
-            res <- pnorm(v_std, lower.tail = FALSE) * 2
+            res <- pnorm(v_std, lower.tail = FALSE)
         }
     } else {
         w_std <- multtest::mt.teststat(x, as.numeric(grp1), test = "wilcoxon")
         if (sum(grp1) < 50 && sum(grp2) < 50) {
             # as per wilcox test, use exact -- ASSUMES NO TIES!!
             w_var <- sqrt((n1 * n2) * (n1 + n2 + 1) / 12)
-            w <- abs(w_std) * w_var + (n1 * n2) / 2
-            w_p <- pwilcox(w - 1, n1, n2, lower.tail = FALSE) * 2
-            # pwilcox returns non-zero for W = mean
-            res <- ifelse(w_p > 1, 1, w_p)
+            w <- w_std * w_var + (n1 * n2) / 2
+            res <- pwilcox(w - 1, n1, n2, lower.tail = FALSE)
         } else { # Use normal approximation
-            res <- pnorm(abs(w_std), lower.tail = FALSE) * 2
+            res <- pnorm(w_std, lower.tail = FALSE)
         }
     }
 
