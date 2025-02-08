@@ -110,10 +110,10 @@ run_ancom <- function(ps,
             "hochberg", "hommel", "BH", "BY"
         )
     )
-    
-    ps <- check_rank_names(ps) %>% 
+
+    ps <- check_rank_names(ps) %>%
         check_taxa_rank( taxa_rank)
-    
+
     if (length(confounders)) {
         confounders <- check_confounder(ps, group, confounders)
     }
@@ -123,14 +123,14 @@ run_ancom <- function(ps,
     meta_nms <- names(meta)
     groups <- meta[[group]]
     groups <- make.names(groups)
-   
+
     if (!is.factor(groups)) {
         groups <- factor(groups)
     }
     sample_data(ps)[[group]] <- groups
     lvl <- levels(groups)
     n_lvl <- length(lvl)
-    
+
     if (!length(confounders)) {
        tfun <- ifelse(n_lvl > 2, stats::kruskal.test, stats::wilcox.test)
        fml <- paste("x ~ ", group)
@@ -183,9 +183,9 @@ run_ancom <- function(ps,
         test_var_dat[[confounders]] <- meta[[confounders]]
     }
     p <- calc_ancom_pmat(
-        feature_table, 
+        feature_table,
         test_var_dat,
-        tfun, 
+        tfun,
         fml
     )
 
@@ -243,7 +243,7 @@ run_ancom <- function(ps,
 #' @param test  character, the test to determine the p value of log ratio,
 #'   one of "aov", "wilcox.test",  "kruskal.test".
 #' @param ... extra arguments passed to the test.
-#' @references 
+#' @references
 #' github/biocore/scikit-bio/blob/master/skbio/stats/composition.py#L811
 #' @noRd
 calc_ancom_pmat <- function(feature_table, test_var_dat, test, fml) {
@@ -288,14 +288,14 @@ calc_ancom_p <- function(log_ratio, test_var_dat, test, fml) {
     test_dat <- cbind(x = log_ratio, test_var_dat)
     fml <- stats::formula(fml)
     if (identical(test, stats::aov)) {
-        fit = test(fml, 
-                   data = test_dat, 
+        fit = test(fml,
+                   data = test_dat,
                    na.action = na.omit)
         p = summary(fit)[[1]][group, "Pr(>F)"]
     } else {
         suppressWarnings(p <- test(fml, data = test_dat)$p.value)
     }
-   
+
     p
 }
 
@@ -376,7 +376,7 @@ preprocess_ancom <- function(feature_table,
     group = NULL,
     out_cut = 0.05,
     zero_cut = 0.90) {
-    
+
     feature_table <- data.frame(feature_table, check.names = FALSE)
     meta_data <- data.frame(meta_data, check.names = FALSE)
     # Drop unused levels

@@ -114,7 +114,7 @@ run_edger <- function(ps,
     ),
     pvalue_cutoff = 0.05,
     ...) {
-    ps <- check_rank_names(ps) %>% 
+    ps <- check_rank_names(ps) %>%
         check_taxa_rank( taxa_rank)
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     method <- match.arg(method, c("LRT", "QLFT"))
@@ -125,7 +125,7 @@ run_edger <- function(ps,
             "hochberg", "hommel", "BH", "BY"
         )
     )
-    
+
     if (length(confounders)) {
         confounders <- check_confounder(ps, group, confounders)
     }
@@ -173,7 +173,7 @@ run_edger <- function(ps,
     #     model_data[confounders] <- meta[confounders]
     #     design <- stats::model.matrix(
     #         formula(paste(
-    #             "~ + ", 
+    #             "~ + ",
     #             paste(c(confounders, "group"), collapse = " + "))),
     #         data = model_data
     #     )
@@ -188,7 +188,17 @@ run_edger <- function(ps,
     #  rate control
     fit_fun <- ifelse(method == "LRT", edgeR::glmFit, edgeR::glmQLFit)
     test_fun <- ifelse(method == "LRT", edgeR::glmLRT, edgeR::glmQLFTest)
-    fit <- fit_fun(dge_summarized, design, ...)
+
+    # New statistical methods implemented in glmQLFit() to ensure accurate
+    # estimation of the quasi-dispersion for data with small counts. However,
+    # R will be crash for this  me w ihe nhod on
+    # `legacy = TRUE`.
+    if (method == "LRT") {
+        fit <- fit_fun(dge_summarized, design, ...)
+    } else {
+        fit <- fit_fun(dge_summarized, design, legacy = TRUE, ...)
+    }
+
     para_cf <- calc_coef(groups, design, contrast)
     lrt <- test_fun(fit, coef = para_cf)
     # lrt <- test_fun(fit, contrast = contrast_new)
@@ -209,7 +219,7 @@ run_edger <- function(ps,
     }
 
     # normalized counts
-    ef_nf <- dge_summarized$samples$lib.size * 
+    ef_nf <- dge_summarized$samples$lib.size *
         dge_summarized$samples$norm.factors
     ref_nf <- mean(ef_nf)
     counts_normalized <-
@@ -245,7 +255,7 @@ run_edger <- function(ps,
     # edgeR::decideTestsDGE(), identify which genes are significantly
     # differentially expressed from an edgeR fit object containing p-values and
     # test statistics.
-    
+
     # first two columns: feature enrich_group (write a function)
     res <- cbind(feature = row.names(res), res)
     other_col <- setdiff(names(res), c("feature", "enrich_group"))
@@ -303,7 +313,7 @@ run_edger <- function(ps,
 phyloseq2edgeR <- function(ps, ...) {
     ps <- keep_taxa_in_rows(ps)
     abd <- as(otu_table(ps), "matrix")
-    
+
     if (any(round(abd) != abd)) {
         warning(
             "Some counts are non-integers, they are rounded to integers.\n",
