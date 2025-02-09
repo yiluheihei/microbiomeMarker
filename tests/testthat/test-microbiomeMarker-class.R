@@ -1,5 +1,3 @@
-context("microbiomeMarker class")
-
 test_that("microbiomeMarker constructor", {
     marker1 <- marker_table(
         data.frame(

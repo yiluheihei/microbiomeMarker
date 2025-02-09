@@ -1,5 +1,3 @@
-context("lefse input preprocessing")
-
 test_that("add missing levels: keep abundance is lower than 1", {
     data(oxygen)
     oxygen_feature <- otu_table(oxygen)
@@ -24,8 +22,8 @@ test_that("format lefse input: subgroups, group_hie", {
     sample_meta <- data.frame(group = rep(c("cr", "exp"), 3),
                               subgroup = rep(c("a", "b"), each = 3))
     group_info <- lefse_format_grp(sample_meta, "group", "subgroup")
-    expect_identical(group_info$subgroup, 
+    expect_identical(group_info$subgroup,
                      paste(sample_meta$group, sample_meta$subgroup, sep = "_"))
-    expect_identical(group_info$group_hie, 
+    expect_identical(group_info$group_hie,
                      list(cr = c("cr_a", "cr_b"), exp = c("exp_a", "exp_b")))
 })

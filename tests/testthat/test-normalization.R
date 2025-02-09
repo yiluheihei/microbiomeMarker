@@ -1,5 +1,3 @@
-context("taxa abundance normalization")
-
 ct <- as(otu_table(pediatric_ibd), "matrix")
 gm_mean <- function(x, na.rm = TRUE) {
     exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
@@ -53,8 +51,8 @@ test_that("ensure the results are the same for object in different class ", {
     css_df <- normalize(df, "CSS")
     css_mat <- normalize(mat, "CSS")
     expect_identical(otu_table(css_ps), css_ot)
-    expect_equivalent(as.data.frame(css_ot), css_df)
-    expect_equivalent(as.matrix(css_df), css_mat)
+    expect_equal(as.data.frame(css_ot), css_df, ignore_attr = TRUE)
+    expect_equal(as.matrix(css_df), css_mat, ignore_attr = TRUE)
 
     # norm factor
     css_nf_ot <- attr(css_ot, "norm_factor")
@@ -72,8 +70,8 @@ test_that("ensure the results are the same for object in different class ", {
     rle_df <- normalize(df, "RLE")
     rle_mat <- normalize(mat, "RLE")
     expect_identical(otu_table(rle_ps), rle_ot)
-    expect_equivalent(as.data.frame(rle_ot), rle_df)
-    expect_equivalent(as.matrix(rle_df), rle_mat)
+    expect_equal(as.data.frame(rle_ot), rle_df, ignore_attr = TRUE)
+    expect_equal(as.matrix(rle_df), rle_mat, ignore_attr = TRUE)
 
     # norm factor
     rle_nf_ot <- attr(rle_ot, "norm_factor")
@@ -91,8 +89,8 @@ test_that("ensure the results are the same for object in different class ", {
     tmm_df <- normalize(df, "TMM")
     tmm_mat <- normalize(mat, "TMM")
     expect_identical(otu_table(tmm_ps), tmm_ot)
-    expect_equivalent(as.data.frame(tmm_ot), tmm_df)
-    expect_equivalent(as.matrix(tmm_df), tmm_mat)
+    expect_equal(as.data.frame(tmm_ot), tmm_df, ignore_attr = TRUE)
+    expect_equal(as.matrix(tmm_df), tmm_mat, ignore_attr = TRUE)
 
     # norm factor
     tmm_nf_ot <- attr(tmm_ot, "norm_factor")

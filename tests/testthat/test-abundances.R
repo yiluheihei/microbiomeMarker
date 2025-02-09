@@ -1,5 +1,3 @@
-context("`abundances` methods")
-
 ps <- phyloseq::phyloseq(
     otu_table = otu_table(
         matrix(
@@ -37,6 +35,6 @@ test_that("abundances", {
 test_that("abundances normalization", {
     abd_norm <- normalize(ps, "TSS")
     expect_true(all(colSums(otu_table(abd_norm)) == 1))
-    expect_is(abd_norm, "phyloseq")
-    expect_is(normalize(otu_table(ps)), "otu_table")
+    expect_s4_class(abd_norm, "phyloseq")
+    expect_s4_class(normalize(otu_table(ps)), "otu_table")
 })

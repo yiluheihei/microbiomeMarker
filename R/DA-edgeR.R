@@ -210,11 +210,11 @@ run_edger <- function(ps,
     )
     res <- res$table
     if ("FDR" %in% names(res)) {
-        res <- dplyr::rename(res, pvalue = .data$PValue, padj = .data$FDR)
+        res <- dplyr::rename(res, pvalue = "PValue", padj = "FDR")
     } else if ("FWER" %in% names(res)) {
-        res <- dplyr::rename(res, pvalue = .data$PValue, padj = .data$FWER)
+        res <- dplyr::rename(res, pvalue = "PValue", padj = "FWER")
     } else {
-        res <- dplyr::rename(res, pvalue = .data$PValue)
+        res <- dplyr::rename(res, pvalue = "PValue")
         res$padj <- res$pvalue
     }
 

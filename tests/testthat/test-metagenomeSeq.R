@@ -1,5 +1,3 @@
-context("metagenomeSeq")
-
 test_that("result of metagenomeSeq", {
     ps <- phyloseq::phyloseq(
         otu_table = otu_table(

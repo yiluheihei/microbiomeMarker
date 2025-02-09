@@ -1,5 +1,3 @@
-context("assignment methods")
-
 marker <- marker_table(
     data.frame(
         feature = paste0("sp", 1:5),

@@ -1,5 +1,3 @@
-context("bar plot of effect size")
-
 test_that("feature label in bar plot", {
     feature <- "Bacteria|Bacteroidetes|Bacteroidia|Bacteroidales|Bacteroidaceae"
     short_feature <- "Bacteria|Bacteroidetes"
