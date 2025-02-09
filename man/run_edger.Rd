@@ -89,7 +89,7 @@ for more details see \link[stats:p.adjust]{stats::p.adjust}.}
 
 \item{pvalue_cutoff}{numeric, p value cutoff, default 0.05}
 
-\item{...}{extra arguments passed to the model. See \code{\link[edgeR:glmQLFTest]{edgeR::glmQLFit()}}
+\item{...}{extra arguments passed to the model. See \code{\link[edgeR:glmQLFit]{edgeR::glmQLFit()}}
 and \code{\link[edgeR:glmfit]{edgeR::glmFit()}} for more details.}
 }
 \value{
@@ -137,7 +137,7 @@ Bioconductor package for differential expression analysis of digital
 gene expression data." Bioinformatics 26.1 (2010): 139-140.
 }
 \seealso{
-\code{\link[edgeR:glmfit]{edgeR::glmFit()}},\code{\link[edgeR:glmQLFTest]{edgeR::glmQLFit()}},\code{\link[edgeR:estimateDisp]{edgeR::estimateDisp()}}
+\code{\link[edgeR:glmfit]{edgeR::glmFit()}},\code{\link[edgeR:glmQLFit]{edgeR::glmQLFit()}},\code{\link[edgeR:estimateDisp]{edgeR::estimateDisp()}}
 ,\code{\link[=normalize]{normalize()}}
 }
 \author{

@@ -8,4 +8,16 @@
 The microboimeMarker package provides several methods to identify micribome
 biomarker, such as lefse, deseq2.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/yiluheihei/microbiomeMarker}
+  \item Report bugs at \url{https://github.com/yiluheihei/microbiomeMarker/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Yang Cao \email{caoyang.name@gmail.com}
+
+}
 \keyword{internal}
