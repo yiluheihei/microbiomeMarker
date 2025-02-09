@@ -24,8 +24,8 @@ require(IRanges)
 pht <- postHocTest(
     result = DataFrameList(
         featureA = DataFrame(
-            comparisons = c("group2-group1", 
-                "group3-group1", 
+            comparisons = c("group2-group1",
+                "group3-group1",
                 "group3-group2"),
             diff_mean = runif(3),
             pvalue = rep(0.01, 3),
@@ -33,8 +33,8 @@ pht <- postHocTest(
             ci_upper = rep(0.011, 3)
         ),
         featureB = DataFrame(
-            comparisons = c("group2-group1", 
-                "group3-group1", 
+            comparisons = c("group2-group1",
+                "group3-group1",
                 "group3-group2"),
             diff_mean = runif(3),
             pvalue = rep(0.01, 3),
