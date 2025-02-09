@@ -111,11 +111,11 @@ run_lefse <- function(ps,
     if (!inherits(ps, "phyloseq")) {
         stop("`ps` must be phyloseq object", call. = FALSE)
     }
-    
+
     # check rank names and para taxa_rank
     ps <- check_rank_names(ps)
     ps <- check_taxa_rank(ps, taxa_rank)
-    
+
     transform <- match.arg(transform, c("identity", "log10", "log10p"))
     strict <- match.arg(strict, c("0", "1", "2"))
     strict <- as.numeric(strict)
@@ -146,13 +146,13 @@ run_lefse <- function(ps,
     grp_hie <- grp_info$group_hie
 
     ps_summarized <- pre_ps_taxa_rank(ps_normed, taxa_rank)
-    
+
     otus <- abundances(ps_summarized, norm = TRUE)
     # transform it for test
     otus_test <- as.data.frame(t(otus), stringsAsFactors = FALSE)
     feature <- tax_table(ps_summarized)@.Data[, 1]
     names(otus_test) <- feature
-    
+
     # tax table
     tax <- matrix(feature) %>%
         tax_table()
@@ -187,7 +187,7 @@ run_lefse <- function(ps,
         )
     )
     sig_otus <- sig_otus[, wilcoxon_p, drop = FALSE]
-    
+
     if (ncol(sig_otus) == 0) {
         warning("No marker was identified", call. = FALSE)
         mm <- microbiomeMarker(
@@ -199,7 +199,7 @@ run_lefse <- function(ps,
             sam_data = sample_data(ps_normed),
             tax_table = tax
         )
-        
+
         return(mm)
     }
 

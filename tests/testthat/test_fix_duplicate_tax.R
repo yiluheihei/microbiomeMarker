@@ -1,5 +1,3 @@
-context("fix duplicate tax")
-
 test_that("fix duplicate tax", {
     ps <- readRDS("data/data_tax_duplicate.rds")
     ps_fixed <- fix_duplicate_tax(ps)

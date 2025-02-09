@@ -1,5 +1,3 @@
-context("test two group tests")
-
 test_that("ration", {
     abd1 <- rep(0, 6)
     abd2 <- rep(0, 6)

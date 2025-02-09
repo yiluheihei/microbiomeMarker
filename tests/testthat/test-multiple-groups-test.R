@@ -22,7 +22,7 @@ test_that("test multiple group enterotype result", {
 })
 
 test_that("test post hoc test result", {
-    res_test <- tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]] %>% 
+    res_test <- tukey_res@result[["p__Bacteroidetes|g__Bacteroides"]] %>%
         data.frame
     expect_snapshot(print(res_test, digits = 5))
 })

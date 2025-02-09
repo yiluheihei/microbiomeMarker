@@ -155,8 +155,8 @@ run_posthoc_test <- function(ps,
 #' pht <- postHocTest(
 #'     result = DataFrameList(
 #'         featureA = DataFrame(
-#'             comparisons = c("group2-group1", 
-#'                 "group3-group1", 
+#'             comparisons = c("group2-group1",
+#'                 "group3-group1",
 #'                 "group3-group2"),
 #'             diff_mean = runif(3),
 #'             pvalue = rep(0.01, 3),
@@ -164,8 +164,8 @@ run_posthoc_test <- function(ps,
 #'             ci_upper = rep(0.011, 3)
 #'         ),
 #'         featureB = DataFrame(
-#'             comparisons = c("group2-group1", 
-#'                 "group3-group1", 
+#'             comparisons = c("group2-group1",
+#'                 "group3-group1",
 #'                 "group3-group2"),
 #'             diff_mean = runif(3),
 #'             pvalue = rep(0.01, 3),
@@ -394,7 +394,7 @@ calc_welch_uncorrected_test <- function(obs, groups, conf_level = 0.95) {
 
     welch_res <- purrr::map(
         comparison_groups,
-        ~ t.test(obs_split[[.x[1]]], obs_split[[.x[2]]], 
+        ~ t.test(obs_split[[.x[1]]], obs_split[[.x[2]]],
             conf.level = conf_level)
     )
 

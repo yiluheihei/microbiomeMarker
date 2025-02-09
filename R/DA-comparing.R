@@ -187,7 +187,7 @@ compare_DA <- function(ps,
 
         ps
     }
-    pss <- mapply(generate_spiked_ps, 
+    pss <- mapply(generate_spiked_ps,
                   count_tabs, rands,
                   MoreArgs = list(group = group, ps = ps))
     pss <- rep(pss, each = length(methods))
@@ -841,12 +841,12 @@ generate_compare_args <- function(methods, args) {
     n_arg <- vector("integer", length(args))
     for (i in seq_along(args)) {
         curr_arg <- args[i]
-        if (purrr::vec_depth(curr_arg) > 4) {
+        if (purrr::pluck_depth(curr_arg) > 4) {
             stop("`args` could be 'list of list', ",
                  "'list of list of list' to support for different arguments ",
                  "for a certain DA method")
         }
-        if (purrr::vec_depth(curr_arg) == 4) {
+        if (purrr::pluck_depth(curr_arg) == 4) {
             curr_arg <- unlist(curr_arg, recursive = FALSE)
             names(curr_arg) <- paste(names(args)[i],
                                      seq_along(curr_arg),

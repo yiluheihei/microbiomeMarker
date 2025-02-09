@@ -1,5 +1,3 @@
-context("test abundance transformation")
-
 data(enterotypes_arumugam)
 ps_t <- transform_abundances(enterotypes_arumugam, "log10p")
 otutable_t <- transform_abundances(otu_table(enterotypes_arumugam), "log10p")

@@ -82,8 +82,8 @@ bootstap_lda <- function(feature_abundance,
     sample_fract,
     seed = 2020) {
     # Bioconductor not allows set.seed
-    ldas <- purrr::rerun(
-        boot_n,
+    ldas <- purrr::map(
+        1:boot_n,\(i)
         bootstap_lda_one(
             feature_abundance,
             class,
@@ -186,8 +186,8 @@ cal_pair_lda <- function(feature_abundance,
         pair,
         function(x) {
             if (x %in% lda_row_nms) {
-                # fixes #7, Since `pair` is a level, and `lda_means[pair[i], ]` 
-                # corced pair[i]` to numeric rather than use the corresponding 
+                # fixes #7, Since `pair` is a level, and `lda_means[pair[i], ]`
+                # corced pair[i]` to numeric rather than use the corresponding
                 # level of pair[i]
                 ind <- match(x, lda_row_nms)
                 lda_means[ind, ]
@@ -298,7 +298,7 @@ test_rep_wilcoxon <- function(subcls,
             br <- FALSE
             for (j in seq_along(subcls2)) {
                 if (only_same_subcls &&
-                    gsub(pair[1], "", subcls1[i]) != 
+                    gsub(pair[1], "", subcls1[i]) !=
                         gsub(pair[2], "", subcls2[j])) {
                     ok <- ok + 1
                     next
@@ -308,7 +308,7 @@ test_rep_wilcoxon <- function(subcls,
                 cls2_abd <- feats_abd[subcls == subcls2[j]]
                 med_comp <- FALSE
 
-                if (length(cls1_abd) < sample_min || 
+                if (length(cls1_abd) < sample_min ||
                         length(cls2_abd) < sample_min) {
                     med_comp <- TRUE
                 }
@@ -505,7 +505,7 @@ add_missing_levels <- function(feature) {
 # check whether tax have level prefix, such as `p__`
 check_tax_prefix <- function(taxa_nms) {
     prefix <- paste0(c("k", "p", "c", "o", "f", "g", "s"), "__")
-    has_prefix <- purrr::map_lgl(prefix, 
+    has_prefix <- purrr::map_lgl(prefix,
         ~ any(grepl(.x, taxa_nms, fixed = TRUE))
     )
 

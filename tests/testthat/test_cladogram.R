@@ -1,5 +1,3 @@
-context("test cladogram")
-
 test_that("Generate unique id for short annotation label", {
     uid <- get_unique_id(500)
     expect_equal(uid[26], "z")

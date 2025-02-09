@@ -1,5 +1,3 @@
-context("test utilities")
-
 test_that("check upper first letter", {
     expect_equal(
         upper_firstletter(c("abc", "ABC", "Abc")),
@@ -97,9 +95,9 @@ test_that("check rank names and para `taxa_rank`", {
 })
 
 test_that(
-    "taxa prefix",
+    "taxa prefix", {
     expect_identical(get_prefix(c("Phylum", "Genus")), c("p__", "g__"))
-)
+})
 
 test_that("var in sample_data", {
     st <- sample_data(

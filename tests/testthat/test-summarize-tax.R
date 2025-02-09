@@ -1,5 +1,3 @@
-context("tax summarize")
-
 ps <- phyloseq::phyloseq(
     otu_table = otu_table(
         matrix(
