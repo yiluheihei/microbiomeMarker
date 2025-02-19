@@ -73,6 +73,7 @@ Suggests:
     knitr,
     rmarkdown,
     BiocStyle,
-    withr
+    withr,
+    microbiome
 VignetteBuilder: knitr
 Config/testthat/edition: 3

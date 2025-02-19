@@ -25,7 +25,7 @@ test_that("ancombc works correctly", {
         tax_table(phylum_data) <- tax_table(phylum_data)[, 1]
 
         out <- ANCOMBC::ancombc(
-            phyloseq = phylum_data,
+            data = phylum_data,
             formula = "nation",
             p_adj_method = "holm",
             prv_cut = 0.10,

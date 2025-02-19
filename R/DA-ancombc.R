@@ -102,7 +102,11 @@
 #'     enterotypes_arumugam,
 #'     Enterotype %in% c("Enterotype 3", "Enterotype 2")
 #' )
-#' run_ancombc(ps, group = "Enterotype")
+#' if (requireNamespace("microbiome", quietly = TRUE)) {
+#'     run_ancombc(ps, group = "Enterotype")
+#' } else {
+#'     message("The 'mirobiome' package is not installed, please install it to use this example")
+#' }
 run_ancombc <- function(ps,
     group,
     confounders = character(0),
